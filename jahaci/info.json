@@ -1,0 +1,10 @@
+{
+    "author": ["Karlo"],
+    "description": "Kolekcija naredbi za WoW guild.",
+    "install_msg": "You shouldn't be installing this.",
+    "short": "Kolekcija naredbi za WoW guild.",
+    "tags": ["google", "sheets"],
+    "requirements": ["gspread"],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}
