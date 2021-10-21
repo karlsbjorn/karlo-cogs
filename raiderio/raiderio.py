@@ -8,7 +8,7 @@ RIO_URL = "https://raider.io/api/v1/"
 
 
 class Raiderio(commands.Cog):
-    """Cog za"""
+    """Cog za interakciju s Raider.io API-em"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -20,8 +20,9 @@ class Raiderio(commands.Cog):
         request_url = f"{RIO_URL}characters/profile?region=eu&realm=Ragnaros&name={character}&fields=mythic_plus_scores_by_season%3Acurrent%2Craid_progression%2Cgear%2Ccovenant"
         try:
             async with self.session.request("GET", request_url) as resp:
-                assert resp.status == 200
                 profile_data = await resp.json()
+                if resp.status != 200 and profile_data["message"] == "Could not find requested character":
+                    raise ValueError("Taj character ne postoji.")
 
                 char_name = profile_data["name"]
                 char_race = profile_data["race"]
