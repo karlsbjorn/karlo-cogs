@@ -63,6 +63,45 @@ class Raiderio(commands.Cog):
         except Exception as e:
             await ctx.send(f"Naredba uspješno neuspješna. {e}")
 
+    @commands.command()
+    async def gprofile(self, ctx, *, guild: str = "Jahaci Rumene Kadulje") -> None:
+        """Prikaži mali Raider.io profil nekog guilda na Ragnarosu"""
+        request_url = f"{RIO_URL}guilds/profile?region=eu&realm=Ragnaros&name={guild}&fields=raid_progression%2Craid_rankings"
+        try:
+            async with self.session.request("GET", request_url) as resp:
+                profile_data = await resp.json()
+                if resp.status != 200 and profile_data["message"] == "Could not find requested guild":
+                    raise ValueError("Taj guild ne postoji na Ragnarosu.")
+
+                guild_name: str = profile_data["name"]
+                guild_url: str = profile_data["profile_url"]
+                last_updated: str = self._parse_date(profile_data["last_crawled_at"])
+
+                ranks = (profile_data["raid_rankings"]["sanctum-of-domination"]["normal"],
+                         profile_data["raid_rankings"]["sanctum-of-domination"]["heroic"],
+                         profile_data["raid_rankings"]["sanctum-of-domination"]["mythic"])
+                difficulties = ("Normal", "Heroic", "Mythic")
+
+                raid_progression: str = profile_data["raid_progression"]["sanctum-of-domination"]["summary"]
+
+                embed = discord.Embed(title=guild_name, url=guild_url, color=0xff2121)
+                embed.set_author(name="JRK Guild profil", icon_url=self.bot.user.avatar_url,)
+                embed.add_field(name="__**Progres**__", value=raid_progression, inline=False)
+
+                for rank, difficulty in zip(ranks, difficulties):
+                    world = rank["world"]
+                    region = rank["region"]
+                    realm = rank["realm"]
+
+                    embed.add_field(name=f"{difficulty} rank",
+                                    value=f"World: {world}\nRegion: {region}\nRealm: {realm}")
+
+                embed.set_footer(text=f"Posljedni put ažurirano: {last_updated}")
+
+                await ctx.send(embed=embed)
+        except Exception as e:
+            await ctx.send(f"Naredba uspješno neuspješna. {e}")
+
     @staticmethod
     def _parse_date(tz_date) -> str:
         parsed = isoparse(tz_date) + timedelta(hours=2)
