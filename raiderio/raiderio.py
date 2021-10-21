@@ -57,7 +57,7 @@ class Raiderio(commands.Cog):
                 embed.add_field(name="Covenant", value=char_covenant, inline=True)
                 embed.add_field(name="__Ostali linkovi__", value=f"[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})")
                 embed.set_image(url=banner_url)
-                embed.set_footer(text=f"Posljedni put ažurirano: {char_last_updated}")
+                embed.set_footer(text=f"Posljednji put ažurirano: {char_last_updated}")
 
                 await ctx.send(embed=embed)
         except Exception as e:
@@ -96,7 +96,7 @@ class Raiderio(commands.Cog):
                     embed.add_field(name=f"{difficulty} rank",
                                     value=f"World: {world}\nRegion: {region}\nRealm: {realm}")
 
-                embed.set_footer(text=f"Posljedni put ažurirano: {last_updated}")
+                embed.set_footer(text=f"Posljednji put ažurirano: {last_updated}")
 
                 await ctx.send(embed=embed)
         except Exception as e:
