@@ -2,7 +2,7 @@ from redbot.core import commands
 import discord
 import gspread
 
-# TODO: Ocisti ***SVE***
+# TODO: Ocisti ***sve***
 
 
 class Jahaci(commands.Cog):
@@ -12,6 +12,7 @@ class Jahaci(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        # TODO: Koristi Red-ov Config
 
     @commands.group()
     async def roster(self, ctx):
@@ -62,7 +63,8 @@ class Jahaci(commands.Cog):
         embed = self.create_embed_mythic(stitle, current_raid, group1_raiders, group2_raiders)
         await ctx.send(embed=embed)
 
-    def format_raiders(self, raid_group, roles):
+    @staticmethod
+    def format_raiders(raid_group, roles):
         # role_emojis = {'tank': '<:tank:865247930528956437>',
         #                'healer': '<:healer:865247920830939157>',
         #                'dps': '<:dps:865247908885168148>'}
@@ -83,7 +85,8 @@ class Jahaci(commands.Cog):
                 role_count += 1
         return raiders
 
-    def format_backup_raiders(self, raid_group, roles):
+    @staticmethod
+    def format_backup_raiders(raid_group, roles):
         raiders = ''
         role_count = 1
         for raider in raid_group[1:]:
@@ -93,30 +96,53 @@ class Jahaci(commands.Cog):
                 role_count += 1
         return raiders
 
-    def create_embed(self, title, description, group1_raiders, group2_raiders):
-        embed = discord.Embed(title=title,
-                              url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
-                              description=description,
-                              color=discord.Color.dark_blue())
+    @staticmethod
+    def create_embed(title, description, group1_raiders, group2_raiders):
+        embed = discord.Embed(
+            title=title,
+            url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
+            description=description,
+            color=discord.Color.dark_blue()
+        )
 
-        embed.set_author(name='Jahaci Rumene Kadulje',
-                         icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png')
-        embed.add_field(name="Grupa 1", value=group1_raiders, inline=True)
-        embed.add_field(name="Grupa 2", value=group2_raiders, inline=True)
+        embed.set_author(
+            name='Jahaci Rumene Kadulje',
+            icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png'
+        )
+        embed.add_field(
+            name="Grupa 1",
+            value=group1_raiders,
+            inline=True
+        )
+        embed.add_field(
+            name="Grupa 2",
+            value=group2_raiders,
+            inline=True
+        )
         # embed.add_field(name='Mythic grupa', value='test', inline=True)
         return embed
 
-    def create_embed_mythic(self, title, description, group1_raiders, group2_raiders):
-        embed = discord.Embed(title=title,
-                              url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
-                              description=description,
-                              color=discord.Color.dark_blue())
+    @staticmethod
+    def create_embed_mythic(title, description, group1_raiders, group2_raiders):
+        embed = discord.Embed(
+            title=title,
+            url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
+            description=description,
+            color=discord.Color.dark_blue()
+        )
 
-        embed.set_author(name='Jahaci Rumene Kadulje',
-                         icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png')
-        embed.add_field(name="Mythic roster", value=group1_raiders, inline=True)
-        embed.add_field(name='Backup', value=group2_raiders, inline=True)
+        embed.set_author(
+            name='Jahaci Rumene Kadulje',
+            icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png'
+        )
+        embed.add_field(
+            name="Mythic roster",
+            value=group1_raiders,
+            inline=True
+        )
+        embed.add_field(
+            name='Backup',
+            value=group2_raiders,
+            inline=True
+        )
         return embed
-
-
-

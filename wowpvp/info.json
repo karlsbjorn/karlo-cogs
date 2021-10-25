@@ -1,0 +1,10 @@
+{
+    "author": ["Karlo"],
+    "description": "Kolekcija komandi za Pvp",
+    "install_msg": "**Disclaimer:** This is a private cog not meant for general use.",
+    "short": "Kolekcija komandi za Pvp",
+    "tags": ["wow", "blizzard"],
+    "requirements": [],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

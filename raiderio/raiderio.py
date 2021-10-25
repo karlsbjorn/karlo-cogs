@@ -24,6 +24,7 @@ class Raiderio(commands.Cog):
                 if resp.status != 200 and profile_data["message"] == "Could not find requested character":
                     raise ValueError("Taj character ne postoji.")
 
+                # TODO: Dict?
                 char_name = profile_data["name"]
                 char_race = profile_data["race"]
                 char_spec = profile_data["active_spec_name"]
@@ -44,10 +45,12 @@ class Raiderio(commands.Cog):
                 wcl_url = f"https://www.warcraftlogs.com/character/eu/ragnaros/{char_name}"
                 raidbots_url = f"https://www.raidbots.com/simbot/quick?region=eu&realm=ragnaros&name={char_name}"
 
-                embed = discord.Embed(title=char_name,
-                                      url=char_url,
-                                      description=f"{char_race} {char_spec} {char_class}",
-                                      color=char_score_color)
+                embed = discord.Embed(
+                    title=char_name,
+                    url=char_url,
+                    description=f"{char_race} {char_spec} {char_class}",
+                    color=char_score_color
+                )
                 embed.set_author(name="Raider.io profil",
                                  icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg")
                 embed.set_thumbnail(url=char_image)
@@ -55,7 +58,8 @@ class Raiderio(commands.Cog):
                 embed.add_field(name="Raid progres", value=char_raid, inline=True)
                 embed.add_field(name="Item level", value=char_ilvl, inline=True)
                 embed.add_field(name="Covenant", value=char_covenant, inline=True)
-                embed.add_field(name="__Ostali linkovi__", value=f"[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})")
+                embed.add_field(name="__Ostali linkovi__",
+                                value=f"[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})")
                 embed.set_image(url=banner_url)
                 embed.set_footer(text=f"Posljednji put ažurirano: {char_last_updated}")
 
@@ -77,24 +81,35 @@ class Raiderio(commands.Cog):
                 guild_url: str = profile_data["profile_url"]
                 last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
-                ranks = (profile_data["raid_rankings"]["sanctum-of-domination"]["normal"],
-                         profile_data["raid_rankings"]["sanctum-of-domination"]["heroic"],
-                         profile_data["raid_rankings"]["sanctum-of-domination"]["mythic"])
+                ranks = (
+                    profile_data["raid_rankings"]["sanctum-of-domination"]["normal"],
+                    profile_data["raid_rankings"]["sanctum-of-domination"]["heroic"],
+                    profile_data["raid_rankings"]["sanctum-of-domination"]["mythic"]
+                )
                 difficulties = ("Normal", "Heroic", "Mythic")
 
                 raid_progression: str = profile_data["raid_progression"]["sanctum-of-domination"]["summary"]
 
                 embed = discord.Embed(title=guild_name, url=guild_url, color=0xff2121)
-                embed.set_author(name="JRK Guild profil", icon_url=self.bot.user.avatar_url,)
-                embed.add_field(name="__**Progres**__", value=raid_progression, inline=False)
+                embed.set_author(
+                    name="JRK Guild profil",
+                    icon_url=self.bot.user.avatar_url
+                )
+                embed.add_field(
+                    name="__**Progres**__",
+                    value=raid_progression,
+                    inline=False
+                )
 
                 for rank, difficulty in zip(ranks, difficulties):
                     world = rank["world"]
                     region = rank["region"]
                     realm = rank["realm"]
 
-                    embed.add_field(name=f"{difficulty} rank",
-                                    value=f"World: {world}\nRegion: {region}\nRealm: {realm}")
+                    embed.add_field(
+                        name=f"{difficulty} rank",
+                        value=f"World: {world}\nRegion: {region}\nRealm: {realm}"
+                    )
 
                 embed.set_footer(text=f"Posljednji put ažurirano: {last_updated}")
 
