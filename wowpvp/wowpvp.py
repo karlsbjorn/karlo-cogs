@@ -64,7 +64,7 @@ class Wowpvp(commands.Cog):
                 if "name" not in profile:
                     raise ValueError("Taj character ne postoji.")
 
-                real_char_name: str = rbg_statistics["character"]["name"]
+                real_char_name: str = profile["name"]
                 char_img_url: str = media["assets"][0]["value"]
                 char_race: str = profile["race"]["name"]
                 char_class: str = profile["character_class"]["name"]
