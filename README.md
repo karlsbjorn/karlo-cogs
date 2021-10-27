@@ -1,3 +1,5 @@
 # karlo-cogs
 
-nothing here
+### AutoRoom
+
+Forked from [PhasecoreX's Cogs](https://github.com/PhasecoreX/PCXCogs)
