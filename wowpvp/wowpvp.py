@@ -16,10 +16,10 @@ class Wowpvp(commands.Cog):
         self.config.register_global(**default_global)
 
     @commands.command()
-    async def rating(self, ctx, character_name: str, realm: str):
+    async def rating(self, ctx, character_name: str, *realm: str):
         """Provjeri rejtinge nekog charactera"""
         async with ctx.typing():
-            realm = realm.lower()
+            realm = '-'.join(realm).lower()
             character_name = character_name.lower()
             rbg_rating = "0"
             duo_rating = "0"
