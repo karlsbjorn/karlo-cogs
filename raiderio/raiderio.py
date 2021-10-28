@@ -15,9 +15,10 @@ class Raiderio(commands.Cog):
         self.session = aiohttp.ClientSession()
 
     @commands.command()
-    async def profile(self, ctx, character: str) -> None:
-        """Prikaži Raider.io profil nekog charactera iz Ragnaros-EU realma."""
-        request_url = f"{RIO_URL}characters/profile?region=eu&realm=Ragnaros&name={character}&fields=mythic_plus_scores_by_season%3Acurrent%2Craid_progression%2Cgear%2Ccovenant"
+    async def profile(self, ctx, character: str, *realm: str) -> None:
+        """Prikaži Raider.io profil nekog charactera."""
+        realm = '-'.join(realm).lower()
+        request_url = f"{RIO_URL}characters/profile?region=eu&realm={realm}&name={character}&fields=mythic_plus_scores_by_season%3Acurrent%2Craid_progression%2Cgear%2Ccovenant"
         try:
             async with self.session.request("GET", request_url) as resp:
                 profile_data = await resp.json()
@@ -41,9 +42,9 @@ class Raiderio(commands.Cog):
                 banner = profile_data["profile_banner"]
 
                 banner_url = f"https://cdnassets.raider.io/images/profile/masthead_backdrops/v2/{banner}.jpg"
-                armory_url = f"https://worldofwarcraft.com/en-gb/character/eu/ragnaros/{char_name}"
-                wcl_url = f"https://www.warcraftlogs.com/character/eu/ragnaros/{char_name}"
-                raidbots_url = f"https://www.raidbots.com/simbot/quick?region=eu&realm=ragnaros&name={char_name}"
+                armory_url = f"https://worldofwarcraft.com/en-gb/character/eu/{realm}/{char_name}"
+                wcl_url = f"https://www.warcraftlogs.com/character/eu/{realm}/{char_name}"
+                raidbots_url = f"https://www.raidbots.com/simbot/quick?region=eu&realm={realm}&name={char_name}"
 
                 embed = discord.Embed(
                     title=char_name,
