@@ -5,17 +5,21 @@ from typing import Union
 import discord
 from redbot.core import Config, commands
 from redbot.core.utils.chat_formatting import humanize_timedelta
+from redbot.core.i18n import Translator, cog_i18n
 
 from .c_autoroom import AutoRoomCommands
 from .c_autoroomset import AutoRoomSetCommands, channel_name_template
 from .pcx_lib import Perms, SettingDisplay
 from .pcx_template import Template
 
+_ = Translator("AutoRoom", __file__)
+
 
 class CompositeMetaClass(type(commands.Cog), type(ABC)):
     """This allows the metaclass used for proper type detection to coexist with discord.py's metaclass."""
 
 
+@cog_i18n(_)
 class AutoRoom(
     AutoRoomCommands,
     AutoRoomSetCommands,
@@ -262,7 +266,7 @@ class AutoRoom(
                     ).manage_channels
                 ):
                     await text_channel.delete(
-                        reason="AutoRoom: Associated voice channel deleted."
+                        reason=_("AutoRoom: Associated voice channel deleted.")
                     )
                 await self.config.channel_from_id(voice_channel_id).clear()
 
@@ -295,7 +299,7 @@ class AutoRoom(
                 and text_channel.permissions_for(text_channel.guild.me).manage_channels
             ):
                 await text_channel.delete(
-                    reason="AutoRoom: Pridruženi glasovni kanal je izbrisan."
+                    reason=_("AutoRoom: Associated voice channel deleted.")
                 )
             await self.config.channel(guild_channel).clear()
 
@@ -340,13 +344,17 @@ class AutoRoom(
             warn_bucket = self.bucket_autoroom_create_warn.get_bucket(member)
             if not warn_bucket.update_rate_limit():
                 try:
-                    await member.send(
-                        "Bok! Izgleda da pokušavaš kreirat novi kanal."
+                    await member.send(_(
+                        "Hello there! It looks like you're trying to make an AutoRoom."
                         "\n"
-                        f"Ja sam Blizzard shill i volim timegating pa zato možeš napravit samo **{bucket.rate}** kanala"
-                        f" svake **{humanize_timedelta(seconds=bucket.per)}**."
+                        "Please note that you are only allowed to make **{}** AutoRooms "
+                        "every **{}**."
                         "\n"
-                        f"Probaj opet za **{humanize_timedelta(seconds=max(retry_after, 1))}**."
+                        "You can try again in **{}**.").format(
+                            bucket.rate,
+                            humanize_timedelta(seconds=bucket.per),
+                            humanize_timedelta(seconds=max(retry_after, 1))
+                        )
                     )
                 except (discord.Forbidden, discord.NotFound, discord.HTTPException):
                     pass
@@ -410,7 +418,7 @@ class AutoRoom(
         new_voice_channel = await guild.create_voice_channel(
             name=new_channel_name,
             category=dest_category,
-            reason="AutoRoom: Novi AutoRoom potreban.",
+            reason=_("AutoRoom: New AutoRoom needed."),
             overwrites=perms.overwrites,
             bitrate=autoroom_source.bitrate,
             user_limit=autoroom_source.user_limit,
@@ -421,7 +429,7 @@ class AutoRoom(
         if autoroom_source_config["room_type"] != "server":
             await self.config.channel(new_voice_channel).owner.set(member.id)
         await member.move_to(
-            new_voice_channel, reason="AutoRoom: Pomakni korisnika u nov AutoRoom."
+            new_voice_channel, reason=_("AutoRoom: Move user to new AutoRoom.")
         )
 
         # Create optional text channel
@@ -453,7 +461,7 @@ class AutoRoom(
             new_text_channel = await guild.create_text_channel(
                 name=new_channel_name.replace("'s ", " "),
                 category=dest_category,
-                reason="AutoRoom: Novi text kanal potreban.",
+                reason=_("AutoRoom: New text channel needed."),
                 overwrites=perms.overwrites,
             )
             await self.config.channel(new_voice_channel).associated_text_channel.set(
@@ -478,7 +486,7 @@ class AutoRoom(
             and voice_channel.guild.me.permissions_in(voice_channel).manage_channels
         ):
             try:
-                await voice_channel.delete(reason="AutoRoom: Kanal prazan.")
+                await voice_channel.delete(reason=_("AutoRoom: Channel empty."))
             except discord.NotFound:
                 pass  # Sometimes this happens when the user manually deletes their channel
             return True
@@ -510,7 +518,7 @@ class AutoRoom(
         if perms.modified:
             await text_channel.edit(
                 overwrites=perms.overwrites,
-                reason="AutoRoom: Promjena dozvola",
+                reason=_("AutoRoom: Permission change"),
             )
 
     def _generate_channel_name(

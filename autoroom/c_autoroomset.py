@@ -6,6 +6,7 @@ from redbot.core import checks, commands
 from redbot.core.utils.chat_formatting import error, info, warning
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.predicates import MessagePredicate
+from redbot.core.i18n import Translator, cog_i18n
 
 from .abc import MixinMeta
 from .pcx_lib import SettingDisplay, checkmark
@@ -15,7 +16,9 @@ channel_name_template = {
     "game": "{{game}}{% if not game %}{{username}}'s Room{% endif %}{% if dupenum > 1 %} ({{dupenum}}){% endif %}",
 }
 
+_ = Translator("AutoRoom", __file__)
 
+@cog_i18n(_)
 class AutoRoomSetCommands(MixinMeta):
     """The autoroomset command."""
 

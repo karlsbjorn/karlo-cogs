@@ -1,3 +1,5 @@
 venv
 .idea
 *.pyc
+
+autoroom/locales/messages.pot

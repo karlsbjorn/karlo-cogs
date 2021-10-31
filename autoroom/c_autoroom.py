@@ -5,11 +5,15 @@ from typing import Union
 import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import error, humanize_timedelta
+from redbot.core.i18n import Translator, cog_i18n
 
 from .abc import MixinMeta
 from .pcx_lib import Perms, SettingDisplay, delete
 
+_ = Translator("AutoRoom", __file__)
 
+
+@cog_i18n(_)
 class AutoRoomCommands(MixinMeta):
     """The autoroom command."""
 

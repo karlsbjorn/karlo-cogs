@@ -1,0 +1,292 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-10-31 14:41+0100\n"
+"PO-Revision-Date: 2021-10-31 14:43+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hr-HR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.3\n"
+"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: autoroom\autoroom.py:29
+msgid ""
+"Automatic voice channel management.\n"
+"\n"
+"    This cog facilitates automatic voice channel creation.\n"
+"    When a member joins an AutoRoom Source (voice channel),\n"
+"    this cog will move them to a brand new AutoRoom that they have control "
+"over.\n"
+"    Once everyone leaves the AutoRoom, it is automatically deleted.\n"
+"\n"
+"    For a quick rundown on how to get started with this cog,\n"
+"    check out [the readme](https://github.com/PhasecoreX/PCXCogs/tree/master/"
+"autoroom/README.md)\n"
+"    "
+msgstr ""
+
+#: autoroom\autoroom.py:269 autoroom\autoroom.py:302
+msgid "AutoRoom: Associated voice channel deleted."
+msgstr "AutoRoom: Pridruženi glasovni kanal izbrisan."
+
+#: autoroom\autoroom.py:347
+msgid ""
+"Hello there! It looks like you're trying to make an AutoRoom.\n"
+"Please note that you are only allowed to make **{}** AutoRooms every **{}"
+"**.\n"
+"You can try again in **{}**."
+msgstr ""
+"Bok! Izgleda da pokušavaš kreirat novi kanal.\n"
+"Ja sam Blizzard shill i volim timegating pa zato možeš napravit samo **{}** "
+"kanala svake **{}**.\n"
+"Probaj opet za **{}**."
+
+#: autoroom\autoroom.py:421
+msgid "AutoRoom: New AutoRoom needed."
+msgstr "AutoRoom: Potreban novi AutoRoom."
+
+#: autoroom\autoroom.py:432
+msgid "AutoRoom: Move user to new AutoRoom."
+msgstr "AutoRoom: Premjesti korisnika u novi AutoRoom."
+
+#: autoroom\autoroom.py:464
+msgid "AutoRoom: New text channel needed."
+msgstr "AutoRoom: Potreban je novi tekstualni kanal."
+
+#: autoroom\autoroom.py:489
+msgid "AutoRoom: Channel empty."
+msgstr "AutoRoom: Kanal prazan."
+
+#: autoroom\autoroom.py:521
+msgid "AutoRoom: Permission change"
+msgstr "AutoRoom: Promjena dozvole"
+
+#: autoroom\c_autoroom.py:18
+msgid "The autoroom command."
+msgstr ""
+
+#: autoroom\c_autoroom.py:23
+msgid ""
+"Manage your AutoRoom.\n"
+"\n"
+"        For a quick rundown on how to manage your AutoRoom,\n"
+"        check out [the readme](https://github.com/PhasecoreX/PCXCogs/tree/"
+"master/autoroom/README.md)\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroom.py:31 autoroom\c_autoroomset.py:37
+msgid "Display current settings."
+msgstr "Prikaži trenutne postavke."
+
+#: autoroom\c_autoroom.py:126
+msgid "Change the name of your AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroom.py:163
+msgid "Change the bitrate of your AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroom.py:178
+msgid "Change the user limit of your AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroom.py:193
+msgid "Make your AutoRoom public."
+msgstr ""
+
+#: autoroom\c_autoroom.py:198
+msgid "Make your AutoRoom private."
+msgstr ""
+
+#: autoroom\c_autoroom.py:205
+msgid "Allow a user (or role) into your AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroom.py:212
+msgid ""
+"Deny a user (or role) from accessing your AutoRoom.\n"
+"\n"
+"        If the user is already in your AutoRoom, they will be disconnected.\n"
+"\n"
+"        If a user is no longer able to access the room due to denying a "
+"role,\n"
+"        they too will be disconnected. Keep in mind that if the server is "
+"using\n"
+"        member roles, denying roles will probably not work as expected.\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:23
+msgid "The autoroomset command."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:29
+msgid ""
+"Configure the AutoRoom cog.\n"
+"\n"
+"        For a quick rundown on how to get started with this cog,\n"
+"        check out [the readme](https://github.com/PhasecoreX/PCXCogs/tree/"
+"master/autoroom/README.md)\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:114
+msgid "Check that the bot has all needed permissions."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:171
+msgid "Control access to all AutoRooms."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:175
+msgid "Change Admin access to AutoRooms."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:179
+msgid "Allow Admins to join private AutoRooms."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:190
+msgid "Allow Admins to see private AutoRoom Text Channels."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:201
+msgid "Change Moderator access to AutoRooms."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:205
+msgid "Allow Moderators to join private AutoRooms."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:216
+msgid "Allow Moderators to see private AutoRoom Text Channels."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:232
+msgid ""
+"Create an AutoRoom Source.\n"
+"\n"
+"        Anyone joining an AutoRoom Source will automatically have a new\n"
+"        voice channel (AutoRoom) created in the destination category,\n"
+"        and then be moved into it.\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:379
+msgid "Remove an AutoRoom Source."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:391
+msgid "Modify an existing AutoRoom Source."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:395
+msgid "Choose what type of AutoRoom is created."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:401
+msgid "Rooms will be open to all. AutoRoom Owner has control over room."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:408
+msgid "Rooms will be hidden. AutoRoom Owner can allow users in."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:415
+msgid ""
+"Rooms will be open to all, but the server owns the AutoRoom (so they can't "
+"be modified)."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:443
+msgid "Set the default name format of an AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:449
+msgid ""
+"Default format: PhasecoreX's Room.\n"
+"\n"
+"        Custom format example:\n"
+"        `{{username}}'s Room{% if dupenum > 1 %} ({{dupenum}}){% endif %}`\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:460
+msgid ""
+"The users current playing game, otherwise the username format.\n"
+"\n"
+"        Custom format example:\n"
+"        `{{game}}{% if not game %}{{username}}'s Room{% endif %}{% if "
+"dupenum > 1 %} ({{dupenum}}){% endif %}`\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:475
+msgid ""
+"A custom channel name.\n"
+"\n"
+"        Use `{{ expressions }}` to print variables and `{% statements %}` to "
+"do basic evaluations on variables.\n"
+"\n"
+"        Variables supported:\n"
+"        - `username` - AutoRoom Owner's username\n"
+"        - `game    ` - AutoRoom Owner's game\n"
+"        - `dupenum ` - An incrementing number that starts at 1, useful for "
+"un-duplicating channel names\n"
+"\n"
+"        Statements supported:\n"
+"        - `if/elif/else/endif`\n"
+"        - Example: `{% if dupenum > 1 %}DupeNum is {{dupenum}}, which is "
+"greater than 1{% endif %}`\n"
+"        - Another example: `{% if not game %}User isn't playing a game!{% "
+"endif %}`\n"
+"\n"
+"        It's kinda like Jinja2, but way simpler. Check out [the readme]"
+"(https://github.com/PhasecoreX/PCXCogs/tree/master/autoroom/README.md) for "
+"more info.\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:560
+msgid "Manage if a text channel should be created as well."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:568
+msgid "Enable creating a text channel with the AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:591
+msgid "Disable creating a text channel with the AutoRoom."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:613
+msgid "Configure sending an introductory message to the text channel."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:623
+msgid ""
+"Send a message to the newly generated text channel.\n"
+"\n"
+"        This can have template variables and statements, which you can learn "
+"more\n"
+"        about by looking at `[p]autoroomset modify name custom`, or by "
+"looking at\n"
+"        [the readme](https://github.com/PhasecoreX/PCXCogs/tree/master/"
+"autoroom/README.md).\n"
+"        "
+msgstr ""
+
+#: autoroom\c_autoroomset.py:671
+msgid "Disable sending a message to the newly generated text channel."
+msgstr ""
+
+#: autoroom\c_autoroomset.py:692
+msgid "Learn how AutoRoom defaults are set."
+msgstr ""
