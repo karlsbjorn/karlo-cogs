@@ -20,6 +20,8 @@ class Raiderio(commands.Cog):
         realm = '-'.join(realm).lower()
         request_url = f"{RIO_URL}characters/profile?region=eu&realm={realm}&name={character}&fields=mythic_plus_scores_by_season%3Acurrent%2Craid_progression%2Cgear%2Ccovenant"
         try:
+            if realm == '':
+                raise ValueError("Nisi upisao realm.")
             async with self.session.request("GET", request_url) as resp:
                 profile_data = await resp.json()
                 if resp.status != 200 and profile_data["message"] == "Could not find requested character":
