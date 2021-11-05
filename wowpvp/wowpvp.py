@@ -11,7 +11,8 @@ class Wowpvp(commands.Cog):
         self.config = Config.get_conf(self, identifier=4207)
         default_global = {
             "client_id": "1234",
-            "client_secret": "5678"
+            "client_secret": "5678",
+            "region": "eu"
         }
         self.config.register_global(**default_global)
 
@@ -19,6 +20,7 @@ class Wowpvp(commands.Cog):
     async def rating(self, ctx, character_name: str, *realm: str):
         """Provjeri rejtinge nekog charactera"""
         async with ctx.typing():
+            region = await self.config.region()
             realm = '-'.join(realm).lower()
             character_name = character_name.lower()
             rbg_rating = "0"
@@ -28,33 +30,33 @@ class Wowpvp(commands.Cog):
             try:
                 api_client = BlizzardApi(await self.config.client_id(), await self.config.client_secret())
                 profile = api_client.wow.profile.get_character_profile_summary(
-                    region="eu",
+                    region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US"
                 )
                 media = api_client.wow.profile.get_character_media_summary(
-                    region="eu",
+                    region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US"
                 )
                 rbg_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
-                    region="eu",
+                    region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
                     pvp_bracket="rbg"
                 )
                 duo_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
-                    region="eu",
+                    region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
                     pvp_bracket="2v2"
                 )
                 tri_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
-                    region="eu",
+                    region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
@@ -118,5 +120,23 @@ class Wowpvp(commands.Cog):
                 await self.config.client_id.set(client_id)
                 await self.config.client_secret.set(client_secret)
                 await ctx.send("**Client ID** i **Client Secret** uspješno postavljeni.")
+            except Exception as e:
+                await ctx.send(e)
+
+    @pvpset.command()
+    @commands.is_owner()
+    async def region(self, ctx, region: str):
+        """
+        Postavi regiju gdje će se characteri pretraživat.
+
+        Regije: us, eu, kr, tw, cn
+        """
+        regions = ("us", "eu", "kr", "tw", "cn")
+        async with ctx.typing():
+            try:
+                if region not in regions:
+                    raise ValueError("Ta regija ne postoji.\n\nDozvoljene regije su: us, eu, kr, tw, cn")
+                await self.config.region.set(region)
+                await ctx.send("Regija uspješno postavljena.")
             except Exception as e:
                 await ctx.send(e)
