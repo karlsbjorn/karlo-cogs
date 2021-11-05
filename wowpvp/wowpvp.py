@@ -87,7 +87,8 @@ class Wowpvp(commands.Cog):
                 embed = discord.Embed(
                     color=color,
                     title=real_char_name,
-                    description=f"{char_race} {char_class}"
+                    description=f"{char_race} {char_class}",
+                    url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}"
                 )
                 embed.set_thumbnail(
                     url=char_img_url
