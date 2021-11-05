@@ -28,6 +28,8 @@ class Wowpvp(commands.Cog):
             tri_rating = "0"
             color = discord.Color.red()
             try:
+                if realm == '':
+                    raise ValueError("Nisi upisao realm.")
                 api_client = BlizzardApi(await self.config.client_id(), await self.config.client_secret())
                 profile = api_client.wow.profile.get_character_profile_summary(
                     region=region,
@@ -64,7 +66,7 @@ class Wowpvp(commands.Cog):
                 )
 
                 if "name" not in profile:
-                    raise ValueError("Taj character ne postoji.")
+                    raise ValueError("Taj character (ili realm) ne postoji.")
 
                 real_char_name: str = profile["name"]
                 char_img_url: str = media["assets"][0]["value"]
