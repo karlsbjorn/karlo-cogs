@@ -37,6 +37,12 @@ class Wowpvp(commands.Cog):
                     character_name=character_name,
                     locale="en_US"
                 )
+                achievements = api_client.wow.profile.get_character_achievements_summary(
+                    region=region,
+                    realm_slug=realm,
+                    character_name=character_name,
+                    locale="en_US"
+                )
                 media = api_client.wow.profile.get_character_media_summary(
                     region=region,
                     realm_slug=realm,
@@ -74,6 +80,25 @@ class Wowpvp(commands.Cog):
                 char_class: str = profile["character_class"]["name"]
                 char_faction: str = profile["faction"]["name"]
 
+                # TODO: Fetch current expansion seasons programmatically
+                season_achievements = {  # Gladiator, Duelist, Rival, Challenger, Combatant
+                    "Season 1": (14689, 14688, 14687, 14686, 14685),
+                    "Season 2": (14972, 14971, 14970, 14969, 14968)
+                }
+                own_season_achievements = {
+                    "Season 1": {},
+                    "Season 2": {}
+                }
+                for char_achievement in achievements["achievements"]:
+                    for season in season_achievements.keys():
+                        achi_id: int = char_achievement["id"]
+                        if achi_id in season_achievements[season]:
+                            own_season_achievements[season][achi_id] = char_achievement["achievement"]["name"]
+                achi_to_post = []
+                for season in own_season_achievements.keys():
+                    if own_season_achievements[season] != {}:
+                        achi_to_post.append(own_season_achievements[season][max(own_season_achievements[season].keys())])
+
                 if char_faction != "Horde":
                     color = discord.Color.blue()
 
@@ -105,6 +130,12 @@ class Wowpvp(commands.Cog):
                     name="3v3 Rating",
                     value=tri_rating
                 )
+                if own_season_achievements["Season 1"] != {} or own_season_achievements["Season 2"] != {}:
+                    embed.add_field(
+                        name="Achievements",
+                        value='\n'.join(achi_to_post)
+                    )
+
                 await ctx.send(embed=embed)
             except Exception as e:
                 await ctx.send(f"Naredba uspješno neuspješna. {e}")
