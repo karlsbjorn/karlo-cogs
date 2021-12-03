@@ -27,10 +27,10 @@ class Jahaci(commands.Cog):
         Heroic grupa
         """
         gc = gspread.service_account()
-        wks = gc.open_by_key('19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI').sheet1
+        wks = gc.open_by_key("19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI").sheet1
 
         stitle = wks.title
-        current_raid = 'Sanctum of Domination'
+        current_raid = "Sanctum of Domination"
 
         roles = wks.col_values(1)
         group1 = wks.col_values(2)
@@ -48,11 +48,11 @@ class Jahaci(commands.Cog):
         Mythic grupa
         """
         gc = gspread.service_account()
-        sh = gc.open_by_key('19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI')
+        sh = gc.open_by_key("19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI")
         wks = sh.get_worksheet(1)
 
         stitle = wks.title
-        current_raid = 'Sanctum of Domination'
+        current_raid = "Sanctum of Domination"
 
         roles = wks.col_values(1)
         group1 = wks.col_values(2)
@@ -68,31 +68,31 @@ class Jahaci(commands.Cog):
         # role_emojis = {'tank': '<:tank:865247930528956437>',
         #                'healer': '<:healer:865247920830939157>',
         #                'dps': '<:dps:865247908885168148>'}
-        raiders = ''
+        raiders = ""
         role_count = 1
         for raider in raid_group[1:]:
-            if raider is not '':
-                if roles[role_count] == 'dps':
-                    raiders = raiders + ':crossed_swords: ' + raider + '\n'
-                elif roles[role_count] == 'healer':
-                    raiders = raiders + ':green_heart: ' + raider + '\n'
-                elif roles[role_count] == 'dps/heal':
-                    raiders = raiders + ':crossed_swords:/:green_heart: ' + raider + '\n'
-                elif roles[role_count] == 'dps/tank':
-                    raiders = raiders + ':crossed_swords:/:shield: ' + raider + '\n'
-                elif roles[role_count] == 'tank':
-                    raiders = raiders + ':shield: ' + raider + '\n'
+            if raider is not "":
+                if roles[role_count] == "dps":
+                    raiders = raiders + ":crossed_swords: " + raider + "\n"
+                elif roles[role_count] == "healer":
+                    raiders = raiders + ":green_heart: " + raider + "\n"
+                elif roles[role_count] == "dps/heal":
+                    raiders = raiders + ":crossed_swords:/:green_heart: " + raider + "\n"
+                elif roles[role_count] == "dps/tank":
+                    raiders = raiders + ":crossed_swords:/:shield: " + raider + "\n"
+                elif roles[role_count] == "tank":
+                    raiders = raiders + ":shield: " + raider + "\n"
                 role_count += 1
         return raiders
 
     @staticmethod
     def format_backup_raiders(raid_group, roles):
-        raiders = ''
+        raiders = ""
         role_count = 1
         for raider in raid_group[1:]:
-            if raider != '':
-                if roles[role_count] == 'backup DPS:':
-                    raiders = raiders + '<:bench:808313089551368202> :crossed_swords: ' + raider + '\n'
+            if raider != "":
+                if roles[role_count] == "backup DPS:":
+                    raiders = raiders + "<:bench:808313089551368202> :crossed_swords: " + raider + "\n"
                 role_count += 1
         return raiders
 
@@ -100,25 +100,17 @@ class Jahaci(commands.Cog):
     def create_embed(title, description, group1_raiders, group2_raiders):
         embed = discord.Embed(
             title=title,
-            url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
+            url="https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0",
             description=description,
-            color=discord.Color.dark_blue()
+            color=discord.Color.dark_blue(),
         )
 
         embed.set_author(
-            name='Jahaci Rumene Kadulje',
-            icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png'
+            name="Jahaci Rumene Kadulje",
+            icon_url="https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png",
         )
-        embed.add_field(
-            name="Grupa 1",
-            value=group1_raiders,
-            inline=True
-        )
-        embed.add_field(
-            name="Grupa 2",
-            value=group2_raiders,
-            inline=True
-        )
+        embed.add_field(name="Grupa 1", value=group1_raiders, inline=True)
+        embed.add_field(name="Grupa 2", value=group2_raiders, inline=True)
         # embed.add_field(name='Mythic grupa', value='test', inline=True)
         return embed
 
@@ -126,23 +118,15 @@ class Jahaci(commands.Cog):
     def create_embed_mythic(title, description, group1_raiders, group2_raiders):
         embed = discord.Embed(
             title=title,
-            url='https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0',
+            url="https://docs.google.com/spreadsheets/d/19HCCzfBL7pbku0a2LkojgpDy1dsupEDgSCzqSS9zKZI/edit#gid=0",
             description=description,
-            color=discord.Color.dark_blue()
+            color=discord.Color.dark_blue(),
         )
 
         embed.set_author(
-            name='Jahaci Rumene Kadulje',
-            icon_url='https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png'
+            name="Jahaci Rumene Kadulje",
+            icon_url="https://cdn.discordapp.com/icons/362298824854863882/815730b268ac798f826ae6fe10e4c473.png",
         )
-        embed.add_field(
-            name="Mythic roster",
-            value=group1_raiders,
-            inline=True
-        )
-        embed.add_field(
-            name='Backup',
-            value=group2_raiders,
-            inline=True
-        )
+        embed.add_field(name="Mythic roster", value=group1_raiders, inline=True)
+        embed.add_field(name="Backup", value=group2_raiders, inline=True)
         return embed

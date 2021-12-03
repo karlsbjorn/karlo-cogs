@@ -6,6 +6,7 @@ from blizzardapi import BlizzardApi
 
 class Wowpvp(commands.Cog):
     """Cog za neke pvp stvari"""
+
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=4207)
@@ -28,54 +29,54 @@ class Wowpvp(commands.Cog):
                 return await ctx.send("Blizzard API nije pravilno postavljen.")
 
             region = await self.config.region()
-            realm = '-'.join(realm).lower()
+            realm = "-".join(realm).lower()
             character_name = character_name.lower()
             rbg_rating = "0"
             duo_rating = "0"
             tri_rating = "0"
             color = discord.Color.red()
             try:
-                if realm == '':
+                if realm == "":
                     raise ValueError("Nisi upisao realm.")
                 api_client = BlizzardApi(cid, secret)
                 profile = api_client.wow.profile.get_character_profile_summary(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
-                    locale="en_US"
+                    locale="en_US",
                 )
                 achievements = api_client.wow.profile.get_character_achievements_summary(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
-                    locale="en_US"
+                    locale="en_US",
                 )
                 media = api_client.wow.profile.get_character_media_summary(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
-                    locale="en_US"
+                    locale="en_US",
                 )
                 rbg_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
-                    pvp_bracket="rbg"
+                    pvp_bracket="rbg",
                 )
                 duo_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
-                    pvp_bracket="2v2"
+                    pvp_bracket="2v2",
                 )
                 tri_statistics = api_client.wow.profile.get_character_pvp_bracket_statistics(
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
-                    pvp_bracket="3v3"
+                    pvp_bracket="3v3",
                 )
 
                 if "name" not in profile:
@@ -90,12 +91,9 @@ class Wowpvp(commands.Cog):
                 # TODO: Fetch current expansion seasons programmatically
                 season_achievements = {  # Gladiator, Duelist, Rival, Challenger, Combatant
                     "Season 1": (14689, 14688, 14687, 14686, 14685),
-                    "Season 2": (14972, 14971, 14970, 14969, 14968)
+                    "Season 2": (14972, 14971, 14970, 14969, 14968),
                 }
-                own_season_achievements = {
-                    "Season 1": {},
-                    "Season 2": {}
-                }
+                own_season_achievements = {"Season 1": {}, "Season 2": {}}
                 for char_achievement in achievements["achievements"]:
                     for season in season_achievements.keys():
                         achi_id: int = char_achievement["id"]
@@ -104,7 +102,9 @@ class Wowpvp(commands.Cog):
                 achi_to_post = []
                 for season in own_season_achievements.keys():
                     if own_season_achievements[season] != {}:
-                        achi_to_post.append(own_season_achievements[season][max(own_season_achievements[season].keys())])
+                        achi_to_post.append(
+                            own_season_achievements[season][max(own_season_achievements[season].keys())]
+                        )
 
                 if char_faction != "Horde":
                     color = discord.Color.blue()
@@ -120,28 +120,14 @@ class Wowpvp(commands.Cog):
                     color=color,
                     title=real_char_name,
                     description=f"{char_race} {char_class}",
-                    url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}"
+                    url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}",
                 )
-                embed.set_thumbnail(
-                    url=char_img_url
-                )
-                embed.add_field(
-                    name="RBG Rating",
-                    value=rbg_rating
-                )
-                embed.add_field(
-                    name="2v2 Rating",
-                    value=duo_rating
-                )
-                embed.add_field(
-                    name="3v3 Rating",
-                    value=tri_rating
-                )
+                embed.set_thumbnail(url=char_img_url)
+                embed.add_field(name="RBG Rating", value=rbg_rating)
+                embed.add_field(name="2v2 Rating", value=duo_rating)
+                embed.add_field(name="3v3 Rating", value=tri_rating)
                 if own_season_achievements["Season 1"] != {} or own_season_achievements["Season 2"] != {}:
-                    embed.add_field(
-                        name="Achievements",
-                        value='\n'.join(achi_to_post)
-                    )
+                    embed.add_field(name="Achievements", value="\n".join(achi_to_post))
 
                 await ctx.send(embed=embed)
             except Exception as e:
