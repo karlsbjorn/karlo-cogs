@@ -10,8 +10,8 @@ class Wowpvp(commands.Cog):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=4207)
         default_global = {
-            "client_id": "1234",
-            "client_secret": "5678",
+            # "client_id": "1234",
+            # "client_secret": "5678",
             "region": "eu"
         }
         self.config.register_global(**default_global)
@@ -20,6 +20,13 @@ class Wowpvp(commands.Cog):
     async def rating(self, ctx, character_name: str, *realm: str):
         """Provjeri rejtinge nekog charactera"""
         async with ctx.typing():
+            blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
+            cid = blizzard_api.get("client_id")
+            secret = blizzard_api.get("client_secret")
+
+            if not cid or not secret:
+                return await ctx.send("Blizzard API nije pravilno postavljen.")
+
             region = await self.config.region()
             realm = '-'.join(realm).lower()
             character_name = character_name.lower()
@@ -30,7 +37,7 @@ class Wowpvp(commands.Cog):
             try:
                 if realm == '':
                     raise ValueError("Nisi upisao realm.")
-                api_client = BlizzardApi(await self.config.client_id(), await self.config.client_secret())
+                api_client = BlizzardApi(cid, secret)
                 profile = api_client.wow.profile.get_character_profile_summary(
                     region=region,
                     realm_slug=realm,
@@ -145,17 +152,17 @@ class Wowpvp(commands.Cog):
         """Postavke coga"""
         pass
 
-    @pvpset.command()
-    @commands.is_owner()
-    async def api(self, ctx, client_id: str, client_secret: str):
-        """Postavi Blizzard API"""
-        async with ctx.typing():
-            try:
-                await self.config.client_id.set(client_id)
-                await self.config.client_secret.set(client_secret)
-                await ctx.send("**Client ID** i **Client Secret** uspješno postavljeni.")
-            except Exception as e:
-                await ctx.send(e)
+    # @pvpset.command()
+    # @commands.is_owner()
+    # async def api(self, ctx, client_id: str, client_secret: str):
+    #     """Postavi Blizzard API"""
+    #     async with ctx.typing():
+    #         try:
+    #             await self.config.client_id.set(client_id)
+    #             await self.config.client_secret.set(client_secret)
+    #             await ctx.send("**Client ID** i **Client Secret** uspješno postavljeni.")
+    #         except Exception as e:
+    #             await ctx.send(e)
 
     @pvpset.command()
     @commands.is_owner()
