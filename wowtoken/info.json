@@ -1,0 +1,10 @@
+{
+    "author": ["Karlo"],
+    "description": "Cog for checking the price of the World of Warcraft token in various regions.",
+    "install_msg": "**Disclaimer:** This is a private cog not meant for general use.",
+    "short": "Check price of WoW token",
+    "tags": ["wow", "blizzard"],
+    "requirements": ["python-blizzardapi"],
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}
