@@ -3,3 +3,4 @@ venv
 *.pyc
 
 autoroom/locales/messages.pot
+/wowtools/locales/hr-HR.mo

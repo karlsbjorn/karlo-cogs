@@ -1,32 +1,24 @@
 import discord
-from redbot.core import Config
 from redbot.core import commands
+from redbot.core.i18n import Translator
 from blizzardapi import BlizzardApi
 
+_ = Translator("WoWTools", __file__)
 
-class Wowpvp(commands.Cog):
-    """Cog za neke pvp stvari"""
 
-    def __init__(self, bot):
-        self.bot = bot
-        self.config = Config.get_conf(self, identifier=4207)
-        default_global = {
-            # "client_id": "1234",
-            # "client_secret": "5678",
-            "region": "eu"
-        }
-        self.config.register_global(**default_global)
+class Wowpvp:
+    """Cog for some pvp stuff"""
 
     @commands.command()
     async def rating(self, ctx, character_name: str, *realm: str):
-        """Provjeri rejtinge nekog charactera"""
+        """Check a character's PVP ratings."""
         async with ctx.typing():
             blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
             cid = blizzard_api.get("client_id")
             secret = blizzard_api.get("client_secret")
 
             if not cid or not secret:
-                return await ctx.send("Blizzard API nije pravilno postavljen.")
+                return await ctx.send(_("The Blizzard API is not properly set up."))
 
             region = await self.config.region()
             realm = "-".join(realm).lower()
@@ -37,7 +29,7 @@ class Wowpvp(commands.Cog):
             color = discord.Color.red()
             try:
                 if realm == "":
-                    raise ValueError("Nisi upisao realm.")
+                    raise ValueError(_("You didn't give me a realm."))
                 api_client = BlizzardApi(cid, secret)
                 profile = api_client.wow.profile.get_character_profile_summary(
                     region=region,
@@ -80,7 +72,7 @@ class Wowpvp(commands.Cog):
                 )
 
                 if "name" not in profile:
-                    raise ValueError("Taj character (ili realm) ne postoji.")
+                    raise ValueError(_("That character or realm does not exist."))
 
                 real_char_name: str = profile["name"]
                 char_img_url: str = media["assets"][0]["value"]
@@ -123,47 +115,12 @@ class Wowpvp(commands.Cog):
                     url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}",
                 )
                 embed.set_thumbnail(url=char_img_url)
-                embed.add_field(name="RBG Rating", value=rbg_rating)
-                embed.add_field(name="2v2 Rating", value=duo_rating)
-                embed.add_field(name="3v3 Rating", value=tri_rating)
+                embed.add_field(name=_("RBG Rating"), value=rbg_rating)
+                embed.add_field(name=_("2v2 Rating"), value=duo_rating)
+                embed.add_field(name=_("3v3 Rating"), value=tri_rating)
                 if own_season_achievements["Season 1"] != {} or own_season_achievements["Season 2"] != {}:
-                    embed.add_field(name="Achievements", value="\n".join(achi_to_post))
+                    embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
 
                 await ctx.send(embed=embed)
             except Exception as e:
-                await ctx.send(f"Naredba uspješno neuspješna. {e}")
-
-    @commands.group()
-    async def pvpset(self, ctx):
-        """Postavke coga"""
-        pass
-
-    # @pvpset.command()
-    # @commands.is_owner()
-    # async def api(self, ctx, client_id: str, client_secret: str):
-    #     """Postavi Blizzard API"""
-    #     async with ctx.typing():
-    #         try:
-    #             await self.config.client_id.set(client_id)
-    #             await self.config.client_secret.set(client_secret)
-    #             await ctx.send("**Client ID** i **Client Secret** uspješno postavljeni.")
-    #         except Exception as e:
-    #             await ctx.send(e)
-
-    @pvpset.command()
-    @commands.is_owner()
-    async def region(self, ctx, region: str):
-        """
-        Postavi regiju gdje će se characteri pretraživat.
-
-        Regije: us, eu, kr, tw, cn
-        """
-        regions = ("us", "eu", "kr", "tw", "cn")
-        async with ctx.typing():
-            try:
-                if region not in regions:
-                    raise ValueError("Ta regija ne postoji.\n\nDozvoljene regije su: us, eu, kr, tw, cn")
-                await self.config.region.set(region)
-                await ctx.send("Regija uspješno postavljena.")
-            except Exception as e:
-                await ctx.send(e)
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
