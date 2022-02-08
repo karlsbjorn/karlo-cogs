@@ -1,6 +1,8 @@
 import discord
+
 from redbot.core import commands
 from redbot.core.i18n import Translator
+
 from blizzardapi import BlizzardApi
 
 _ = Translator("WoWTools", __file__)

@@ -45,5 +45,3 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, commands.Cog):
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
-
-
