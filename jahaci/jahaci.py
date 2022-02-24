@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image
 
 from redbot.core import commands
+from redbot.core import data_manager
 import discord
 
 
@@ -32,7 +33,7 @@ class Jahaci(commands.Cog):
         async with ctx.typing():
             try:
                 header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
-                output_dir = "jrk-output/"
+                output_dir = str(data_manager.cog_data_path(self)) + '/jrk-output/'
                 emoji_format = ".tga"
 
                 if os.path.isdir(output_dir):
