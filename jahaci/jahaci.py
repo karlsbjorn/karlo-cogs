@@ -33,7 +33,7 @@ class Jahaci(commands.Cog):
         async with ctx.typing():
             try:
                 header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
-                output_dir = str(data_manager.cog_data_path(self)) + '/jrk-output/'
+                output_dir = str(data_manager.cog_data_path(self)) + '/emote-output/'
                 emoji_format = ".tga"
 
                 if os.path.isdir(output_dir):
@@ -47,7 +47,7 @@ class Jahaci(commands.Cog):
                     with urllib.request.urlopen(req) as img:
                         emoji_img = Image.open(BytesIO(img.read()))
                         emoji_img.save(output_dir + emoji_name + emoji_format)
-                shutil.make_archive("emote-output", "zip", output_dir)
+                shutil.make_archive(base_name="emote-output", format="zip", root_dir=str(data_manager.cog_data_path(self)), base_dir='emote-output')
 
                 file = discord.File("emote-output.zip")
                 await ctx.send(file=file)
