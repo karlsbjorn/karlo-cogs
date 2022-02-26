@@ -55,7 +55,7 @@ class Jahaci(commands.Cog):
                 await ctx.send(file=file)
 
                 shutil.rmtree(output_dir)
-                os.remove("emote-output.zip")
+                os.remove(archive)
             except Exception as e:
                 await ctx.send(e)
 
