@@ -35,7 +35,7 @@ class Jahaci(commands.Cog):
                 header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
                 data_dir = str(data_manager.cog_data_path(self))
                 output_dir = data_dir + "/emote-output/"
-                archive = data_dir + "emote-output.zip"
+                archive = data_dir + "/emote-output.zip"
                 emoji_format = ".tga"
 
                 if os.path.isdir(output_dir):
