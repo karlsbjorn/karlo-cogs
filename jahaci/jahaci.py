@@ -1,6 +1,6 @@
 import os.path
 import shutil
-import urllib.request
+import aiohttp
 from io import BytesIO
 from PIL import Image
 
@@ -11,6 +11,8 @@ import discord
 
 # TODO: Ocisti ***sve***
 
+HEADER = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+
 
 class Jahaci(commands.Cog):
     """
@@ -19,6 +21,7 @@ class Jahaci(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.session = aiohttp.ClientSession(headers=HEADER)
         # TODO: Koristi Red-ov Config
 
     @commands.group()
@@ -32,7 +35,6 @@ class Jahaci(commands.Cog):
         """Stavi u .zip sve emotikone u serveru"""
         async with ctx.typing():
             try:
-                header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
                 data_dir = str(data_manager.cog_data_path(self))
                 output_dir = data_dir + "/emote-output/"
                 archive = data_dir + "/emote-output.zip"
@@ -45,11 +47,13 @@ class Jahaci(commands.Cog):
                 for emoji in ctx.guild.emojis:
                     emoji_name = str(emoji.name)
                     emoji_url = str(emoji.url)
-                    req = urllib.request.Request(emoji_url, headers=header)
-                    with urllib.request.urlopen(req) as img:
-                        emoji_img = Image.open(BytesIO(img.read()))
-                        emoji_img.save(output_dir + emoji_name + emoji_format)
-                shutil.make_archive(data_dir + "/emote-output", 'zip', data_dir, "emote-output")
+                    async with self.session.get(emoji_url) as resp:
+                        if resp.status == 200:
+                            emoji_img = Image.open(BytesIO(await resp.read()))
+                            emoji_img.save(output_dir + emoji_name + emoji_format)
+                shutil.make_archive(
+                    data_dir + "/emote-output", "zip", data_dir, "emote-output"
+                )
 
                 file = discord.File(archive)
                 await ctx.send(file=file)
