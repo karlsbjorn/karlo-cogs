@@ -63,6 +63,8 @@ class Jahaci(commands.Cog):
             except Exception as e:
                 await ctx.send(e)
 
+    def cog_unload(self):
+        self.bot.loop.create_task(self.session.close())
     #
     # Loše. Neupotrebljivo.
     #
