@@ -29,16 +29,25 @@ class Wowtoken:
                 api_client = BlizzardApi(cid, secret)
 
                 if region not in VALID_REGIONS:
-                    raise ValueError(_("Invalid region. Valid regions are: `eu`, `us` i `kr`."))
+                    raise ValueError(
+                        _("Invalid region. Valid regions are: `eu`, `us` i `kr`.")
+                    )
 
-                fetch_token = functools.partial(api_client.wow.game_data.get_token_index, region=region, locale="en_US")
+                fetch_token = functools.partial(
+                    api_client.wow.game_data.get_token_index,
+                    region=region,
+                    locale="en_US",
+                )
                 wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
                 token_price = str(wow_token["price"])
 
-                message = _("Current price of the {region} WoW Token is: **{gold}**").format(
-                    region=region.upper(), gold=self.format_to_gold(token_price)
+                message = _(
+                    "Current price of the {region} WoW Token is: **{gold}**"
+                ).format(region=region.upper(), gold=self.format_to_gold(token_price))
+
+                embed = discord.Embed(
+                    description=message, colour=await ctx.embed_colour()
                 )
-                embed = discord.Embed(description=message, colour=await ctx.embed_colour())
 
                 await ctx.send(embed=embed)
             except Exception as e:
@@ -57,15 +66,21 @@ class Wowtoken:
                     raise ValueError(_("The Blizzard API is not properly set up."))
                 api_client = BlizzardApi(cid, secret)
 
-                embed = discord.Embed(title=_("WoW Token prices"), colour=await ctx.embed_colour())
+                embed = discord.Embed(
+                    title=_("WoW Token prices"), colour=await ctx.embed_colour()
+                )
 
                 for region in VALID_REGIONS:
                     fetch_token = functools.partial(
-                        api_client.wow.game_data.get_token_index, region=region, locale="en_US"
+                        api_client.wow.game_data.get_token_index,
+                        region=region,
+                        locale="en_US",
                     )
                     wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
                     token_price = str(wow_token["price"])
-                    embed.add_field(name=region.upper(), value=self.format_to_gold(token_price))
+                    embed.add_field(
+                        name=region.upper(), value=self.format_to_gold(token_price)
+                    )
                 await ctx.send(embed=embed)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))

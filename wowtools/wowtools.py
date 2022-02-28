@@ -14,13 +14,10 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(Wowpvp, Raiderio, Wowtoken, commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=42069)
-        default_global = {
-            "region": "eu"
-        }
+        default_global = {"region": "eu"}
         self.config.register_global(**default_global)
         self.session = aiohttp.ClientSession()
 
@@ -37,7 +34,11 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, commands.Cog):
         async with ctx.typing():
             try:
                 if region not in regions:
-                    raise ValueError(_("That region does not exist.\nValid regions are: us, eu, kr, tw, cn"))
+                    raise ValueError(
+                        _(
+                            "That region does not exist.\nValid regions are: us, eu, kr, tw, cn"
+                        )
+                    )
                 await self.config.region.set(region)
                 await ctx.send(_("Region set succesfully."))
             except Exception as e:
