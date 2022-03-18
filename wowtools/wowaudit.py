@@ -1,6 +1,6 @@
 import discord
 
-from redbot.core import commands, data_manager, utils
+from redbot.core import commands, data_manager
 from redbot.core.i18n import Translator
 from redbot.core.utils import menus, chat_formatting
 from redbot.core.utils.menus import DEFAULT_CONTROLS
