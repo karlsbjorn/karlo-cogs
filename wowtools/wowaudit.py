@@ -31,7 +31,7 @@ class Wowaudit:
 
             sheet_title = await ss.get_title()
             member_count = int((await ws.acell('H5')).value)
-            members = await ws.get_values('C9:F47')
+            members = await ws.get_values('C9:F' + str(9 + (member_count - 1)))
 
             avg_ilvl_output = ''
             embeds = []
