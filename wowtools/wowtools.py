@@ -61,11 +61,11 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
 
     @wowset.command()
     async def raidbots(self, ctx):
-        if await self.config.auto_raidbots():
-            await self.config.auto_raidbots.set(False)
+        if await self.config.guild(ctx.guild).auto_raidbots():
+            await self.config.guild(ctx.guild).auto_raidbots.set(False)
             await ctx.send(_("Raidbots toggled off"))
         else:
-            await self.config.auto_raidbots.set(True)
+            await self.config.guild(ctx.guild).auto_raidbots.set(True)
             await ctx.send(_("Raidbots toggled on"))
 
     def cog_unload(self):

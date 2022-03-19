@@ -16,7 +16,7 @@ URL_REGEX_PATTERN = regex.compile(
 class Raidbots:
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
-        if not await self.config.auto_raidbots():
+        if not await self.config.guild(message.guild).auto_raidbots():
             return
         if message.guild is None:
             return
