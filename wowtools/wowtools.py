@@ -10,17 +10,20 @@ from .wowpvp import Wowpvp
 from .raiderio import Raiderio
 from .wowtoken import Wowtoken
 from .wowaudit import Wowaudit
+from .raidbots import Raidbots
 
 _ = Translator("WoWTools", __file__)
 
 
 @cog_i18n(_)
-class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, commands.Cog):
+class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {"region": "eu", "wowaudit_key": None}
+        default_guild = {"auto_raidbots": True}
         self.config.register_global(**default_global)
+        self.config.register_guild(**default_guild)
         self.session = aiohttp.ClientSession()
 
     @commands.group()
@@ -52,9 +55,18 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, commands.Cog):
         async with ctx.typing():
             try:
                 await self.config.wowaudit_key.set(key)
-                await ctx.send("YEP")
+                await ctx.send(_("YEP"))
             except Exception as e:
                 await ctx.send(e)
+
+    @wowset.command()
+    async def raidbots(self, ctx):
+        if await self.config.auto_raidbots():
+            await self.config.auto_raidbots.set(False)
+            await ctx.send(_("Raidbots toggled off"))
+        else:
+            await self.config.auto_raidbots.set(True)
+            await ctx.send(_("Raidbots toggled on"))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())

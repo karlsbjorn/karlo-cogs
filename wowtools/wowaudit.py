@@ -66,7 +66,7 @@ class Wowaudit:
 
     @staticmethod
     def gen_avg_ilvl_page(
-        ctx, colour, page_n, sheet_title, avg_ilvl_output
+        ctx, colour: discord.Color, page_n: int, sheet_title: str, avg_ilvl_output: str
     ) -> discord.Embed:
         embed = discord.Embed(
             colour=colour,
