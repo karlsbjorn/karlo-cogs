@@ -2,52 +2,117 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-15 23:07+0100\n"
-"PO-Revision-Date: 2022-01-15 23:08+0100\n"
+"POT-Creation-Date: 2022-03-21 21:17+0100\n"
+"PO-Revision-Date: 2022-03-21 21:19+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hr_HR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: redgettext 3.3\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Generated-By: redgettext 3.3\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: wowtools/raiderio.py:23 wowtools/wowpvp.py:32
-msgid "You didn't give me a realm."
-msgstr "Nisi mi dao realm."
+#: wowtools/raidbots.py:77
+msgid "Spec"
+msgstr "Spec"
 
-#: wowtools/raiderio.py:27
-msgid "That character does not exist."
-msgstr "Taj character ne postoji."
-
-#: wowtools/raiderio.py:57
-msgid "Raider.io profile"
-msgstr "Raider.io profil"
-
-#: wowtools/raiderio.py:60
-msgid "__**Mythic+ Score**__"
-msgstr "__**Mythic+ Score**__"
-
-#: wowtools/raiderio.py:61
-msgid "Raid progress"
-msgstr "Raid progres"
-
-#: wowtools/raiderio.py:62
-msgid "Item level"
-msgstr "Item level"
-
-#: wowtools/raiderio.py:63
+#: wowtools/raidbots.py:78 wowtools/raiderio.py:87
 msgid "Covenant"
 msgstr "Covenant"
 
-#: wowtools/raiderio.py:65
+#: wowtools/raidbots.py:79
+msgid "Fight Style"
+msgstr "Stil borbe"
+
+#: wowtools/raidbots.py:80
+msgid "Sim Type"
+msgstr "Vrsta simulacije"
+
+#: wowtools/raidbots.py:82
+msgid "Number of Bosses"
+msgstr "Broj bosseva"
+
+#: wowtools/raidbots.py:85
+msgid "Fight Length"
+msgstr "Duljina borbe"
+
+#: wowtools/raidbots.py:86
+msgid "{sim_fight_length} seconds"
+msgstr "{sim_fight_length} sekundi"
+
+#: wowtools/raidbots.py:90
+msgid "DPS"
+msgstr "DPS"
+
+#: wowtools/raidbots.py:92
+msgid "Link"
+msgstr "Link"
+
+#: wowtools/raidbots.py:93
+msgid "[Full Report]({link})"
+msgstr "[Cijelo izvješće]({link})"
+
+#: wowtools/raidbots.py:99 wowtools/raiderio.py:108 wowtools/raiderio.py:179
+#: wowtools/wowaudit.py:70 wowtools/wowpvp.py:179 wowtools/wowtoken.py:54
+#: wowtools/wowtoken.py:86 wowtools/wowtools.py:50 wowtools/wowtools.py:61
+#: wowtools/wowtools.py:75
+msgid "Command failed successfully. {e}"
+msgstr "Naredba uspješno neuspješna. {e}"
+
+#: wowtools/raidbots.py:105
+msgid ""
+"\n"
+"        Extract URLs from a message.\n"
+"        "
+msgstr ""
+
+#: wowtools/raidbots.py:115
+msgid ""
+"\n"
+"        Get links from the message content.\n"
+"        "
+msgstr ""
+
+#: wowtools/raiderio.py:16
+msgid "Cog for interaction with the raider.io API"
+msgstr "Cog za interakciju s raider.io API-em"
+
+#: wowtools/raiderio.py:20
+msgid "Display the raider.io profile of a character."
+msgstr "Prikaži raider.io profil nekog charactera."
+
+#: wowtools/raiderio.py:27 wowtools/wowpvp.py:34
+msgid "You didn't give me a realm."
+msgstr "Nisi mi dao realm."
+
+#: wowtools/raiderio.py:35
+msgid "That character does not exist."
+msgstr "Taj character ne postoji."
+
+#: wowtools/raiderio.py:73
+msgid "Raider.io profile"
+msgstr "Raider.io profil"
+
+#: wowtools/raiderio.py:78
+msgid "__**Mythic+ Score**__"
+msgstr "__**Mythic+ Score**__"
+
+#: wowtools/raiderio.py:83
+msgid "Raid progress"
+msgstr "Raid progres"
+
+#: wowtools/raiderio.py:85
+msgid "Item level"
+msgstr "Item level"
+
+#: wowtools/raiderio.py:90
 msgid "__Other links__"
 msgstr "__Ostali linkovi__"
 
-#: wowtools/raiderio.py:66
+#: wowtools/raiderio.py:91
 msgid ""
 "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]"
 "({raidbots_url})"
@@ -55,32 +120,31 @@ msgstr ""
 "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]"
 "({raidbots_url})"
 
-#: wowtools/raiderio.py:72
+#: wowtools/raiderio.py:101
 msgid "Last updated: {char_last_updated}"
 msgstr "Zadnje ažuriranje: {char_last_updated}"
 
-#: wowtools/raiderio.py:77 wowtools/raiderio.py:124 wowtools/wowpvp.py:126
-#: wowtools/wowtoken.py:46 wowtools/wowtoken.py:72
-msgid "Command failed successfully. {e}"
-msgstr "Naredba uspješno neuspješna. {e}"
+#: wowtools/raiderio.py:112
+msgid "Display the raider.io profile of a Ragnaros EU guild."
+msgstr "Prikaži raider.io profil nekog Ragnaros EU guilda."
 
-#: wowtools/raiderio.py:89
+#: wowtools/raiderio.py:123
 msgid "That guild does not exist on EU Ragnaros."
 msgstr "Taj guild ne postoji na EU Ragnarosu."
 
-#: wowtools/raiderio.py:105
+#: wowtools/raiderio.py:152
 msgid "Guild profile"
 msgstr "Profil guilda"
 
-#: wowtools/raiderio.py:106
+#: wowtools/raiderio.py:156
 msgid "__**Progress**__"
 msgstr "__**Progres**__"
 
-#: wowtools/raiderio.py:114
+#: wowtools/raiderio.py:165
 msgid "{difficulty} rank"
 msgstr "{difficulty} rank"
 
-#: wowtools/raiderio.py:115
+#: wowtools/raiderio.py:166
 msgid ""
 "World: {world}\n"
 "Region: {region}\n"
@@ -90,47 +154,95 @@ msgstr ""
 "Regija: {region}\n"
 "Realm: {realm}"
 
-#: wowtools/raiderio.py:120
+#: wowtools/raiderio.py:172
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/wowpvp.py:21 wowtools/wowtoken.py:29 wowtools/wowtoken.py:58
+#: wowtools/wowaudit.py:17
+msgid "Commands for interacting with World of Warcraft"
+msgstr "Naredbe za interakciju s World of Warcraft-om"
+
+#: wowtools/wowaudit.py:22
+msgid "Display current equipped item level of your wowaudit group."
+msgstr "Prikaži trenutni item level vaše wowaudit grupe."
+
+#: wowtools/wowaudit.py:47
+msgid "{member_rank}. {member_name} - {member_ilvl}\n"
+msgstr ""
+
+#: wowtools/wowaudit.py:80
+msgid "Average Item Level"
+msgstr "Prosjecni Item level"
+
+#: wowtools/wowaudit.py:81
+msgid "Page {page_number}"
+msgstr "Stranica 1 - U slučaju greške obratite se @jasko"
+
+#: wowtools/wowpvp.py:12
+msgid "Cog for some pvp stuff"
+msgstr "Cog za neke pvp stvari"
+
+#: wowtools/wowpvp.py:16
+msgid "Check a character's PVP ratings."
+msgstr "Provjeri PVP ratinge nekog charactera."
+
+#: wowtools/wowpvp.py:23 wowtools/wowtoken.py:28 wowtools/wowtoken.py:66
 msgid "The Blizzard API is not properly set up."
 msgstr "Blizzard API nije pravilno postavljen."
 
-#: wowtools/wowpvp.py:75
+#: wowtools/wowpvp.py:85
 msgid "That character or realm does not exist."
 msgstr "Taj character ili realm ne postoje."
 
-#: wowtools/wowpvp.py:118
+#: wowtools/wowpvp.py:165
 msgid "RBG Rating"
 msgstr "RBG rejting"
 
-#: wowtools/wowpvp.py:119
+#: wowtools/wowpvp.py:166
 msgid "2v2 Rating"
 msgstr "2v2 rejting"
 
-#: wowtools/wowpvp.py:120
+#: wowtools/wowpvp.py:167
 msgid "3v3 Rating"
 msgstr "3v3 rejting"
 
-#: wowtools/wowpvp.py:122
+#: wowtools/wowpvp.py:174
 msgid "Achievements"
 msgstr "Achiementi"
+
+#: wowtools/wowtoken.py:15
+msgid "Commands for interacting with the WoW token."
+msgstr "Naredbe za interakciju s WoW tokenom."
+
+#: wowtools/wowtoken.py:20
+msgid "Check price of WoW token in a region"
+msgstr "Provjeri cijenu WoW tokena u nekoj regiji"
 
 #: wowtools/wowtoken.py:33
 msgid "Invalid region. Valid regions are: `eu`, `us` i `kr`."
 msgstr "Nevažeća regija. Važeće regije su: `eu`, `us` i `kr`."
 
-#: wowtools/wowtoken.py:39
+#: wowtools/wowtoken.py:44
 msgid "Current price of the {region} WoW Token is: **{gold}**"
 msgstr "Trenutna cijena {region} WoW Tokena je: **{gold}**"
 
-#: wowtools/wowtoken.py:61
+#: wowtools/wowtoken.py:58
+msgid "Check price of the WoW token in all supported regions"
+msgstr "Provjeri cijenu WoW tokena u svim podržanim regijama"
+
+#: wowtools/wowtoken.py:70
 msgid "WoW Token prices"
 msgstr "WoW Token cijene"
 
-#: wowtools/wowtools.py:38
+#: wowtools/wowtools.py:31
+msgid "Change WoWTools settings."
+msgstr "Promjeni postavke WoWTools-a."
+
+#: wowtools/wowtools.py:37
+msgid "Set the region where characters and guilds will be searched for."
+msgstr "Postavi regiju gdje će se characteri i guildovi pretraživati."
+
+#: wowtools/wowtools.py:43
 msgid ""
 "That region does not exist.\n"
 "Valid regions are: us, eu, kr, tw, cn"
@@ -138,6 +250,27 @@ msgstr ""
 "Ta regija ne postoji.\n"
 "Važeće regije su: us, eu, kr, tw, cn"
 
-#: wowtools/wowtools.py:40
+#: wowtools/wowtools.py:48
 msgid "Region set succesfully."
 msgstr "Regija uspješno postavljena."
+
+#: wowtools/wowtools.py:55
+msgid "Set the key of your wowaudit spreadsheet."
+msgstr "Postavi ključ svoje wowaudit tablice."
+
+#: wowtools/wowtools.py:59
+msgid "Wowaudit key set."
+msgstr "Wowaudit ključ postavljen."
+
+#: wowtools/wowtools.py:66
+msgid "Toggle automatic response to a Raidbots simulation report link."
+msgstr ""
+"Uključi ili isključi automatski odgovor na link Raidbots simulacije."
+
+#: wowtools/wowtools.py:70
+msgid "Raidbots toggled off"
+msgstr "Raidbots isključen"
+
+#: wowtools/wowtools.py:73
+msgid "Raidbots toggled on"
+msgstr "Raidbots uključen"

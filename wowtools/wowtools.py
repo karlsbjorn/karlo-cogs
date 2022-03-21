@@ -63,7 +63,7 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
     @wowset.command()
     @commands.admin()
     async def raidbots(self, ctx):
-        """Toggle automatic response to a Raidbots simulation report."""
+        """Toggle automatic response to a Raidbots simulation report link."""
         try:
             if await self.config.guild(ctx.guild).auto_raidbots():
                 await self.config.guild(ctx.guild).auto_raidbots.set(False)

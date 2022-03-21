@@ -13,7 +13,7 @@ RIO_URL = "https://raider.io/api/v1/"
 
 
 class Raiderio:
-    """Cog za interakciju s Raider.io API-em"""
+    """Cog for interaction with the raider.io API"""
 
     @commands.command()
     async def profile(self, ctx, character: str, *realm: str) -> None:
