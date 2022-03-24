@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-03-21 21:17+0100\n"
-"PO-Revision-Date: 2022-03-21 21:19+0100\n"
+"POT-Creation-Date: 2022-03-24 19:18+0100\n"
+"PO-Revision-Date: 2022-03-24 19:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hr_HR\n"
@@ -56,9 +56,9 @@ msgid "[Full Report]({link})"
 msgstr "[Cijelo izvješće]({link})"
 
 #: wowtools/raidbots.py:99 wowtools/raiderio.py:108 wowtools/raiderio.py:179
-#: wowtools/wowaudit.py:70 wowtools/wowpvp.py:179 wowtools/wowtoken.py:54
-#: wowtools/wowtoken.py:86 wowtools/wowtools.py:50 wowtools/wowtools.py:61
-#: wowtools/wowtools.py:75
+#: wowtools/wowaudit.py:31 wowtools/wowaudit.py:99 wowtools/wowpvp.py:179
+#: wowtools/wowtoken.py:54 wowtools/wowtoken.py:86 wowtools/wowtools.py:50
+#: wowtools/wowtools.py:61 wowtools/wowtools.py:75
 msgid "Command failed successfully. {e}"
 msgstr "Naredba uspješno neuspješna. {e}"
 
@@ -158,25 +158,38 @@ msgstr ""
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/wowaudit.py:17
+#: wowtools/wowaudit.py:20
 msgid "Commands for interacting with World of Warcraft"
 msgstr "Naredbe za interakciju s World of Warcraft-om"
 
-#: wowtools/wowaudit.py:22
+#: wowtools/wowaudit.py:25
 msgid "Display current equipped item level of your wowaudit group."
 msgstr "Prikaži trenutni item level vaše wowaudit grupe."
 
-#: wowtools/wowaudit.py:47
+#: wowtools/wowaudit.py:55
 msgid "{member_rank}. {member_name} - {member_ilvl}\n"
 msgstr ""
 
-#: wowtools/wowaudit.py:80
+#: wowtools/wowaudit.py:87
 msgid "Average Item Level"
 msgstr "Prosjecni Item level"
 
-#: wowtools/wowaudit.py:81
+#: wowtools/wowaudit.py:88 wowtools/wowaudit.py:161
 msgid "Page {page_number}"
-msgstr "Stranica 1 - U slučaju greške obratite se @jasko"
+msgstr "Stranica {page_number} - U slučaju greške obratite se @jasko"
+
+#: wowtools/wowaudit.py:93
+msgid "Display current equipped tier pieces of your wowaudit group."
+msgstr "Prikaži trenutni item level wowaudit grupe."
+
+#: wowtools/wowaudit.py:129
+msgid ""
+"{member_rank}. {member_name} - {member_tier_n} - **({member_tier})**\n"
+msgstr ""
+
+#: wowtools/wowaudit.py:160
+msgid "Tier Pieces Obtained"
+msgstr "Dobiveni Tier dijelovi"
 
 #: wowtools/wowpvp.py:12
 msgid "Cog for some pvp stuff"
@@ -264,8 +277,7 @@ msgstr "Wowaudit ključ postavljen."
 
 #: wowtools/wowtools.py:66
 msgid "Toggle automatic response to a Raidbots simulation report link."
-msgstr ""
-"Uključi ili isključi automatski odgovor na link Raidbots simulacije."
+msgstr "Uključi ili isključi automatski odgovor na link Raidbots simulacije."
 
 #: wowtools/wowtools.py:70
 msgid "Raidbots toggled off"
