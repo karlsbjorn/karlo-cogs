@@ -17,8 +17,6 @@ class Raidbots:
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
         try:
-            if not await self.config.guild(message.guild).auto_raidbots():
-                return
             if message.guild is None:
                 return
             if message.author.bot:
@@ -31,6 +29,8 @@ class Raidbots:
             if not await self.bot.ignored_channel_or_guild(message):
                 return
             if not await self.bot.allowed_by_whitelist_blacklist(message.author):
+                return
+            if not await self.config.guild(message.guild).auto_raidbots():
                 return
 
             links = self.get_links(message.content)
