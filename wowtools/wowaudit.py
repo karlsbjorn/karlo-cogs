@@ -30,13 +30,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_avg_ilvl(self, ctx) -> List[discord.Embed]:
-        agcm = gspread_asyncio.AsyncioGspreadClientManager(self.get_creds)
-        agc = await agcm.authorize()
-
-        wowaudit_key = await self.config.wowaudit_key()
-
-        ss = await agc.open_by_key(wowaudit_key)
-        ws = await ss.get_worksheet(0)
+        ss, ws = await self.get_summary_sheet()
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -100,13 +94,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_tier(self, ctx) -> List[discord.Embed]:
-        agcm = gspread_asyncio.AsyncioGspreadClientManager(self.get_creds)
-        agc = await agcm.authorize()
-
-        wowaudit_key = await self.config.wowaudit_key()
-
-        ss = await agc.open_by_key(wowaudit_key)
-        ws = await ss.get_worksheet(0)
+        ss, ws = await self.get_summary_sheet()
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -165,6 +153,16 @@ class Wowaudit:
         embed.add_field(name=_("Tier Pieces Obtained"), value=member_tier_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
+
+    async def get_summary_sheet(self):
+        agcm = gspread_asyncio.AsyncioGspreadClientManager(self.get_creds)
+        agc = await agcm.authorize()
+
+        wowaudit_key = await self.config.wowaudit_key()
+
+        ss = await agc.open_by_key(wowaudit_key)
+        ws = await ss.get_worksheet(0)
+        return ss, ws
 
     def get_creds(self):
         creds_path = str(data_manager.cog_data_path(self)) + "/service_account.json"
