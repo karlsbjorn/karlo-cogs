@@ -399,10 +399,8 @@ class Wowaudit:
         if wowaudit_key is None:
             raise commands.CommandError(
                 _(
-                    "\nNo WowAudit spreadsheet key set.\n\nSet the key with `{prefix}wowset wowaudit <key>`".format(
-                        prefix=ctx.prefix
-                    )
-                )
+                    "\nNo WowAudit spreadsheet key set.\n\nSet the key with `{prefix}wowset wowaudit <key>`"
+                ).format(prefix=ctx.prefix)
             )
 
         ss = await agc.open_by_key(wowaudit_key)
