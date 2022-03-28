@@ -1,7 +1,5 @@
-import regex
-
 import discord
-
+import regex
 from redbot.core import commands
 from redbot.core.i18n import Translator
 

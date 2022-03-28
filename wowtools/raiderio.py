@@ -1,9 +1,7 @@
-import aiohttp
 from datetime import timedelta
-from dateutil.parser import isoparse
 
 import discord
-
+from dateutil.parser import isoparse
 from redbot.core import commands
 from redbot.core.i18n import Translator
 

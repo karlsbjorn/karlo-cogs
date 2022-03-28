@@ -1,13 +1,12 @@
 import os.path
 import shutil
-import aiohttp
 from io import BytesIO
-from PIL import Image
 
+import aiohttp
+import discord
+from PIL import Image
 from redbot.core import commands
 from redbot.core import data_manager
-import discord
-
 
 HEADER = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 

@@ -1,16 +1,13 @@
 import aiohttp
-import os
-
-import discord
-from redbot.core import commands
 from redbot.core import Config
+from redbot.core import commands
 from redbot.core.i18n import Translator, cog_i18n
 
-from .wowpvp import Wowpvp
-from .raiderio import Raiderio
-from .wowtoken import Wowtoken
-from .wowaudit import Wowaudit
 from .raidbots import Raidbots
+from .raiderio import Raiderio
+from .wowaudit import Wowaudit
+from .wowpvp import Wowpvp
+from .wowtoken import Wowtoken
 
 _ = Translator("WoWTools", __file__)
 
