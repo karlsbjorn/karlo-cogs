@@ -6,7 +6,7 @@ import gspread_asyncio
 from google.oauth2.service_account import Credentials
 from redbot.core import commands, data_manager
 from redbot.core.i18n import Translator
-from redbot.core.utils import menus, chat_formatting
+from redbot.core.utils import chat_formatting, menus
 from redbot.core.utils.menus import DEFAULT_CONTROLS
 
 _ = Translator("WoWTools", __file__)

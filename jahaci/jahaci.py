@@ -5,8 +5,7 @@ from io import BytesIO
 import aiohttp
 import discord
 from PIL import Image
-from redbot.core import commands
-from redbot.core import data_manager
+from redbot.core import commands, data_manager
 
 HEADER = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 

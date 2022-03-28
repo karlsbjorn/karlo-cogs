@@ -1,6 +1,5 @@
 import aiohttp
-from redbot.core import Config
-from redbot.core import commands
+from redbot.core import Config, commands
 from redbot.core.i18n import Translator, cog_i18n
 
 from .raidbots import Raidbots
