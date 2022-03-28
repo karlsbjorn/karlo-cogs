@@ -1,4 +1,5 @@
-from typing import List
+import os
+from typing import List, Tuple
 
 import discord
 import gspread_asyncio
@@ -30,7 +31,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_avg_ilvl(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -93,7 +94,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_tier(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -164,7 +165,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_mplus(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -213,7 +214,7 @@ class Wowaudit:
 
     @wow.command()
     async def vault(self, ctx: commands.Context):
-        """Shows the item level sum of all items in your vault."""
+        """Shows the item level sum of all items in your wowaudit group's vault."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_vault(ctx)
@@ -222,7 +223,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_vault(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -280,7 +281,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_wq(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -336,7 +337,7 @@ class Wowaudit:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_raidkills(self, ctx: commands.Context) -> List[discord.Embed]:
-        ss, ws = await self.get_summary_sheet()
+        ss, ws = await self.get_summary_sheet(ctx)
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
@@ -385,11 +386,24 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    async def get_summary_sheet(self):
+    async def get_summary_sheet(
+        self, ctx: commands.Context
+    ) -> Tuple[
+        gspread_asyncio.AsyncioGspreadSpreadsheet,
+        gspread_asyncio.AsyncioGspreadWorksheet,
+    ]:
         agcm = gspread_asyncio.AsyncioGspreadClientManager(self.get_creds)
         agc = await agcm.authorize()
 
         wowaudit_key = await self.config.wowaudit_key()
+        if wowaudit_key is None:
+            raise commands.CommandError(
+                _(
+                    "\nNo WowAudit spreadsheet key set.\n\nSet the key with `{prefix}wowset wowaudit <key>`".format(
+                        prefix=ctx.prefix
+                    )
+                )
+            )
 
         ss = await agc.open_by_key(wowaudit_key)
         ws = await ss.get_worksheet(0)
@@ -397,6 +411,8 @@ class Wowaudit:
 
     def get_creds(self):
         creds_path = str(data_manager.cog_data_path(self)) + "/service_account.json"
+        if not os.path.exists(creds_path):
+            raise commands.CommandError("\nNo service account credentials found.")
         creds = Credentials.from_service_account_file(creds_path)
         scoped = creds.with_scopes(
             [

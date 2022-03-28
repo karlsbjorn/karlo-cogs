@@ -33,7 +33,7 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
 
     @wowset.command()
     @commands.is_owner()
-    async def region(self, ctx, region: str):
+    async def region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
         regions = ("us", "eu", "kr", "tw", "cn")
         try:
@@ -51,18 +51,22 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
 
     @wowset.command()
     @commands.is_owner()
-    async def wowaudit(self, ctx, key: str):
+    async def wowaudit(self, ctx: commands.Context, key: str = None):
         """Set the key of your wowaudit spreadsheet."""
         try:
             async with ctx.typing():
+                if key is None:
+                    await self.config.wowaudit_key.clear()
+                    await ctx.send(_("WowAudit spreadsheet key cleared."))
+                    return
                 await self.config.wowaudit_key.set(key)
-                await ctx.send(_("Wowaudit key set."))
+                await ctx.send(_("WowAudit spreadsheet key set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @wowset.command()
     @commands.admin()
-    async def raidbots(self, ctx):
+    async def raidbots(self, ctx: commands.Context):
         """Toggle automatic response to a Raidbots simulation report link."""
         try:
             if await self.config.guild(ctx.guild).auto_raidbots():
