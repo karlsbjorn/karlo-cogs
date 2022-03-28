@@ -21,6 +21,59 @@ class Wowaudit:
         pass
 
     @wow.command()
+    async def summary(self, ctx: commands.Context):
+        """Show your wowaudit summary."""
+        async with ctx.typing():
+            embed = await self.gen_summary(ctx)
+            await ctx.send(embed=embed)
+
+    async def gen_summary(self, ctx: commands.Context) -> discord.Embed:
+        """Generate summary embed."""
+        ss, ws = await self.get_summary_sheet(ctx)
+
+        sheet_title = await ss.get_title()
+
+        missing_enchants = (await ws.acell("C5")).value
+        weekly_dungeons_completed = (await ws.acell("Q5")).value
+        weekly_world_quests_done = (await ws.acell("Y5")).value
+
+        embed = discord.Embed(title=_("Weekly summary"), colour=await ctx.embed_color())
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.add_field(name=_("Missing Enchants/Gems"), value=missing_enchants)
+        embed.add_field(
+            name=_("Weekly Dungeons Completed"), value=weekly_dungeons_completed
+        )
+        embed.add_field(
+            name=_("Weekly World Quests Done"), value=weekly_world_quests_done
+        )
+
+        top_5 = {
+            _("Average Item Level"): await ws.get_values("C9:F13"),
+            _("Tier Pieces Obtained"): await ws.get_values("H9:O13"),
+            _("Weekly Mythic Dungeons Done"): await ws.get_values("Q9:S13"),
+            _("Great Vault Score"): await ws.get_values("U9:W13"),
+            _("World Quests Done"): await ws.get_values("Y9:AA13"),
+        }
+
+        output = ""
+        for key, value in top_5.items():
+            for member in value:
+                member_rank = member[0]
+                member_name = member[1]
+                member_stat = (
+                    member[-1] if not key == _("Tier Pieces Obtained") else member[2]
+                )
+
+                output += "{member_rank}. **{member_name}**: {member_stat}\n".format(
+                    member_rank=member_rank,
+                    member_name=member_name,
+                    member_stat=member_stat,
+                )
+            embed.add_field(name=key, value=output)
+            output = ""
+        return embed
+
+    @wow.command()
     async def ilvl(self, ctx: commands.Context):
         """Show current equipped item level of your wowaudit group."""
         try:

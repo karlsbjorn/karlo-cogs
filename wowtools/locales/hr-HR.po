@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-03-28 20:18+0200\n"
-"PO-Revision-Date: 2022-03-28 20:23+0200\n"
+"POT-Creation-Date: 2022-03-28 23:43+0200\n"
+"PO-Revision-Date: 2022-03-28 23:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hr_HR\n"
@@ -56,8 +56,8 @@ msgid "[Full Report]({link})"
 msgstr "[Cijelo izvješće]({link})"
 
 #: wowtools/raidbots.py:99 wowtools/raiderio.py:108 wowtools/raiderio.py:179
-#: wowtools/wowaudit.py:31 wowtools/wowaudit.py:94 wowtools/wowaudit.py:165
-#: wowtools/wowaudit.py:223 wowtools/wowaudit.py:281 wowtools/wowaudit.py:337
+#: wowtools/wowaudit.py:84 wowtools/wowaudit.py:147 wowtools/wowaudit.py:218
+#: wowtools/wowaudit.py:276 wowtools/wowaudit.py:334 wowtools/wowaudit.py:390
 #: wowtools/wowpvp.py:179 wowtools/wowtoken.py:54 wowtools/wowtoken.py:86
 #: wowtools/wowtools.py:50 wowtools/wowtools.py:65 wowtools/wowtools.py:79
 msgid "Command failed successfully. {e}"
@@ -164,85 +164,109 @@ msgid "Commands for interacting with World of Warcraft"
 msgstr "Naredbe za interakciju s World of Warcraft-om"
 
 #: wowtools/wowaudit.py:25
-msgid "Show current equipped item level of your wowaudit group."
-msgstr "Prikaži trenutni item level vaše wowaudit grupe."
+msgid "Show your wowaudit summary."
+msgstr "Prikaži wowaudit sažetak."
 
-#: wowtools/wowaudit.py:48
-msgid "{member_rank}. {member_name} - {member_ilvl}\n"
-msgstr "{member_rank}. {member_name} - {member_ilvl}\n"
+#: wowtools/wowaudit.py:31
+msgid "Generate summary embed."
+msgstr ""
 
-#: wowtools/wowaudit.py:82
+#: wowtools/wowaudit.py:40
+msgid "Weekly summary"
+msgstr "Tjedni sažetak"
+
+#: wowtools/wowaudit.py:42
+msgid "Missing Enchants/Gems"
+msgstr "Enchant/gemovi koji nedostaju"
+
+#: wowtools/wowaudit.py:44
+msgid "Weekly Dungeons Completed"
+msgstr "Završeno Mythic Dungeona"
+
+#: wowtools/wowaudit.py:47
+msgid "Weekly World Quests Done"
+msgstr "Obavljeno World Questova"
+
+#: wowtools/wowaudit.py:51 wowtools/wowaudit.py:135
 msgid "Average Item Level"
 msgstr "Prosjecni Item level"
 
-#: wowtools/wowaudit.py:83 wowtools/wowaudit.py:154 wowtools/wowaudit.py:212
-#: wowtools/wowaudit.py:270 wowtools/wowaudit.py:326 wowtools/wowaudit.py:386
+#: wowtools/wowaudit.py:52 wowtools/wowaudit.py:64 wowtools/wowaudit.py:206
+msgid "Tier Pieces Obtained"
+msgstr "Dobiveni Tier dijelovi"
+
+#: wowtools/wowaudit.py:53 wowtools/wowaudit.py:264
+msgid "Weekly Mythic Dungeons Done"
+msgstr "Završeno Mythic Dungeona"
+
+#: wowtools/wowaudit.py:54 wowtools/wowaudit.py:322
+msgid "Great Vault Score"
+msgstr "Great Vault Score"
+
+#: wowtools/wowaudit.py:55 wowtools/wowaudit.py:378
+msgid "World Quests Done"
+msgstr "Obavljeno World Questova"
+
+#: wowtools/wowaudit.py:78
+msgid "Show current equipped item level of your wowaudit group."
+msgstr "Prikaži trenutni item level vaše wowaudit grupe."
+
+#: wowtools/wowaudit.py:101
+msgid "{member_rank}. {member_name} - {member_ilvl}\n"
+msgstr "{member_rank}. {member_name} - {member_ilvl}\n"
+
+#: wowtools/wowaudit.py:136 wowtools/wowaudit.py:207 wowtools/wowaudit.py:265
+#: wowtools/wowaudit.py:323 wowtools/wowaudit.py:379 wowtools/wowaudit.py:439
 msgid "Page {page_number}"
 msgstr "Stranica {page_number} - U slučaju greške obratite se @jasko"
 
-#: wowtools/wowaudit.py:88
+#: wowtools/wowaudit.py:141
 msgid "Show current equipped tier pieces of your wowaudit group."
 msgstr "Prikaži dobivene tier set dijelove wowaudit grupe."
 
-#: wowtools/wowaudit.py:118
+#: wowtools/wowaudit.py:171
 msgid ""
 "{member_rank}. {member_name} - {member_tier_n} - **({member_tier})**\n"
 msgstr ""
 "{member_rank}. {member_name} - {member_tier_n} - **({member_tier})**\n"
 
-#: wowtools/wowaudit.py:153
-msgid "Tier Pieces Obtained"
-msgstr "Dobiveni Tier dijelovi"
-
-#: wowtools/wowaudit.py:159
+#: wowtools/wowaudit.py:212
 msgid "Show mythic dungeons completed this week."
 msgstr "Prikaži broj završenih mythic dungeona ovaj tjedan."
 
-#: wowtools/wowaudit.py:182
+#: wowtools/wowaudit.py:235
 msgid "{member_rank}. {member_name} - **{member_mplus_done}**\n"
 msgstr "{member_rank}. {member_name} - **{member_mplus_done}**\n"
 
-#: wowtools/wowaudit.py:211
-msgid "Weekly Mythic Dungeons Done"
-msgstr "Završeno Mythic Dungeona"
-
-#: wowtools/wowaudit.py:217
+#: wowtools/wowaudit.py:270
 msgid "Shows the item level sum of all items in your wowaudit group's vault."
 msgstr "Prikaži zbroj item levela svih itema u great vaultu wowaudit grupe."
 
-#: wowtools/wowaudit.py:240
+#: wowtools/wowaudit.py:293
 msgid "{member_rank}. {member_name} - **{member_vault_score}**\n"
 msgstr "{member_rank}. {member_name} - **{member_vault_score}**\n"
 
-#: wowtools/wowaudit.py:269
-msgid "Great Vault Score"
-msgstr "Great Vault Score"
-
-#: wowtools/wowaudit.py:275
+#: wowtools/wowaudit.py:328
 msgid "Shows world quests completed this week."
-msgstr "Prikazuje broj world questova obavljenih ovja tjedan."
+msgstr "Prikazuje broj world questova obavljenih ovaj tjedan."
 
-#: wowtools/wowaudit.py:298
+#: wowtools/wowaudit.py:351
 msgid "{member_rank}. {member_name} - **{member_wq_done}**\n"
 msgstr "{member_rank}. {member_name} - **{member_wq_done}**\n"
 
-#: wowtools/wowaudit.py:325
-msgid "World Quests Done"
-msgstr "Obavljeno World Questova"
-
-#: wowtools/wowaudit.py:331
+#: wowtools/wowaudit.py:384
 msgid "Shows raid kills for the current week."
 msgstr "Prikazuje raid killove za ovaj tjedan."
 
-#: wowtools/wowaudit.py:354
+#: wowtools/wowaudit.py:407
 msgid "{member_rank}. {member_name} - **{member_raidkills}**\n"
 msgstr "{member_rank}. {member_name} - **{member_raidkills}**\n"
 
-#: wowtools/wowaudit.py:385
+#: wowtools/wowaudit.py:438
 msgid "Raid Kills (current week)"
 msgstr "Raid Kills (ovaj tjedan)"
 
-#: wowtools/wowaudit.py:401
+#: wowtools/wowaudit.py:454
 msgid ""
 "\n"
 "No WowAudit spreadsheet key set.\n"
@@ -252,7 +276,7 @@ msgstr ""
 "\n"
 "Nije postavljen ključ za WowAudit tablicu.\n"
 "\n"
-"Postavi ključ sa `{prefix}wowset wowaudit <key>`"
+"Postavi ga sa `{prefix}wowset wowaudit <key>`"
 
 #: wowtools/wowpvp.py:12
 msgid "Cog for some pvp stuff"
