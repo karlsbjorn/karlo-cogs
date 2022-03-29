@@ -23,9 +23,12 @@ class Wowaudit:
     @wow.command()
     async def summary(self, ctx: commands.Context):
         """Show your wowaudit summary."""
-        async with ctx.typing():
-            embed = await self.gen_summary(ctx)
-            await ctx.send(embed=embed)
+        try:
+            async with ctx.typing():
+                embed = await self.gen_summary(ctx)
+                await ctx.send(embed=embed)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     async def gen_summary(self, ctx: commands.Context) -> discord.Embed:
         """Generate summary embed."""
@@ -463,7 +466,7 @@ class Wowaudit:
     def get_creds(self):
         creds_path = str(data_manager.cog_data_path(self)) + "/service_account.json"
         if not os.path.exists(creds_path):
-            raise commands.CommandError("\nNo service account credentials found.")
+            raise commands.CommandError(_("\nNo service account credentials found."))
         creds = Credentials.from_service_account_file(creds_path)
         scoped = creds.with_scopes(
             [
