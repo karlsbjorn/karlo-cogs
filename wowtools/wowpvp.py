@@ -18,7 +18,14 @@ class Wowpvp:
             secret = blizzard_api.get("client_secret")
 
             if not cid or not secret:
-                return await ctx.send(_("The Blizzard API is not properly set up."))
+                return await ctx.send(
+                    _(
+                        "The Blizzard API is not properly set up.\n"
+                        "Create a client on https://develop.battle.net/ and then type in "
+                        "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                        "filling in `whoops` with your client's ID and secret."
+                    ).format(prefix=ctx.prefix)
+                )
 
             region = await self.config.region()
             realm = "-".join(realm).lower()

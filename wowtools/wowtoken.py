@@ -26,7 +26,14 @@ class Wowtoken:
                 secret = blizzard_api.get("client_secret")
 
                 if not cid or not secret:
-                    raise ValueError(_("The Blizzard API is not properly set up."))
+                    raise ValueError(
+                        _(
+                            "The Blizzard API is not properly set up.\n"
+                            "Create a client on https://develop.battle.net/ and then type in "
+                            "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                            "filling in `whoops` with your client's ID and secret."
+                        ).format(prefix=ctx.prefix)
+                    )
                 api_client = BlizzardApi(cid, secret)
 
                 if region not in VALID_REGIONS:
@@ -64,7 +71,14 @@ class Wowtoken:
                 secret = blizzard_api.get("client_secret")
 
                 if not cid or not secret:
-                    raise ValueError(_("The Blizzard API is not properly set up."))
+                    raise ValueError(
+                        _(
+                            "The Blizzard API is not properly set up.\n"
+                            "Create a client on https://develop.battle.net/ and then type in "
+                            "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                            "filling in `whoops` with your client's ID and secret."
+                        ).format(prefix=ctx.prefix)
+                    )
                 api_client = BlizzardApi(cid, secret)
 
                 embed = discord.Embed(
