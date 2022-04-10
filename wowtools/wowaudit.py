@@ -41,7 +41,7 @@ class Wowaudit:
         weekly_world_quests_done = (await ws.acell("Y5")).value
 
         embed = discord.Embed(title=_("Weekly summary"), colour=await ctx.embed_color())
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Missing Enchants/Gems"), value=missing_enchants)
         embed.add_field(
             name=_("Weekly Dungeons Completed"), value=weekly_dungeons_completed
@@ -134,7 +134,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Average Item Level"), value=avg_ilvl_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -205,7 +205,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Tier Pieces Obtained"), value=member_tier_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -263,7 +263,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Weekly Mythic Dungeons Done"), value=mplus_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -321,7 +321,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Great Vault Score"), value=vault_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -377,7 +377,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("World Quests Done"), value=wq_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -437,7 +437,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Raid Kills (current week)"), value=wq_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
