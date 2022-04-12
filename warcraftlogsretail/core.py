@@ -13,17 +13,20 @@ from beautifultable import ALIGN_LEFT, BeautifulTable
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
-from redbot.core.utils.chat_formatting import box
+from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .enchantid import ENCHANT_ID
 from .encounterid import ZONES_BY_ID, ZONES_BY_SHORT_NAME
 from .http import WoWLogsClient, generate_bearer
 
+_ = Translator("WarcraftLogsRetail", __file__)
 log = logging.getLogger("red.aikaterna.warcraftlogs")
 
 WCL_URL = "https://www.warcraftlogs.com/reports/{}"
 
 
+@cog_i18n(_)
 class WarcraftLogsRetail(commands.Cog):
     """Retrieve World of Warcraft character information from WarcraftLogs."""
 
@@ -106,16 +109,20 @@ class WarcraftLogsRetail(commands.Cog):
             name = userdata["charname"]
             if not name:
                 return await ctx.send(
-                    "Please specify a character name with this command."
+                    _("Please specify a character name with this command.")
                 )
         if not realm:
             realm = userdata["realm"]
             if not realm:
-                return await ctx.send("Please specify a realm name with this command.")
+                return await ctx.send(
+                    _("Please specify a realm name with this command.")
+                )
         if not region:
             region = userdata["region"]
             if not region:
-                return await ctx.send("Please specify a region name with this command.")
+                return await ctx.send(
+                    _("Please specify a region name with this command.")
+                )
 
         if len(region.split(" ")) > 1:
             presplit = region.split(" ")
@@ -131,7 +138,9 @@ class WarcraftLogsRetail(commands.Cog):
 
         if encounters is False:
             # the user wasn't found on the API.
-            return await ctx.send(f"{name} wasn't found on the API.")
+            return await ctx.send(
+                _("{name} wasn't found on the API.").format(name=name)
+            )
 
         error = encounters.get("error", None)
         if error:
@@ -143,7 +152,9 @@ class WarcraftLogsRetail(commands.Cog):
         char_data = await self.http.get_gear(name, realm, region, encounters["latest"])
         if not char_data:
             return await ctx.send(
-                "Check your API token and make sure you have added it to the bot correctly."
+                _(
+                    "Check your API token and make sure you have added it to the bot correctly."
+                )
             )
         gear = None
 
@@ -173,7 +184,9 @@ class WarcraftLogsRetail(commands.Cog):
                     break
 
         if gear is None:
-            return await ctx.send(f"No gear for {name} found in the last report.")
+            return await ctx.send(
+                _("No gear for {name} found in the last report.").format(name=name)
+            )
 
         item_list = []
         item_ilevel = 0
@@ -195,6 +208,7 @@ class WarcraftLogsRetail(commands.Cog):
             temp_enchant_id = item.get("temporaryEnchant", None)
             perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
             temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
+            # TODO: Add sockets and socketed gems to the embed.
 
             if perm_enchant_id:
                 if temp_enchant_id:
@@ -210,7 +224,7 @@ class WarcraftLogsRetail(commands.Cog):
         if item_ilevel > 0:
             avg_ilevel = "{:g}".format(item_ilevel / item_count)
         else:
-            avg_ilevel = "Unknown (not present in log data from the API)"
+            avg_ilevel = _("Unknown (not present in log data from the API)")
 
         # embed
         embed = discord.Embed()
@@ -220,13 +234,20 @@ class WarcraftLogsRetail(commands.Cog):
             title += f"\n{guild_name}"
         embed.title = title
         embed.description = "\n".join(item_list)
+        embed.colour = await ctx.embed_color()
 
         # embed footer
-        ilvl = f"Average Item Level: {avg_ilevel}\n"
+        ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
         encounter_spec = sorted_by_time[0].get("spec", None)
-        spec = f"Encounter spec: {encounter_spec}\n"
-        gear_data = f'Gear data pulled from {WCL_URL.format(sorted_by_time[0]["report"]["code"])}\n'
-        log = f'Log Date/Time: {self._time_convert(sorted_by_time[0]["startTime"])} UTC'
+        spec = _("Encounter spec: {encounter_spec}\n").format(
+            encounter_spec=encounter_spec
+        )
+        gear_data = _("Gear data pulled from {report_url}\n").format(
+            report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
+        )
+        log = _("Log Date/Time: {datetime} UTC").format(
+            datetime=self._time_convert(sorted_by_time[0]["startTime"])
+        )
         embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log}")
 
         await ctx.send(embed=embed)
@@ -272,21 +293,27 @@ class WarcraftLogsRetail(commands.Cog):
             name = userdata["charname"]
             if not name:
                 return await ctx.send(
-                    "Please specify a character name with this command."
+                    _("Please specify a character name with this command.")
                 )
         if not realm:
             realm = userdata["realm"]
             if not realm:
-                return await ctx.send("Please specify a realm name with this command.")
+                return await ctx.send(
+                    _("Please specify a realm name with this command.")
+                )
         if not region:
             region = userdata["region"]
             if not region:
-                return await ctx.send("Please specify a region name with this command.")
+                return await ctx.send(
+                    _("Please specify a region name with this command.")
+                )
 
         region = region.upper()
         if region not in ["US", "EU"]:
-            msg = "Realm names that have a space (like 'Nethergarde Keep') must be written with a hyphen, "
-            msg += "upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`."
+            msg = _(
+                "Realm names that have a space (like 'Nethergarde Keep') must be written with a hyphen, "
+            )
+            msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
             return await ctx.send(msg)
 
         name = name.title()
@@ -299,7 +326,7 @@ class WarcraftLogsRetail(commands.Cog):
                 zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
                 zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
 
-        if zone_id == None:
+        if zone_id is None:
             # return first raid that actually has parse info in shadowlands
             # as no specific zone was requested
             zone_ids = list(ZONES_BY_ID.keys())
@@ -322,7 +349,9 @@ class WarcraftLogsRetail(commands.Cog):
             if error:
                 return await ctx.send(f"WCL API Error: {error}")
             if (data is False) or (not data["data"]["characterData"]["character"]):
-                return await ctx.send(f"{name} wasn't found on the API.")
+                return await ctx.send(
+                    _("{name} wasn't found on the API.").format(name=name)
+                )
 
         # embed and data setup
         zws = "\N{ZERO WIDTH SPACE}"
@@ -331,7 +360,9 @@ class WarcraftLogsRetail(commands.Cog):
         try:
             char_data = data["data"]["characterData"]["character"]["zoneRankings"]
         except (KeyError, TypeError):
-            msg = "Something went terribly wrong while trying to access the zone rankings for this character."
+            msg = _(
+                "Something went terribly wrong while trying to access the zone rankings for this character."
+            )
             return await ctx.send(msg)
 
         zone_name = await self._zone_name_from_id(char_data["zone"])
@@ -351,11 +382,13 @@ class WarcraftLogsRetail(commands.Cog):
         else:
             if zone_id:
                 return await ctx.send(
-                    f"Nothing found for {zone_id_to_name.title()} for this player for Shadowlands."
+                    _(
+                        "Nothing found for {zone_name} for this player for Shadowlands."
+                    ).format(zone_name=zone_id_to_name.title())
                 )
             else:
                 return await ctx.send(
-                    "Nothing at all found for this player for Shadowlands."
+                    _("Nothing at all found for this player for Shadowlands.")
                 )
 
         md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
@@ -369,15 +402,15 @@ class WarcraftLogsRetail(commands.Cog):
         table = BeautifulTable(default_alignment=ALIGN_LEFT, maxwidth=500)
         table.set_style(BeautifulTable.STYLE_COMPACT)
         table.columns.header = [
-            "Name",
-            "Best %",
-            "Spec",
-            "DPS",
-            "Kills",
-            "Fastest",
-            "Med %",
-            "AS Pts",
-            "AS Rank",
+            _("Name"),
+            _("Best %"),
+            _("Spec"),
+            _("DPS"),
+            _("Kills"),
+            _("Fastest"),
+            _("Med %"),
+            _("AS Pts"),
+            _("AS Rank"),
         ]
 
         # add rankings per encounter to table
@@ -427,13 +460,13 @@ class WarcraftLogsRetail(commands.Cog):
 
         # all stars
         all_stars = char_data["allStars"]
-        section_name = f"⫷ Expansion All Stars ⫸".center(40, " ")
+        section_name = _("⫷ Expansion All Stars ⫸").center(40, " ")
         embed.add_field(name=zws, value=box(section_name, lang="Prolog"), inline=False)
         for item in all_stars:
             msg = f"**{item['spec']}**\n"
             rank_percent = "{:.1f}".format(item["rankPercent"])
-            msg += f"Points:\n`{item['points']}`\n"
-            msg += f"Rank:\n`{item['rank']}`\n"
+            msg += _("Points:\n`{points}`\n").format(points=item["points"])
+            msg += _("Rank:\n`{rank}`\n").format(rank=item["rank"])
             msg += f"{self._get_color(float(rank_percent), '%')}\n"
             embed.add_field(name=zws, value=msg, inline=True)
 
@@ -444,7 +477,7 @@ class WarcraftLogsRetail(commands.Cog):
             nearest_multiple = len(all_stars)
         bonus_empty_fields = nearest_multiple - len(all_stars)
         if bonus_empty_fields > 0:
-            for _ in range(bonus_empty_fields):
+            for _1 in range(bonus_empty_fields):
                 embed.add_field(name=zws, value=zws, inline=True)
 
         # table time
@@ -458,23 +491,35 @@ class WarcraftLogsRetail(commands.Cog):
     async def wclcharname(self, ctx, charname: str):
         """Set your character's name."""
         await self.config.user(ctx.author).charname.set(charname)
-        await ctx.send(f"Your character name was set to {charname.title()}.")
+        await ctx.send(
+            _("Your character name was set to {charname}.").format(
+                charname=charname.title()
+            )
+        )
 
     @commands.command()
     async def wclrealm(self, ctx, *, realm: str):
         """Set your realm."""
         realmname = realm.replace(" ", "-")
         await self.config.user(ctx.author).realm.set(realmname)
-        await ctx.send(f"Your realm was set to {realm.title()}.")
+        await ctx.send(
+            _("Your realm was set to {realm.title()}.").format(realm=realm.title())
+        )
 
     @commands.command()
     async def wclregion(self, ctx, region: str):
         """Set your region."""
         valid_regions = ["EU", "US"]
         if region.upper() not in valid_regions:
-            return await ctx.send("Valid regions are: {humanize_list(valid_regions)}")
+            return await ctx.send(
+                _("Valid regions are: {valid_regions}").format(
+                    valid_regions=humanize_list(valid_regions)
+                )
+            )
         await self.config.user(ctx.author).region.set(region)
-        await ctx.send(f"Your realm's region was set to {region.upper()}.")
+        await ctx.send(
+            _("Your realm's region was set to {region}.").format(region=region.upper())
+        )
 
     @commands.command()
     async def wclsettings(self, ctx, user: discord.User = None):
@@ -482,19 +527,21 @@ class WarcraftLogsRetail(commands.Cog):
         if not user:
             user = ctx.author
         userinfo = await self.config.user(user).all()
-        msg = f"[Settings for {user.display_name}]\n"
+        msg = _("[Settings for {user}]\n").format(user=user.display_name)
         charname = userinfo["charname"].title() if userinfo["charname"] else "None"
         realmname = (
             userinfo["realm"].title().replace("-", " ") if userinfo["realm"] else "None"
         )
         regionname = userinfo["region"].upper() if userinfo["region"] else "None"
-        msg += f"Character: {charname}\nRealm: {realmname}\nRegion: {regionname}\n\n"
+        msg += _(
+            "Character: {charname}\nRealm: {realmname}\nRegion: {regionname}\n\n"
+        ).format(charname=charname, realmname=realmname, regionname=regionname)
 
-        msg += f"[Bot Permissions Needed]\n"
+        msg += _("[Bot Permissions Needed]\n")
         if ctx.message.guild.me.guild_permissions.embed_links:
-            msg += "[X] Embed Links permissions\n"
+            msg += _("[X] Embed Links permissions\n")
         else:
-            msg += "[ ] I need Embed Links permissions\n"
+            msg += _("[ ] I need Embed Links permissions\n")
 
         await ctx.send(box(msg, lang="ini"))
 
