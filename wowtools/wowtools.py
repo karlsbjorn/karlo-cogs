@@ -21,7 +21,9 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
         default_guild = {"auto_raidbots": True}
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(
+            headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
+        )
 
     @commands.group()
     async def wowset(self, ctx):

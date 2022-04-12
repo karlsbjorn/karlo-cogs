@@ -104,7 +104,6 @@ class WarcraftLogsRetail(commands.Cog):
         Enchants can be shown - if the log provides them.
         """
         userdata = await self.config.user(ctx.author).all()
-
         if not name:
             name = userdata["charname"]
             if not name:
@@ -245,10 +244,10 @@ class WarcraftLogsRetail(commands.Cog):
         gear_data = _("Gear data pulled from {report_url}\n").format(
             report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
         )
-        log = _("Log Date/Time: {datetime} UTC").format(
+        log_date = _("Log Date/Time: {datetime} UTC").format(
             datetime=self._time_convert(sorted_by_time[0]["startTime"])
         )
-        embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log}")
+        embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log_date}")
 
         await ctx.send(embed=embed)
 
@@ -337,10 +336,12 @@ class WarcraftLogsRetail(commands.Cog):
                 if error:
                     return await ctx.send(f"WCL API Error: {error}")
                 if (data is False) or (not data["data"]["characterData"]["character"]):
-                    return await ctx.send(f"{name} wasn't found on the API.")
+                    return await ctx.send(
+                        _("{name} wasn't found on the API.").format(name=name)
+                    )
                 char_data = data["data"]["characterData"]["character"]["zoneRankings"]
                 data_test = char_data.get("bestPerformanceAverage", None)
-                if data_test != None:
+                if data_test is not None:
                     break
         else:
             # try getting a specific zone's worth of info for this character
@@ -370,15 +371,16 @@ class WarcraftLogsRetail(commands.Cog):
 
         embed = discord.Embed()
         embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
+        embed.colour = await ctx.embed_color()
 
         # perf averages
-        embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)  ###
+        embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)
 
         perf_avg = char_data.get("bestPerformanceAverage", None)
         if perf_avg:
             pf_avg = "{:.1f}".format(char_data["bestPerformanceAverage"])
             pf_avg = self._get_color(float(pf_avg))
-            embed.add_field(name="Best Perf. Avg", value=pf_avg, inline=True)
+            embed.add_field(name=_("Best Perf. Avg"), value=pf_avg, inline=True)
         else:
             if zone_id:
                 return await ctx.send(
@@ -393,7 +395,7 @@ class WarcraftLogsRetail(commands.Cog):
 
         md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
         md_avg = self._get_color(float(md_avg))
-        embed.add_field(name="Median Perf. Avg", value=md_avg, inline=True)
+        embed.add_field(name=_("Median Perf. Avg"), value=md_avg, inline=True)
 
         # perf avg filler space
         embed.add_field(name=zws, value=zws, inline=True)
@@ -623,9 +625,9 @@ class WarcraftLogsRetail(commands.Cog):
         return value
 
     @staticmethod
-    async def _zone_name_from_id(zoneID: int):
+    async def _zone_name_from_id(zoneid: int):
         for zone_id, zone_name in ZONES_BY_ID.items():
-            if zoneID == zone_id:
+            if zoneid == zone_id:
                 return zone_name
 
     def _get_color(self, number: float, bonus=""):
@@ -646,7 +648,7 @@ class WarcraftLogsRetail(commands.Cog):
             out = self._grey(number, bonus)
         else:
             # someone fucked up somewhere
-            out = box(number)
+            out = box(str(number))
         return out
 
     @staticmethod
