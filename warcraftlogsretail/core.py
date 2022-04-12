@@ -300,7 +300,7 @@ class WarcraftLogsRetail(commands.Cog):
                 zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
 
         if zone_id == None:
-            # return first raid that actually has parse info in phase 6
+            # return first raid that actually has parse info in shadowlands
             # as no specific zone was requested
             zone_ids = list(ZONES_BY_ID.keys())
             zone_ids.reverse()
@@ -351,11 +351,11 @@ class WarcraftLogsRetail(commands.Cog):
         else:
             if zone_id:
                 return await ctx.send(
-                    f"Nothing found for {zone_id_to_name.title()} for this player for phase 6."
+                    f"Nothing found for {zone_id_to_name.title()} for this player for Shadowlands."
                 )
             else:
                 return await ctx.send(
-                    "Nothing at all found for this player for phase 6."
+                    "Nothing at all found for this player for Shadowlands."
                 )
 
         md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
