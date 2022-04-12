@@ -1,4 +1,5 @@
 from redbot.core.bot import Red
+
 from .core import WarcraftLogsRetail
 
 __red_end_user_data_statement__ = (
