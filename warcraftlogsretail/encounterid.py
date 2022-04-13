@@ -75,3 +75,10 @@ ZONES_BY_SHORT_NAME = {
     "SoD": ["Sanctum of Domination", 28],
     "SotFO": ["Sepulcher of the First Ones", 29],
 }
+
+DIFFICULTIES = {
+    5: "Mythic",
+    4: "Heroic",
+    3: "Normal",
+    2: "LFR",
+}

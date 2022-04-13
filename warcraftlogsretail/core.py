@@ -17,7 +17,7 @@ from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .enchantid import ENCHANT_ID
-from .encounterid import ZONES_BY_ID, ZONES_BY_SHORT_NAME
+from .encounterid import ZONES_BY_ID, ZONES_BY_SHORT_NAME, DIFFICULTIES
 from .http import WoWLogsClient, generate_bearer
 
 _ = Translator("WarcraftLogsRetail", __file__)
@@ -366,8 +366,9 @@ class WarcraftLogsRetail(commands.Cog):
             )
             return await ctx.send(msg)
 
+        difficulty = await self._difficulty_name_from_id(char_data["difficulty"])
         zone_name = await self._zone_name_from_id(char_data["zone"])
-        zone_name = f"⫷ {zone_name} ⫸".center(40, " ")
+        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(40, " ")
 
         embed = discord.Embed()
         embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
@@ -625,10 +626,16 @@ class WarcraftLogsRetail(commands.Cog):
         return value
 
     @staticmethod
-    async def _zone_name_from_id(zoneid: int):
+    async def _zone_name_from_id(zoneid: int) -> str:
         for zone_id, zone_name in ZONES_BY_ID.items():
             if zoneid == zone_id:
                 return zone_name
+
+    @staticmethod
+    async def _difficulty_name_from_id(difficultyid: int) -> str:
+        for difficulty_id, difficulty_name in DIFFICULTIES.items():
+            if difficultyid == difficulty_id:
+                return difficulty_name
 
     def _get_color(self, number: float, bonus=""):
         if number >= 95:
