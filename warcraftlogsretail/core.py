@@ -17,7 +17,7 @@ from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .enchantid import ENCHANT_ID
-from .encounterid import ZONES_BY_ID, ZONES_BY_SHORT_NAME, DIFFICULTIES
+from .encounterid import DIFFICULTIES, ZONES_BY_ID, ZONES_BY_SHORT_NAME
 from .http import WoWLogsClient, generate_bearer
 
 _ = Translator("WarcraftLogsRetail", __file__)
