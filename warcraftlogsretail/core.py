@@ -416,7 +416,7 @@ class WarcraftLogsRetail(commands.Cog):
         ]
 
         # add rankings per encounter to table
-        rankings = sorted(char_data["rankings"], key=lambda k: k["encounter"]["id"])
+        rankings = char_data["rankings"]
         for encounter in rankings:
             all_stars = encounter["allStars"]
             enc_details = encounter["encounter"]
