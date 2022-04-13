@@ -1,3 +1,5 @@
+from typing import Literal
+
 import aiohttp
 from redbot.core import Config, commands
 from redbot.core.data_manager import cog_data_path
@@ -119,3 +121,11 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
+
+    async def red_delete_data_for_user(
+        self,
+        *,
+        requester: Literal["discord_deleted_user", "owner", "user", "user_strict"],
+        user_id: int,
+    ):
+        return
