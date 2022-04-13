@@ -119,6 +119,17 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
+    @wowset.command()
+    @commands.is_owner()
+    async def blizzard(self, ctx: commands.Context):
+        return await ctx.send(
+            _(
+                "Create a client on https://develop.battle.net/ and then type in "
+                "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                "filling in `whoops` with your client's ID and secret."
+            ).format(prefix=ctx.prefix)
+        )
+
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
