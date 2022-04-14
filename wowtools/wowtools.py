@@ -52,7 +52,7 @@ class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
 
     @wowset.command()
     @commands.is_owner()
-    async def wowaudit(self, ctx: commands.Context, key: str = None):
+    async def wowaudit_sheet(self, ctx: commands.Context, key: str = None):
         """Set the key of your wowaudit spreadsheet."""
         try:
             async with ctx.typing():
