@@ -13,7 +13,12 @@ RIO_URL = "https://raider.io/api/v1/"
 class Raiderio:
     """Cog for interaction with the raider.io API"""
 
-    @commands.command()
+    @commands.group(aliases=["rio"])
+    async def raiderio(self, ctx: commands.Context):
+        """Commands for interacting with Raider.io"""
+        pass
+
+    @raiderio.command()
     async def profile(self, ctx, character: str, *realm: str) -> None:
         """Display the raider.io profile of a character."""
         async with ctx.typing():
@@ -105,7 +110,7 @@ class Raiderio:
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    @commands.command()
+    @raiderio.command()
     async def gprofile(self, ctx, *, guild: str = "Jahaci Rumene Kadulje") -> None:
         """Display the raider.io profile of a Ragnaros EU guild."""
         async with ctx.typing():
@@ -181,6 +186,3 @@ class Raiderio:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         formatted = parsed.strftime("%d/%m/%y - %H:%M:%S")
         return formatted
-
-    def cog_unload(self):
-        self.bot.loop.create_task(self.session.close())

@@ -16,11 +16,11 @@ MEMBERS_PER_PAGE = 20
 
 class Wowaudit:
     @commands.group()
-    async def wow(self, ctx: commands.Context):
-        """Commands for interacting with World of Warcraft"""
+    async def wowaudit(self, ctx: commands.Context):
+        """Commands for interacting with WowAudit."""
         pass
 
-    @wow.command()
+    @wowaudit.command()
     async def summary(self, ctx: commands.Context):
         """Show your wowaudit summary."""
         try:
@@ -76,7 +76,7 @@ class Wowaudit:
             output = ""
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def ilvl(self, ctx: commands.Context):
         """Show current equipped item level of your wowaudit group."""
         try:
@@ -139,7 +139,7 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def tier(self, ctx: commands.Context):
         """Show current equipped tier pieces of your wowaudit group."""
         try:
@@ -210,7 +210,7 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def mplus(self, ctx: commands.Context):
         """Show mythic dungeons completed this week."""
         try:
@@ -268,7 +268,7 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def vault(self, ctx: commands.Context):
         """Shows the item level sum of all items in your wowaudit group's vault."""
         try:
@@ -326,7 +326,7 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def wq(self, ctx: commands.Context):
         """Shows world quests completed this week."""
         try:
@@ -382,7 +382,7 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def raidkills(self, ctx: commands.Context):
         """Shows raid kills for the current week."""
         try:
