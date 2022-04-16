@@ -1,3 +1,5 @@
+import functools
+
 import discord
 from blizzardapi import BlizzardApi
 from redbot.core import commands
@@ -7,7 +9,7 @@ _ = Translator("WoWTools", __file__)
 
 
 class Wowpvp:
-    """Cog for some pvp stuff"""
+    """Pvp stuff"""
 
     @commands.command()
     async def rating(self, ctx, character_name: str, *realm: str):
@@ -38,52 +40,65 @@ class Wowpvp:
                 if realm == "":
                     raise ValueError(_("You didn't give me a realm."))
                 api_client = BlizzardApi(cid, secret)
-                profile = api_client.wow.profile.get_character_profile_summary(
+                fetch_profile = functools.partial(
+                    api_client.wow.profile.get_character_profile_summary,
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
                 )
-                achievements = (
-                    api_client.wow.profile.get_character_achievements_summary(
-                        region=region,
-                        realm_slug=realm,
-                        character_name=character_name,
-                        locale="en_US",
-                    )
-                )
-                media = api_client.wow.profile.get_character_media_summary(
+                fetch_achievements = functools.partial(
+                    api_client.wow.profile.get_character_achievements_summary,
                     region=region,
                     realm_slug=realm,
                     character_name=character_name,
                     locale="en_US",
                 )
-                rbg_statistics = (
-                    api_client.wow.profile.get_character_pvp_bracket_statistics(
-                        region=region,
-                        realm_slug=realm,
-                        character_name=character_name,
-                        locale="en_US",
-                        pvp_bracket="rbg",
-                    )
+                fetch_media = functools.partial(
+                    api_client.wow.profile.get_character_media_summary,
+                    region=region,
+                    realm_slug=realm,
+                    character_name=character_name,
+                    locale="en_US",
                 )
-                duo_statistics = (
-                    api_client.wow.profile.get_character_pvp_bracket_statistics(
-                        region=region,
-                        realm_slug=realm,
-                        character_name=character_name,
-                        locale="en_US",
-                        pvp_bracket="2v2",
-                    )
+                fetch_rbg_statistics = functools.partial(
+                    api_client.wow.profile.get_character_pvp_bracket_statistics,
+                    region=region,
+                    realm_slug=realm,
+                    character_name=character_name,
+                    locale="en_US",
+                    pvp_bracket="rbg",
                 )
-                tri_statistics = (
-                    api_client.wow.profile.get_character_pvp_bracket_statistics(
-                        region=region,
-                        realm_slug=realm,
-                        character_name=character_name,
-                        locale="en_US",
-                        pvp_bracket="3v3",
-                    )
+                fetch_duo_statistics = functools.partial(
+                    api_client.wow.profile.get_character_pvp_bracket_statistics,
+                    region=region,
+                    realm_slug=realm,
+                    character_name=character_name,
+                    locale="en_US",
+                    pvp_bracket="2v2",
+                )
+                fetch_tri_statistics = functools.partial(
+                    api_client.wow.profile.get_character_pvp_bracket_statistics,
+                    region=region,
+                    realm_slug=realm,
+                    character_name=character_name,
+                    locale="en_US",
+                    pvp_bracket="3v3",
+                )
+
+                profile = await self.bot.loop.run_in_executor(None, fetch_profile)
+                achievements = await self.bot.loop.run_in_executor(
+                    None, fetch_achievements
+                )
+                media = await self.bot.loop.run_in_executor(None, fetch_media)
+                rbg_statistics = await self.bot.loop.run_in_executor(
+                    None, fetch_rbg_statistics
+                )
+                duo_statistics = await self.bot.loop.run_in_executor(
+                    None, fetch_duo_statistics
+                )
+                tri_statistics = await self.bot.loop.run_in_executor(
+                    None, fetch_tri_statistics
                 )
 
                 if "name" not in profile:
