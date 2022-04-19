@@ -27,7 +27,6 @@ class WoWTools(
             "auto_raidbots": True,
             "gmanage_guild": None,
             "gmanage_realm": None,
-            "ignored_ranks": [],
             "guild_roles": {},
         }
         self.config.register_global(**default_global)

@@ -69,7 +69,9 @@ class GuildManage:
                         and int(rank) == roster[character_name]
                     ):
                         if role not in discord_member.roles:
-                            msg += _("**{member}** should have the **{role}** role.\n").format(
+                            msg += _(
+                                "**{member}** should have the **{role}** role.\n"
+                            ).format(
                                 role=role.name,
                                 member=discord_member.display_name,
                                 rank=rank,
