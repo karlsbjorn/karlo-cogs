@@ -1,9 +1,10 @@
 import functools
 
 import discord
-from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
+
+from .utils import Blizzard
 
 _ = Translator("WoWTools", __file__)
 
@@ -21,7 +22,7 @@ class Wowtoken:
         """Check price of WoW token in a region"""
         async with ctx.typing():
             try:
-                api_client = await self.get_api_client(ctx)
+                api_client = await Blizzard.get_api_client(self, ctx)
 
                 if region not in VALID_REGIONS:
                     raise ValueError(
@@ -48,28 +49,12 @@ class Wowtoken:
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    async def get_api_client(self, ctx):
-        blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
-        cid = blizzard_api.get("client_id")
-        secret = blizzard_api.get("client_secret")
-        if not cid or not secret:
-            raise ValueError(
-                _(
-                    "The Blizzard API is not properly set up.\n"
-                    "Create a client on https://develop.battle.net/ and then type in "
-                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret."
-                ).format(prefix=ctx.prefix)
-            )
-        api_client = BlizzardApi(cid, secret)
-        return api_client
-
     @token.command()
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""
         async with ctx.typing():
             try:
-                api_client = await self.get_api_client(ctx)
+                api_client = await Blizzard.get_api_client(self, ctx)
 
                 embed = discord.Embed(
                     title=_("WoW Token prices"), colour=await ctx.embed_colour()

@@ -5,6 +5,7 @@ from redbot.core import Config, commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
 
+from .guildmanage import GuildManage
 from .raidbots import Raidbots
 from .raiderio import Raiderio
 from .wowaudit import Wowaudit
@@ -15,12 +16,20 @@ _ = Translator("WoWTools", __file__)
 
 
 @cog_i18n(_)
-class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
+class WoWTools(
+    Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, GuildManage, commands.Cog
+):
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {"region": "eu", "wowaudit_key": None}
-        default_guild = {"auto_raidbots": True}
+        default_guild = {
+            "auto_raidbots": True,
+            "gmanage_guild": None,
+            "gmanage_realm": None,
+            "ignored_ranks": [],
+            "guild_roles": {},
+        }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
         self.session = aiohttp.ClientSession(
