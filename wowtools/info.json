@@ -4,7 +4,7 @@
     "short": "Cog for interacting with World of Warcraft",
     "install_msg": "Make sure you check out [p]help wowset after loading this cog and set all your settings as most of the commands won't work otherwise.",
     "tags": ["warcraft", "world of warcraft"],
-    "requirements": ["python-blizzardapi", "gspread-asyncio", "regex"],
+    "requirements": ["python-blizzardapi", "gspread-asyncio", "regex", "rapidfuzz"],
     "min_bot_version": "3.4.0",
     "max_bot_version": "3.4.99",
     "type": "COG",

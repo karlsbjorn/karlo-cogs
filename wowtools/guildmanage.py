@@ -105,7 +105,7 @@ class GuildManage:
 
     @gmset.command()
     @commands.admin()
-    async def guild_name(self, ctx: commands.Context, guild_name: str):
+    async def guild_name(self, ctx: commands.Context, *, guild_name: str):
         """Set the guild name to be used in the guild management commands."""
         try:
             async with ctx.typing():
