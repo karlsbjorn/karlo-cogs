@@ -144,7 +144,7 @@ class GuildManage:
         """
         api_client: BlizzardApi = await get_api_client(self.bot, ctx)
 
-        wow_guild_name: str = await self.config.gmanage_guild()
+        wow_guild_name: str = await self.config.guild(ctx.guild).gmanage_guild()
         wow_guild_name = wow_guild_name.lower()
         region: str = await self.config.region()
         realm: str = await self.config.gmanage_realm()
