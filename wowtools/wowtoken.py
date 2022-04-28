@@ -4,7 +4,7 @@ import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import Blizzard
+from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
 
@@ -22,7 +22,7 @@ class Wowtoken:
         """Check price of WoW token in a region"""
         async with ctx.typing():
             try:
-                api_client = await Blizzard.get_api_client(self, ctx)
+                api_client = await get_api_client(self.bot, ctx)
 
                 if region not in VALID_REGIONS:
                     raise ValueError(
@@ -54,7 +54,7 @@ class Wowtoken:
         """Check price of the WoW token in all supported regions"""
         async with ctx.typing():
             try:
-                api_client = await Blizzard.get_api_client(self, ctx)
+                api_client = await get_api_client(self.bot, ctx)
 
                 embed = discord.Embed(
                     title=_("WoW Token prices"), colour=await ctx.embed_colour()

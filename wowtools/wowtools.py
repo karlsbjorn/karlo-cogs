@@ -2,6 +2,7 @@ from typing import Literal
 
 import aiohttp
 from redbot.core import Config, commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
 
@@ -20,7 +21,7 @@ class WoWTools(
     Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, GuildManage, commands.Cog
 ):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {"region": "eu", "wowaudit_key": None}
         default_guild = {

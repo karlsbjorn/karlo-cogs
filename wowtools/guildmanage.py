@@ -8,7 +8,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import pagify
 
-from .utils import Blizzard
+from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
 
@@ -68,14 +68,13 @@ class GuildManage:
                         role not in discord_member.roles
                         and int(rank) == roster[character_name]
                     ):
-                        if role not in discord_member.roles:
-                            msg += _(
-                                "**{member}** should have the **{role}** role.\n"
-                            ).format(
-                                role=role.name,
-                                member=discord_member.display_name,
-                                rank=rank,
-                            )
+                        msg += _(
+                            "**{member}** should have the **{role}** role.\n"
+                        ).format(
+                            role=role.name,
+                            member=discord_member.display_name,
+                            rank=rank,
+                        )
                         break
             if not msg:
                 await ctx.send(_("No changes found."))
@@ -143,7 +142,7 @@ class GuildManage:
         :param ctx:
         :return: dict containing guild members and their rank
         """
-        api_client: BlizzardApi = await Blizzard.get_api_client(self, ctx)
+        api_client: BlizzardApi = await get_api_client(self.bot, ctx)
 
         wow_guild_name: str = await self.config.gmanage_guild()
         wow_guild_name = wow_guild_name.lower()
