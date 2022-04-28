@@ -147,7 +147,7 @@ class GuildManage:
         wow_guild_name: str = await self.config.guild(ctx.guild).gmanage_guild()
         wow_guild_name = wow_guild_name.lower()
         region: str = await self.config.region()
-        realm: str = await self.config.gmanage_realm()
+        realm: str = await self.config.guild(ctx.guild).gmanage_realm()
         realm = realm.lower()
 
         fetch_guild_roster = functools.partial(
