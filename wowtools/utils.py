@@ -30,3 +30,24 @@ async def get_api_client(bot: Red, ctx: commands.Context) -> BlizzardApi:
         )
     api_client = BlizzardApi(cid, secret)
     return api_client
+
+
+def format_to_gold(price) -> str:
+    price = str(price)
+    gold_text = ""
+    silver_text = ""
+    copper_text = ""
+
+    gold = price[:-4]
+    if gold != "00":
+        gold_text = gold + "g"
+
+    silver = price[-4:-2]
+    if silver != "00":
+        silver_text = silver + "s"
+
+    copper = price[-2:]
+    if copper != "00":
+        copper_text = copper + "c"
+
+    return gold_text + silver_text + copper_text

@@ -8,7 +8,7 @@ from redbot.core.i18n import Translator
 _ = Translator("WoWTools", __file__)
 
 
-class Wowpvp:
+class PvP:
     """Pvp stuff"""
 
     @commands.command()

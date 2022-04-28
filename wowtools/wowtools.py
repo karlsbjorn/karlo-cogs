@@ -6,25 +6,27 @@ from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
 
+from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
+from .pvp import PvP
 from .raidbots import Raidbots
 from .raiderio import Raiderio
+from .token import Token
 from .wowaudit import Wowaudit
-from .wowpvp import Wowpvp
-from .wowtoken import Wowtoken
 
 _ = Translator("WoWTools", __file__)
 
 
 @cog_i18n(_)
 class WoWTools(
-    Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, GuildManage, commands.Cog
+    PvP, Raiderio, Token, Wowaudit, Raidbots, GuildManage, AuctionHouse, commands.Cog
 ):
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {"region": "eu", "wowaudit_key": None}
         default_guild = {
+            "realm": None,
             "auto_raidbots": True,
             "gmanage_guild": None,
             "gmanage_realm": None,
@@ -56,6 +58,22 @@ class WoWTools(
                     )
                 await self.config.region.set(region)
                 await ctx.send(_("Region set succesfully."))
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+    @wowset.command()
+    @commands.admin()
+    async def realm(self, ctx: commands.Context, realm: str = None):
+        """Set the realm of your guild."""
+        try:
+            async with ctx.typing():
+                if realm is None:
+                    await self.config.guild(ctx.guild).realm.clear()
+                    await ctx.send(_("Realm cleared."))
+                    return
+                realm = realm.lower()
+                await self.config.guild(ctx.guild).realm.set(realm)
+                await ctx.send(_("Realm set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 

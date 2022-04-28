@@ -4,29 +4,29 @@ import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import get_api_client
+from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
 
 VALID_REGIONS = ("eu", "us", "kr")
 
 
-class Wowtoken:
-    @commands.group()
-    async def token(self, ctx):
-        """Commands for interacting with the WoW token."""
-        pass
-
-    @token.command()
-    async def price(self, ctx, region: str):
+class Token:
+    @commands.command()
+    async def tokenprice(self, ctx, region: str = "all"):
         """Check price of WoW token in a region"""
         async with ctx.typing():
             try:
+                if region == "all":
+                    await self.priceall(ctx)
+                    return
                 api_client = await get_api_client(self.bot, ctx)
 
-                if region not in VALID_REGIONS:
+                if region not in VALID_REGIONS and region != "all":
                     raise ValueError(
-                        _("Invalid region. Valid regions are: `eu`, `us` i `kr`.")
+                        _(
+                            "Invalid region. Valid regions are: `eu`, `us`, `kr` or `all`."
+                        )
                     )
 
                 fetch_token = functools.partial(
@@ -39,7 +39,7 @@ class Wowtoken:
 
                 message = _(
                     "Current price of the {region} WoW Token is: **{gold}**"
-                ).format(region=region.upper(), gold=self.format_to_gold(token_price))
+                ).format(region=region.upper(), gold=format_to_gold(token_price))
 
                 embed = discord.Embed(
                     description=message, colour=await ctx.embed_colour()
@@ -49,7 +49,6 @@ class Wowtoken:
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    @token.command()
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""
         async with ctx.typing():
@@ -69,15 +68,8 @@ class Wowtoken:
                     wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
                     token_price = str(wow_token["price"])
                     embed.add_field(
-                        name=region.upper(), value=self.format_to_gold(token_price)
+                        name=region.upper(), value=format_to_gold(token_price)
                     )
                 await ctx.send(embed=embed)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    @staticmethod
-    def format_to_gold(price) -> str:
-        gold = price[:-4] + "g"
-        # silver = price[-4:-2] + "s"
-        # copper = price[-2:] + "c"
-        return gold  # + silver + copper
