@@ -23,7 +23,21 @@ class AuctionHouse:
                 return
 
             config_region: str = await self.config.region()
+            if not config_region:
+                await ctx.send(
+                    _(
+                        "Please set a region with `{prefix}wowset region` before using this command."
+                    ).format(prefix=ctx.prefix)
+                )
+                return
             config_realm: str = await self.config.guild(ctx.guild).realm()
+            if not config_realm:
+                await ctx.send(
+                    _(
+                        "Please set a realm with `{prefix}wowset realm` before using this command."
+                    ).format(prefix=ctx.prefix)
+                )
+                return
 
             # Search for the item
             fetch_items = functools.partial(
