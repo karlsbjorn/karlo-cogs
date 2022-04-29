@@ -45,6 +45,7 @@ class AuctionHouse:
                 region=config_region,
                 locale="en_US",
                 item_name=item,
+                page_size=1000,
                 is_classic=False,
             )
             items = await self.bot.loop.run_in_executor(None, fetch_items)
@@ -54,7 +55,8 @@ class AuctionHouse:
             for result in results:
                 item_id = result["data"]["id"]
                 item_name = result["data"]["name"]["en_US"]
-                found_items[item_id] = item_name
+                if item.lower() in item_name.lower():
+                    found_items[item_id] = item_name
             if not found_items:
                 await ctx.send(_("No results found."))
                 return
@@ -101,6 +103,7 @@ class AuctionHouse:
                         item_price = auction["unit_price"]
                     except KeyError:
                         item_price = auction["buyout"]
+                    # TODO: If BoE, add a warning that the price may be wrong due to item level differences
                     prices.append(item_price)
 
             # TODO: Make this an embed with item name, price, link, image, etc.
