@@ -59,6 +59,7 @@ class AuctionHouse:
                 item_id = result["data"]["id"]
                 item_name = result["data"]["name"]["en_US"]
                 if item.lower() in item_name.lower():
+                    item = item_name  # Use the exact name for all further searches
                     found_items[item_id] = item_name
             if not found_items:
                 await ctx.send(_("No results found."))
@@ -112,7 +113,7 @@ class AuctionHouse:
                         boe_disclaimer = True
                     prices.append(item_price)
             if not prices:
-                await ctx.send(_("No auctions for this item could be found."))
+                await ctx.send(_("No auctions could be found for this item."))
                 return
 
             # Embed stuff
@@ -143,7 +144,7 @@ class AuctionHouse:
                 embed.add_field(
                     name=_("Warning"),
                     value=_(
-                        "This item is a BoE and the price may be incorrect due to item level differences."
+                        "The expected price of this item may be incorrect due to item level differences."
                     ),
                     inline=False,
                 )
