@@ -1,6 +1,8 @@
 import functools
+from datetime import datetime
 from typing import Dict
 
+import discord
 from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
@@ -38,6 +40,7 @@ class AuctionHouse:
                     ).format(prefix=ctx.prefix)
                 )
                 return
+            boe_disclaimer = False
 
             # Search for the item
             fetch_items = functools.partial(
@@ -95,20 +98,58 @@ class AuctionHouse:
 
             auctions = auctions_data["auctions"]
             prices = []
+            item_quantity = 0
             for auction in auctions:
                 item_id = auction["item"]["id"]
                 if item_id in found_items:
                     item_name = found_items[item_id]
+                    found_item_id = item_id
+                    item_quantity += auction["quantity"]
                     try:
                         item_price = auction["unit_price"]
                     except KeyError:
                         item_price = auction["buyout"]
-                    # TODO: If BoE, add a warning that the price may be wrong due to item level differences
+                        boe_disclaimer = True
                     prices.append(item_price)
+            if not prices:
+                await ctx.send(_("No auctions for this item could be found."))
+                return
 
-            # TODO: Make this an embed with item name, price, link, image, etc.
-            await ctx.send(
-                _("{item_name} is currently selling for {price}.").format(
-                    item_name=item_name, price=format_to_gold(min(prices))
-                )
+            # Embed stuff
+            # Get item icon
+            fetch_media = functools.partial(
+                api_client.wow.game_data.get_item_media,
+                region=config_region,
+                locale="en_US",
+                item_id=found_item_id,
             )
+            item_media = await self.bot.loop.run_in_executor(None, fetch_media)
+            item_icon_url = item_media["assets"][0]["value"]
+
+            # Create embed
+            embed_title = _("Price: {item}").format(item=item_name)
+            embed_url = f"https://www.wowhead.com/item={found_item_id}"
+            embed = discord.Embed(
+                title=embed_title,
+                url=embed_url,
+                colour=await ctx.embed_color(),
+                timestamp=datetime.utcnow(),
+            )
+            embed.set_thumbnail(url=item_icon_url)
+            min_buyout = format_to_gold(min(prices))
+            embed.add_field(name=_("Min Buyout"), value=min_buyout)
+            embed.add_field(name=_("Current quantity"), value=str(item_quantity))
+            if boe_disclaimer:
+                embed.add_field(
+                    name=_("Warning"),
+                    value=_(
+                        "This item is a BoE and the price may be incorrect due to item level differences."
+                    ),
+                    inline=False,
+                )
+
+            await ctx.send(embed=embed)
+
+
+# TODO: [p]stackprice [item]
+# TODO: [p]craftprice [item]

@@ -4,6 +4,7 @@ from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_number
 
 _ = Translator("WoWTools", __file__)
 
@@ -38,7 +39,7 @@ def format_to_gold(price) -> str:
     silver_text = ""
     copper_text = ""
 
-    gold = price[:-4]
+    gold = humanize_number(int(price[:-4]))
     if gold != "00":
         gold_text = gold + "g"
 
