@@ -39,11 +39,11 @@ def format_to_gold(price, emotes=None) -> str:
     silver_text = ""
     copper_text = ""
 
-    gold_emoji = emotes["gold"]
-    silver_emoji = emotes["silver"]
-    copper_emoji = emotes["copper"]
+    gold_emoji = emotes["gold"] if emotes else None
+    silver_emoji = emotes["silver"] if emotes else None
+    copper_emoji = emotes["copper"] if emotes else None
 
-    gold = humanize_number(int(price[:-4]))
+    gold = humanize_number(int(price[:-4])) if price[:-4] else "00"
     if gold != "00":
         gold_text = gold + "g" if gold_emoji is None else gold + gold_emoji
 

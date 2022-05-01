@@ -168,17 +168,25 @@ class WoWTools(
 
     @wowset.command()
     @commands.is_owner()
-    async def emote(self, ctx: commands.Context, currency: str, emoji: discord.Emoji = None):
+    async def emote(
+        self, ctx: commands.Context, currency: str, emoji: discord.Emoji = None
+    ):
         """Set the emotes used for gold, silver and copper."""
         currency = currency.lower()
         if currency not in ["gold", "silver", "copper"]:
             return await ctx.send(_("Invalid currency."))
         if emoji:
             await self.config.emotes.set_raw(currency, value=str(emoji))
-            await ctx.send(_("{currency} emote set to {emoji}").format(currency=currency.title(), emoji=emoji))
+            await ctx.send(
+                _("{currency} emote set to {emoji}").format(
+                    currency=currency.title(), emoji=emoji
+                )
+            )
         else:
             await self.config.emotes.set_raw(currency, value=None)
-            await ctx.send(_("{currency} emote removed.").format(currency=currency.title()))
+            await ctx.send(
+                _("{currency} emote removed.").format(currency=currency.title())
+            )
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
