@@ -33,22 +33,26 @@ async def get_api_client(bot: Red, ctx: commands.Context) -> BlizzardApi:
     return api_client
 
 
-def format_to_gold(price) -> str:
+def format_to_gold(price, emotes=None) -> str:
     price = str(price)
     gold_text = ""
     silver_text = ""
     copper_text = ""
 
+    gold_emoji = emotes["gold"]
+    silver_emoji = emotes["silver"]
+    copper_emoji = emotes["copper"]
+
     gold = humanize_number(int(price[:-4]))
     if gold != "00":
-        gold_text = gold + "g"
+        gold_text = gold + "g" if gold_emoji is None else gold + gold_emoji
 
     silver = price[-4:-2]
     if silver != "00":
-        silver_text = silver + "s"
+        silver_text = silver + "s" if silver_emoji is None else silver + silver_emoji
 
     copper = price[-2:]
     if copper != "00":
-        copper_text = copper + "c"
+        copper_text = copper + "c" if copper_emoji is None else copper + copper_emoji
 
     return gold_text + silver_text + copper_text

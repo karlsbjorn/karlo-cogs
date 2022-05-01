@@ -1,6 +1,7 @@
 from typing import Literal
 
 import aiohttp
+import discord
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
@@ -24,7 +25,15 @@ class WoWTools(
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
-        default_global = {"region": "eu", "wowaudit_key": None}
+        default_global = {
+            "region": "eu",
+            "wowaudit_key": None,
+            "emotes": {
+                "gold": None,
+                "silver": None,
+                "copper": None,
+            },
+        }
         default_guild = {
             "realm": None,
             "auto_raidbots": True,
@@ -156,6 +165,20 @@ class WoWTools(
                 "filling in `whoops` with your client's ID and secret."
             ).format(prefix=ctx.prefix)
         )
+
+    @wowset.command()
+    @commands.is_owner()
+    async def emote(self, ctx: commands.Context, currency: str, emoji: discord.Emoji = None):
+        """Set the emotes used for gold, silver and copper."""
+        currency = currency.lower()
+        if currency not in ["gold", "silver", "copper"]:
+            return await ctx.send(_("Invalid currency."))
+        if emoji:
+            await self.config.emotes.set_raw(currency, value=str(emoji))
+            await ctx.send(_("{currency} emote set to {emoji}").format(currency=currency.title(), emoji=emoji))
+        else:
+            await self.config.emotes.set_raw(currency, value=None)
+            await ctx.send(_("{currency} emote removed.").format(currency=currency.title()))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())

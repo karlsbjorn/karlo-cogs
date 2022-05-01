@@ -137,7 +137,8 @@ class AuctionHouse:
                 timestamp=datetime.utcnow(),
             )
             embed.set_thumbnail(url=item_icon_url)
-            min_buyout = format_to_gold(min(prices))
+            gold_emotes: Dict = await self.config.emotes()
+            min_buyout = format_to_gold(min(prices), gold_emotes)
             embed.add_field(name=_("Min Buyout"), value=min_buyout)
             embed.add_field(name=_("Current quantity"), value=str(item_quantity))
             if boe_disclaimer:
