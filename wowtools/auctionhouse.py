@@ -16,7 +16,6 @@ class AuctionHouse:
     @commands.command()
     async def price(self, ctx: commands.Context, *, item: str):
         """Get the current market price of an item."""
-        # TODO: Add support for stack sizes
         async with ctx.typing():
             try:
                 api_client: BlizzardApi = await get_api_client(self.bot, ctx)
@@ -49,15 +48,14 @@ class AuctionHouse:
                 locale="en_US",
                 item_name=item,
                 page_size=1000,
-                is_classic=False,
             )
             items = await self.bot.loop.run_in_executor(None, fetch_items)
 
             results: Dict = items["results"]
             found_items: Dict[int, str] = {}
             for result in results:
-                item_id = result["data"]["id"]
-                item_name = result["data"]["name"]["en_US"]
+                item_id: int = result["data"]["id"]
+                item_name: str = result["data"]["name"]["en_US"]
                 if item.lower() in item_name.lower():
                     item = item_name  # Use the exact name for all further searches
                     found_items[item_id] = item_name
@@ -75,7 +73,7 @@ class AuctionHouse:
             c_realms = await self.bot.loop.run_in_executor(None, fetch_c_realms)
 
             c_realm_id = None
-            results = c_realms["results"]
+            results: Dict = c_realms["results"]
             for result in results:
                 c_realm_data = result["data"]
                 realms = c_realm_data["realms"]
@@ -145,10 +143,22 @@ class AuctionHouse:
                 embed.add_field(
                     name=_("Warning"),
                     value=_(
-                        "The expected price of this item may be incorrect due to item level differences."
+                        "The expected price of this item may be incorrect due to\n"
+                        "item level differences or other factors."
                     ),
                     inline=False,
                 )
+            embed.add_field(
+                name="\N{ZERO WIDTH SPACE}",
+                value=_(
+                    "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
+                ).format(
+                    region=config_region,
+                    realm=config_realm,
+                    item_id=found_item_id,
+                ),
+                inline=False,
+            )
 
             await ctx.send(embed=embed)
 
