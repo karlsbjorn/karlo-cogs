@@ -56,7 +56,10 @@ class AuctionHouse:
             for result in results:
                 item_id: int = result["data"]["id"]
                 item_name: str = result["data"]["name"]["en_US"]
-                if item.lower() in item_name.lower():
+                if found_items:
+                    if item_name in found_items.values():
+                        continue
+                elif item.lower() in item_name.lower():
                     item = item_name  # Use the exact name for all further searches
                     found_items[item_id] = item_name
             if not found_items:
