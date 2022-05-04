@@ -139,20 +139,6 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
             await ctx.send(s_account_guide)
 
     @wowset.command()
-    @commands.admin()
-    async def raidbots(self, ctx: commands.Context):
-        """Toggle automatic response to a Raidbots simulation report link."""
-        try:
-            if await self.config.guild(ctx.guild).auto_raidbots():
-                await self.config.guild(ctx.guild).auto_raidbots.set(False)
-                await ctx.send(_("Raidbots toggled off"))
-            else:
-                await self.config.guild(ctx.guild).auto_raidbots.set(True)
-                await ctx.send(_("Raidbots toggled on"))
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    @wowset.command()
     @commands.is_owner()
     async def blizzard(self, ctx: commands.Context):
         return await ctx.send(
