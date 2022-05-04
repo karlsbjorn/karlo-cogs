@@ -10,7 +10,6 @@ from redbot.core.i18n import Translator, cog_i18n
 from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
 from .pvp import PvP
-from .raidbots import Raidbots
 from .raiderio import Raiderio
 from .token import Token
 from .wowaudit import Wowaudit
@@ -19,9 +18,7 @@ _ = Translator("WoWTools", __file__)
 
 
 @cog_i18n(_)
-class WoWTools(
-    PvP, Raiderio, Token, Wowaudit, Raidbots, GuildManage, AuctionHouse, commands.Cog
-):
+class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, commands.Cog):
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
