@@ -163,7 +163,7 @@ class AuctionHouse:
                 inline=False,
             )
 
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 # TODO: [p]stackprice [item]

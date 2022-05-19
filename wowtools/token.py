@@ -42,8 +42,7 @@ class Token:
             )
 
             embed = discord.Embed(description=message, colour=await ctx.embed_colour())
-
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""

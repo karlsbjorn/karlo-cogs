@@ -115,7 +115,7 @@ class GuildManage:
                     return
                 guild_name = guild_name.replace(" ", "-").lower()
                 await self.config.guild(ctx.guild).gmanage_guild.set(guild_name)
-                await ctx.send(_("Guild name set."))
+            await ctx.send(_("Guild name set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -131,7 +131,7 @@ class GuildManage:
                     return
                 guild_realm = guild_realm.replace(" ", "-").lower()
                 await self.config.guild(ctx.guild).gmanage_realm.set(guild_realm)
-                await ctx.send(_("Guild realm set."))
+            await ctx.send(_("Guild realm set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 

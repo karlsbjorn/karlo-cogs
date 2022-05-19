@@ -63,7 +63,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
                         )
                     )
                 await self.config.region.set(region)
-                await ctx.send(_("Region set succesfully."))
+            await ctx.send(_("Region set succesfully."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -79,7 +79,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
                     return
                 realm = realm.lower()
                 await self.config.guild(ctx.guild).realm.set(realm)
-                await ctx.send(_("Realm set."))
+            await ctx.send(_("Realm set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -94,7 +94,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
                     await ctx.send(_("WowAudit spreadsheet key cleared."))
                     return
                 await self.config.wowaudit_key.set(key)
-                await ctx.send(_("WowAudit spreadsheet key set."))
+            await ctx.send(_("WowAudit spreadsheet key set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -141,6 +141,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
     @wowset.command()
     @commands.is_owner()
     async def blizzard(self, ctx: commands.Context):
+        """Instructions for setting up the Blizzard API."""
         return await ctx.send(
             _(
                 "Create a client on https://develop.battle.net/ and then type in "
