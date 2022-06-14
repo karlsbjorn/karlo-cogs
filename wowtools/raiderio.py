@@ -21,7 +21,11 @@ class Raiderio:
 
     @raiderio.command()
     async def profile(self, ctx, character: str, *realm: str) -> None:
-        """Display the raider.io profile of a character."""
+        """Display the raider.io profile of a character.
+
+        Example:
+        [p]raiderio profile Karlo Ragnaros
+        """
         async with ctx.typing():
             region = await self.config.region()
             realm = "-".join(realm).lower()
@@ -115,10 +119,14 @@ class Raiderio:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @raiderio.command()
-    async def guild(
-        self, ctx, *, guild: str = "Jahaci Rumene Kadulje", realm: str
-    ) -> None:
-        """Display the raider.io profile of a guild."""
+    async def guild(self, ctx, guild: str, *realm: str) -> None:
+        """Display the raider.io profile of a guild.
+
+        If the guild or realm name have spaces in them, they need to be enclosed in quotes.
+
+        Example:
+        [p]raiderio guild "Jahaci Rumene Kadulje" Ragnaros
+        """
         async with ctx.typing():
             region = await self.config.region()
             try:
