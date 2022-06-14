@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import discord
 from dateutil.parser import isoparse
+from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -24,18 +25,13 @@ class Raiderio:
         async with ctx.typing():
             region = await self.config.region()
             realm = "-".join(realm).lower()
-            request_url = f"{RIO_URL}characters/profile?region={region}&realm={realm}&name={character}&fields=mythic_plus_scores_by_season%3Acurrent%2Craid_progression%2Cgear%2Ccovenant"
             try:
                 if realm == "":
                     raise ValueError(_("You didn't give me a realm."))
-                async with self.session.request("GET", request_url) as resp:
-                    profile_data = await resp.json()
-                    if (
-                        resp.status != 200
-                        and profile_data["message"]
-                        == "Could not find requested character"
-                    ):
-                        raise ValueError(_("That character does not exist."))
+                async with RaiderIO as rio:
+                    profile_data = await rio.get_character_profile(
+                        region, realm, character
+                    )
 
                     # TODO: Dict?
                     char_name = profile_data["name"]
@@ -111,19 +107,15 @@ class Raiderio:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @raiderio.command()
-    async def gprofile(self, ctx, *, guild: str = "Jahaci Rumene Kadulje") -> None:
-        """Display the raider.io profile of a Ragnaros EU guild."""
+    async def guild(
+        self, ctx, realm: str, *, guild: str = "Jahaci Rumene Kadulje"
+    ) -> None:
+        """Display the raider.io profile of a guild."""
         async with ctx.typing():
             region = await self.config.region()
-            request_url = f"{RIO_URL}guilds/profile?region={region}&realm=Ragnaros&name={guild}&fields=raid_progression%2Craid_rankings"
             try:
-                async with self.session.request("GET", request_url) as resp:
-                    profile_data = await resp.json()
-                    if (
-                        resp.status != 200
-                        and profile_data["message"] == "Could not find requested guild"
-                    ):
-                        raise ValueError(_("That guild does not exist on EU Ragnaros."))
+                async with RaiderIO() as rio:
+                    profile_data = await rio.get_guild_profile(region, realm, guild)
 
                     guild_name: str = profile_data["name"]
                     guild_url: str = profile_data["profile_url"]
