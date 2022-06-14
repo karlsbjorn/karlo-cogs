@@ -30,7 +30,15 @@ class Raiderio:
                     raise ValueError(_("You didn't give me a realm."))
                 async with RaiderIO() as rio:
                     profile_data = await rio.get_character_profile(
-                        region, realm, character
+                        region,
+                        realm,
+                        character,
+                        fields=[
+                            "mythic_plus_scores_by_season:current",
+                            "raid_progression",
+                            "gear",
+                            "covenant",
+                        ],
                     )
 
                     # TODO: Dict?
@@ -116,7 +124,10 @@ class Raiderio:
             try:
                 async with RaiderIO() as rio:
                     profile_data = await rio.get_guild_profile(
-                        region, realm, guild, fields=["raid_rankings"]
+                        region,
+                        realm,
+                        guild,
+                        fields=["raid_rankings", "raid_progression"],
                     )
 
                     guild_name: str = profile_data["name"]
