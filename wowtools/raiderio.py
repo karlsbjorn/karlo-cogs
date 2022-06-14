@@ -28,7 +28,7 @@ class Raiderio:
             try:
                 if realm == "":
                     raise ValueError(_("You didn't give me a realm."))
-                async with RaiderIO as rio:
+                async with RaiderIO() as rio:
                     profile_data = await rio.get_character_profile(
                         region, realm, character
                     )
@@ -115,7 +115,9 @@ class Raiderio:
             region = await self.config.region()
             try:
                 async with RaiderIO() as rio:
-                    profile_data = await rio.get_guild_profile(region, realm, guild)
+                    profile_data = await rio.get_guild_profile(
+                        region, realm, guild, fields=["raid_rankings"]
+                    )
 
                     guild_name: str = profile_data["name"]
                     guild_url: str = profile_data["profile_url"]
