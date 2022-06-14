@@ -116,7 +116,7 @@ class Raiderio:
 
     @raiderio.command()
     async def guild(
-        self, ctx, realm: str, *, guild: str = "Jahaci Rumene Kadulje"
+        self, ctx, *, guild: str = "Jahaci Rumene Kadulje", realm: str
     ) -> None:
         """Display the raider.io profile of a guild."""
         async with ctx.typing():
