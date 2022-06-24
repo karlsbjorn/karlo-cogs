@@ -27,9 +27,15 @@ class Raiderio:
         [p]raiderio profile Karlo Ragnaros
         """
         async with ctx.typing():
-            region = await self.config.region()
+            region: str = await self.config.region()
             realm = "-".join(realm).lower()
             try:
+                if not region:
+                    raise ValueError(
+                        _(
+                            "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                        )
+                    )
                 if realm == "":
                     raise ValueError(_("You didn't give me a realm."))
                 async with RaiderIO() as rio:
@@ -128,8 +134,14 @@ class Raiderio:
         [p]raiderio guild "Jahaci Rumene Kadulje" Ragnaros
         """
         async with ctx.typing():
-            region = await self.config.region()
+            region: str = await self.config.region()
             try:
+                if not region:
+                    raise ValueError(
+                        _(
+                            "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                        )
+                    )
                 async with RaiderIO() as rio:
                     profile_data = await rio.get_guild_profile(
                         region,
