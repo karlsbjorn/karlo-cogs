@@ -26,7 +26,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embed = await self.gen_summary(ctx)
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -82,7 +82,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_avg_ilvl(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -145,7 +145,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_tier(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -216,7 +216,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_mplus(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -274,7 +274,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_vault(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -332,7 +332,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_wq(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -388,7 +388,7 @@ class Wowaudit:
         try:
             async with ctx.typing():
                 embeds = await self.gen_raidkills(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
