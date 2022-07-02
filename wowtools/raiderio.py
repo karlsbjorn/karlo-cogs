@@ -220,7 +220,8 @@ class Raiderio:
         """Show the Mythic+ rating leaderboard of your guild."""
         async with ctx.typing():
             embed = await self._generate_scoreboard(ctx)
-        await ctx.send(embed=embed)
+        if embed:
+            await ctx.send(embed=embed)
 
     @commands.group()
     async def sbset(self, ctx):
