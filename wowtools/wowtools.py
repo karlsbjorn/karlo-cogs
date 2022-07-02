@@ -33,16 +33,19 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
         }
         default_guild = {
             "realm": None,
-            "auto_raidbots": True,
+            "real_guild_name": None,
             "gmanage_guild": None,
             "gmanage_realm": None,
             "guild_roles": {},
+            "scoreboard_channel": None,
+            "scoreboard_message": None,
         }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
         self.session = aiohttp.ClientSession(
             headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
         )
+        self.update_scoreboard.start()
 
     @commands.group()
     async def wowset(self, ctx):
@@ -80,6 +83,21 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
                 realm = realm.lower()
                 await self.config.guild(ctx.guild).realm.set(realm)
             await ctx.send(_("Realm set."))
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+    @wowset.command(name="guild")
+    @commands.admin()
+    async def wowset_guild(self, ctx: commands.Context, guild_name: str = None):
+        """(CASE SENSITIVE) Set the name of your guild."""
+        try:
+            async with ctx.typing():
+                if guild_name is None:
+                    await self.config.guild(ctx.guild).real_guild_name.clear()
+                    await ctx.send(_("Guild name cleared."))
+                    return
+                await self.config.guild(ctx.guild).real_guild_name.set(guild_name)
+            await ctx.send(_("Guild name set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -174,6 +192,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
+        self.update_scoreboard.stop()
 
     async def red_delete_data_for_user(
         self,

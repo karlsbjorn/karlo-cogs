@@ -6,10 +6,9 @@
     "tags": ["warcraft", "world of warcraft"],
     "requirements": [
         "gspread-asyncio",
-        "regex",
         "rapidfuzz",
         "git+https://github.com/karlsbjorn/python-blizzardapi.git@4b9f47d9e9a1cada5905afbbcbdfec52f6a6ddf3",
-        "git+https://github.com/karlsbjorn/raiderio-async.git@93d53fd8ecf4ce15883c63045e1fc9cfbfe0eb8e"
+        "git+https://github.com/karlsbjorn/raiderio-async.git@1.0.0"
     ],
     "min_bot_version": "3.4.0",
     "max_bot_version": "3.4.99",
