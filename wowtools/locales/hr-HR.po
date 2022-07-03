@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-07-03 15:40+0200\n"
-"PO-Revision-Date: 2022-07-03 15:48+0200\n"
+"PO-Revision-Date: 2022-07-03 16:03+0200\n"
 "Last-Translator: Karlo <karlo@karlo.gg>\n"
 "Language-Team: \n"
 "Language: hr_HR\n"
@@ -336,11 +336,11 @@ msgstr "Zadnje ažuriranje: {last_updated}"
 
 #: wowtools\raiderio.py:220
 msgid "Show the Mythic+ rating leaderboard of your guild."
-msgstr "Pokaži ljestvicu najboljih Mythic+"
+msgstr "Pokaži ljestvicu najboljih Mythic+ ratinga u guildu."
 
 #: wowtools\raiderio.py:228
 msgid "Change scoreboard settings"
-msgstr "Promjeni postavke ljestvice."
+msgstr "Promjeni postavke ljestvice"
 
 #: wowtools\raiderio.py:236
 msgid "Set the channel to send the scoreboard to."
@@ -380,7 +380,7 @@ msgstr ""
 
 #: wowtools\raiderio.py:330 wowtools\raiderio.py:379
 msgid "Mythic+ Guild Scoreboard"
-msgstr ""
+msgstr "Guild Mythic+ Ljestvica"
 
 #: wowtools\token.py:17
 msgid "Check price of WoW token in a region"
