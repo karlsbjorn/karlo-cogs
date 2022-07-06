@@ -30,7 +30,7 @@ class Raiderio:
         [p]raiderio profile Karlo Ragnaros
         """
         async with ctx.typing():
-            region: str = await self.config.region()
+            region: str = await self.config.guild(ctx.guild).region()
             realm = "-".join(realm).lower()
             try:
                 if not region:
@@ -137,7 +137,7 @@ class Raiderio:
         [p]raiderio guild "Jahaci Rumene Kadulje" Ragnaros
         """
         async with ctx.typing():
-            region: str = await self.config.region()
+            region: str = await self.config.guild(ctx.guild).region()
             if not realm:
                 realm: str = await self.config.guild(ctx.guild).realm()
             try:
@@ -368,7 +368,7 @@ class Raiderio:
                 if sb_msg:
                     max_chars = 20
                     headers = ["#", _("Name"), _("Score")]
-                    region: str = await self.config.region()
+                    region: str = await self.config.guild(guild).region()
                     realm: str = await self.config.guild(guild).realm()
                     guild_name: str = await self.config.guild(guild).real_guild_name()
                     sb_blacklist: list[str] = await self.config.guild(
@@ -419,7 +419,7 @@ class Raiderio:
     async def _generate_scoreboard(self, ctx: commands.Context) -> discord.Embed:
         max_chars = 20
         headers = ["#", _("Name"), _("Score")]
-        region: str = await self.config.region()
+        region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).realm()
         guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
         sb_blacklist: list[str] = await self.config.guild(

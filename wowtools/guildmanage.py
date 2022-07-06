@@ -146,7 +146,7 @@ class GuildManage:
 
         wow_guild_name: str = await self.config.guild(ctx.guild).gmanage_guild()
         wow_guild_name = wow_guild_name.lower()
-        region: str = await self.config.region()
+        region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).gmanage_realm()
         realm = realm.lower()
 

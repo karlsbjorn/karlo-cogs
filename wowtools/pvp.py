@@ -29,7 +29,7 @@ class PvP:
                     ).format(prefix=ctx.prefix)
                 )
 
-            region = await self.config.region()
+            region = await self.config.guild(ctx.guild).region()
             realm = "-".join(realm).lower()
             character_name = character_name.lower()
             rbg_rating = "0"

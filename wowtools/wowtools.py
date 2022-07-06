@@ -25,7 +25,6 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {
-            "region": "eu",
             "wowaudit_key": None,
             "emotes": {
                 "gold": None,
@@ -34,6 +33,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
             },
         }
         default_guild = {
+            "region": None,
             "realm": None,
             "real_guild_name": None,
             "gmanage_guild": None,
@@ -56,7 +56,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
         pass
 
     @wowset.command()
-    @commands.is_owner()
+    @commands.admin()
     async def region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
         regions = ("us", "eu", "kr", "tw", "cn")
@@ -68,7 +68,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
                             "That region does not exist.\nValid regions are: us, eu, kr, tw, cn"
                         )
                     )
-                await self.config.region.set(region)
+                await self.config.guild(ctx.guild).region.set(region)
             await ctx.send(_("Region set succesfully."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))

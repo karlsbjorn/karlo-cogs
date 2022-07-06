@@ -23,7 +23,7 @@ class AuctionHouse:
                 await ctx.send(str(e))
                 return
 
-            config_region: str = await self.config.region()
+            config_region: str = await self.config.guild(ctx.guild).region()
             if not config_region:
                 await ctx.send(
                     _(
