@@ -6,7 +6,7 @@ from discord.ext import tasks
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils.chat_formatting import box, humanize_number
+from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
 _ = Translator("WoWTools", __file__)
@@ -224,6 +224,7 @@ class Raiderio:
             await ctx.send(embed=embed)
 
     @commands.group()
+    @commands.admin()
     async def sbset(self, ctx):
         """Change scoreboard settings"""
         pass
@@ -259,9 +260,70 @@ class Raiderio:
         await self.config.guild(ctx.guild).scoreboard_message.set(sb_msg.id)
         await ctx.send(_("Scoreboard channel set."))
 
+    @sbset.group(name="blacklist", aliases=["blocklist"])
+    @commands.admin()
+    async def sbset_blacklist(self, ctx: commands.Context):
+        """Manage the scoreboard blacklist."""
+        pass
+
+    @sbset_blacklist.command(name="add")
+    @commands.admin()
+    async def sbset_blacklist_add(self, ctx: commands.Context, *, characters: str):
+        """Add characters to the scoreboard blacklist.
+
+        Characters can be separated by spaces or commas.
+        """
+        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        for character in characters.split(" "):
+            character = character.strip(",")
+            if character not in blacklist:
+                blacklist.append(character.lower())
+        await self.config.guild(ctx.guild).scoreboard_blacklist.set(blacklist)
+        await ctx.send(_("Blacklisted characters added."))
+
+    @sbset_blacklist.command(name="remove")
+    @commands.admin()
+    async def sbset_blacklist_remove(self, ctx: commands.Context, *, characters: str):
+        """Remove characters from the scoreboard blacklist.
+
+        Characters can be separated by spaces or commas.
+        """
+        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        for character in characters.split(" "):
+            character = character.strip(",")
+            if character in blacklist:
+                blacklist.remove(character.lower())
+        await self.config.guild(ctx.guild).scoreboard_blacklist.set(blacklist)
+        await ctx.send(_("Blacklisted characters removed."))
+
+    @sbset_blacklist.command(name="list")
+    @commands.admin()
+    async def sbset_blacklist_list(self, ctx: commands.Context):
+        """List the characters on the scoreboard blacklist."""
+        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        if not blacklist:
+            await ctx.send(_("No characters are blacklisted."))
+            return
+        await ctx.send(
+            _("Blacklisted characters: {characters}").format(
+                characters=humanize_list(blacklist)
+            )
+        )
+
+    @sbset_blacklist.command(name="clear")
+    @commands.admin()
+    async def sbset_blacklist_clear(self, ctx: commands.Context):
+        """Clear the scoreboard blacklist."""
+        await self.config.guild(ctx.guild).scoreboard_blacklist.clear()
+        await ctx.send(_("Blacklisted characters cleared."))
+
     @staticmethod
     async def get_formatted_top_scores(
-        guild_name: str, max_chars: int, realm: str, region: str
+        guild_name: str,
+        max_chars: int,
+        realm: str,
+        region: str,
+        sb_blacklist: list[str],
     ):
         async with RaiderIO() as rio:
             roster = await rio.get_guild_roster(region, realm, guild_name)
@@ -272,7 +334,7 @@ class Raiderio:
                 char_name = char["character"]["name"]
                 score = char["keystoneScores"]["allScore"]
 
-                if score > 250:
+                if score > 250 and char_name.lower() not in sb_blacklist:
                     lb[char_name] = score
 
             lb = dict(sorted(lb.items(), key=lambda i: i[1], reverse=True))
@@ -307,6 +369,9 @@ class Raiderio:
                     region: str = await self.config.region()
                     realm: str = await self.config.guild(guild).realm()
                     guild_name: str = await self.config.guild(guild).real_guild_name()
+                    sb_blacklist: list[str] = await self.config.guild(
+                        guild
+                    ).scoreboard_blacklist()
                     if not region:
                         raise ValueError(
                             _(
@@ -332,7 +397,7 @@ class Raiderio:
                     )
                     embed.set_author(name=guild.name, icon_url=guild.icon_url)
                     tabulate_list = await self.get_formatted_top_scores(
-                        guild_name, max_chars, realm, region
+                        guild_name, max_chars, realm, region, sb_blacklist
                     )
 
                     embed.description = box(
@@ -355,6 +420,9 @@ class Raiderio:
         region: str = await self.config.region()
         realm: str = await self.config.guild(ctx.guild).realm()
         guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
+        sb_blacklist: list[str] = await self.config.guild(
+            ctx.guild
+        ).scoreboard_blacklist()
         try:
             if not region:
                 raise ValueError(
@@ -381,7 +449,7 @@ class Raiderio:
             )
             embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
             tabulate_list = await self.get_formatted_top_scores(
-                guild_name, max_chars, realm, region
+                guild_name, max_chars, realm, region, sb_blacklist
             )
 
             embed.description = box(

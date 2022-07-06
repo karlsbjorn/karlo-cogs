@@ -39,6 +39,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
             "guild_roles": {},
             "scoreboard_channel": None,
             "scoreboard_message": None,
+            "scoreboard_blacklist": [],
         }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
