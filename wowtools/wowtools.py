@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 
 import aiohttp
@@ -14,6 +15,7 @@ from .raiderio import Raiderio
 from .token import Token
 from .wowaudit import Wowaudit
 
+log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
 

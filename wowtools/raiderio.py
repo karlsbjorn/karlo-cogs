@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 import discord
@@ -9,6 +10,7 @@ from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
+log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
 
@@ -473,7 +475,8 @@ class Raiderio:
             sb_channel: discord.TextChannel = ctx.guild.get_channel(sb_channel_id)
             sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
         except discord.NotFound:
-            sb_msg = None  # TODO: Log this. Message or channel were already deleted or don't exist for some reason.
+            sb_msg = None
+            log.info(f"Scoreboard message in {ctx.guild} ({ctx.guild.id}) not found.")
         if sb_msg:
             await sb_msg.delete()
 
