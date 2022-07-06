@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-07-03 15:40+0200\n"
-"PO-Revision-Date: 2022-07-03 16:03+0200\n"
+"POT-Creation-Date: 2022-07-06 15:18+0200\n"
+"PO-Revision-Date: 2022-07-06 15:22+0200\n"
 "Last-Translator: Karlo <karlo@karlo.gg>\n"
 "Language-Team: \n"
 "Language: hr_HR\n"
@@ -130,20 +130,20 @@ msgid "Set the guild name to be used in the guild management commands."
 msgstr ""
 "Postavi naziv guilda koji će se koristiti u naredbama za upravljanje guildom."
 
-#: wowtools\guildmanage.py:114 wowtools\wowtools.py:97
+#: wowtools\guildmanage.py:114 wowtools\wowtools.py:100
 msgid "Guild name cleared."
 msgstr "Ime guilda izbrisano."
 
-#: wowtools\guildmanage.py:118 wowtools\wowtools.py:100
+#: wowtools\guildmanage.py:118 wowtools\wowtools.py:103
 msgid "Guild name set."
 msgstr "Ime guilda postavljeno."
 
 #: wowtools\guildmanage.py:120 wowtools\guildmanage.py:136 wowtools\pvp.py:199
-#: wowtools\raiderio.py:126 wowtools\raiderio.py:216 wowtools\raiderio.py:398
+#: wowtools\raiderio.py:128 wowtools\raiderio.py:218 wowtools\raiderio.py:469
 #: wowtools\token.py:72 wowtools\wowaudit.py:31 wowtools\wowaudit.py:87
 #: wowtools\wowaudit.py:150 wowtools\wowaudit.py:221 wowtools\wowaudit.py:279
-#: wowtools\wowaudit.py:337 wowtools\wowaudit.py:393 wowtools\wowtools.py:71
-#: wowtools\wowtools.py:87 wowtools\wowtools.py:102 wowtools\wowtools.py:117
+#: wowtools\wowaudit.py:337 wowtools\wowaudit.py:393 wowtools\wowtools.py:74
+#: wowtools\wowtools.py:90 wowtools\wowtools.py:105 wowtools\wowtools.py:120
 msgid "Command failed successfully. {e}"
 msgstr "Naredba uspješno neuspješna. {e}"
 
@@ -193,7 +193,7 @@ msgstr ""
 "set api blizzard client_id,whoops client_secret,whoops` popunjavajući "
 "`whoops` s ID-om i tajnom vašeg klijenta."
 
-#: wowtools\pvp.py:41 wowtools\raiderio.py:41
+#: wowtools\pvp.py:41 wowtools\raiderio.py:43
 msgid "You didn't give me a realm."
 msgstr "Nisi mi dao realm."
 
@@ -217,15 +217,15 @@ msgstr "3v3 rejting"
 msgid "Achievements"
 msgstr "Achiementi"
 
-#: wowtools\raiderio.py:16
+#: wowtools\raiderio.py:18
 msgid "Cog for interaction with the raider.io API"
 msgstr "Cog za interakciju s raider.io API-em"
 
-#: wowtools\raiderio.py:20
+#: wowtools\raiderio.py:22
 msgid "Commands for interacting with Raider.io"
 msgstr "Naredbe za interakciju s Raider.io-om"
 
-#: wowtools\raiderio.py:25
+#: wowtools\raiderio.py:27
 msgid ""
 "Display the raider.io profile of a character.\n"
 "\n"
@@ -239,8 +239,8 @@ msgstr ""
 "        [p]raiderio profile Karlo Ragnaros\n"
 "        "
 
-#: wowtools\raiderio.py:36 wowtools\raiderio.py:144 wowtools\raiderio.py:312
-#: wowtools\raiderio.py:361
+#: wowtools\raiderio.py:38 wowtools\raiderio.py:146 wowtools\raiderio.py:380
+#: wowtools\raiderio.py:432
 msgid ""
 "\n"
 "The bot owner needs to set a region with `[p]wowset region` first."
@@ -248,31 +248,31 @@ msgstr ""
 "\n"
 "Vlasnik bota prvo mora postaviti regiju s `[p]wowset region`."
 
-#: wowtools\raiderio.py:91
+#: wowtools\raiderio.py:93
 msgid "Raider.io profile"
 msgstr "Raider.io profil"
 
-#: wowtools\raiderio.py:96
+#: wowtools\raiderio.py:98
 msgid "__**Mythic+ Score**__"
 msgstr "__**Mythic+ Score**__"
 
-#: wowtools\raiderio.py:101
+#: wowtools\raiderio.py:103
 msgid "Raid progress"
 msgstr "Raid progres"
 
-#: wowtools\raiderio.py:103
+#: wowtools\raiderio.py:105
 msgid "Item level"
 msgstr "Item level"
 
-#: wowtools\raiderio.py:105
+#: wowtools\raiderio.py:107
 msgid "Covenant"
 msgstr "Covenant"
 
-#: wowtools\raiderio.py:108
+#: wowtools\raiderio.py:110
 msgid "__Other links__"
 msgstr "__Ostali linkovi__"
 
-#: wowtools\raiderio.py:109
+#: wowtools\raiderio.py:111
 msgid ""
 "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]"
 "({raidbots_url})"
@@ -280,11 +280,11 @@ msgstr ""
 "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]"
 "({raidbots_url})"
 
-#: wowtools\raiderio.py:119
+#: wowtools\raiderio.py:121
 msgid "Last updated: {char_last_updated}"
 msgstr "Zadnje ažuriranje: {char_last_updated}"
 
-#: wowtools\raiderio.py:130
+#: wowtools\raiderio.py:132
 msgid ""
 "Display the raider.io profile of a guild.\n"
 "\n"
@@ -304,23 +304,23 @@ msgstr ""
 "        [p]raiderio guild \"Jahaci Rumene Kadulje\" Ragnaros\n"
 "        "
 
-#: wowtools\raiderio.py:150
+#: wowtools\raiderio.py:152
 msgid "A server admin needs to set a realm with `[p]wowset realm` first."
 msgstr "Administrator servera prvo mora postaviti realm s `[p]wowset realm`."
 
-#: wowtools\raiderio.py:189
+#: wowtools\raiderio.py:191
 msgid "Guild profile"
 msgstr "Profil guilda"
 
-#: wowtools\raiderio.py:193
+#: wowtools\raiderio.py:195
 msgid "__**Progress**__"
 msgstr "__**Progres**__"
 
-#: wowtools\raiderio.py:202
+#: wowtools\raiderio.py:204
 msgid "{difficulty} rank"
 msgstr "{difficulty} rank"
 
-#: wowtools\raiderio.py:203
+#: wowtools\raiderio.py:205
 msgid ""
 "World: {world}\n"
 "Region: {region}\n"
@@ -330,39 +330,95 @@ msgstr ""
 "Regija: {region}\n"
 "Realm: {realm}"
 
-#: wowtools\raiderio.py:209
+#: wowtools\raiderio.py:211
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools\raiderio.py:220
+#: wowtools\raiderio.py:222
 msgid "Show the Mythic+ rating leaderboard of your guild."
 msgstr "Pokaži ljestvicu najboljih Mythic+ ratinga u guildu."
 
-#: wowtools\raiderio.py:228
+#: wowtools\raiderio.py:231
 msgid "Change scoreboard settings"
 msgstr "Promjeni postavke ljestvice"
 
-#: wowtools\raiderio.py:236
+#: wowtools\raiderio.py:239
 msgid "Set the channel to send the scoreboard to."
 msgstr "Postavite kanal u koji želite poslati ljestvicu."
 
-#: wowtools\raiderio.py:248
+#: wowtools\raiderio.py:251
 msgid "Scoreboard channel cleared."
 msgstr "Kanal za ljestvicu očišćen."
 
-#: wowtools\raiderio.py:260
+#: wowtools\raiderio.py:263
 msgid "Scoreboard channel set."
 msgstr "Kanal za ljestvicu postavljen."
 
-#: wowtools\raiderio.py:306 wowtools\raiderio.py:354
+#: wowtools\raiderio.py:268
+msgid "Manage the scoreboard blacklist."
+msgstr "Upravljaj popisom blokiranih."
+
+#: wowtools\raiderio.py:274
+msgid ""
+"Add characters to the scoreboard blacklist.\n"
+"\n"
+"        Characters can be separated by spaces or commas.\n"
+"        "
+msgstr ""
+"Dodaj charactere na popis blokiranih.\n"
+"\n"
+"        Characteri se mogu odvajati razmacima ili zarezima.\n"
+"        "
+
+#: wowtools\raiderio.py:284
+msgid "Blacklisted characters added."
+msgstr "Characteri dodani na popis blokiranih."
+
+#: wowtools\raiderio.py:289
+msgid ""
+"Remove characters from the scoreboard blacklist.\n"
+"\n"
+"        Characters can be separated by spaces or commas.\n"
+"        "
+msgstr ""
+"Ukloni charactere s popisa blokiranih.\n"
+"\n"
+"        Characteri se mogu odvajati razmacima ili zarezima.\n"
+"        "
+
+#: wowtools\raiderio.py:299
+msgid "Blacklisted characters removed."
+msgstr "Characteri maknuti s popisa blokiranih."
+
+#: wowtools\raiderio.py:304
+msgid "List the characters on the scoreboard blacklist."
+msgstr "Pokaži charactere na popisu blokiranih"
+
+#: wowtools\raiderio.py:307
+msgid "No characters are blacklisted."
+msgstr "Nema charactera na popisu blokiranih."
+
+#: wowtools\raiderio.py:310
+msgid "Blacklisted characters: {characters}"
+msgstr "Characteri na popisu blokiranih: {characters}"
+
+#: wowtools\raiderio.py:318
+msgid "Clear the scoreboard blacklist."
+msgstr "Izbriši popis blokiranih."
+
+#: wowtools\raiderio.py:320
+msgid "Blacklisted characters cleared."
+msgstr "Svi characteri s popisa blokiranih su izbrisani."
+
+#: wowtools\raiderio.py:371 wowtools\raiderio.py:422
 msgid "Name"
 msgstr "Ime"
 
-#: wowtools\raiderio.py:306 wowtools\raiderio.py:354
+#: wowtools\raiderio.py:371 wowtools\raiderio.py:422
 msgid "Score"
 msgstr ""
 
-#: wowtools\raiderio.py:318 wowtools\raiderio.py:367
+#: wowtools\raiderio.py:386 wowtools\raiderio.py:438
 msgid ""
 "\n"
 "A server admin needs to set a realm with `[p]wowset realm` first."
@@ -370,7 +426,7 @@ msgstr ""
 "\n"
 "Administrator servera prvo mora postaviti realm s `[p]wowset realm`."
 
-#: wowtools\raiderio.py:324 wowtools\raiderio.py:373
+#: wowtools\raiderio.py:392 wowtools\raiderio.py:444
 msgid ""
 "\n"
 "A server admin needs to set a guild name with `[p]wowset guild` first."
@@ -378,7 +434,7 @@ msgstr ""
 "\n"
 "Administrator servera prvo mora postaviti regiju s `[p]wowset guild`."
 
-#: wowtools\raiderio.py:330 wowtools\raiderio.py:379
+#: wowtools\raiderio.py:398 wowtools\raiderio.py:450
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Guild Mythic+ Ljestvica"
 
@@ -536,15 +592,15 @@ msgid ""
 "No service account credentials found."
 msgstr ""
 
-#: wowtools\wowtools.py:52
+#: wowtools\wowtools.py:55
 msgid "Change WoWTools settings."
 msgstr "Promjeni postavke WoWTools-a."
 
-#: wowtools\wowtools.py:58
+#: wowtools\wowtools.py:61
 msgid "Set the region where characters and guilds will be searched for."
 msgstr "Postavi regiju gdje će se characteri i guildovi pretraživati."
 
-#: wowtools\wowtools.py:64
+#: wowtools\wowtools.py:67
 msgid ""
 "That region does not exist.\n"
 "Valid regions are: us, eu, kr, tw, cn"
@@ -552,49 +608,49 @@ msgstr ""
 "Ta regija ne postoji.\n"
 "Važeće regije su: us, eu, kr, tw, cn"
 
-#: wowtools\wowtools.py:69
+#: wowtools\wowtools.py:72
 msgid "Region set succesfully."
 msgstr "Regija uspješno postavljena."
 
-#: wowtools\wowtools.py:76
+#: wowtools\wowtools.py:79
 msgid "Set the realm of your guild."
 msgstr "Postavi realm svog guilda."
 
-#: wowtools\wowtools.py:81
+#: wowtools\wowtools.py:84
 msgid "Realm cleared."
 msgstr "Realm izbrisan."
 
-#: wowtools\wowtools.py:85
+#: wowtools\wowtools.py:88
 msgid "Realm set."
 msgstr "Realm postavljen."
 
-#: wowtools\wowtools.py:92
+#: wowtools\wowtools.py:95
 msgid "(CASE SENSITIVE) Set the name of your guild."
 msgstr "(Razlikuje velika i mala slova) Postavi ime svog guilda."
 
-#: wowtools\wowtools.py:107
+#: wowtools\wowtools.py:110
 msgid "Set the key of your wowaudit spreadsheet."
 msgstr "Postavi ključ svoje wowaudit tablice."
 
-#: wowtools\wowtools.py:112
+#: wowtools\wowtools.py:115
 msgid "WowAudit spreadsheet key cleared."
 msgstr "WowAudit ključ tablice očišćen."
 
-#: wowtools\wowtools.py:115
+#: wowtools\wowtools.py:118
 msgid "WowAudit spreadsheet key set."
 msgstr "WowAudit ključ tablice postavljen."
 
-#: wowtools\wowtools.py:122
+#: wowtools\wowtools.py:125
 msgid ""
 "Set the service account key for the bot. This is required for any wowaudit "
 "commands."
 msgstr ""
 
-#: wowtools\wowtools.py:124
+#: wowtools\wowtools.py:127
 msgid "This command can only be used in DMs."
 msgstr "Ova naredba se može koristiti samo u DM-u."
 
-#: wowtools\wowtools.py:127
+#: wowtools\wowtools.py:130
 msgid ""
 "A service account is a special type of Google account intended to represent "
 "a non-human user that needs to authenticate and be authorized to access data "
@@ -622,15 +678,15 @@ msgid ""
 "Attach that file with the command you just typed."
 msgstr ""
 
-#: wowtools\wowtools.py:153
+#: wowtools\wowtools.py:156
 msgid "Service account set."
 msgstr "Servisni račun postavljen."
 
-#: wowtools\wowtools.py:162
+#: wowtools\wowtools.py:165
 msgid "Instructions for setting up the Blizzard API."
 msgstr "Upute za postavljanje Blizzard API-ja."
 
-#: wowtools\wowtools.py:164
+#: wowtools\wowtools.py:167
 msgid ""
 "Create a client on https://develop.battle.net/ and then type in `{prefix}set "
 "api blizzard client_id,whoops client_secret,whoops` filling in `whoops` with "
@@ -640,19 +696,19 @@ msgstr ""
 "set api blizzard client_id,whoops client_secret,whoops` popunjavajući "
 "`whoops` s ID-om i tajnom vašeg klijenta."
 
-#: wowtools\wowtools.py:176
+#: wowtools\wowtools.py:179
 msgid "Set the emotes used for gold, silver and copper."
 msgstr "Postavi emote koji se koriste za gold, silver i copper."
 
-#: wowtools\wowtools.py:179
+#: wowtools\wowtools.py:182
 msgid "Invalid currency."
 msgstr "Nevažeća valuta."
 
-#: wowtools\wowtools.py:183
+#: wowtools\wowtools.py:186
 msgid "{currency} emote set to {emoji}"
 msgstr "{currency} emote postavljen na {emoji}"
 
-#: wowtools\wowtools.py:190
+#: wowtools\wowtools.py:193
 msgid "{currency} emote removed."
 msgstr "{currency} emote uklonjen."
 
