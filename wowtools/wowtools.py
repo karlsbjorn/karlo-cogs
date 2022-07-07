@@ -12,6 +12,7 @@ from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
 from .pvp import PvP
 from .raiderio import Raiderio
+from .scoreboard import Scoreboard
 from .token import Token
 from .wowaudit import Wowaudit
 
@@ -20,7 +21,9 @@ _ = Translator("WoWTools", __file__)
 
 
 @cog_i18n(_)
-class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, commands.Cog):
+class WoWTools(
+    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, commands.Cog
+):
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
@@ -48,7 +51,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
         self.session = aiohttp.ClientSession(
             headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
         )
-        self.update_scoreboard.start()
+        self.update_dungeon_scoreboard.start()
 
     @commands.group()
     async def wowset(self, ctx):
@@ -195,7 +198,7 @@ class WoWTools(PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, comman
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
-        self.update_scoreboard.stop()
+        self.update_dungeon_scoreboard.stop()
 
     async def red_delete_data_for_user(
         self,
