@@ -378,7 +378,7 @@ class Scoreboard:
                     )
                     # Don't edit if there wouldn't be a change
                     if sb_msg.embeds[0].description == embed.description:
-                        return
+                        continue
                     await sb_msg.edit(embed=embed)
 
     async def _generate_dungeon_scoreboard(
