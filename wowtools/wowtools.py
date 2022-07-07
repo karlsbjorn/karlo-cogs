@@ -24,6 +24,8 @@ _ = Translator("WoWTools", __file__)
 class WoWTools(
     PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, commands.Cog
 ):
+    """Interact with various World of Warcraft APIs"""
+
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)

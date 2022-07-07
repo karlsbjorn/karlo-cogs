@@ -20,6 +20,7 @@ class Scoreboard:
     @commands.group(name="wowscoreboard", aliases=["sb"])
     @commands.guild_only()
     async def wowscoreboard(self, ctx: commands.Context):
+        """Show various scoreboards for your guild."""
         pass
 
     @wowscoreboard.command(name="dungeon")
@@ -385,12 +386,7 @@ class Scoreboard:
     ) -> discord.Embed:
         max_chars = 20
         headers = ["#", _("Name"), _("Score")]
-        region: str = await self.config.guild(ctx.guild).region()
-        realm: str = await self.config.guild(ctx.guild).realm()
-        guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
-        sb_blacklist: list[str] = await self.config.guild(
-            ctx.guild
-        ).scoreboard_blacklist()
+        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
         try:
             if not region:
                 raise ValueError(
@@ -438,12 +434,7 @@ class Scoreboard:
     ) -> list[discord.Embed]:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
-        region: str = await self.config.guild(ctx.guild).region()
-        realm: str = await self.config.guild(ctx.guild).realm()
-        guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
-        sb_blacklist: list[str] = await self.config.guild(
-            ctx.guild
-        ).scoreboard_blacklist()
+        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
         try:
             if not region:
                 raise ValueError(
@@ -527,3 +518,12 @@ class Scoreboard:
             log.info(f"Scoreboard message in {ctx.guild} ({ctx.guild.id}) not found.")
         if sb_msg:
             await sb_msg.delete()
+
+    async def _get_guild_config(self, ctx):
+        region: str = await self.config.guild(ctx.guild).region()
+        realm: str = await self.config.guild(ctx.guild).realm()
+        guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
+        sb_blacklist: list[str] = await self.config.guild(
+            ctx.guild
+        ).scoreboard_blacklist()
+        return guild_name, realm, region, sb_blacklist
