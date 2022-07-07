@@ -17,23 +17,23 @@ _ = Translator("WoWTools", __file__)
 
 
 class Scoreboard:
-    @commands.group(name="scoreboard", aliases=["sb"])
+    @commands.group(name="wowscoreboard", aliases=["sb"])
     @commands.guild_only()
-    async def scoreboard(self, ctx: commands.Context):
+    async def wowscoreboard(self, ctx: commands.Context):
         pass
 
-    @scoreboard.command(name="dungeon")
+    @wowscoreboard.command(name="dungeon")
     @commands.guild_only()
-    async def scoreboard_dungeon(self, ctx: commands.Context):
+    async def wowscoreboard_dungeon(self, ctx: commands.Context):
         """Get the Mythic+ scoreboard for this guild."""
         async with ctx.typing():
             embed = await self._generate_dungeon_scoreboard(ctx)
         if embed:
             await ctx.send(embed=embed)
 
-    @scoreboard.command(name="pvp")
+    @wowscoreboard.command(name="pvp")
     @commands.guild_only()
-    async def scoreboard_pvp(self, ctx: commands.Context):
+    async def wowscoreboard_pvp(self, ctx: commands.Context):
         """Get the 2v2 scoreboard for this guild."""
         async with ctx.typing():
             embeds = await self._generate_pvp_scoreboard(ctx)
