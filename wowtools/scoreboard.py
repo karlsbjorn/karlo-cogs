@@ -35,7 +35,7 @@ class Scoreboard:
     @wowscoreboard.command(name="pvp")
     @commands.guild_only()
     async def wowscoreboard_pvp(self, ctx: commands.Context):
-        """Get the 2v2 scoreboard for this guild."""
+        """Get all the PvP related scoreboards for this guild."""
         async with ctx.typing():
             embeds = await self._generate_pvp_scoreboard(ctx)
         if embeds:
