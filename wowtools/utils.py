@@ -1,5 +1,3 @@
-from typing import Any
-
 from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.bot import Red
