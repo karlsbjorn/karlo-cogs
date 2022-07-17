@@ -143,8 +143,67 @@ class Scoreboard:
         await self.config.guild(ctx.guild).scoreboard_blacklist.clear()
         await ctx.send(_("Blacklisted characters cleared."))
 
+    @tasks.loop(minutes=5)
+    async def update_dungeon_scoreboard(self):
+        for guild in self.bot.guilds:
+            sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
+            sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
+            if sb_channel_id and sb_msg_id:
+                sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
+                sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+                if sb_msg:
+                    max_chars = 20
+                    headers = ["#", _("Name"), _("Score")]
+                    region: str = await self.config.guild(guild).region()
+                    realm: str = await self.config.guild(guild).realm()
+                    guild_name: str = await self.config.guild(guild).real_guild_name()
+                    sb_blacklist: list[str] = await self.config.guild(
+                        guild
+                    ).scoreboard_blacklist()
+                    if not region:
+                        raise ValueError(
+                            _(
+                                "\nA server admin needs to set a region with `[p]wowset region` first."
+                            )
+                        )
+                    if not realm:
+                        raise ValueError(
+                            _(
+                                "\nA server admin needs to set a realm with `[p]wowset realm` first."
+                            )
+                        )
+                    if not guild_name:
+                        raise ValueError(
+                            _(
+                                "\nA server admin needs to set a guild name with `[p]wowset guild` first."
+                            )
+                        )
+
+                    embed = discord.Embed(
+                        title=_("Mythic+ Guild Scoreboard"),
+                        color=await self.bot.get_embed_color(sb_msg),
+                    )
+                    embed.set_author(name=guild.name, icon_url=guild.icon_url)
+                    tabulate_list = await self._get_dungeon_scores(
+                        guild_name, max_chars, realm, region, sb_blacklist
+                    )
+
+                    embed.description = box(
+                        tabulate(
+                            tabulate_list,
+                            headers=headers,
+                            tablefmt="plain",
+                            disable_numparse=True,
+                        ),
+                        lang="md",
+                    )
+                    # Don't edit if there wouldn't be a change
+                    if sb_msg.embeds[0].description == embed.description:
+                        continue
+                    await sb_msg.edit(embed=embed)
+
     @staticmethod
-    async def get_dungeon_scores(
+    async def _get_dungeon_scores(
         guild_name: str,
         max_chars: int,
         realm: str,
@@ -181,7 +240,143 @@ class Scoreboard:
                 )
         return tabulate_list
 
-    async def get_pvp_scores(
+    async def _generate_dungeon_scoreboard(
+        self, ctx: commands.Context
+    ) -> discord.Embed:
+        max_chars = 20
+        headers = ["#", _("Name"), _("Score")]
+        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
+        try:
+            if not region:
+                raise ValueError(
+                    _(
+                        "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                    )
+                )
+            if not realm:
+                raise ValueError(
+                    _(
+                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
+                    )
+                )
+            if not guild_name:
+                raise ValueError(
+                    _(
+                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
+                    )
+                )
+
+            embed = discord.Embed(
+                title=_("Mythic+ Guild Scoreboard"),
+                color=await ctx.embed_color(),
+            )
+            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+            tabulate_list = await self._get_dungeon_scores(
+                guild_name, max_chars, realm, region, sb_blacklist
+            )
+
+            embed.description = box(
+                tabulate(
+                    tabulate_list,
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            )
+            return embed
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+    @staticmethod
+    async def _delete_scoreboard(
+        ctx: commands.Context, sb_channel_id: int, sb_msg_id: int
+    ):
+        try:
+            sb_channel: discord.TextChannel = ctx.guild.get_channel(sb_channel_id)
+            sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+        except discord.NotFound:
+            sb_msg = None
+            log.info(f"Scoreboard message in {ctx.guild} ({ctx.guild.id}) not found.")
+        if sb_msg:
+            await sb_msg.delete()
+
+    async def _generate_pvp_scoreboard(self, ctx: commands.Context) -> discord.Embed:
+        max_chars = 10
+        headers = ["#", _("Name"), _("Rating")]
+        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
+        if not region:
+            await ctx.send(
+                _(
+                    "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                )
+            )
+        if not realm:
+            await ctx.send(
+                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
+            )
+        if not guild_name:
+            await ctx.send(
+                _(
+                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
+                )
+            )
+
+        msg = await ctx.send(_("This may take a while..."))
+
+        embed_pvp = discord.Embed(
+            title=_("Guild PvP Leaderboard"),
+            color=await ctx.embed_color(),
+        )
+
+        tabulate_lists = await self._get_pvp_scores(
+            ctx, guild_name, max_chars, realm, region, sb_blacklist
+        )
+
+        embed_pvp.add_field(
+            name=_("RBG Leaderboard"),
+            value=box(
+                tabulate(
+                    tabulate_lists[0],
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            ),
+            inline=False,
+        )
+        embed_pvp.add_field(
+            name=_("2v2 Arena Leaderboard"),
+            value=box(
+                tabulate(
+                    tabulate_lists[1],
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            ),
+            inline=False,
+        )
+        embed_pvp.add_field(
+            name=_("3v3 Arena Leaderboard"),
+            value=box(
+                tabulate(
+                    tabulate_lists[2],
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            ),
+            inline=False,
+        )
+
+        await msg.delete()
+        return embed_pvp
+
+    async def _get_pvp_scores(
         self,
         ctx,
         guild_name: str,
@@ -320,206 +515,6 @@ class Scoreboard:
                 ]
             )
         return tabulate_lists
-
-    @tasks.loop(minutes=5)
-    async def update_dungeon_scoreboard(self):
-        for guild in self.bot.guilds:
-            sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
-            sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
-            if sb_channel_id and sb_msg_id:
-                sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
-                sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
-                if sb_msg:
-                    max_chars = 20
-                    headers = ["#", _("Name"), _("Score")]
-                    region: str = await self.config.guild(guild).region()
-                    realm: str = await self.config.guild(guild).realm()
-                    guild_name: str = await self.config.guild(guild).real_guild_name()
-                    sb_blacklist: list[str] = await self.config.guild(
-                        guild
-                    ).scoreboard_blacklist()
-                    if not region:
-                        raise ValueError(
-                            _(
-                                "\nThe bot owner needs to set a region with `[p]wowset region` first."
-                            )
-                        )
-                    if not realm:
-                        raise ValueError(
-                            _(
-                                "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                            )
-                        )
-                    if not guild_name:
-                        raise ValueError(
-                            _(
-                                "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                            )
-                        )
-
-                    embed = discord.Embed(
-                        title=_("Mythic+ Guild Scoreboard"),
-                        color=await self.bot.get_embed_color(sb_msg),
-                    )
-                    embed.set_author(name=guild.name, icon_url=guild.icon_url)
-                    tabulate_list = await self.get_dungeon_scores(
-                        guild_name, max_chars, realm, region, sb_blacklist
-                    )
-
-                    embed.description = box(
-                        tabulate(
-                            tabulate_list,
-                            headers=headers,
-                            tablefmt="plain",
-                            disable_numparse=True,
-                        ),
-                        lang="md",
-                    )
-                    # Don't edit if there wouldn't be a change
-                    if sb_msg.embeds[0].description == embed.description:
-                        continue
-                    await sb_msg.edit(embed=embed)
-
-    async def _generate_dungeon_scoreboard(
-        self, ctx: commands.Context
-    ) -> discord.Embed:
-        max_chars = 20
-        headers = ["#", _("Name"), _("Score")]
-        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
-        try:
-            if not region:
-                raise ValueError(
-                    _(
-                        "\nThe bot owner needs to set a region with `[p]wowset region` first."
-                    )
-                )
-            if not realm:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                    )
-                )
-            if not guild_name:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                    )
-                )
-
-            embed = discord.Embed(
-                title=_("Mythic+ Guild Scoreboard"),
-                color=await ctx.embed_color(),
-            )
-            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
-            tabulate_list = await self.get_dungeon_scores(
-                guild_name, max_chars, realm, region, sb_blacklist
-            )
-
-            embed.description = box(
-                tabulate(
-                    tabulate_list,
-                    headers=headers,
-                    tablefmt="plain",
-                    disable_numparse=True,
-                ),
-                lang="md",
-            )
-            return embed
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    async def _generate_pvp_scoreboard(self, ctx: commands.Context) -> discord.Embed:
-        max_chars = 10
-        headers = ["#", _("Name"), _("Rating")]
-        guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
-        try:
-            if not region:
-                raise ValueError(
-                    _(
-                        "\nThe bot owner needs to set a region with `[p]wowset region` first."
-                    )
-                )
-            if not realm:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                    )
-                )
-            if not guild_name:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                    )
-                )
-
-            msg = await ctx.send(_("This may take a while..."))
-
-            embed_pvp = discord.Embed(
-                title=_("Guild PvP Leaderboard"),
-                color=await ctx.embed_color(),
-            )
-
-            tabulate_lists = await self.get_pvp_scores(
-                ctx, guild_name, max_chars, realm, region, sb_blacklist
-            )
-
-            embed_pvp.add_field(
-                name=_("RBG Leaderboard"),
-                value=box(
-                    tabulate(
-                        tabulate_lists[0],
-                        headers=headers,
-                        tablefmt="plain",
-                        disable_numparse=True,
-                    ),
-                    lang="md",
-                ),
-                inline=False,
-            )
-            embed_pvp.add_field(
-                name=_("2v2 Arena Leaderboard"),
-                value=box(
-                    tabulate(
-                        tabulate_lists[1],
-                        headers=headers,
-                        tablefmt="plain",
-                        disable_numparse=True,
-                    ),
-                    lang="md",
-                ),
-                inline=False,
-            )
-            embed_pvp.add_field(
-                name=_("3v3 Arena Leaderboard"),
-                value=box(
-                    tabulate(
-                        tabulate_lists[2],
-                        headers=headers,
-                        tablefmt="plain",
-                        disable_numparse=True,
-                    ),
-                    lang="md",
-                ),
-                inline=False,
-            )
-
-            await msg.delete()
-            return embed_pvp
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    @staticmethod
-    async def _delete_scoreboard(
-        ctx: commands.Context, sb_channel_id: int, sb_msg_id: int
-    ):
-        try:
-            sb_channel: discord.TextChannel = ctx.guild.get_channel(sb_channel_id)
-            sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
-        except discord.NotFound:
-            sb_msg = None
-            log.info(f"Scoreboard message in {ctx.guild} ({ctx.guild.id}) not found.")
-        if sb_msg:
-            await sb_msg.delete()
 
     async def _get_guild_config(self, ctx):
         region: str = await self.config.guild(ctx.guild).region()
