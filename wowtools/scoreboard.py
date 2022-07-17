@@ -37,11 +37,10 @@ class Scoreboard:
     async def wowscoreboard_pvp(self, ctx: commands.Context):
         """Get all the PvP related scoreboards for this guild."""
         async with ctx.typing():
-            embeds = await self._generate_pvp_scoreboard(ctx)
-        if embeds:
+            embed = await self._generate_pvp_scoreboard(ctx)
+        if embed:
             # TODO: In dpy2, make this a list of embeds to send in a single message
-            for embed in embeds:
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.group()
     @commands.admin()
@@ -429,9 +428,7 @@ class Scoreboard:
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    async def _generate_pvp_scoreboard(
-        self, ctx: commands.Context
-    ) -> list[discord.Embed]:
+    async def _generate_pvp_scoreboard(self, ctx: commands.Context) -> discord.Embed:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
@@ -457,52 +454,57 @@ class Scoreboard:
 
             msg = await ctx.send(_("This may take a while..."))
 
-            embed_rbg = discord.Embed(
-                title=_("RBG Guild Leaderboard"),
+            embed_pvp = discord.Embed(
+                title=_("Guild PvP Leaderboard"),
                 color=await ctx.embed_color(),
             )
-            embed_2v2 = discord.Embed(
-                title=_("2v2 Guild Leaderboard"),
-                color=await ctx.embed_color(),
-            )
-            embed_3v3 = discord.Embed(
-                title=_("3v3 Guild Leaderboard"),
-                color=await ctx.embed_color(),
-            )
+
             tabulate_lists = await self.get_pvp_scores(
                 ctx, guild_name, max_chars, realm, region, sb_blacklist
             )
 
-            embed_rbg.description = box(
-                tabulate(
-                    tabulate_lists[0],
-                    headers=headers,
-                    tablefmt="plain",
-                    disable_numparse=True,
+            embed_pvp.add_field(
+                name=_("RBG Leaderboard"),
+                value=box(
+                    tabulate(
+                        tabulate_lists[0],
+                        headers=headers,
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                    lang="md",
                 ),
-                lang="md",
+                inline=False,
             )
-            embed_2v2.description = box(
-                tabulate(
-                    tabulate_lists[1],
-                    headers=headers,
-                    tablefmt="plain",
-                    disable_numparse=True,
+            embed_pvp.add_field(
+                name=_("2v2 Arena Leaderboard"),
+                value=box(
+                    tabulate(
+                        tabulate_lists[1],
+                        headers=headers,
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                    lang="md",
                 ),
-                lang="md",
+                inline=False,
             )
-            embed_3v3.description = box(
-                tabulate(
-                    tabulate_lists[2],
-                    headers=headers,
-                    tablefmt="plain",
-                    disable_numparse=True,
+            embed_pvp.add_field(
+                name=_("3v3 Arena Leaderboard"),
+                value=box(
+                    tabulate(
+                        tabulate_lists[2],
+                        headers=headers,
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                    lang="md",
                 ),
-                lang="md",
+                inline=False,
             )
-            embeds = [embed_rbg, embed_2v2, embed_3v3]
+
             await msg.delete()
-            return embeds
+            return embed_pvp
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
