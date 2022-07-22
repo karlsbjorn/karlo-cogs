@@ -1,7 +1,6 @@
 # karlo-cogs
 
-[![Crowdin](https://badges.crowdin.net/karlo-cogs/localized.svg)](https://crowdin.com)
-
+[![Crowdin](https://badges.crowdin.net/karlo-cogs/localized.svg)](https://crowdin.com/project/karlo-cogs)
 
 `[p]repo add karlo-cogs https://github.com/karlsbjorn/karlo-cogs`
 
