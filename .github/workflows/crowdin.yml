@@ -22,10 +22,10 @@ jobs:
         python3.9 -m redgettext --command-docstrings --recursive .
     - name: crowdin action
       uses: crowdin/github-action@1.4.10
-        with:
-          upload_translations: true
-          download_translations: true
-        env:
-          CROWDIN_API_KEY: ${{ secrets.crowdin_token}}
-          CROWDIN_PROJECT_ID: ${{ secrets.crowdin_identifier }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_translations: true
+        download_translations: true
+      env:
+        CROWDIN_API_KEY: ${{ secrets.crowdin_token}}
+        CROWDIN_PROJECT_ID: ${{ secrets.crowdin_identifier }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
