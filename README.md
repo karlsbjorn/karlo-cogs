@@ -1,5 +1,8 @@
 # karlo-cogs
 
+[![Crowdin](https://badges.crowdin.net/karlo-cogs/localized.svg)](https://crowdin.com)
+
+
 `[p]repo add karlo-cogs https://github.com/karlsbjorn/karlo-cogs`
 
 `[p]cog install karlo-cogs cogname`
