@@ -2,6 +2,7 @@ import functools
 import logging
 
 import discord
+from aiolimiter import AsyncLimiter
 from blizzardapi import BlizzardApi
 from discord.ext import tasks
 from raiderio_async import RaiderIO
@@ -385,6 +386,7 @@ class Scoreboard:
         region: str,
         sb_blacklist: list[str],
     ) -> list:
+        limiter = AsyncLimiter(33, time_period=1)
         api_client: BlizzardApi = await get_api_client(self.bot, ctx)
         guild_name = guild_name.replace(" ", "-").lower()
 
@@ -409,62 +411,64 @@ class Scoreboard:
         roster = {"rbg": {}, "2v2": {}, "3v3": {}}
 
         for member in guild_roster["members"]:
-            character_name = member["character"]["name"].lower()
-            if character_name not in sb_blacklist:
-                fetch_rbg_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="rbg",
-                )
-                fetch_duo_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="2v2",
-                )
-                fetch_tri_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="3v3",
-                )
+            async with limiter:
+                character_name = member["character"]["name"].lower()
+                if character_name not in sb_blacklist:
+                    fetch_rbg_statistics = functools.partial(
+                        api_client.wow.profile.get_character_pvp_bracket_statistics,
+                        region=region,
+                        realm_slug=realm,
+                        character_name=character_name,
+                        locale="en_US",
+                        pvp_bracket="rbg",
+                    )
+                    fetch_duo_statistics = functools.partial(
+                        api_client.wow.profile.get_character_pvp_bracket_statistics,
+                        region=region,
+                        realm_slug=realm,
+                        character_name=character_name,
+                        locale="en_US",
+                        pvp_bracket="2v2",
+                    )
+                    fetch_tri_statistics = functools.partial(
+                        api_client.wow.profile.get_character_pvp_bracket_statistics,
+                        region=region,
+                        realm_slug=realm,
+                        character_name=character_name,
+                        locale="en_US",
+                        pvp_bracket="3v3",
+                    )
 
-                rbg_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_rbg_statistics
-                )
-                duo_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_duo_statistics
-                )
-                tri_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_tri_statistics
-                )
+                    rbg_statistics = await self.bot.loop.run_in_executor(
+                        None, fetch_rbg_statistics
+                    )
+                    duo_statistics = await self.bot.loop.run_in_executor(
+                        None, fetch_duo_statistics
+                    )
+                    tri_statistics = await self.bot.loop.run_in_executor(
+                        None, fetch_tri_statistics
+                    )
 
-                if "rating" in rbg_statistics:
-                    # Have to nest this because there won't be a season key if the character never played the gamemode
-                    if rbg_statistics["season"]["id"] == current_season:
-                        roster["rbg"][character_name] = rbg_statistics["rating"]
-                        logging.debug(
-                            f"{character_name} has RBG rating {rbg_statistics['rating']}"
-                        )
-                if "rating" in duo_statistics:
-                    if duo_statistics["season"]["id"] == current_season:
-                        roster["2v2"][character_name] = duo_statistics["rating"]
-                        logging.debug(
-                            f"{character_name} has 2v2 rating {duo_statistics['rating']}"
-                        )
-                if "rating" in tri_statistics:
-                    if tri_statistics["season"]["id"] == current_season:
-                        roster["3v3"][character_name] = tri_statistics["rating"]
-                        logging.debug(
-                            f"{character_name} has 3v3 rating {tri_statistics['rating']}"
-                        )
+                    if "rating" in rbg_statistics:
+                        # Have to nest this because there won't be a season key if
+                        # the character never played the gamemode
+                        if rbg_statistics["season"]["id"] == current_season:
+                            roster["rbg"][character_name] = rbg_statistics["rating"]
+                            logging.debug(
+                                f"{character_name} has RBG rating {rbg_statistics['rating']}"
+                            )
+                    if "rating" in duo_statistics:
+                        if duo_statistics["season"]["id"] == current_season:
+                            roster["2v2"][character_name] = duo_statistics["rating"]
+                            logging.debug(
+                                f"{character_name} has 2v2 rating {duo_statistics['rating']}"
+                            )
+                    if "rating" in tri_statistics:
+                        if tri_statistics["season"]["id"] == current_season:
+                            roster["3v3"][character_name] = tri_statistics["rating"]
+                            logging.debug(
+                                f"{character_name} has 3v3 rating {tri_statistics['rating']}"
+                            )
 
         roster["rbg"] = dict(
             sorted(roster["rbg"].items(), key=lambda i: i[1], reverse=True)
