@@ -228,6 +228,7 @@ class Raiderio:
                 await ctx.send(
                     "A guild admin needs to set a region with `[p]wowset region` first."
                 )
+                return
             async with RaiderIO() as rio:
                 affixes = await rio.get_mythic_plus_affixes(region)
                 affixes = affixes["affix_details"]

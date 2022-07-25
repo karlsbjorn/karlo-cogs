@@ -147,7 +147,7 @@ class Scoreboard:
     @tasks.loop(minutes=5)
     async def update_dungeon_scoreboard(self):
         for guild in self.bot.guilds:
-            if self.bot.cog_disabled_in_guild():
+            if await self.bot.cog_disabled_in_guild(self, guild):
                 continue
             sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
