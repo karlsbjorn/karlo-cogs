@@ -147,6 +147,8 @@ class Scoreboard:
     @tasks.loop(minutes=5)
     async def update_dungeon_scoreboard(self):
         for guild in self.bot.guilds:
+            if self.bot.cog_disabled_in_guild():
+                continue
             sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
             if sb_channel_id and sb_msg_id:
@@ -161,24 +163,8 @@ class Scoreboard:
                     sb_blacklist: list[str] = await self.config.guild(
                         guild
                     ).scoreboard_blacklist()
-                    if not region:
-                        raise ValueError(
-                            _(
-                                "\nA server admin needs to set a region with `[p]wowset region` first."
-                            )
-                        )
-                    if not realm:
-                        raise ValueError(
-                            _(
-                                "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                            )
-                        )
-                    if not guild_name:
-                        raise ValueError(
-                            _(
-                                "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                            )
-                        )
+                    if not region or not realm or not guild_name:
+                        continue
 
                     embed = discord.Embed(
                         title=_("Mythic+ Guild Scoreboard"),
