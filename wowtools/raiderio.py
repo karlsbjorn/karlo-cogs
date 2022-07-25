@@ -222,6 +222,7 @@ class Raiderio:
     @raiderio.command(name="affixes")
     @commands.guild_only()
     async def raiderio_affixes(self, ctx: commands.Context) -> None:
+        """Display this week's affixes."""
         async with ctx.typing():
             region: str = await self.config.guild(ctx.guild).region()
             if not region:
