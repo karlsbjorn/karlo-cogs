@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-07-25 21:56+0000\n"
-"PO-Revision-Date: 2022-07-25 22:02\n"
+"POT-Creation-Date: 2022-07-25 22:51+0000\n"
+"PO-Revision-Date: 2022-07-25 22:51\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -292,7 +292,12 @@ msgstr "Svijet: {world}\n"
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/raiderio.py:236
+#: wowtools/raiderio.py:225
+#, docstring
+msgid "Display this week's affixes."
+msgstr ""
+
+#: wowtools/raiderio.py:237
 msgid "This week's Mythic+ affixes are: **{affixes}**"
 msgstr "Mythic+ afiksi za ovaj reset su: **{affixes}**"
 
