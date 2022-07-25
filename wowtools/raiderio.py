@@ -6,6 +6,7 @@ from dateutil.parser import isoparse
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_list
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -20,6 +21,7 @@ class Raiderio:
         pass
 
     @raiderio.command(name="profile")
+    @commands.guild_only()
     async def raiderio_profile(self, ctx, character: str, *realm: str) -> None:
         """Display the raider.io profile of a character.
 
@@ -125,7 +127,10 @@ class Raiderio:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @raiderio.command(name="guild")
-    async def raiderio_guild(self, ctx, guild: str, *realm: str) -> None:
+    @commands.guild_only()
+    async def raiderio_guild(
+        self, ctx: commands.Context, guild: str, *realm: str
+    ) -> None:
         """Display the raider.io profile of a guild.
 
         If the guild or realm name have spaces in them, they need to be enclosed in quotes.
@@ -213,6 +218,24 @@ class Raiderio:
                     await ctx.send(embed=embed)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+    @raiderio.command(name="affixes")
+    @commands.guild_only()
+    async def raiderio_affixes(self, ctx: commands.Context) -> None:
+        async with ctx.typing():
+            region: str = await self.config.guild(ctx.guild).region()
+            if not region:
+                await ctx.send(
+                    "A guild admin needs to set a region with `[p]wowset region` first."
+                )
+            async with RaiderIO() as rio:
+                affixes = await rio.get_mythic_plus_affixes(region)
+                affixes = affixes["affix_details"]
+        await ctx.send(
+            _("This week's Mythic+ affixes are: **{affixes}**").format(
+                affixes=humanize_list([affix["name"] for affix in affixes])
+            )
+        )
 
     @staticmethod
     def _parse_date(tz_date) -> str:
