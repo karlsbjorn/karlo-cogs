@@ -3,6 +3,7 @@ from typing import Literal
 
 import aiohttp
 import discord
+from aiolimiter import AsyncLimiter
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
@@ -50,6 +51,7 @@ class WoWTools(
         }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
+        self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(
             headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
         )

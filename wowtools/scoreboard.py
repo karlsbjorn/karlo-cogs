@@ -2,7 +2,6 @@ import functools
 import logging
 
 import discord
-from aiolimiter import AsyncLimiter
 from blizzardapi import BlizzardApi
 from discord.ext import tasks
 from raiderio_async import RaiderIO
@@ -11,11 +10,10 @@ from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
-from .utils import get_api_client
+from .utils import get_api_client, setup_pvp_functools
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
-limiter = AsyncLimiter(100, time_period=1)
 
 
 class Scoreboard:
@@ -296,7 +294,7 @@ class Scoreboard:
         if not region:
             await ctx.send(
                 _(
-                    "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                    "\nA server admin needs to set a region with `[p]wowset region` first."
                 )
             )
         if not realm:
@@ -381,7 +379,7 @@ class Scoreboard:
             region=region,
             locale="en_US",
         )
-        await limiter.acquire()
+        await self.limiter.acquire()
         current_season: int = (
             await self.bot.loop.run_in_executor(None, fetch_current_season)
         )["current_season"]["id"]
@@ -393,7 +391,7 @@ class Scoreboard:
             locale="en_US",
             name_slug=guild_name,
         )
-        await limiter.acquire()
+        await self.limiter.acquire()
         guild_roster = await self.bot.loop.run_in_executor(None, fetch_guild_roster)
 
         roster = {"rbg": {}, "2v2": {}, "3v3": {}}
@@ -401,42 +399,23 @@ class Scoreboard:
         for member in guild_roster["members"]:
             character_name = member["character"]["name"].lower()
             if character_name not in sb_blacklist:
-                fetch_rbg_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="rbg",
-                )
-                fetch_duo_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="2v2",
-                )
-                fetch_tri_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="3v3",
-                )
+                (
+                    fetch_duo_statistics,
+                    fetch_rbg_statistics,
+                    fetch_tri_statistics,
+                ) = await setup_pvp_functools(api_client, character_name, realm, region)
 
-                await limiter.acquire()
+                await self.limiter.acquire()
                 rbg_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_rbg_statistics
                 )
 
-                await limiter.acquire()
+                await self.limiter.acquire()
                 duo_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_duo_statistics
                 )
 
-                await limiter.acquire()
+                await self.limiter.acquire()
                 tri_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_tri_statistics
                 )

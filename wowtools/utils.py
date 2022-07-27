@@ -1,3 +1,5 @@
+import functools
+
 from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.bot import Red
@@ -31,7 +33,14 @@ async def get_api_client(bot: Red, ctx: commands.Context) -> BlizzardApi:
     return api_client
 
 
-def format_to_gold(price, emotes=None) -> str:
+def format_to_gold(price: int, emotes: dict = None) -> str:
+    """
+    Format an int to a WoW gold string with emotes.
+
+    :param price:
+    :param emotes:
+    :return: String containing gold price and emotes if provided.
+    """
     price = str(price)
     gold_text = ""
     silver_text = ""
@@ -54,3 +63,33 @@ def format_to_gold(price, emotes=None) -> str:
         copper_text = copper + "c" if copper_emoji is None else copper + copper_emoji
 
     return gold_text + silver_text + copper_text
+
+
+async def setup_pvp_functools(
+    api_client: BlizzardApi, character_name: str, realm: str, region: str
+):
+    fetch_rbg_statistics = functools.partial(
+        api_client.wow.profile.get_character_pvp_bracket_statistics,
+        region=region,
+        realm_slug=realm,
+        character_name=character_name,
+        locale="en_US",
+        pvp_bracket="rbg",
+    )
+    fetch_duo_statistics = functools.partial(
+        api_client.wow.profile.get_character_pvp_bracket_statistics,
+        region=region,
+        realm_slug=realm,
+        character_name=character_name,
+        locale="en_US",
+        pvp_bracket="2v2",
+    )
+    fetch_tri_statistics = functools.partial(
+        api_client.wow.profile.get_character_pvp_bracket_statistics,
+        region=region,
+        realm_slug=realm,
+        character_name=character_name,
+        locale="en_US",
+        pvp_bracket="3v3",
+    )
+    return fetch_duo_statistics, fetch_rbg_statistics, fetch_tri_statistics

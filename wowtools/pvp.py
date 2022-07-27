@@ -5,12 +5,12 @@ from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
+from .utils import setup_pvp_functools
+
 _ = Translator("WoWTools", __file__)
 
 
 class PvP:
-    """Pvp stuff"""
-
     @commands.command()
     async def rating(self, ctx, character_name: str, *realm: str):
         """Check a character's PVP ratings."""
@@ -61,42 +61,34 @@ class PvP:
                     character_name=character_name,
                     locale="en_US",
                 )
-                fetch_rbg_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="rbg",
-                )
-                fetch_duo_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="2v2",
-                )
-                fetch_tri_statistics = functools.partial(
-                    api_client.wow.profile.get_character_pvp_bracket_statistics,
-                    region=region,
-                    realm_slug=realm,
-                    character_name=character_name,
-                    locale="en_US",
-                    pvp_bracket="3v3",
-                )
+                (
+                    fetch_duo_statistics,
+                    fetch_rbg_statistics,
+                    fetch_tri_statistics,
+                ) = await setup_pvp_functools(api_client, character_name, realm, region)
 
+                await self.limiter.acquire()
                 profile = await self.bot.loop.run_in_executor(None, fetch_profile)
+
+                await self.limiter.acquire()
                 achievements = await self.bot.loop.run_in_executor(
                     None, fetch_achievements
                 )
+
+                await self.limiter.acquire()
                 media = await self.bot.loop.run_in_executor(None, fetch_media)
+
+                await self.limiter.acquire()
                 rbg_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_rbg_statistics
                 )
+
+                await self.limiter.acquire()
                 duo_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_duo_statistics
                 )
+
+                await self.limiter.acquire()
                 tri_statistics = await self.bot.loop.run_in_executor(
                     None, fetch_tri_statistics
                 )
