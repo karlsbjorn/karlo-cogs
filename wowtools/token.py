@@ -31,6 +31,7 @@ class Token:
                 region=region,
                 locale="en_US",
             )
+            await self.limiter.acquire()
             wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
             token_price = str(wow_token["price"])
 
@@ -60,7 +61,9 @@ class Token:
                         region=region,
                         locale="en_US",
                     )
+                    await self.limiter.acquire()
                     wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
+
                     token_price = str(wow_token["price"])
                     gold_emotes = await self.config.emotes()
                     embed.add_field(

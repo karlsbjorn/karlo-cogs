@@ -49,6 +49,7 @@ class AuctionHouse:
                 item_name=item,
                 page_size=1000,
             )
+            await self.limiter.acquire()
             items = await self.bot.loop.run_in_executor(None, fetch_items)
 
             results: Dict = items["results"]
@@ -73,6 +74,7 @@ class AuctionHouse:
                 locale="en_US",
                 is_classic=False,
             )
+            await self.limiter.acquire()
             c_realms = await self.bot.loop.run_in_executor(None, fetch_c_realms)
 
             c_realm_id = None
@@ -96,6 +98,7 @@ class AuctionHouse:
                 locale="en_US",
                 connected_realm_id=c_realm_id,
             )
+            await self.limiter.acquire()
             auctions_data = await self.bot.loop.run_in_executor(None, fetch_auctions)
 
             auctions = auctions_data["auctions"]
@@ -125,6 +128,7 @@ class AuctionHouse:
                 locale="en_US",
                 item_id=found_item_id,
             )
+            await self.limiter.acquire()
             item_media = await self.bot.loop.run_in_executor(None, fetch_media)
             item_icon_url = item_media["assets"][0]["value"]
 
