@@ -251,28 +251,28 @@ class Scoreboard:
                         "\nA server admin needs to set a guild name with `[p]wowset guild` first."
                     )
                 )
-
-            embed = discord.Embed(
-                title=_("Mythic+ Guild Scoreboard"),
-                color=await ctx.embed_color(),
-            )
-            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
-            tabulate_list = await self._get_dungeon_scores(
-                guild_name, max_chars, realm, region, sb_blacklist
-            )
-
-            embed.description = box(
-                tabulate(
-                    tabulate_list,
-                    headers=headers,
-                    tablefmt="plain",
-                    disable_numparse=True,
-                ),
-                lang="md",
-            )
-            return embed
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+        embed = discord.Embed(
+            title=_("Mythic+ Guild Scoreboard"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        tabulate_list = await self._get_dungeon_scores(
+            guild_name, max_chars, realm, region, sb_blacklist
+        )
+
+        embed.description = box(
+            tabulate(
+                tabulate_list,
+                headers=headers,
+                tablefmt="plain",
+                disable_numparse=True,
+            ),
+            lang="md",
+        )
+        return embed
 
     @staticmethod
     async def _delete_scoreboard(
@@ -291,22 +291,27 @@ class Scoreboard:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
-        if not region:
-            await ctx.send(
-                _(
-                    "\nA server admin needs to set a region with `[p]wowset region` first."
+        try:
+            if not region:
+                raise ValueError(
+                    _(
+                        "\nA server admin needs to set a region with `[p]wowset region` first."
+                    )
                 )
-            )
-        if not realm:
-            await ctx.send(
-                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
-            )
-        if not guild_name:
-            await ctx.send(
-                _(
-                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
+            if not realm:
+                raise ValueError(
+                    _(
+                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
+                    )
                 )
-            )
+            if not guild_name:
+                raise ValueError(
+                    _(
+                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
+                    )
+                )
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
         msg = await ctx.send(_("This may take a while..."))
 
@@ -371,7 +376,11 @@ class Scoreboard:
         region: str,
         sb_blacklist: list[str],
     ) -> list:
-        api_client: BlizzardApi = await get_api_client(self.bot, ctx)
+        try:
+            api_client = await get_api_client(self.bot, ctx)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            return []
         guild_name = guild_name.replace(" ", "-").lower()
 
         fetch_current_season = functools.partial(

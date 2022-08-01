@@ -18,10 +18,9 @@ class AuctionHouse:
         """Get the current market price of an item."""
         async with ctx.typing():
             try:
-                api_client: BlizzardApi = await get_api_client(self.bot, ctx)
-            except ValueError as e:
-                await ctx.send(str(e))
-                return
+                api_client = await get_api_client(self.bot, ctx)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
             config_region: str = await self.config.guild(ctx.guild).region()
             if not config_region:

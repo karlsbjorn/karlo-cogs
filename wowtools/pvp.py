@@ -5,7 +5,7 @@ from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import setup_pvp_functools
+from .utils import get_api_client, setup_pvp_functools
 
 _ = Translator("WoWTools", __file__)
 
@@ -15,19 +15,10 @@ class PvP:
     async def rating(self, ctx, character_name: str, *realm: str):
         """Check a character's PVP ratings."""
         async with ctx.typing():
-            blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
-            cid = blizzard_api.get("client_id")
-            secret = blizzard_api.get("client_secret")
-
-            if not cid or not secret:
-                return await ctx.send(
-                    _(
-                        "The Blizzard API is not properly set up.\n"
-                        "Create a client on https://develop.battle.net/ and then type in "
-                        "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                        "filling in `whoops` with your client's ID and secret."
-                    ).format(prefix=ctx.prefix)
-                )
+            try:
+                api_client = await get_api_client(self.bot, ctx)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
             region = await self.config.guild(ctx.guild).region()
             realm = "-".join(realm).lower()
@@ -39,7 +30,6 @@ class PvP:
             try:
                 if realm == "":
                     raise ValueError(_("You didn't give me a realm."))
-                api_client = BlizzardApi(cid, secret)
                 fetch_profile = functools.partial(
                     api_client.wow.profile.get_character_profile_summary,
                     region=region,

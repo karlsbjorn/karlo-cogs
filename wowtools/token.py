@@ -19,7 +19,10 @@ class Token:
             if region == "all":
                 await self.priceall(ctx)
                 return
-            api_client = await get_api_client(self.bot, ctx)
+            try:
+                api_client = await get_api_client(self.bot, ctx)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
             if region not in VALID_REGIONS and region != "all":
                 raise ValueError(
@@ -50,26 +53,26 @@ class Token:
         async with ctx.typing():
             try:
                 api_client = await get_api_client(self.bot, ctx)
-
-                embed = discord.Embed(
-                    title=_("WoW Token prices"), colour=await ctx.embed_colour()
-                )
-
-                for region in VALID_REGIONS:
-                    fetch_token = functools.partial(
-                        api_client.wow.game_data.get_token_index,
-                        region=region,
-                        locale="en_US",
-                    )
-                    await self.limiter.acquire()
-                    wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
-
-                    token_price = str(wow_token["price"])
-                    gold_emotes = await self.config.emotes()
-                    embed.add_field(
-                        name=region.upper(),
-                        value=format_to_gold(token_price, gold_emotes),
-                    )
-                await ctx.send(embed=embed)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
+
+            embed = discord.Embed(
+                title=_("WoW Token prices"), colour=await ctx.embed_colour()
+            )
+
+            for region in VALID_REGIONS:
+                fetch_token = functools.partial(
+                    api_client.wow.game_data.get_token_index,
+                    region=region,
+                    locale="en_US",
+                )
+                await self.limiter.acquire()
+                wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
+
+                token_price = str(wow_token["price"])
+                gold_emotes = await self.config.emotes()
+                embed.add_field(
+                    name=region.upper(),
+                    value=format_to_gold(token_price, gold_emotes),
+                )
+        await ctx.send(embed=embed)
