@@ -247,7 +247,7 @@ class Scoreboard:
         if not region:
             raise ValueError(
                 _(
-                    "\nThe bot owner needs to set a region with `[p]wowset region` first."
+                    "\nA server admin needs to set a region with `[p]wowset region` first."
                 )
             )
         if not realm:
