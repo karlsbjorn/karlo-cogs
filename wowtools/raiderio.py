@@ -37,8 +37,10 @@ class Raiderio:
                         "A server admin needs to set a region with `[p]wowset region` first."
                     )
                 )
+                return
             if realm == "":
                 await ctx.send(_("You didn't give me a realm."))
+                return
             async with RaiderIO() as rio:
                 profile_data = await rio.get_character_profile(
                     region,
@@ -139,12 +141,14 @@ class Raiderio:
                         "A server admin needs to set a region with `[p]wowset region` first."
                     )
                 )
+                return
             if not realm:
                 await ctx.send(
                     _(
                         "A server admin needs to set a realm with `[p]wowset realm` first."
                     )
                 )
+                return
             async with RaiderIO() as rio:
                 profile_data = await rio.get_guild_profile(
                     region,

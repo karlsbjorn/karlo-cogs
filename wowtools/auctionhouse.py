@@ -21,6 +21,7 @@ class AuctionHouse:
                 api_client = await get_api_client(self.bot, ctx)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
 
             config_region: str = await self.config.guild(ctx.guild).region()
             if not config_region:

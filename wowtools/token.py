@@ -23,6 +23,7 @@ class Token:
                 api_client = await get_api_client(self.bot, ctx)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
 
             if region not in VALID_REGIONS and region != "all":
                 raise ValueError(
@@ -55,6 +56,7 @@ class Token:
                 api_client = await get_api_client(self.bot, ctx)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
 
             embed = discord.Embed(
                 title=_("WoW Token prices"), colour=await ctx.embed_colour()

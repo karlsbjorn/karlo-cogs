@@ -28,7 +28,11 @@ class Scoreboard:
     async def wowscoreboard_dungeon(self, ctx: commands.Context):
         """Get the Mythic+ scoreboard for this guild."""
         async with ctx.typing():
-            embed = await self._generate_dungeon_scoreboard(ctx)
+            try:
+                embed = await self._generate_dungeon_scoreboard(ctx)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
         if embed:
             await ctx.send(embed=embed)
 
@@ -37,7 +41,11 @@ class Scoreboard:
     async def wowscoreboard_pvp(self, ctx: commands.Context):
         """Get all the PvP related scoreboards for this guild."""
         async with ctx.typing():
-            embed = await self._generate_pvp_scoreboard(ctx)
+            try:
+                embed = await self._generate_pvp_scoreboard(ctx)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
         if embed:
             # TODO: In dpy2, make this a list of embeds to send in a single message
             await ctx.send(embed=embed)
@@ -76,7 +84,11 @@ class Scoreboard:
                 sb_msg_id,
             )
         await self.config.guild(ctx.guild).scoreboard_channel.set(channel.id)
-        embed = await self._generate_dungeon_scoreboard(ctx)
+        try:
+            embed = await self._generate_dungeon_scoreboard(ctx)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            return
         sb_msg = await channel.send(embed=embed)
         await self.config.guild(ctx.guild).scoreboard_message.set(sb_msg.id)
         await ctx.send(_("Scoreboard channel set."))
@@ -232,27 +244,22 @@ class Scoreboard:
         max_chars = 20
         headers = ["#", _("Name"), _("Score")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
-        try:
-            if not region:
-                raise ValueError(
-                    _(
-                        "\nThe bot owner needs to set a region with `[p]wowset region` first."
-                    )
+        if not region:
+            raise ValueError(
+                _(
+                    "\nThe bot owner needs to set a region with `[p]wowset region` first."
                 )
-            if not realm:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                    )
+            )
+        if not realm:
+            raise ValueError(
+                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
+            )
+        if not guild_name:
+            raise ValueError(
+                _(
+                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
                 )
-            if not guild_name:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                    )
-                )
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            )
 
         embed = discord.Embed(
             title=_("Mythic+ Guild Scoreboard"),
@@ -291,27 +298,22 @@ class Scoreboard:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
-        try:
-            if not region:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a region with `[p]wowset region` first."
-                    )
+        if not region:
+            raise ValueError(
+                _(
+                    "\nA server admin needs to set a region with `[p]wowset region` first."
                 )
-            if not realm:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a realm with `[p]wowset realm` first."
-                    )
+            )
+        if not realm:
+            raise ValueError(
+                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
+            )
+        if not guild_name:
+            raise ValueError(
+                _(
+                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
                 )
-            if not guild_name:
-                raise ValueError(
-                    _(
-                        "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                    )
-                )
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            )
 
         msg = await ctx.send(_("This may take a while..."))
 
