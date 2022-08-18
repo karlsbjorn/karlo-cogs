@@ -99,7 +99,9 @@ class AuctionHouse:
                 connected_realm_id=c_realm_id,
             )
             await self.limiter.acquire()
-            auctions_data = await self.bot.loop.run_in_executor(None, fetch_auctions)
+            auctions_data: Dict = await self.bot.loop.run_in_executor(
+                None, fetch_auctions
+            )
 
             auctions = auctions_data["auctions"]
             prices = []

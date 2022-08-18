@@ -1,7 +1,6 @@
 import functools
 
 import discord
-from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -126,6 +125,19 @@ class PvP:
                     15349,
                     15348,
                 ),
+                "Season 4": (
+                    15607,
+                    15608,
+                    15605,
+                    15639,
+                    15604,
+                    15603,
+                    15602,
+                    15601,
+                    15600,
+                    15610,
+                    15609,
+                ),
             }
             own_season_achievements = {
                 "Season 1": {},
@@ -172,6 +184,7 @@ class PvP:
                 own_season_achievements["Season 1"] != {}
                 or own_season_achievements["Season 2"] != {}
                 or own_season_achievements["Season 3"] != {}
+                or own_season_achievements["Season 4"] != {}
             ):
                 embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
 
