@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-08-01 07:47+0000\n"
-"PO-Revision-Date: 2022-08-02 08:08\n"
+"POT-Creation-Date: 2022-08-18 17:13+0000\n"
+"PO-Revision-Date: 2022-08-18 17:13\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgid "Get the current market price of an item."
 msgstr "Добијте тренутну тржишну цену артикла."
 
 #: wowtools/auctionhouse.py:23 wowtools/guildmanage.py:120
-#: wowtools/guildmanage.py:136 wowtools/pvp.py:21 wowtools/scoreboard.py:34
+#: wowtools/guildmanage.py:136 wowtools/pvp.py:20 wowtools/scoreboard.py:34
 #: wowtools/scoreboard.py:47 wowtools/scoreboard.py:90
 #: wowtools/scoreboard.py:384 wowtools/token.py:25 wowtools/token.py:58
 #: wowtools/wowaudit.py:31 wowtools/wowaudit.py:87 wowtools/wowaudit.py:150
@@ -49,33 +49,33 @@ msgstr "Нема резултата."
 msgid "Could not find realm."
 msgstr "Није могуће пронаћи царство."
 
-#: wowtools/auctionhouse.py:120
+#: wowtools/auctionhouse.py:122
 msgid "No auctions could be found for this item."
 msgstr "Није пронађена ниједна аукција за овај артикал."
 
-#: wowtools/auctionhouse.py:136
+#: wowtools/auctionhouse.py:138
 msgid "Price: {item}"
 msgstr "Цена: {item}"
 
-#: wowtools/auctionhouse.py:147
+#: wowtools/auctionhouse.py:149
 msgid "Min Buyout"
 msgstr "Мин Буиоут"
 
-#: wowtools/auctionhouse.py:148
+#: wowtools/auctionhouse.py:150
 msgid "Current quantity"
 msgstr "Тренутна количина"
 
-#: wowtools/auctionhouse.py:151
+#: wowtools/auctionhouse.py:153
 msgid "Warning"
 msgstr "Упозорење"
 
-#: wowtools/auctionhouse.py:152
+#: wowtools/auctionhouse.py:154
 msgid "The expected price of this item may be incorrect due to\n"
 "item level differences or other factors."
 msgstr "Очекивана цена овог артикла може бити нетачна због\n"
 "разлика у нивоу ставке или других фактора."
 
-#: wowtools/auctionhouse.py:160
+#: wowtools/auctionhouse.py:162
 msgid "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
 msgstr "[Детаљне информације](хттпс://тхеундерминејоурнал.цом/#{region}/{realm}/итем/{item_id})"
 
@@ -162,32 +162,32 @@ msgstr "Постављено царство савеза."
 msgid "(Dev) Reset all guild settings."
 msgstr "(Дев) Ресетујте сва подешавања савеза."
 
-#: wowtools/pvp.py:16
+#: wowtools/pvp.py:15
 #, docstring
 msgid "Check a character's PVP ratings."
 msgstr "Проверите ПВП оцене лика."
 
-#: wowtools/pvp.py:33 wowtools/raiderio.py:42
+#: wowtools/pvp.py:32 wowtools/raiderio.py:42
 msgid "You didn't give me a realm."
 msgstr "Ниси ми дао царство."
 
-#: wowtools/pvp.py:87
+#: wowtools/pvp.py:86
 msgid "That character or realm does not exist."
 msgstr "Тај лик или царство не постоји."
 
-#: wowtools/pvp.py:168
+#: wowtools/pvp.py:180
 msgid "RBG Rating"
 msgstr "РБГ Ратинг"
 
-#: wowtools/pvp.py:169
+#: wowtools/pvp.py:181
 msgid "2v2 Rating"
 msgstr "2в2 Ратинг"
 
-#: wowtools/pvp.py:170
+#: wowtools/pvp.py:182
 msgid "3v3 Rating"
 msgstr "3в3 Ратинг"
 
-#: wowtools/pvp.py:176
+#: wowtools/pvp.py:189
 msgid "Achievements"
 msgstr "Достигнућа"
 
