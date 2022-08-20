@@ -102,7 +102,6 @@ class AuctionHouse:
             auctions_data: Dict = await self.bot.loop.run_in_executor(
                 None, fetch_auctions
             )
-
             auctions = auctions_data["auctions"]
             prices = []
             item_quantity = 0
@@ -118,6 +117,26 @@ class AuctionHouse:
                         item_price = auction["buyout"]
                         boe_disclaimer = True
                     prices.append(item_price)
+            if not prices:
+                # Item could be a commodity
+                fetch_commodities = functools.partial(
+                    api_client.wow.game_data.get_commodities,
+                    region=config_region,
+                    locale="en_US",
+                )
+                await self.limiter.acquire(25)
+                commodities_data: Dict = await self.bot.loop.run_in_executor(
+                    None, fetch_commodities
+                )
+                auctions = commodities_data["auctions"]
+                for auction in auctions:
+                    item_id = auction["item"]["id"]
+                    if item_id in found_items:
+                        item_name = found_items[item_id]
+                        found_item_id = item_id
+                        item_quantity += auction["quantity"]
+                        item_price = auction["unit_price"]
+                        prices.append(item_price)
             if not prices:
                 await ctx.send(_("No auctions could be found for this item."))
                 return

@@ -11,7 +11,7 @@ from redbot.core.utils.menus import DEFAULT_CONTROLS
 
 _ = Translator("WoWTools", __file__)
 
-MEMBERS_PER_PAGE = 20
+MEMBERS_PER_PAGE = 10
 
 
 class Wowaudit:
