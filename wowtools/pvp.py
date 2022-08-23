@@ -143,6 +143,7 @@ class PvP:
                 "Season 1": {},
                 "Season 2": {},
                 "Season 3": {},
+                "Season 4": {},
             }
             for char_achievement in achievements["achievements"]:
                 for season in season_achievements.keys():
