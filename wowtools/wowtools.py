@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 from typing import Literal
 
 import aiohttp
@@ -232,11 +233,9 @@ class WoWTools(
             )
 
             totp = TOTP(secret, digits=8)
-            await ctx.send(
-                _("Authenticator set.\nYour code is: **{code}**").format(
-                    code=totp.now()
-                )
-            )
+        await ctx.send(
+            _("Authenticator set.\nYour code is: **{code}**").format(code=totp.now())
+        )
 
     @battlenet.command(name="code")
     async def battlenet_code(self, ctx: commands.Context):
@@ -246,7 +245,15 @@ class WoWTools(
             await ctx.send(_("You haven't set up the authenticator yet."))
             return
         totp = TOTP(secret, digits=8)
-        await ctx.send(_("Your code is: **{code}**").format(code=totp.now()))
+
+        now = datetime.now()
+        expiry = now + (datetime.min - now) % timedelta(seconds=30)
+
+        await ctx.send(
+            _("Your code is: **{code}**\nIt expires {time}").format(
+                code=totp.now(), time=f"<t:{int(expiry.timestamp())}:R>"
+            )
+        )
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
