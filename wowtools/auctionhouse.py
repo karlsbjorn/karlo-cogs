@@ -13,6 +13,7 @@ _ = Translator("WoWTools", __file__)
 
 
 class AuctionHouse:
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     @commands.command()
     async def price(self, ctx: commands.Context, *, item: str):
         """Get the current market price of an item."""

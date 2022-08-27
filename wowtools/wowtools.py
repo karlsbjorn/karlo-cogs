@@ -2,8 +2,10 @@ import logging
 from typing import Literal
 
 import aiohttp
+import bna
 import discord
 from aiolimiter import AsyncLimiter
+from pyotp import TOTP
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
@@ -51,8 +53,13 @@ class WoWTools(
             "scoreboard_message": None,
             "scoreboard_blacklist": [],
         }
+        default_user = {
+            "auth_serial": None,
+            "auth_secret": None,
+        }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)
+        self.config.register_user(**default_user)
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(
             headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
@@ -201,6 +208,45 @@ class WoWTools(
             await ctx.send(
                 _("{currency} emote removed.").format(currency=currency.title())
             )
+
+    @commands.group()
+    async def battlenet(self, ctx: commands.Context):
+        """Battle.net authenticator commands."""
+        pass
+
+    @battlenet.command(name="set")
+    async def battlenet_set(self, ctx: commands.Context):
+        """Set up the authenticator."""
+        async with ctx.typing():
+            try:
+                serial, secret = bna.request_new_serial("EU")
+            except bna.HTTPError as e:
+                await ctx.send(_("Could not connect: {error}").format(error=e))
+                return
+            await self.config.user(ctx.author).auth_serial.set(serial)
+            await self.config.user(ctx.author).auth_secret.set(secret)
+            await ctx.author.send(
+                "Your serial is: **{serial}**\nYour secret is: **{secret}**".format(
+                    serial=serial, secret=secret
+                )
+            )
+
+            totp = TOTP(secret, digits=8)
+            await ctx.send(
+                _("Authenticator set.\nYour code is: **{code}**").format(
+                    code=totp.now()
+                )
+            )
+
+    @battlenet.command(name="code")
+    async def battlenet_code(self, ctx: commands.Context):
+        """Get your authenticator code."""
+        secret = await self.config.user(ctx.author).auth_secret()
+        if not secret:
+            await ctx.send(_("You haven't set up the authenticator yet."))
+            return
+        totp = TOTP(secret, digits=8)
+        await ctx.send(_("Your code is: **{code}**").format(code=totp.now()))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
