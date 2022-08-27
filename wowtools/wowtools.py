@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Literal
 
 import aiohttp
-import bna
 import discord
 from aiolimiter import AsyncLimiter
 from pyotp import TOTP
@@ -24,6 +23,11 @@ log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
 # TODO: GIGA TODO - Swap to using [aiowowapi](https://github.com/Adalyia/aiowowapi), preferably before 3.5
+
+try:  # python-bna doesn't work on Red 3.4 by default due to `click` being too old
+    import bna
+except Exception as e:
+    log.warning(f"Failed to import bna: {e}\n`[p]battlenet` commands will not work.")
 
 
 @cog_i18n(_)
