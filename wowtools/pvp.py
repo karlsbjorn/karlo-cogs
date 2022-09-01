@@ -10,6 +10,7 @@ _ = Translator("WoWTools", __file__)
 
 
 class PvP:
+    @commands.cooldown(rate=1, per=3, type=commands.BucketType.user)
     @commands.command()
     async def rating(self, ctx, character_name: str, *realm: str):
         """Check a character's PVP ratings."""

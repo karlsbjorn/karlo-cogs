@@ -54,9 +54,11 @@ class WoWTools(
             "gmanage_guild": None,
             "gmanage_realm": None,
             "guild_roles": {},
+            "old_sb": None,
             "scoreboard_channel": None,
             "scoreboard_message": None,
             "scoreboard_blacklist": [],
+            "sb_image": False,
         }
         default_user = {
             "auth_serial": None,
@@ -213,6 +215,19 @@ class WoWTools(
             await ctx.send(
                 _("{currency} emote removed.").format(currency=currency.title())
             )
+
+    @wowset.command()
+    @commands.admin()
+    @commands.guild_only()
+    async def images(self, ctx: commands.Context):
+        """Toggle scoreboard images on or off."""
+        enabled = await self.config.guild(ctx.guild).sb_image()
+        if enabled:
+            await self.config.guild(ctx.guild).sb_image.set(False)
+            await ctx.send(_("Images disabled."))
+        else:
+            await self.config.guild(ctx.guild).sb_image.set(True)
+            await ctx.send(_("Images enabled."))
 
     @commands.group()
     async def battlenet(self, ctx: commands.Context):

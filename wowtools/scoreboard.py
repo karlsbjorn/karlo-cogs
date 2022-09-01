@@ -1,11 +1,13 @@
 import functools
+import io
 import logging
 
 import discord
-from blizzardapi import BlizzardApi
 from discord.ext import tasks
+from PIL import Image, ImageColor, ImageDraw, ImageFont
 from raiderio_async import RaiderIO
 from redbot.core import commands
+from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
@@ -17,6 +19,7 @@ _ = Translator("WoWTools", __file__)
 
 
 class Scoreboard:
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     @commands.group(name="wowscoreboard", aliases=["sb"])
     @commands.guild_only()
     async def wowscoreboard(self, ctx: commands.Context):
@@ -28,13 +31,20 @@ class Scoreboard:
     async def wowscoreboard_dungeon(self, ctx: commands.Context):
         """Get the Mythic+ scoreboard for this guild."""
         async with ctx.typing():
+            image_enabled = await self.config.guild(ctx.guild).sb_image()
             try:
-                embed = await self._generate_dungeon_scoreboard(ctx)
+                if image_enabled:
+                    embed, img_file = await self._generate_dungeon_scoreboard(ctx, True)
+                else:
+                    embed = await self._generate_dungeon_scoreboard(ctx)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
         if embed:
-            await ctx.send(embed=embed)
+            if image_enabled:
+                await ctx.send(embed=embed, file=img_file)
+            else:
+                await ctx.send(embed=embed)
 
     @wowscoreboard.command(name="pvp")
     @commands.guild_only()
@@ -64,6 +74,7 @@ class Scoreboard:
         self, ctx: commands.Context, channel: discord.TextChannel = None
     ):
         """Set the channel to send the scoreboard to."""
+        # image_enabled = await self.config.guild(ctx.guild).sb_image()
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
         sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()
         if not channel:
@@ -85,10 +96,16 @@ class Scoreboard:
             )
         await self.config.guild(ctx.guild).scoreboard_channel.set(channel.id)
         try:
+            # if image_enabled:
+            #     embed, img_file = await self._generate_dungeon_scoreboard(ctx, image=True)
+            # else:
             embed = await self._generate_dungeon_scoreboard(ctx)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
+        # if image_enabled:
+        #     sb_msg = await channel.send(file=img_file, embed=embed)
+        # else:
         sb_msg = await channel.send(embed=embed)
         await self.config.guild(ctx.guild).scoreboard_message.set(sb_msg.id)
         await ctx.send(_("Scoreboard channel set."))
@@ -183,7 +200,7 @@ class Scoreboard:
                     )
                     embed.set_author(name=guild.name, icon_url=guild.icon_url)
                     tabulate_list = await self._get_dungeon_scores(
-                        guild_name, max_chars, realm, region, sb_blacklist
+                        guild_name, max_chars, realm, region, sb_blacklist, image=False
                     )
 
                     embed.description = box(
@@ -207,6 +224,7 @@ class Scoreboard:
         realm: str,
         region: str,
         sb_blacklist: list[str],
+        image: bool,
     ):
         async with RaiderIO() as rio:
             roster = await rio.get_guild_roster(region, realm, guild_name)
@@ -218,7 +236,16 @@ class Scoreboard:
                 score = char["keystoneScores"]["allScore"]
 
                 if score > 250 and char_name.lower() not in sb_blacklist:
-                    lb[char_name] = score
+                    if image:
+                        score_color: str = char["keystoneScores"]["allScoreColor"]
+                        char_img: str = (
+                            "https://render.worldofwarcraft.com/eu/character/{}".format(
+                                char["character"]["thumbnail"]
+                            )
+                        )
+                        lb[char_name] = (score, score_color, char_img)
+                    else:
+                        lb[char_name] = score
 
             lb = dict(sorted(lb.items(), key=lambda i: i[1], reverse=True))
 
@@ -228,19 +255,36 @@ class Scoreboard:
             tabulate_list = []
             for index, char_info in enumerate(zip(chars, scores)):
                 char_name = char_info[0]
-                char_score = char_info[1]
-                tabulate_list.append(
-                    [
-                        f"{index + 1}.",
-                        char_name,
-                        humanize_number(int(char_score)),
-                    ]
-                )
+                if image:
+                    char_score = char_info[1][0]
+                    char_score_color = char_info[1][1]
+                    char_img = char_info[1][2]
+                else:
+                    char_score = char_info[1]
+                if image:
+                    tabulate_list.append(
+                        [
+                            f"{index + 1}.",
+                            char_name,
+                            str(int(char_score)),
+                            char_score_color,
+                            char_img,
+                        ]
+                    )
+                else:
+                    tabulate_list.append(
+                        [
+                            f"{index + 1}.",
+                            char_name,
+                            humanize_number(int(char_score)),
+                        ]
+                    )
+
         return tabulate_list
 
     async def _generate_dungeon_scoreboard(
-        self, ctx: commands.Context
-    ) -> discord.Embed:
+        self, ctx: commands.Context, image: bool = False
+    ):
         max_chars = 20
         headers = ["#", _("Name"), _("Score")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
@@ -266,20 +310,54 @@ class Scoreboard:
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+
         tabulate_list = await self._get_dungeon_scores(
-            guild_name, max_chars, realm, region, sb_blacklist
+            guild_name, max_chars, realm, region, sb_blacklist, image
         )
 
-        embed.description = box(
-            tabulate(
-                tabulate_list,
-                headers=headers,
-                tablefmt="plain",
-                disable_numparse=True,
-            ),
-            lang="md",
-        )
-        return embed
+        if image:
+            img_file = await self._generate_scoreboard_image(tabulate_list)
+            embed.set_image(url=f"attachment://{img_file.filename}")
+            return embed, img_file
+        else:
+            embed.description = box(
+                tabulate(
+                    tabulate_list,
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            )
+            return embed
+
+    async def _generate_scoreboard_image(self, tabulate_list: list):
+        img_path = str(bundled_data_path(self) / "scoreboard-sl-s4.png")
+        img = Image.open(img_path)
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype(str(bundled_data_path(self) / "Roboto-Bold.ttf"), 28)
+
+        x = 150
+        y = 25
+
+        for character in tabulate_list[:10]:
+            score_color = ImageColor.getcolor(character[3], "RGB")
+
+            async with self.session.request("GET", character[4]) as resp:
+                image = await resp.content.read()
+                image = Image.open(io.BytesIO(image))
+                image = image.resize((65, 65))
+                img.paste(image, (x - 78, y - 15))
+
+            draw.text((x, y), character[1], (255, 255, 255), font=font)
+            draw.text((x + 300, y), character[2], score_color, font=font)
+            y += 75
+
+        img_obj = io.BytesIO()
+        img.save(img_obj, format="PNG")
+        img_obj.seek(0)
+
+        return discord.File(fp=img_obj, filename="scoreboard.png")
 
     @staticmethod
     async def _delete_scoreboard(

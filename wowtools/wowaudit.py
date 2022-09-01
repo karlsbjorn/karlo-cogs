@@ -15,6 +15,7 @@ MEMBERS_PER_PAGE = 10
 
 
 class Wowaudit:
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.group()
     async def wowaudit(self, ctx: commands.Context):
         """Commands for interacting with WowAudit."""
