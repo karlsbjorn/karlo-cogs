@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-08-18 17:13+0000\n"
-"PO-Revision-Date: 2022-08-18 17:13\n"
+"POT-Creation-Date: 2022-09-01 00:51+0000\n"
+"PO-Revision-Date: 2022-09-01 00:51\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,65 +17,65 @@ msgstr ""
 "X-Crowdin-File-ID: 12\n"
 "Language: sr_SP\n"
 
-#: wowtools/auctionhouse.py:18
+#: wowtools/auctionhouse.py:19
 #, docstring
 msgid "Get the current market price of an item."
 msgstr "Добијте тренутну тржишну цену артикла."
 
-#: wowtools/auctionhouse.py:23 wowtools/guildmanage.py:120
-#: wowtools/guildmanage.py:136 wowtools/pvp.py:20 wowtools/scoreboard.py:34
-#: wowtools/scoreboard.py:47 wowtools/scoreboard.py:90
-#: wowtools/scoreboard.py:384 wowtools/token.py:25 wowtools/token.py:58
-#: wowtools/wowaudit.py:31 wowtools/wowaudit.py:87 wowtools/wowaudit.py:150
-#: wowtools/wowaudit.py:221 wowtools/wowaudit.py:279 wowtools/wowaudit.py:337
-#: wowtools/wowaudit.py:393 wowtools/wowtools.py:81 wowtools/wowtools.py:97
-#: wowtools/wowtools.py:112 wowtools/wowtools.py:127
+#: wowtools/auctionhouse.py:24 wowtools/guildmanage.py:120
+#: wowtools/guildmanage.py:136 wowtools/pvp.py:21 wowtools/scoreboard.py:41
+#: wowtools/scoreboard.py:57 wowtools/scoreboard.py:104
+#: wowtools/scoreboard.py:462 wowtools/token.py:25 wowtools/token.py:58
+#: wowtools/wowaudit.py:32 wowtools/wowaudit.py:88 wowtools/wowaudit.py:151
+#: wowtools/wowaudit.py:222 wowtools/wowaudit.py:280 wowtools/wowaudit.py:338
+#: wowtools/wowaudit.py:394 wowtools/wowtools.py:97 wowtools/wowtools.py:113
+#: wowtools/wowtools.py:128 wowtools/wowtools.py:143
 msgid "Command failed successfully. {e}"
 msgstr "Команда није успела. {e}"
 
-#: wowtools/auctionhouse.py:29
+#: wowtools/auctionhouse.py:30
 msgid "Please set a region with `{prefix}wowset region` before using this command."
 msgstr "Подесите регион са `{prefix}вовсет регион` пре употребе ове команде."
 
-#: wowtools/auctionhouse.py:37
+#: wowtools/auctionhouse.py:38
 msgid "Please set a realm with `{prefix}wowset realm` before using this command."
 msgstr "Подесите област са `{prefix}вовсет реалм` пре употребе ове команде."
 
-#: wowtools/auctionhouse.py:67
+#: wowtools/auctionhouse.py:68
 msgid "No results found."
 msgstr "Нема резултата."
 
-#: wowtools/auctionhouse.py:91
+#: wowtools/auctionhouse.py:92
 msgid "Could not find realm."
 msgstr "Није могуће пронаћи царство."
 
-#: wowtools/auctionhouse.py:122
+#: wowtools/auctionhouse.py:142
 msgid "No auctions could be found for this item."
 msgstr "Није пронађена ниједна аукција за овај артикал."
 
-#: wowtools/auctionhouse.py:138
+#: wowtools/auctionhouse.py:158
 msgid "Price: {item}"
 msgstr "Цена: {item}"
 
-#: wowtools/auctionhouse.py:149
+#: wowtools/auctionhouse.py:169
 msgid "Min Buyout"
 msgstr "Мин Буиоут"
 
-#: wowtools/auctionhouse.py:150
+#: wowtools/auctionhouse.py:170
 msgid "Current quantity"
 msgstr "Тренутна количина"
 
-#: wowtools/auctionhouse.py:153
+#: wowtools/auctionhouse.py:173
 msgid "Warning"
 msgstr "Упозорење"
 
-#: wowtools/auctionhouse.py:154
+#: wowtools/auctionhouse.py:174
 msgid "The expected price of this item may be incorrect due to\n"
 "item level differences or other factors."
 msgstr "Очекивана цена овог артикла може бити нетачна због\n"
 "разлика у нивоу ставке или других фактора."
 
-#: wowtools/auctionhouse.py:162
+#: wowtools/auctionhouse.py:182
 msgid "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
 msgstr "[Детаљне информације](хттпс://тхеундерминејоурнал.цом/#{region}/{realm}/итем/{item_id})"
 
@@ -136,11 +136,11 @@ msgstr "**{role}** везано за **Ранг {rank}**."
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Подесите име савеза који ће се користити у командама за управљање савезом."
 
-#: wowtools/guildmanage.py:114 wowtools/wowtools.py:107
+#: wowtools/guildmanage.py:114 wowtools/wowtools.py:123
 msgid "Guild name cleared."
 msgstr "Име цеха је избрисано."
 
-#: wowtools/guildmanage.py:118 wowtools/wowtools.py:110
+#: wowtools/guildmanage.py:118 wowtools/wowtools.py:126
 msgid "Guild name set."
 msgstr "Име цеха је постављено."
 
@@ -162,41 +162,41 @@ msgstr "Постављено царство савеза."
 msgid "(Dev) Reset all guild settings."
 msgstr "(Дев) Ресетујте сва подешавања савеза."
 
-#: wowtools/pvp.py:15
+#: wowtools/pvp.py:16
 #, docstring
 msgid "Check a character's PVP ratings."
 msgstr "Проверите ПВП оцене лика."
 
-#: wowtools/pvp.py:32 wowtools/raiderio.py:42
+#: wowtools/pvp.py:33 wowtools/raiderio.py:43
 msgid "You didn't give me a realm."
 msgstr "Ниси ми дао царство."
 
-#: wowtools/pvp.py:86
+#: wowtools/pvp.py:87
 msgid "That character or realm does not exist."
 msgstr "Тај лик или царство не постоји."
 
-#: wowtools/pvp.py:180
+#: wowtools/pvp.py:182
 msgid "RBG Rating"
 msgstr "РБГ Ратинг"
 
-#: wowtools/pvp.py:181
+#: wowtools/pvp.py:183
 msgid "2v2 Rating"
 msgstr "2в2 Ратинг"
 
-#: wowtools/pvp.py:182
+#: wowtools/pvp.py:184
 msgid "3v3 Rating"
 msgstr "3в3 Ратинг"
 
-#: wowtools/pvp.py:189
+#: wowtools/pvp.py:191
 msgid "Achievements"
 msgstr "Достигнућа"
 
-#: wowtools/raiderio.py:20
+#: wowtools/raiderio.py:21
 #, docstring
 msgid "Commands for interacting with Raider.io"
 msgstr "Команде за интеракцију са Раидер.ио"
 
-#: wowtools/raiderio.py:26
+#: wowtools/raiderio.py:27
 #, docstring
 msgid "Display the raider.io profile of a character.\n\n"
 "        Example:\n"
@@ -207,43 +207,43 @@ msgstr "Прикажи раидер.ио профил лика.\n\n"
 "        [p]раидерио профил Карло Рагнарос\n"
 "        "
 
-#: wowtools/raiderio.py:36 wowtools/raiderio.py:140
+#: wowtools/raiderio.py:37 wowtools/raiderio.py:141
 msgid "A server admin needs to set a region with `[p]wowset region` first."
 msgstr "Администратор сервера мора прво да подеси регион са `[p]вовсет регион`."
 
-#: wowtools/raiderio.py:91
+#: wowtools/raiderio.py:92
 msgid "Raider.io profile"
 msgstr "Раидер.ио профил"
 
-#: wowtools/raiderio.py:96
+#: wowtools/raiderio.py:97
 msgid "__**Mythic+ Score**__"
 msgstr "__**Митхиц+ Сцоре**__"
 
-#: wowtools/raiderio.py:100
+#: wowtools/raiderio.py:101
 msgid "Raid progress"
 msgstr "Раид напредак"
 
-#: wowtools/raiderio.py:101
+#: wowtools/raiderio.py:102
 msgid "Item level"
 msgstr "Ниво ставке"
 
-#: wowtools/raiderio.py:102
+#: wowtools/raiderio.py:103
 msgid "Covenant"
 msgstr "Завет"
 
-#: wowtools/raiderio.py:104
+#: wowtools/raiderio.py:105
 msgid "__Other links__"
 msgstr "__Друге везе__"
 
-#: wowtools/raiderio.py:105
+#: wowtools/raiderio.py:106
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:115
+#: wowtools/raiderio.py:116
 msgid "Last updated: {char_last_updated}"
 msgstr "Последње ажурирано: {char_last_updated}"
 
-#: wowtools/raiderio.py:127
+#: wowtools/raiderio.py:128
 #, docstring
 msgid "Display the raider.io profile of a guild.\n\n"
 "        If the guild or realm name have spaces in them, they need to be enclosed in quotes.\n\n"
@@ -256,23 +256,23 @@ msgstr "Прикажи раидер.ио профил цеха.\n\n"
 "        [p]Раидерио цех \"Јахаци Румене Кадуље\" Рагнарос\n"
 "        "
 
-#: wowtools/raiderio.py:147
+#: wowtools/raiderio.py:148
 msgid "A server admin needs to set a realm with `[p]wowset realm` first."
 msgstr "Администратор сервера мора прво да постави област са `[p]вовсет реалм`."
 
-#: wowtools/raiderio.py:183
+#: wowtools/raiderio.py:184
 msgid "Guild profile"
 msgstr "Гуилд профиле"
 
-#: wowtools/raiderio.py:187
+#: wowtools/raiderio.py:188
 msgid "__**Progress**__"
 msgstr "__**Напредак**__"
 
-#: wowtools/raiderio.py:196
+#: wowtools/raiderio.py:197
 msgid "{difficulty} rank"
 msgstr "{difficulty} ранг"
 
-#: wowtools/raiderio.py:197
+#: wowtools/raiderio.py:198
 msgid "World: {world}\n"
 "Region: {region}\n"
 "Realm: {realm}"
@@ -280,58 +280,58 @@ msgstr "Свет: {world}\n"
 "Регион: {region}\n"
 "Краљевство: {realm}"
 
-#: wowtools/raiderio.py:203
+#: wowtools/raiderio.py:204
 msgid "Last updated: {last_updated}"
 msgstr "Последње ажурирано: {last_updated}"
 
-#: wowtools/raiderio.py:213
+#: wowtools/raiderio.py:214
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Прикажи овонедељне афиксе."
 
-#: wowtools/raiderio.py:225
+#: wowtools/raiderio.py:226
 msgid "This week's Mythic+ affixes are: **{affixes}**"
 msgstr "Митхиц+ афикси ове недеље су: **{affixes}**"
 
-#: wowtools/scoreboard.py:23
+#: wowtools/scoreboard.py:26
 #, docstring
 msgid "Show various scoreboards for your guild."
 msgstr "Покажите различите табеле са резултатима за свој цех."
 
-#: wowtools/scoreboard.py:29
+#: wowtools/scoreboard.py:32
 #, docstring
 msgid "Get the Mythic+ scoreboard for this guild."
 msgstr "Набавите Митхиц+ семафор за овај цех."
 
-#: wowtools/scoreboard.py:42
+#: wowtools/scoreboard.py:52
 #, docstring
 msgid "Get all the PvP related scoreboards for this guild."
 msgstr "Набавите све ПвП табеле за овај цех."
 
-#: wowtools/scoreboard.py:57
+#: wowtools/scoreboard.py:67
 #, docstring
 msgid "Change scoreboard settings"
 msgstr "Промените подешавања табеле"
 
-#: wowtools/scoreboard.py:66
+#: wowtools/scoreboard.py:76
 #, docstring
 msgid "Set the channel to send the scoreboard to."
 msgstr "Подесите канал на који желите да пошаљете семафор."
 
-#: wowtools/scoreboard.py:78
+#: wowtools/scoreboard.py:89
 msgid "Scoreboard channel cleared."
 msgstr "Канал са семафором је обрисан."
 
-#: wowtools/scoreboard.py:94
+#: wowtools/scoreboard.py:111
 msgid "Scoreboard channel set."
 msgstr "Постављени канали на табели."
 
-#: wowtools/scoreboard.py:100
+#: wowtools/scoreboard.py:117
 #, docstring
 msgid "Manage the scoreboard blacklist."
 msgstr "Управљајте црном листом семафора."
 
-#: wowtools/scoreboard.py:107
+#: wowtools/scoreboard.py:124
 #, docstring
 msgid "Add characters to the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -340,11 +340,11 @@ msgstr "Додајте ликове на црну листу семафора.\n
 "        Знакови се могу одвојити размацима или зарезима.\n"
 "        "
 
-#: wowtools/scoreboard.py:117
+#: wowtools/scoreboard.py:134
 msgid "Blacklisted characters added."
 msgstr "Додати су ликови са црне листе."
 
-#: wowtools/scoreboard.py:123
+#: wowtools/scoreboard.py:140
 #, docstring
 msgid "Remove characters from the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -353,84 +353,84 @@ msgstr "Уклоните ликове са црне листе семафора.
 "        Знакови се могу одвојити размацима или зарезима.\n"
 "        "
 
-#: wowtools/scoreboard.py:133
+#: wowtools/scoreboard.py:150
 msgid "Blacklisted characters removed."
 msgstr "Уклоњени ликови са црне листе."
 
-#: wowtools/scoreboard.py:139
+#: wowtools/scoreboard.py:156
 #, docstring
 msgid "List the characters on the scoreboard blacklist."
 msgstr "Наведите ликове на црној листи семафора."
 
-#: wowtools/scoreboard.py:142
+#: wowtools/scoreboard.py:159
 msgid "No characters are blacklisted."
 msgstr "Ниједан лик није на црној листи."
 
-#: wowtools/scoreboard.py:145
+#: wowtools/scoreboard.py:162
 msgid "Blacklisted characters: {characters}"
 msgstr "Ликови на црној листи: {characters}"
 
-#: wowtools/scoreboard.py:154
+#: wowtools/scoreboard.py:171
 #, docstring
 msgid "Clear the scoreboard blacklist."
 msgstr "Обришите црну листу са семафора."
 
-#: wowtools/scoreboard.py:156
+#: wowtools/scoreboard.py:173
 msgid "Blacklisted characters cleared."
 msgstr "Ликови са црне листе су обрисани."
 
-#: wowtools/scoreboard.py:170 wowtools/scoreboard.py:245
-#: wowtools/scoreboard.py:299
+#: wowtools/scoreboard.py:187 wowtools/scoreboard.py:289
+#: wowtools/scoreboard.py:377
 msgid "Name"
 msgstr "Име"
 
-#: wowtools/scoreboard.py:170 wowtools/scoreboard.py:245
+#: wowtools/scoreboard.py:187 wowtools/scoreboard.py:289
 msgid "Score"
 msgstr "Резултат"
 
-#: wowtools/scoreboard.py:181 wowtools/scoreboard.py:265
+#: wowtools/scoreboard.py:198 wowtools/scoreboard.py:309
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Митхиц+ Гуилд Сцоребоард"
 
-#: wowtools/scoreboard.py:249 wowtools/scoreboard.py:303
+#: wowtools/scoreboard.py:293 wowtools/scoreboard.py:381
 msgid "\n"
 "A server admin needs to set a region with `[p]wowset region` first."
 msgstr "\n"
 "Администратор сервера мора прво да постави регион са `[p]вовсет регионом`."
 
-#: wowtools/scoreboard.py:255 wowtools/scoreboard.py:309
+#: wowtools/scoreboard.py:299 wowtools/scoreboard.py:387
 msgid "\n"
 "A server admin needs to set a realm with `[p]wowset realm` first."
 msgstr "\n"
 "Администратор сервера мора прво да постави област са `[p]вовсет реалм`."
 
-#: wowtools/scoreboard.py:259 wowtools/scoreboard.py:313
+#: wowtools/scoreboard.py:303 wowtools/scoreboard.py:391
 msgid "\n"
 "A server admin needs to set a guild name with `[p]wowset guild` first."
 msgstr "\n"
 "Администратор сервера мора прво да подеси име цеха са `[p]вовсет гуилд`."
 
-#: wowtools/scoreboard.py:299
+#: wowtools/scoreboard.py:377
 msgid "Rating"
 msgstr "Оцена"
 
-#: wowtools/scoreboard.py:318
+#: wowtools/scoreboard.py:396
 msgid "This may take a while..."
 msgstr "Ово може потрајати..."
 
-#: wowtools/scoreboard.py:321
+#: wowtools/scoreboard.py:399
 msgid "Guild PvP Leaderboard"
 msgstr "Гуилд ПвП Леадербоард"
 
-#: wowtools/scoreboard.py:330
+#: wowtools/scoreboard.py:408
 msgid "RBG Leaderboard"
 msgstr "РБГ Леадербоард"
 
-#: wowtools/scoreboard.py:343
+#: wowtools/scoreboard.py:421
 msgid "2v2 Arena Leaderboard"
 msgstr "2в2 Арена Леадербоард"
 
-#: wowtools/scoreboard.py:356
+#: wowtools/scoreboard.py:434
 msgid "3v3 Arena Leaderboard"
 msgstr "3в3 Арена Леадербоард"
 
@@ -457,116 +457,116 @@ msgid "The Blizzard API is not properly set up.\n"
 msgstr "Близзард АПИ није правилно подешен.\n"
 "Креирајте клијента на хттпс://девелоп.баттле.нет/, а затим укуцајте `{prefix}сет апи близзард цлиент_ид,вхоопс цлиент_сецрет,вхоопс` попуњавајући `вхоопс` ИД-ом и тајном вашег клијента."
 
-#: wowtools/wowaudit.py:20
+#: wowtools/wowaudit.py:21
 #, docstring
 msgid "Commands for interacting with WowAudit."
 msgstr "Команде за интеракцију са ВовАудитом."
 
-#: wowtools/wowaudit.py:25
+#: wowtools/wowaudit.py:26
 #, docstring
 msgid "Show your wowaudit summary."
 msgstr "Покажите свој воваудит резиме."
 
-#: wowtools/wowaudit.py:43
+#: wowtools/wowaudit.py:44
 msgid "Weekly summary"
 msgstr "Недељни резиме"
 
-#: wowtools/wowaudit.py:45
+#: wowtools/wowaudit.py:46
 msgid "Missing Enchants/Gems"
 msgstr "Недостају чари/драгуљи"
 
-#: wowtools/wowaudit.py:47
+#: wowtools/wowaudit.py:48
 msgid "Weekly Dungeons Completed"
 msgstr "Недељне тамнице су завршене"
 
-#: wowtools/wowaudit.py:50
+#: wowtools/wowaudit.py:51
 msgid "Weekly World Quests Done"
 msgstr "Недељни светски задаци завршени"
 
-#: wowtools/wowaudit.py:54 wowtools/wowaudit.py:138
+#: wowtools/wowaudit.py:55 wowtools/wowaudit.py:139
 msgid "Average Item Level"
 msgstr "Просечан ниво ставке"
 
-#: wowtools/wowaudit.py:55 wowtools/wowaudit.py:67 wowtools/wowaudit.py:209
+#: wowtools/wowaudit.py:56 wowtools/wowaudit.py:68 wowtools/wowaudit.py:210
 msgid "Tier Pieces Obtained"
 msgstr "Добијени делови нивоа"
 
-#: wowtools/wowaudit.py:56 wowtools/wowaudit.py:267
+#: wowtools/wowaudit.py:57 wowtools/wowaudit.py:268
 msgid "Weekly Mythic Dungeons Done"
 msgstr "Недељне митске тамнице завршене"
 
-#: wowtools/wowaudit.py:57 wowtools/wowaudit.py:325
+#: wowtools/wowaudit.py:58 wowtools/wowaudit.py:326
 msgid "Great Vault Score"
 msgstr "Греат Ваулт Сцоре"
 
-#: wowtools/wowaudit.py:58 wowtools/wowaudit.py:381
+#: wowtools/wowaudit.py:59 wowtools/wowaudit.py:382
 msgid "World Quests Done"
 msgstr "Ворлд Куестс Урађени"
 
-#: wowtools/wowaudit.py:81
+#: wowtools/wowaudit.py:82
 #, docstring
 msgid "Show current equipped item level of your wowaudit group."
 msgstr "Прикажи тренутни ниво опремљене ставке ваше воваудит групе."
 
-#: wowtools/wowaudit.py:104
+#: wowtools/wowaudit.py:105
 msgid "{member_rank}. {member_name} - {member_ilvl}\n"
 msgstr "{member_rank}. {member_name} - {member_ilvl}\n"
 
-#: wowtools/wowaudit.py:139 wowtools/wowaudit.py:210 wowtools/wowaudit.py:268
-#: wowtools/wowaudit.py:326 wowtools/wowaudit.py:382 wowtools/wowaudit.py:442
+#: wowtools/wowaudit.py:140 wowtools/wowaudit.py:211 wowtools/wowaudit.py:269
+#: wowtools/wowaudit.py:327 wowtools/wowaudit.py:383 wowtools/wowaudit.py:443
 msgid "Page {page_number}"
 msgstr "Страница {page_number}"
 
-#: wowtools/wowaudit.py:144
+#: wowtools/wowaudit.py:145
 #, docstring
 msgid "Show current equipped tier pieces of your wowaudit group."
 msgstr "Покажите тренутно опремљене делове нивоа ваше воваудит групе."
 
-#: wowtools/wowaudit.py:174
+#: wowtools/wowaudit.py:175
 msgid "{member_rank}. {member_name} - {member_tier_n} - **({member_tier})**\n"
 msgstr "{member_rank}. {member_name} - {member_tier_n} - **({member_tier})**\n"
 
-#: wowtools/wowaudit.py:215
+#: wowtools/wowaudit.py:216
 #, docstring
 msgid "Show mythic dungeons completed this week."
 msgstr "Прикажите митске тамнице завршене ове недеље."
 
-#: wowtools/wowaudit.py:238
+#: wowtools/wowaudit.py:239
 msgid "{member_rank}. {member_name} - **{member_mplus_done}**\n"
 msgstr "{member_rank}. {member_name} - **{member_mplus_done}**\n"
 
-#: wowtools/wowaudit.py:273
+#: wowtools/wowaudit.py:274
 #, docstring
 msgid "Shows the item level sum of all items in your wowaudit group's vault."
 msgstr "Приказује збир нивоа ставке свих ставки у трезору ваше воваудит групе."
 
-#: wowtools/wowaudit.py:296
+#: wowtools/wowaudit.py:297
 msgid "{member_rank}. {member_name} - **{member_vault_score}**\n"
 msgstr "{member_rank}. {member_name} - **{member_vault_score}**\n"
 
-#: wowtools/wowaudit.py:331
+#: wowtools/wowaudit.py:332
 #, docstring
 msgid "Shows world quests completed this week."
 msgstr "Приказује светске мисије завршене ове недеље."
 
-#: wowtools/wowaudit.py:354
+#: wowtools/wowaudit.py:355
 msgid "{member_rank}. {member_name} - **{member_wq_done}**\n"
 msgstr "{member_rank}. {member_name} - **{member_wq_done}**\n"
 
-#: wowtools/wowaudit.py:387
+#: wowtools/wowaudit.py:388
 #, docstring
 msgid "Shows raid kills for the current week."
 msgstr "Приказује убиства у нападима за текућу недељу."
 
-#: wowtools/wowaudit.py:410
+#: wowtools/wowaudit.py:411
 msgid "{member_rank}. {member_name} - **{member_raidkills}**\n"
 msgstr "{member_rank}. {member_name} - **{member_raidkills}**\n"
 
-#: wowtools/wowaudit.py:441
+#: wowtools/wowaudit.py:442
 msgid "Raid Kills (current week)"
 msgstr "Раид Киллс (тренутна недеља)"
 
-#: wowtools/wowaudit.py:457
+#: wowtools/wowaudit.py:458
 msgid "\n"
 "No WowAudit spreadsheet key set.\n\n"
 "Set the key with `{prefix}wowset wowaudit <key>`"
@@ -574,78 +574,78 @@ msgstr "\n"
 "Није постављен кључ за ВовАудит прорачунску табелу.\n\n"
 "Подесите кључ са `{prefix}вовсет воваудит <key>`"
 
-#: wowtools/wowaudit.py:469
+#: wowtools/wowaudit.py:470
 msgid "\n"
 "No service account credentials found."
 msgstr "\n"
 "Нису пронађени акредитиви налога услуге."
 
-#: wowtools/wowtools.py:28
+#: wowtools/wowtools.py:37
 #, docstring
 msgid "Interact with various World of Warcraft APIs"
 msgstr "Интеракција са различитим АПИ-јима за Ворлд оф Варцрафт"
 
-#: wowtools/wowtools.py:62
+#: wowtools/wowtools.py:78
 #, docstring
 msgid "Change WoWTools settings."
 msgstr "Промените подешавања ВоВТоолс-а."
 
-#: wowtools/wowtools.py:68
+#: wowtools/wowtools.py:84
 #, docstring
 msgid "Set the region where characters and guilds will be searched for."
 msgstr "Подесите регион где ће се тражити ликови и цехови."
 
-#: wowtools/wowtools.py:74
+#: wowtools/wowtools.py:90
 msgid "That region does not exist.\n"
 "Valid regions are: us, eu, kr, tw, cn"
 msgstr "Тај регион не постоји.\n"
 "Важећи региони су: ус, еу, кр, тв, цн"
 
-#: wowtools/wowtools.py:79
+#: wowtools/wowtools.py:95
 msgid "Region set succesfully."
 msgstr "Регион је успешно постављен."
 
-#: wowtools/wowtools.py:86
+#: wowtools/wowtools.py:102
 #, docstring
 msgid "Set the realm of your guild."
 msgstr "Поставите царство свог цеха."
 
-#: wowtools/wowtools.py:91
+#: wowtools/wowtools.py:107
 msgid "Realm cleared."
 msgstr "Краљевство је очишћено."
 
-#: wowtools/wowtools.py:95
+#: wowtools/wowtools.py:111
 msgid "Realm set."
 msgstr "Реалм сет."
 
-#: wowtools/wowtools.py:102
+#: wowtools/wowtools.py:118
 #, docstring
 msgid "(CASE SENSITIVE) Set the name of your guild."
 msgstr "(ОСЈЕТЉИВ ВЕЛИКА и мала слова) Подесите име свог цеха."
 
-#: wowtools/wowtools.py:117
+#: wowtools/wowtools.py:133
 #, docstring
 msgid "Set the key of your wowaudit spreadsheet."
 msgstr "Подесите кључ ваше воваудит табеле."
 
-#: wowtools/wowtools.py:122
+#: wowtools/wowtools.py:138
 msgid "WowAudit spreadsheet key cleared."
 msgstr "Кључ ВовАудит табеле је обрисан."
 
-#: wowtools/wowtools.py:125
+#: wowtools/wowtools.py:141
 msgid "WowAudit spreadsheet key set."
 msgstr "ВовАудит скуп кључева за табелу."
 
-#: wowtools/wowtools.py:132
+#: wowtools/wowtools.py:148
 #, docstring
 msgid "Set the service account key for the bot. This is required for any wowaudit commands."
 msgstr "Подесите кључ сервисног налога за бота. Ово је потребно за све команде воваудит."
 
-#: wowtools/wowtools.py:134
+#: wowtools/wowtools.py:150
 msgid "This command can only be used in DMs."
 msgstr "Ова команда се може користити само у ДМ-овима."
 
-#: wowtools/wowtools.py:137
+#: wowtools/wowtools.py:153
 msgid "A service account is a special type of Google account intended to represent a non-human user that needs to authenticate and be authorized to access data in Google APIs.\n"
 "Since it’s a separate account, by default it does not have access to any spreadsheet until you share it with this account. Just like any other Google account.\n\n"
 "Here’s how to get one:\n"
@@ -675,33 +675,79 @@ msgstr "Налог услуге је посебан тип Гоогле нало
 "Аутоматски ћете преузети ЈСОН датотеку са акредитивима.\n"
 "Приложите ту датотеку командом коју сте управо откуцали."
 
-#: wowtools/wowtools.py:163
+#: wowtools/wowtools.py:179
 msgid "Service account set."
 msgstr "Сервисни налог је постављен."
 
-#: wowtools/wowtools.py:172
+#: wowtools/wowtools.py:188
 #, docstring
 msgid "Instructions for setting up the Blizzard API."
 msgstr "Упутства за подешавање Близзард АПИ-ја."
 
-#: wowtools/wowtools.py:174
+#: wowtools/wowtools.py:190
 msgid "Create a client on https://develop.battle.net/ and then type in `{prefix}set api blizzard client_id,whoops client_secret,whoops` filling in `whoops` with your client's ID and secret."
 msgstr "Креирајте клијента на хттпс://девелоп.баттле.нет/, а затим укуцајте `{prefix}сет апи близзард цлиент_ид,вхоопс цлиент_сецрет,вхоопс` попуњавајући `вхоопс` ИД-ом и тајном вашег клијента."
 
-#: wowtools/wowtools.py:186
+#: wowtools/wowtools.py:202
 #, docstring
 msgid "Set the emotes used for gold, silver and copper."
 msgstr "Поставите емоције које се користе за злато, сребро и бакар."
 
-#: wowtools/wowtools.py:189
+#: wowtools/wowtools.py:205
 msgid "Invalid currency."
 msgstr "Неважећа валута."
 
-#: wowtools/wowtools.py:193
+#: wowtools/wowtools.py:209
 msgid "{currency} emote set to {emoji}"
 msgstr "{currency} емоција постављена на {emoji}"
 
-#: wowtools/wowtools.py:200
+#: wowtools/wowtools.py:216
 msgid "{currency} emote removed."
 msgstr "Уклоњено је {currency} емоција."
+
+#: wowtools/wowtools.py:223
+#, docstring
+msgid "Toggle scoreboard images on or off."
+msgstr ""
+
+#: wowtools/wowtools.py:227
+msgid "Images disabled."
+msgstr ""
+
+#: wowtools/wowtools.py:230
+msgid "Images enabled."
+msgstr ""
+
+#: wowtools/wowtools.py:234
+#, docstring
+msgid "Battle.net authenticator commands."
+msgstr ""
+
+#: wowtools/wowtools.py:239
+#, docstring
+msgid "Set up the authenticator."
+msgstr ""
+
+#: wowtools/wowtools.py:244
+msgid "Could not connect: {error}"
+msgstr ""
+
+#: wowtools/wowtools.py:256
+msgid "Authenticator set.\n"
+"Your code is: **{code}**"
+msgstr ""
+
+#: wowtools/wowtools.py:261
+#, docstring
+msgid "Get your authenticator code."
+msgstr ""
+
+#: wowtools/wowtools.py:264
+msgid "You haven't set up the authenticator yet."
+msgstr ""
+
+#: wowtools/wowtools.py:272
+msgid "Your code is: **{code}**\n"
+"It expires {time}"
+msgstr ""
 
