@@ -29,7 +29,7 @@ class AuctionHouse:
                 await ctx.send(
                     _(
                         "Please set a region with `{prefix}wowset region` before using this command."
-                    ).format(prefix=ctx.prefix)
+                    ).format(prefix=ctx.clean_prefix)
                 )
                 return
             config_realm: str = await self.config.guild(ctx.guild).realm()

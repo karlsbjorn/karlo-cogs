@@ -35,8 +35,8 @@ class Raiderio:
             if not region:
                 await ctx.send(
                     _(
-                        "A server admin needs to set a region with `[p]wowset region` first."
-                    )
+                        "A server admin needs to set a region with `{prefix}wowset region` first."
+                    ).format(prefix=ctx.clean_prefix)
                 )
                 return
             if realm == "":
@@ -139,15 +139,15 @@ class Raiderio:
             if not region:
                 await ctx.send(
                     _(
-                        "A server admin needs to set a region with `[p]wowset region` first."
-                    )
+                        "A server admin needs to set a region with `{prefix}wowset region` first."
+                    ).format(prefix=ctx.clean_prefix)
                 )
                 return
             if not realm:
                 await ctx.send(
                     _(
-                        "A server admin needs to set a realm with `[p]wowset realm` first."
-                    )
+                        "A server admin needs to set a realm with `{prefix}wowset realm` first."
+                    ).format(prefix=ctx.clean_prefix)
                 )
                 return
             async with RaiderIO() as rio:
@@ -215,9 +215,9 @@ class Raiderio:
         async with ctx.typing():
             region: str = await self.config.guild(ctx.guild).region()
             if not region:
-                await ctx.send(
-                    "A guild admin needs to set a region with `[p]wowset region` first."
-                )
+                await ctx.send(_(
+                    "A guild admin needs to set a region with `{prefix}wowset region` first."
+                ).format(prefix=ctx.clean_prefix))
                 return
             async with RaiderIO() as rio:
                 affixes = await rio.get_mythic_plus_affixes(region)

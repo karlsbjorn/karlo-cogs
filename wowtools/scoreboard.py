@@ -291,18 +291,18 @@ class Scoreboard:
         if not region:
             raise ValueError(
                 _(
-                    "\nA server admin needs to set a region with `[p]wowset region` first."
-                )
+                    "\nA server admin needs to set a region with `{prefix}wowset region` first."
+                ).format(prefix=ctx.clean_prefix)
             )
         if not realm:
             raise ValueError(
-                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
+                _("\nA server admin needs to set a realm with `{prefix}wowset realm` first.").format(prefix=ctx.clean_prefix)
             )
         if not guild_name:
             raise ValueError(
                 _(
-                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                )
+                    "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
+                ).format(prefix=ctx.clean_prefix)
             )
 
         embed = discord.Embed(
@@ -379,18 +379,18 @@ class Scoreboard:
         if not region:
             raise ValueError(
                 _(
-                    "\nA server admin needs to set a region with `[p]wowset region` first."
-                )
+                    "\nA server admin needs to set a region with `{prefix}wowset region` first."
+                ).format(prefix=ctx.clean_prefix)
             )
         if not realm:
             raise ValueError(
-                _("\nA server admin needs to set a realm with `[p]wowset realm` first.")
+                _("\nA server admin needs to set a realm with `{prefix}wowset realm` first.").format(prefix=ctx.clean_prefix)
             )
         if not guild_name:
             raise ValueError(
                 _(
-                    "\nA server admin needs to set a guild name with `[p]wowset guild` first."
-                )
+                    "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
+                ).format(prefix=ctx.clean_prefix)
             )
 
         msg = await ctx.send(_("This may take a while..."))
