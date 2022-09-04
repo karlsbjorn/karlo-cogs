@@ -215,9 +215,11 @@ class Raiderio:
         async with ctx.typing():
             region: str = await self.config.guild(ctx.guild).region()
             if not region:
-                await ctx.send(_(
-                    "A guild admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix))
+                await ctx.send(
+                    _(
+                        "A guild admin needs to set a region with `{prefix}wowset region` first."
+                    ).format(prefix=ctx.clean_prefix)
+                )
                 return
             async with RaiderIO() as rio:
                 affixes = await rio.get_mythic_plus_affixes(region)

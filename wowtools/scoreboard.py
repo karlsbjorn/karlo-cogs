@@ -296,7 +296,9 @@ class Scoreboard:
             )
         if not realm:
             raise ValueError(
-                _("\nA server admin needs to set a realm with `{prefix}wowset realm` first.").format(prefix=ctx.clean_prefix)
+                _(
+                    "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
+                ).format(prefix=ctx.clean_prefix)
             )
         if not guild_name:
             raise ValueError(
@@ -384,7 +386,9 @@ class Scoreboard:
             )
         if not realm:
             raise ValueError(
-                _("\nA server admin needs to set a realm with `{prefix}wowset realm` first.").format(prefix=ctx.clean_prefix)
+                _(
+                    "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
+                ).format(prefix=ctx.clean_prefix)
             )
         if not guild_name:
             raise ValueError(
