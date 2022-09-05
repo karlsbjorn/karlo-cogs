@@ -1,9 +1,7 @@
-import functools
 from datetime import datetime
 from typing import Dict
 
 import discord
-from blizzardapi import BlizzardApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -18,12 +16,6 @@ class AuctionHouse:
     async def price(self, ctx: commands.Context, *, item: str):
         """Get the current market price of an item."""
         async with ctx.typing():
-            try:
-                api_client = await get_api_client(self.bot, ctx)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
-
             config_region: str = await self.config.guild(ctx.guild).region()
             if not config_region:
                 await ctx.send(
@@ -32,6 +24,13 @@ class AuctionHouse:
                     ).format(prefix=ctx.clean_prefix)
                 )
                 return
+
+            try:
+                api_client = await get_api_client(self.bot, ctx, config_region)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
+
             config_realm: str = await self.config.guild(ctx.guild).realm()
             if not config_realm:
                 await ctx.send(
@@ -43,15 +42,10 @@ class AuctionHouse:
             boe_disclaimer = False
 
             # Search for the item
-            fetch_items = functools.partial(
-                api_client.wow.game_data.get_item_search,
-                region=config_region,
-                locale="en_US",
-                item_name=item,
-                page_size=1000,
-            )
             await self.limiter.acquire()
-            items = await self.bot.loop.run_in_executor(None, fetch_items)
+            items = await api_client.Retail.GameData.getItemSearch(
+                {"name.en_US": item, "_pageSize": 1000}
+            )
 
             results: Dict = items["results"]
             found_items: Dict[int, str] = {}
@@ -69,14 +63,10 @@ class AuctionHouse:
                 return
 
             # Get connected realm ID
-            fetch_c_realms = functools.partial(
-                api_client.wow.game_data.get_connected_realms_search,
-                region=config_region,
-                locale="en_US",
-                is_classic=False,
-            )
             await self.limiter.acquire()
-            c_realms = await self.bot.loop.run_in_executor(None, fetch_c_realms)
+            c_realms = await api_client.Retail.GameData.getConnectedRealmsSearch(
+                {"_pageSize": 1000}
+            )
 
             c_realm_id = None
             results: Dict = c_realms["results"]
@@ -93,16 +83,11 @@ class AuctionHouse:
                 return
 
             # Get price of item
-            fetch_auctions = functools.partial(
-                api_client.wow.game_data.get_auctions,
-                region=config_region,
-                locale="en_US",
-                connected_realm_id=c_realm_id,
-            )
             await self.limiter.acquire()
-            auctions_data: Dict = await self.bot.loop.run_in_executor(
-                None, fetch_auctions
+            auctions_data: Dict = await api_client.Retail.GameData.getAuctions(
+                connected_realm_id=c_realm_id
             )
+
             auctions = auctions_data["auctions"]
             prices = []
             item_quantity = 0
@@ -120,14 +105,9 @@ class AuctionHouse:
                     prices.append(item_price)
             if not prices:
                 # Item could be a commodity
-                fetch_commodities = functools.partial(
-                    api_client.wow.game_data.get_commodities,
-                    region=config_region,
-                    locale="en_US",
-                )
                 await self.limiter.acquire(25)
-                commodities_data: Dict = await self.bot.loop.run_in_executor(
-                    None, fetch_commodities
+                commodities_data: Dict = (
+                    await api_client.Retail.GameData.getCommodities()
                 )
                 auctions = commodities_data["auctions"]
                 for auction in auctions:
@@ -144,14 +124,10 @@ class AuctionHouse:
 
             # Embed stuff
             # Get item icon
-            fetch_media = functools.partial(
-                api_client.wow.game_data.get_item_media,
-                region=config_region,
-                locale="en_US",
-                item_id=found_item_id,
-            )
             await self.limiter.acquire()
-            item_media = await self.bot.loop.run_in_executor(None, fetch_media)
+            item_media = await api_client.Retail.GameData.getItemMedia(
+                item_id=found_item_id
+            )
             item_icon_url = item_media["assets"][0]["value"]
 
             # Create embed

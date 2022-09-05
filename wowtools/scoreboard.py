@@ -1,4 +1,3 @@
-import functools
 import io
 import logging
 
@@ -12,7 +11,7 @@ from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
-from .utils import get_api_client, setup_pvp_functools
+from .utils import get_api_client
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -228,6 +227,8 @@ class Scoreboard:
     ):
         async with RaiderIO() as rio:
             roster = await rio.get_guild_roster(region, realm, guild_name)
+            if "error" in roster.keys():
+                raise ValueError(f"{roster['message']}.")
 
             lb = {}
             # TODO: Surely there's a better way to do literally everything below
@@ -238,10 +239,8 @@ class Scoreboard:
                 if score > 250 and char_name.lower() not in sb_blacklist:
                     if image:
                         score_color: str = char["keystoneScores"]["allScoreColor"]
-                        char_img: str = (
-                            "https://render.worldofwarcraft.com/eu/character/{}".format(
-                                char["character"]["thumbnail"]
-                            )
+                        char_img: str = "https://render.worldofwarcraft.com/{region}/character/{}".format(
+                            char["character"]["thumbnail"], region=region
                         )
                         lb[char_name] = (score, score_color, char_img)
                     else:
@@ -461,56 +460,42 @@ class Scoreboard:
         sb_blacklist: list[str],
     ) -> list:
         try:
-            api_client = await get_api_client(self.bot, ctx)
+            api_client = await get_api_client(self.bot, ctx, region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return []
         guild_name = guild_name.replace(" ", "-").lower()
 
-        fetch_current_season = functools.partial(
-            api_client.wow.game_data.get_pvp_seasons_index,
-            region=region,
-            locale="en_US",
-        )
-        await self.limiter.acquire()
-        current_season: int = (
-            await self.bot.loop.run_in_executor(None, fetch_current_season)
-        )["current_season"]["id"]
+        current_season: int = (await api_client.Retail.GameData.getPvPSeasonsIndex())[
+            "current_season"
+        ]["id"]
 
-        fetch_guild_roster = functools.partial(
-            api_client.wow.profile.get_guild_roster,
-            region=region,
-            realm_slug=realm,
-            locale="en_US",
-            name_slug=guild_name,
+        guild_roster = await api_client.Retail.Profile.getGuildRoster(
+            guild=guild_name, realm=realm
         )
-        await self.limiter.acquire()
-        guild_roster = await self.bot.loop.run_in_executor(None, fetch_guild_roster)
 
         roster = {"rbg": {}, "2v2": {}, "3v3": {}}
 
         for member in guild_roster["members"]:
             character_name = member["character"]["name"].lower()
             if character_name not in sb_blacklist:
-                (
-                    fetch_duo_statistics,
-                    fetch_rbg_statistics,
-                    fetch_tri_statistics,
-                ) = await setup_pvp_functools(api_client, character_name, realm, region)
-
                 await self.limiter.acquire()
-                rbg_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_rbg_statistics
+                rbg_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="rbg"
+                    )
                 )
-
                 await self.limiter.acquire()
-                duo_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_duo_statistics
+                duo_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="2v2"
+                    )
                 )
-
                 await self.limiter.acquire()
-                tri_statistics = await self.bot.loop.run_in_executor(
-                    None, fetch_tri_statistics
+                tri_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="3v3"
+                    )
                 )
 
                 if "rating" in rbg_statistics:

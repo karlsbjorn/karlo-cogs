@@ -1,10 +1,9 @@
-import functools
-
 import discord
+from aiohttp import ClientResponseError
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import get_api_client, setup_pvp_functools
+from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
 
@@ -15,13 +14,13 @@ class PvP:
     async def rating(self, ctx, character_name: str, *realm: str):
         """Check a character's PVP ratings."""
         async with ctx.typing():
+            region = await self.config.guild(ctx.guild).region()
             try:
-                api_client = await get_api_client(self.bot, ctx)
+                api_client = await get_api_client(self.bot, ctx, region)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
 
-            region = await self.config.guild(ctx.guild).region()
             realm = "-".join(realm).lower()
             character_name = character_name.lower()
             rbg_rating = "0"
@@ -32,56 +31,57 @@ class PvP:
             if realm == "":
                 await ctx.send(_("You didn't give me a realm."))
                 return
-            fetch_profile = functools.partial(
-                api_client.wow.profile.get_character_profile_summary,
-                region=region,
-                realm_slug=realm,
-                character_name=character_name,
-                locale="en_US",
-            )
-            fetch_achievements = functools.partial(
-                api_client.wow.profile.get_character_achievements_summary,
-                region=region,
-                realm_slug=realm,
-                character_name=character_name,
-                locale="en_US",
-            )
-            fetch_media = functools.partial(
-                api_client.wow.profile.get_character_media_summary,
-                region=region,
-                realm_slug=realm,
-                character_name=character_name,
-                locale="en_US",
-            )
-            (
-                fetch_duo_statistics,
-                fetch_rbg_statistics,
-                fetch_tri_statistics,
-            ) = await setup_pvp_functools(api_client, character_name, realm, region)
+
+            try:
+                await self.limiter.acquire()
+                profile = await api_client.Retail.Profile.getCharProfileSummary(
+                    character=character_name, realm=realm
+                )
+            except ClientResponseError:
+                await ctx.send(
+                    _('Character "{character_name}" not found.').format(
+                        character_name=character_name
+                    )
+                )
+                return
 
             await self.limiter.acquire()
-            profile = await self.bot.loop.run_in_executor(None, fetch_profile)
-
-            await self.limiter.acquire()
-            achievements = await self.bot.loop.run_in_executor(None, fetch_achievements)
-
-            await self.limiter.acquire()
-            media = await self.bot.loop.run_in_executor(None, fetch_media)
-
-            await self.limiter.acquire()
-            rbg_statistics = await self.bot.loop.run_in_executor(
-                None, fetch_rbg_statistics
+            achievements = await api_client.Retail.Profile.getCharAchievementsSummary(
+                character=character_name, realm=realm
             )
 
             await self.limiter.acquire()
-            duo_statistics = await self.bot.loop.run_in_executor(
-                None, fetch_duo_statistics
+            media = await api_client.Retail.Profile.getCharMediaSummary(
+                character=character_name, realm=realm
             )
 
-            await self.limiter.acquire()
-            tri_statistics = await self.bot.loop.run_in_executor(
-                None, fetch_tri_statistics
-            )
+            try:
+                await self.limiter.acquire()
+                rbg_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="rbg"
+                    )
+                )
+            except ClientResponseError:
+                rbg_statistics = {}
+            try:
+                await self.limiter.acquire()
+                duo_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="2v2"
+                    )
+                )
+            except ClientResponseError:
+                duo_statistics = {}
+            try:
+                await self.limiter.acquire()
+                tri_statistics = (
+                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
+                        character=character_name, realm=realm, pvp_bracket="3v3"
+                    )
+                )
+            except ClientResponseError:
+                tri_statistics = {}
 
             if "name" not in profile:
                 await ctx.send(_("That character or realm does not exist."))

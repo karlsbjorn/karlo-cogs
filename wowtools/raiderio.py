@@ -70,17 +70,18 @@ class Raiderio:
                 ]["summary"]
                 char_last_updated = self._parse_date(profile_data["last_crawled_at"])
                 char_ilvl = profile_data["gear"]["item_level_equipped"]
-                char_covenant = profile_data["covenant"]["name"]
+                try:
+                    char_covenant = profile_data["covenant"]["name"]
+                except TypeError:
+                    char_covenant = "None"
                 char_url = profile_data["profile_url"]
 
                 banner = profile_data["profile_banner"]
 
                 banner_url = f"https://cdnassets.raider.io/images/profile/masthead_backdrops/v2/{banner}.jpg"
-                armory_url = f"https://worldofwarcraft.com/en-gb/character/eu/{realm}/{char_name}"
-                wcl_url = (
-                    f"https://www.warcraftlogs.com/character/eu/{realm}/{char_name}"
-                )
-                raidbots_url = f"https://www.raidbots.com/simbot/quick?region=eu&realm={realm}&name={char_name}"
+                armory_url = f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{char_name}"
+                wcl_url = f"https://www.warcraftlogs.com/character/{region}/{realm}/{char_name}"
+                raidbots_url = f"https://www.raidbots.com/simbot/quick?region={region}&realm={realm}&name={char_name}"
 
                 embed = discord.Embed(
                     title=char_name,
@@ -158,7 +159,15 @@ class Raiderio:
                     fields=["raid_rankings", "raid_progression"],
                 )
 
-                guild_name: str = profile_data["name"]
+                try:
+                    guild_name: str = profile_data["name"]
+                except KeyError:
+                    await ctx.send(
+                        _("The guild {guild} does not exist on {realm}.").format(
+                            guild=guild, realm=realm[0]
+                        )
+                    )
+                    return
                 guild_url: str = profile_data["profile_url"]
                 last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 

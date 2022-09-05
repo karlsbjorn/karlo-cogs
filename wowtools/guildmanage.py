@@ -1,8 +1,6 @@
-import functools
 from typing import Dict, List
 
 import discord
-from blizzardapi import BlizzardApi
 from rapidfuzz import fuzz, process
 from redbot.core import commands
 from redbot.core.i18n import Translator
@@ -142,22 +140,16 @@ class GuildManage:
         :param ctx:
         :return: dict containing guild members and their rank
         """
-        api_client: BlizzardApi = await get_api_client(self.bot, ctx)
-
         wow_guild_name: str = await self.config.guild(ctx.guild).gmanage_guild()
         wow_guild_name = wow_guild_name.lower()
         region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).gmanage_realm()
         realm = realm.lower()
+        api_client = await get_api_client(self.bot, ctx, region)
 
-        fetch_guild_roster = functools.partial(
-            api_client.wow.profile.get_guild_roster,
-            region=region,
-            realm_slug=realm,
-            locale="en_US",
-            name_slug=wow_guild_name,
+        guild_roster = await api_client.Retail.Profile.getGuildRoster(
+            guild=wow_guild_name, realm=realm
         )
-        guild_roster = await self.bot.loop.run_in_executor(None, fetch_guild_roster)
 
         rank_roles: Dict[int, int] = await self.config.guild(ctx.guild).guild_roles()
         ranks: List[int] = [int(rank) for rank in list(rank_roles.keys())]

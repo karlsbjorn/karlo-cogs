@@ -1,5 +1,3 @@
-import functools
-
 import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
@@ -8,7 +6,7 @@ from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
 
-VALID_REGIONS = ("eu", "us", "kr")
+VALID_REGIONS = ("eu", "us", "kr", "cn")
 
 
 class Token:
@@ -20,23 +18,21 @@ class Token:
                 await self.priceall(ctx)
                 return
             try:
-                api_client = await get_api_client(self.bot, ctx)
+                api_client = await get_api_client(self.bot, ctx, region)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
 
             if region not in VALID_REGIONS and region != "all":
-                raise ValueError(
-                    _("Invalid region. Valid regions are: `eu`, `us`, `kr` or `all`.")
+                await ctx.send(
+                    _(
+                        "Invalid region. Valid regions are: `eu`, `us`, `kr`, 'cn' or `all`."
+                    )
                 )
+                return
 
-            fetch_token = functools.partial(
-                api_client.wow.game_data.get_token_index,
-                region=region,
-                locale="en_US",
-            )
             await self.limiter.acquire()
-            wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
+            wow_token = await api_client.Retail.GameData.getWoWTokenIndex()
             token_price = str(wow_token["price"])
 
             gold_emotes = await self.config.emotes()
@@ -52,24 +48,18 @@ class Token:
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""
         async with ctx.typing():
-            try:
-                api_client = await get_api_client(self.bot, ctx)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
-
             embed = discord.Embed(
                 title=_("WoW Token prices"), colour=await ctx.embed_colour()
             )
 
             for region in VALID_REGIONS:
-                fetch_token = functools.partial(
-                    api_client.wow.game_data.get_token_index,
-                    region=region,
-                    locale="en_US",
-                )
+                try:
+                    api_client = await get_api_client(self.bot, ctx, region)
+                except Exception as e:
+                    await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                    return
                 await self.limiter.acquire()
-                wow_token = await self.bot.loop.run_in_executor(None, fetch_token)
+                wow_token = await api_client.Retail.GameData.getWoWTokenIndex()
 
                 token_price = str(wow_token["price"])
                 gold_emotes = await self.config.emotes()

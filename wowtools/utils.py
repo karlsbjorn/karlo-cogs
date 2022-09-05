@@ -1,6 +1,4 @@
-import functools
-
-from blizzardapi import BlizzardApi
+from aiowowapi import WowApi
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
@@ -9,13 +7,14 @@ from redbot.core.utils.chat_formatting import humanize_number
 _ = Translator("WoWTools", __file__)
 
 
-async def get_api_client(bot: Red, ctx: commands.Context) -> BlizzardApi:
+async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi:
     """
     Get Blizzard API client.
 
     :param bot:
     :param ctx:
-    :return: Blizzard API client
+    :param region:
+    :return: WoW API client
     """
     blizzard_api = await bot.get_shared_api_tokens("blizzard")
     cid = blizzard_api.get("client_id")
@@ -29,7 +28,7 @@ async def get_api_client(bot: Red, ctx: commands.Context) -> BlizzardApi:
                 "filling in `whoops` with your client's ID and secret."
             ).format(prefix=ctx.prefix)
         )
-    api_client = BlizzardApi(cid, secret)
+    api_client = WowApi(client_id=cid, client_secret=secret, client_region=region)
     return api_client
 
 
@@ -63,33 +62,3 @@ def format_to_gold(price: int, emotes: dict = None) -> str:
         copper_text = copper + "c" if copper_emoji is None else copper + copper_emoji
 
     return gold_text + silver_text + copper_text
-
-
-async def setup_pvp_functools(
-    api_client: BlizzardApi, character_name: str, realm: str, region: str
-):
-    fetch_rbg_statistics = functools.partial(
-        api_client.wow.profile.get_character_pvp_bracket_statistics,
-        region=region,
-        realm_slug=realm,
-        character_name=character_name,
-        locale="en_US",
-        pvp_bracket="rbg",
-    )
-    fetch_duo_statistics = functools.partial(
-        api_client.wow.profile.get_character_pvp_bracket_statistics,
-        region=region,
-        realm_slug=realm,
-        character_name=character_name,
-        locale="en_US",
-        pvp_bracket="2v2",
-    )
-    fetch_tri_statistics = functools.partial(
-        api_client.wow.profile.get_character_pvp_bracket_statistics,
-        region=region,
-        realm_slug=realm,
-        character_name=character_name,
-        locale="en_US",
-        pvp_bracket="3v3",
-    )
-    return fetch_duo_statistics, fetch_rbg_statistics, fetch_tri_statistics
