@@ -318,4 +318,4 @@ class WoWTools(
         requester: Literal["discord_deleted_user", "owner", "user", "user_strict"],
         user_id: int,
     ):
-        return
+        await self.config.user_from_id(user_id).clear()
