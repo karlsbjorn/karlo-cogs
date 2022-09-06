@@ -11,26 +11,44 @@ _ = Translator("WoWTools", __file__)
 class PvP:
     @commands.cooldown(rate=1, per=3, type=commands.BucketType.user)
     @commands.command()
-    async def rating(self, ctx, character_name: str, *realm: str):
+    async def rating(self, ctx, character_name: str = None, *, realm: str = None):
         """Check a character's PVP ratings."""
         async with ctx.typing():
-            region = await self.config.guild(ctx.guild).region()
+            if not character_name:
+                character_name: str = await self.config.user(
+                    ctx.author
+                ).wow_character_name()
+                if not character_name:
+                    await ctx.send_help()
+                    return
+            if not realm:
+                realm: str = await self.config.user(ctx.author).wow_character_realm()
+                if not realm:
+                    await ctx.send_help()
+                    return
+            region: str = await self.config.user(ctx.author).wow_character_region()
+            if not region:
+                region: str = await self.config.guild(ctx.guild).region()
+                if not region:
+                    await ctx.send(
+                        _(
+                            "A server admin needs to set a region with `{prefix}wowset region` first."
+                        ).format(prefix=ctx.clean_prefix)
+                    )
+                    return
+            realm = (
+                "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
+            )
             try:
                 api_client = await get_api_client(self.bot, ctx, region)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
 
-            realm = "-".join(realm).lower()
-            character_name = character_name.lower()
             rbg_rating = "0"
             duo_rating = "0"
             tri_rating = "0"
             color = discord.Color.red()
-
-            if realm == "":
-                await ctx.send(_("You didn't give me a realm."))
-                return
 
             try:
                 await self.limiter.acquire()

@@ -61,6 +61,9 @@ class WoWTools(
             "sb_image": False,
         }
         default_user = {
+            "wow_character_name": None,
+            "wow_character_realm": None,
+            "wow_character_region": None,
             "auth_serial": None,
             "auth_secret": None,
         }
@@ -78,27 +81,27 @@ class WoWTools(
         """Change WoWTools settings."""
         pass
 
-    @wowset.command()
+    @wowset.command(name="region")
     @commands.admin()
-    async def region(self, ctx: commands.Context, region: str):
+    async def wowset_region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
-        regions = ("us", "eu", "kr", "tw", "cn")
+        regions = ("us", "eu", "kr", "cn")
         try:
             async with ctx.typing():
                 if region not in regions:
                     raise ValueError(
                         _(
-                            "That region does not exist.\nValid regions are: us, eu, kr, tw, cn"
-                        )
+                            "That region does not exist.\nValid regions are: {regions}."
+                        ).format(regions=", ".join(regions))
                     )
                 await self.config.guild(ctx.guild).region.set(region)
             await ctx.send(_("Region set succesfully."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    @wowset.command()
+    @wowset.command(name="realm")
     @commands.admin()
-    async def realm(self, ctx: commands.Context, realm: str = None):
+    async def wowset_realm(self, ctx: commands.Context, realm: str = None):
         """Set the realm of your guild."""
         try:
             async with ctx.typing():
@@ -127,9 +130,9 @@ class WoWTools(
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    @wowset.command()
+    @wowset.command(name="wowaudit_sheet")
     @commands.is_owner()
-    async def wowaudit_sheet(self, ctx: commands.Context, key: str = None):
+    async def wowset_wowaudit_sheet(self, ctx: commands.Context, key: str = None):
         """Set the key of your wowaudit spreadsheet."""
         try:
             async with ctx.typing():
@@ -142,9 +145,9 @@ class WoWTools(
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    @wowset.command()
+    @wowset.command(name="service_account")
     @commands.is_owner()
-    async def service_account(self, ctx: commands.Context):
+    async def wowset_service_account(self, ctx: commands.Context):
         """Set the service account key for the bot. This is required for any wowaudit commands."""
         if ctx.message.guild is not None:
             await ctx.send(_("This command can only be used in DMs."))
@@ -182,9 +185,9 @@ class WoWTools(
         else:
             await ctx.send(s_account_guide)
 
-    @wowset.command()
+    @wowset.command(name="blizzard")
     @commands.is_owner()
-    async def blizzard(self, ctx: commands.Context):
+    async def wowset_blizzard(self, ctx: commands.Context):
         """Instructions for setting up the Blizzard API."""
         return await ctx.send(
             _(
@@ -194,9 +197,9 @@ class WoWTools(
             ).format(prefix=ctx.prefix)
         )
 
-    @wowset.command()
+    @wowset.command(name="emote")
     @commands.is_owner()
-    async def emote(
+    async def wowset_emote(
         self, ctx: commands.Context, currency: str, emoji: discord.Emoji = None
     ):
         """Set the emotes used for gold, silver and copper."""
@@ -216,10 +219,10 @@ class WoWTools(
                 _("{currency} emote removed.").format(currency=currency.title())
             )
 
-    @wowset.command()
+    @wowset.command(name="images")
     @commands.admin()
     @commands.guild_only()
-    async def images(self, ctx: commands.Context):
+    async def wowset_images(self, ctx: commands.Context):
         """Toggle scoreboard images on or off."""
         enabled = await self.config.guild(ctx.guild).sb_image()
         if enabled:
@@ -228,6 +231,37 @@ class WoWTools(
         else:
             await self.config.guild(ctx.guild).sb_image.set(True)
             await ctx.send(_("Images enabled."))
+
+    @wowset.group(name="character")
+    async def wowset_character(self, ctx):
+        """Character settings."""
+        pass
+
+    @wowset_character.command(name="name")
+    async def wowset_character_name(self, ctx, character_name: str):
+        """Set your character name."""
+        await self.config.user(ctx.author).wow_character_name.set(character_name)
+        await ctx.send(_("Character name set."))
+
+    @wowset_character.command(name="realm")
+    async def wowset_character_realm(self, ctx, realm_name: str):
+        """Set your character's realm."""
+        await self.config.user(ctx.author).wow_character_realm.set(realm_name)
+        await ctx.send(_("Character realm set."))
+
+    @wowset_character.command(name="region")
+    async def wowset_character_region(self, ctx, region: str):
+        """Set your character's region."""
+        regions = ("us", "eu", "kr", "cn")
+        if region.lower() not in regions:
+            await ctx.send(
+                _("That region does not exist.\nValid regions are: {regions}.").format(
+                    regions=", ".join(regions)
+                )
+            )
+            return
+        await self.config.user(ctx.author).wow_character_region.set(region)
+        await ctx.send(_("Character region set."))
 
     @commands.group()
     async def battlenet(self, ctx: commands.Context):

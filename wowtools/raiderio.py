@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from typing import Optional, Union
 
 import discord
 from dateutil.parser import isoparse
@@ -23,22 +24,39 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
-    async def raiderio_profile(self, ctx, character: str, *realm: str) -> None:
+    async def raiderio_profile(
+        self, ctx, character: str = None, *, realm: str = None
+    ) -> None:
         """Display the raider.io profile of a character.
 
-        Example:
+        **Example:**
         [p]raiderio profile Karlo Ragnaros
         """
         async with ctx.typing():
-            region: str = await self.config.guild(ctx.guild).region()
-            realm = "-".join(realm).lower()
+            if not character:
+                character: str = await self.config.user(ctx.author).wow_character_name()
+                if not character:
+                    await ctx.send_help()
+                    return
+            if not realm:
+                realm: str = await self.config.user(ctx.author).wow_character_realm()
+                if not realm:
+                    await ctx.send_help()
+                    return
+            region: str = await self.config.user(ctx.author).wow_character_region()
             if not region:
-                await ctx.send(
-                    _(
-                        "A server admin needs to set a region with `{prefix}wowset region` first."
-                    ).format(prefix=ctx.clean_prefix)
-                )
-                return
+                region: str = await self.config.guild(ctx.guild).region()
+                if not region:
+                    await ctx.send(
+                        _(
+                            "A server admin needs to set a region with `{prefix}wowset region` first."
+                        ).format(prefix=ctx.clean_prefix)
+                    )
+                    return
+            realm = (
+                "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
+            )
+
             if realm == "":
                 await ctx.send(_("You didn't give me a realm."))
                 return
@@ -55,8 +73,11 @@ class Raiderio:
                     ],
                 )
 
-                # TODO: Dict?
-                char_name = profile_data["name"]
+                try:
+                    char_name = profile_data["name"]
+                except KeyError:
+                    await ctx.send(_("Character not found."))
+                    return
                 char_race = profile_data["race"]
                 char_spec = profile_data["active_spec_name"]
                 char_class = profile_data["class"]
