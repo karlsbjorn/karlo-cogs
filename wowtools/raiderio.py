@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from typing import Optional, Union
 
 import discord
 from dateutil.parser import isoparse
