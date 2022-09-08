@@ -44,7 +44,7 @@ class WikiArena(commands.Cog):
 
             await ctx.send(
                 _(
-                    "Guess which full article is __longer__ or got __more views__ in the last 60 days!\n"
+                    "Guess which full article has __more words__ or __more views in the last 60 days__!\n"
                     "Score: **{score}**"
                 ).format(score=score),
                 embeds=embeds,
@@ -54,6 +54,7 @@ class WikiArena(commands.Cog):
                     red_views=red_views,
                     blue_words=blue_word_count,
                     red_words=red_word_count,
+                    author=ctx.author,
                 ),
             )
 
@@ -128,9 +129,10 @@ class WikiArena(commands.Cog):
 
 class Buttons(discord.ui.View):
     def __init__(
-        self, score, blue_views, red_views, blue_words, red_words, timeout=180
+        self, score, blue_views, red_views, blue_words, red_words, author, timeout=180
     ):
         super().__init__(timeout=timeout)
+        self.author = author
         self.score = score
         self.blue_views = blue_views
         self.red_views = red_views
@@ -142,6 +144,11 @@ class Buttons(discord.ui.View):
     async def blue_more_views(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
+        if self.author.id != interaction.user.id:
+            await interaction.response.send_message(
+                _("This isn't your game of WikiArena."), ephemeral=True
+            )
+            return
         if self.red_views < self.blue_views:
             await self.continue_game(interaction)
         else:
@@ -151,24 +158,39 @@ class Buttons(discord.ui.View):
     async def red_more_views(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
+        if self.author.id != interaction.user.id:
+            await interaction.response.send_message(
+                _("This isn't your game of WikiArena."), ephemeral=True
+            )
+            return
         if self.red_views > self.blue_views:
             await self.continue_game(interaction)
         else:
             await self.end_game(interaction)
 
-    @discord.ui.button(label=_("Longer"), style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label=_("More Words"), style=discord.ButtonStyle.blurple)
     async def blue_longer(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
+        if self.author.id != interaction.user.id:
+            await interaction.response.send_message(
+                _("This isn't your game of WikiArena."), ephemeral=True
+            )
+            return
         if self.red_words < self.blue_words:
             await self.continue_game(interaction)
         else:
             await self.end_game(interaction)
 
-    @discord.ui.button(label=_("Longer"), style=discord.ButtonStyle.red, row=1)
+    @discord.ui.button(label=_("More Words"), style=discord.ButtonStyle.red, row=1)
     async def red_longer(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
+        if self.author.id != interaction.user.id:
+            await interaction.response.send_message(
+                _("This isn't your game of WikiArena."), ephemeral=True
+            )
+            return
         if self.red_words > self.blue_words:
             await self.continue_game(interaction)
         else:
@@ -202,10 +224,30 @@ class Buttons(discord.ui.View):
             child.disabled = True
         await interaction.response.edit_message(
             content=_(
-                "Wrong! Better luck next time!\n\n"
-                ""
+                "Wrong! Better luck next time!\n"
+                "🔵 Views: {blue_views}\n"
+                "🔴 Views: {red_views}\n"
+                "🔵 Words: {blue_words}\n"
+                "🔴 Words: {red_words}\n\n"
                 "Your final score was: **{score}**"
-            ).format(score=self.score),
+            ).format(
+                score=self.score,
+                blue_views=self.blue_views
+                if not self.blue_views > self.red_views
+                else f"**{self.blue_views}**",
+                red_views=self.red_views
+                if not self.red_views > self.blue_views
+                else f"**{self.red_views}**",
+                blue_words=self.blue_words
+                if not self.blue_words > self.red_words
+                else f"**{self.blue_words}**",
+                red_words=self.red_words
+                if not self.red_words > self.blue_words
+                else f"**{self.red_words}**",
+            ),
             embeds=embeds,
             view=self,
         )
+
+    async def cog_unload(self):
+        self.bot.loop.create_task(self.session.close())
