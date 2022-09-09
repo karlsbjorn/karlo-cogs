@@ -210,17 +210,31 @@ class WarcraftLogsRetail(commands.Cog):
                 )
                 perm_enchant_id = item.get("permanentEnchant", None)
                 temp_enchant_id = item.get("temporaryEnchant", None)
+                gem_id = item.get("gems", None)
+                gem_id = gem_id[0].get("id", None) if gem_id else None
                 perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
                 temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
+                gem_text = ENCHANT_ID.get(gem_id, None)
                 # TODO: Add sockets and socketed gems to the embed.
 
                 if perm_enchant_id:
                     if temp_enchant_id:
                         symbol = "├"
+                    elif gem_id:
+                        symbol = "├"
                     else:
                         symbol = "└"
                     if perm_enchant_text:
                         item_list.append(f"`{symbol}──` {perm_enchant_text}")
+                    if gem_text:
+                        item_list.append(f"`{symbol}──` {gem_text}")
+                if gem_id:
+                    if temp_enchant_id:
+                        symbol = "├"
+                    else:
+                        symbol = "└"
+                    if gem_text:
+                        item_list.append(f"`{symbol}──` {gem_text}")
                 if temp_enchant_id:
                     if temp_enchant_text:
                         item_list.append(f"`└──` {temp_enchant_text}")
