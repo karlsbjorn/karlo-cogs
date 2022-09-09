@@ -279,6 +279,7 @@ class WarcraftLogsRetail(commands.Cog):
         realm: str = None,
         region: str = None,
         zone: str = None,
+        difficulty: str = None,
     ):
         """
         Character rank overview.
@@ -290,8 +291,8 @@ class WarcraftLogsRetail(commands.Cog):
         [p]getrank Username Alterac-Mountains US
 
         Specific Zones:
-        [p]getrank Username Draenor EU CN
-        [p]getrank Username Alterac-Mountains US SoD
+        [p]getrank Username Draenor EU CN Heroic
+        [p]getrank Username Alterac-Mountains US SoD Mythic
 
         Zone name must be formatted like:
         CN, SoD, SotFO
@@ -346,6 +347,14 @@ class WarcraftLogsRetail(commands.Cog):
                 if zone.upper() in ZONES_BY_SHORT_NAME:
                     zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
                     zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
+            if difficulty and difficulty.upper() in DIFFICULTIES.values():
+                difficulty_ids = list(DIFFICULTIES.keys())
+                for difficulty_id in difficulty_ids:
+                    if difficulty.upper() == DIFFICULTIES[difficulty_id]:
+                        difficulty = difficulty_id
+                        break
+            else:
+                difficulty = 0
 
             if zone_id is None:
                 # return first raid that actually has parse info in shadowlands
@@ -354,7 +363,7 @@ class WarcraftLogsRetail(commands.Cog):
                 zone_ids.reverse()
                 for zone_number in zone_ids:
                     data = await self.http.get_overview(
-                        name, realm, region, zone_number
+                        name, realm, region, zone_number, difficulty
                     )
                     error = data.get("error", None)
                     if error:
@@ -373,7 +382,9 @@ class WarcraftLogsRetail(commands.Cog):
                         break
             else:
                 # try getting a specific zone's worth of info for this character
-                data = await self.http.get_overview(name, realm, region, zone_id)
+                data = await self.http.get_overview(
+                    name, realm, region, zone_id, difficulty
+                )
                 error = data.get("error", None)
                 if error:
                     return await ctx.send(f"WCL API Error: {error}")
@@ -394,7 +405,13 @@ class WarcraftLogsRetail(commands.Cog):
                 )
                 return await ctx.send(msg)
 
-            difficulty = await self._difficulty_name_from_id(char_data["difficulty"])
+            try:
+                difficulty = (
+                    await self._difficulty_name_from_id(char_data["difficulty"])
+                ).capitalize()
+            except KeyError:
+                await ctx.send("No data found for that difficulty.")
+                return
             zone_name = await self._zone_name_from_id(char_data["zone"])
             zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(40, " ")
 
