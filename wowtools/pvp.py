@@ -52,8 +52,8 @@ class PvP:
 
             try:
                 await self.limiter.acquire()
-                profile = await api_client.Retail.Profile.getCharProfileSummary(
-                    character=character_name, realm=realm
+                profile = await api_client.Retail.Profile.get_character_profile_summary(
+                    character_name=character_name, realm_slug=realm
                 )
             except ClientResponseError:
                 await ctx.send(
@@ -64,39 +64,35 @@ class PvP:
                 return
 
             await self.limiter.acquire()
-            achievements = await api_client.Retail.Profile.getCharAchievementsSummary(
-                character=character_name, realm=realm
+            achievements = (
+                await api_client.Retail.Profile.get_character_achievements_summary(
+                    character_name=character_name, realm_slug=realm
+                )
             )
 
             await self.limiter.acquire()
-            media = await api_client.Retail.Profile.getCharMediaSummary(
-                character=character_name, realm=realm
+            media = await api_client.Retail.Profile.get_character_media_summary(
+                character_name=character_name, realm_slug=realm
             )
 
             try:
                 await self.limiter.acquire()
-                rbg_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="rbg"
-                    )
+                rbg_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name, realm_slug=realm, pvp_bracket="rbg"
                 )
             except ClientResponseError:
                 rbg_statistics = {}
             try:
                 await self.limiter.acquire()
-                duo_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="2v2"
-                    )
+                duo_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name, realm_slug=realm, pvp_bracket="2v2"
                 )
             except ClientResponseError:
                 duo_statistics = {}
             try:
                 await self.limiter.acquire()
-                tri_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="3v3"
-                    )
+                tri_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name, realm_slug=realm, pvp_bracket="3v3"
                 )
             except ClientResponseError:
                 tri_statistics = {}

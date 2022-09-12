@@ -147,7 +147,7 @@ class GuildManage:
         realm = realm.lower()
         api_client = await get_api_client(self.bot, ctx, region)
 
-        guild_roster = await api_client.Retail.Profile.getGuildRoster(
+        guild_roster = await api_client.Retail.Profile.get_guild_roster(
             guild=wow_guild_name, realm=realm
         )
 

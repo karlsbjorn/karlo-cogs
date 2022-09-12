@@ -32,7 +32,7 @@ class Token:
                 return
 
             await self.limiter.acquire()
-            wow_token = await api_client.Retail.GameData.getWoWTokenIndex()
+            wow_token = await api_client.Retail.GameData.get_wow_token_index()
             token_price = str(wow_token["price"])
 
             gold_emotes = await self.config.emotes()
@@ -59,7 +59,7 @@ class Token:
                     await ctx.send(_("Command failed successfully. {e}").format(e=e))
                     return
                 await self.limiter.acquire()
-                wow_token = await api_client.Retail.GameData.getWoWTokenIndex()
+                wow_token = await api_client.Retail.GameData.get_wow_token_index()
 
                 token_price = str(wow_token["price"])
                 gold_emotes = await self.config.emotes()

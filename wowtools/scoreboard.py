@@ -1,7 +1,9 @@
 import io
 import logging
+from typing import Optional
 
 import discord
+from aiohttp import ClientResponseError
 from discord.ext import tasks
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 from raiderio_async import RaiderIO
@@ -50,11 +52,7 @@ class Scoreboard:
     async def wowscoreboard_pvp(self, ctx: commands.Context):
         """Get all the PvP related scoreboards for this guild."""
         async with ctx.typing():
-            try:
-                embed = await self._generate_pvp_scoreboard(ctx)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
+            embed = await self._generate_pvp_scoreboard(ctx)
         if embed:
             # TODO: In dpy2, make this a list of embeds to send in a single message
             await ctx.send(embed=embed)
@@ -373,28 +371,33 @@ class Scoreboard:
         if sb_msg:
             await sb_msg.delete()
 
-    async def _generate_pvp_scoreboard(self, ctx: commands.Context) -> discord.Embed:
+    async def _generate_pvp_scoreboard(
+        self, ctx: commands.Context
+    ) -> Optional[discord.Embed]:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
         if not region:
-            raise ValueError(
+            await ctx.send(
                 _(
                     "\nA server admin needs to set a region with `{prefix}wowset region` first."
                 ).format(prefix=ctx.clean_prefix)
             )
+            return None
         if not realm:
-            raise ValueError(
+            await ctx.send(
                 _(
                     "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
                 ).format(prefix=ctx.clean_prefix)
             )
+            return None
         if not guild_name:
-            raise ValueError(
+            await ctx.send(
                 _(
                     "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
                 ).format(prefix=ctx.clean_prefix)
             )
+            return None
 
         msg = await ctx.send(_("This may take a while..."))
 
@@ -406,6 +409,9 @@ class Scoreboard:
         tabulate_lists = await self._get_pvp_scores(
             ctx, guild_name, max_chars, realm, region, sb_blacklist
         )
+        if not tabulate_lists:
+            await msg.delete()
+            return None
 
         embed_pvp.add_field(
             name=_("RBG Leaderboard"),
@@ -466,37 +472,54 @@ class Scoreboard:
             return []
         guild_name = guild_name.replace(" ", "-").lower()
 
-        current_season: int = (await api_client.Retail.GameData.getPvPSeasonsIndex())[
-            "current_season"
-        ]["id"]
+        await self.limiter.acquire()
+        current_season: int = (
+            await api_client.Retail.GameData.get_pvp_seasons_index()
+        )["current_season"]["id"]
 
-        guild_roster = await api_client.Retail.Profile.getGuildRoster(
-            guild=guild_name, realm=realm
-        )
+        await self.limiter.acquire()
+        try:
+            guild_roster = await api_client.Retail.Profile.get_guild_roster(
+                name_slug=guild_name, realm_slug=realm
+            )
+        except ClientResponseError:
+            await ctx.send(_("Guild not found."))
+            return []
 
         roster = {"rbg": {}, "2v2": {}, "3v3": {}}
 
         for member in guild_roster["members"]:
             character_name = member["character"]["name"].lower()
             if character_name not in sb_blacklist:
-                await self.limiter.acquire()
-                rbg_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="rbg"
+                try:
+                    await self.limiter.acquire()
+                    rbg_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="rbg",
                     )
-                )
-                await self.limiter.acquire()
-                duo_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="2v2"
+                except ClientResponseError:
+                    rbg_statistics = {}
+
+                try:
+                    await self.limiter.acquire()
+                    duo_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="2v2",
                     )
-                )
-                await self.limiter.acquire()
-                tri_statistics = (
-                    await api_client.Retail.Profile.getCharPvPBracketStatistics(
-                        character=character_name, realm=realm, pvp_bracket="3v3"
+                except ClientResponseError:
+                    duo_statistics = {}
+
+                try:
+                    await self.limiter.acquire()
+                    tri_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="3v3",
                     )
-                )
+                except ClientResponseError:
+                    tri_statistics = {}
 
                 if "rating" in rbg_statistics:
                     # Have to nest this because there won't be a season key if

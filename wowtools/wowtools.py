@@ -22,7 +22,6 @@ from .wowaudit import Wowaudit
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
-# TODO: GIGA TODO - Swap to using [aiowowapi](https://github.com/Adalyia/aiowowapi), preferably before 3.5
 
 try:  # python-bna doesn't work on Red 3.4 by default due to `click` being too old
     import bna

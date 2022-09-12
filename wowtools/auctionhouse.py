@@ -43,7 +43,7 @@ class AuctionHouse:
 
             # Search for the item
             await self.limiter.acquire()
-            items = await api_client.Retail.GameData.getItemSearch(
+            items = await api_client.Retail.GameData.get_item_search(
                 {"name.en_US": item, "_pageSize": 1000}
             )
 
@@ -64,7 +64,7 @@ class AuctionHouse:
 
             # Get connected realm ID
             await self.limiter.acquire()
-            c_realms = await api_client.Retail.GameData.getConnectedRealmsSearch(
+            c_realms = await api_client.Retail.GameData.get_connected_realms_search(
                 {"_pageSize": 1000}
             )
 
@@ -84,7 +84,7 @@ class AuctionHouse:
 
             # Get price of item
             await self.limiter.acquire()
-            auctions_data: Dict = await api_client.Retail.GameData.getAuctions(
+            auctions_data: Dict = await api_client.Retail.GameData.get_auctions(
                 connected_realm_id=c_realm_id
             )
 
@@ -107,7 +107,7 @@ class AuctionHouse:
                 # Item could be a commodity
                 await self.limiter.acquire(25)
                 commodities_data: Dict = (
-                    await api_client.Retail.GameData.getCommodities()
+                    await api_client.Retail.GameData.get_commodity_auctions()
                 )
                 auctions = commodities_data["auctions"]
                 for auction in auctions:
@@ -125,7 +125,7 @@ class AuctionHouse:
             # Embed stuff
             # Get item icon
             await self.limiter.acquire()
-            item_media = await api_client.Retail.GameData.getItemMedia(
+            item_media = await api_client.Retail.GameData.get_item_media(
                 item_id=found_item_id
             )
             item_icon_url = item_media["assets"][0]["value"]

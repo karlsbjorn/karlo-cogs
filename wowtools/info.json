@@ -11,7 +11,7 @@
         "aiolimiter",
         "bna",
         "Pillow",
-        "git+https://github.com/karlsbjorn/aiowowapi.git@v1.0.4",
+        "aiowowapi",
         "git+https://github.com/karlsbjorn/raiderio-async.git@1.0.0"
     ],
     "min_bot_version": "3.4.0",
