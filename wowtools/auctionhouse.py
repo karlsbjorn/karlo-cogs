@@ -24,6 +24,14 @@ class AuctionHouse:
                     ).format(prefix=ctx.clean_prefix)
                 )
                 return
+            if config_region == "cn":
+                await ctx.send(
+                    _(
+                        "The Auction House is not available in China.\n"
+                        "Please set a different region with `{prefix}wowset region`."
+                    ).format(prefix=ctx.clean_prefix)
+                )
+                return
 
             try:
                 api_client = await get_api_client(self.bot, ctx, config_region)
