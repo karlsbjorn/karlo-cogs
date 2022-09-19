@@ -10,6 +10,7 @@ from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
@@ -91,7 +92,7 @@ class WoWTools(
                     raise ValueError(
                         _(
                             "That region does not exist.\nValid regions are: {regions}."
-                        ).format(regions=", ".join(regions))
+                        ).format(regions=humanize_list(regions))
                     )
                 await self.config.guild(ctx.guild).region.set(region)
             await ctx.send(_("Region set succesfully."))

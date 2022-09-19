@@ -44,7 +44,7 @@ class AuctionHouse:
                 await ctx.send(
                     _(
                         "Please set a realm with `{prefix}wowset realm` before using this command."
-                    ).format(prefix=ctx.prefix)
+                    ).format(prefix=ctx.clean_prefix)
                 )
                 return
             boe_disclaimer = False
