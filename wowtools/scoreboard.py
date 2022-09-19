@@ -1,6 +1,6 @@
 import io
 import logging
-from typing import Optional
+from typing import List, Optional
 
 import discord
 from aiohttp import ClientResponseError
@@ -122,7 +122,7 @@ class Scoreboard:
 
         Characters can be separated by spaces or commas.
         """
-        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         for character in characters.split(" "):
             character = character.strip(",")
             if character not in blacklist:
@@ -138,7 +138,7 @@ class Scoreboard:
 
         Characters can be separated by spaces or commas.
         """
-        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         for character in characters.split(" "):
             character = character.strip(",")
             if character in blacklist:
@@ -151,7 +151,7 @@ class Scoreboard:
     @commands.guild_only()
     async def sbset_blacklist_list(self, ctx: commands.Context):
         """List the characters on the scoreboard blacklist."""
-        blacklist: list[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         if not blacklist:
             await ctx.send(_("No characters are blacklisted."))
             return
@@ -185,7 +185,7 @@ class Scoreboard:
                     region: str = await self.config.guild(guild).region()
                     realm: str = await self.config.guild(guild).realm()
                     guild_name: str = await self.config.guild(guild).real_guild_name()
-                    sb_blacklist: list[str] = await self.config.guild(
+                    sb_blacklist: List[str] = await self.config.guild(
                         guild
                     ).scoreboard_blacklist()
                     if not region or not realm or not guild_name:
@@ -220,7 +220,7 @@ class Scoreboard:
         max_chars: int,
         realm: str,
         region: str,
-        sb_blacklist: list[str],
+        sb_blacklist: List[str],
         image: bool,
     ):
         async with RaiderIO() as rio:
@@ -463,7 +463,7 @@ class Scoreboard:
         max_chars: int,
         realm: str,
         region: str,
-        sb_blacklist: list[str],
+        sb_blacklist: List[str],
     ) -> list:
         try:
             api_client = await get_api_client(self.bot, ctx, region)
@@ -596,7 +596,7 @@ class Scoreboard:
         region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).realm()
         guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
-        sb_blacklist: list[str] = await self.config.guild(
+        sb_blacklist: List[str] = await self.config.guild(
             ctx.guild
         ).scoreboard_blacklist()
         return guild_name, realm, region, sb_blacklist
