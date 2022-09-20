@@ -240,15 +240,20 @@ class Raiderio:
 
     @raiderio.command(name="affixes")
     @commands.guild_only()
-    async def raiderio_affixes(self, ctx: commands.Context) -> None:
+    async def raiderio_affixes(self, ctx: commands.Context, region: str = None) -> None:
         """Display this week's affixes."""
         async with ctx.typing():
-            region: str = await self.config.guild(ctx.guild).region()
             if not region:
+                region: str = await self.config.guild(ctx.guild).region()
+                if not region:
+                    await ctx.send_help()
+                    return
+            regions = ("us", "eu", "kr", "cn")
+            if region.lower() not in regions:
                 await ctx.send(
-                    _(
-                        "A guild admin needs to set a region with `{prefix}wowset region` first."
-                    ).format(prefix=ctx.clean_prefix)
+                    _("Region must be one of the following: {regions}").format(
+                        regions=humanize_list(regions, style="or")
+                    )
                 )
                 return
             async with RaiderIO() as rio:
