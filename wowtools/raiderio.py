@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 
 import discord
 from dateutil.parser import isoparse
@@ -253,11 +253,32 @@ class Raiderio:
             async with RaiderIO() as rio:
                 affixes = await rio.get_mythic_plus_affixes(region)
                 affixes = affixes["affix_details"]
-        await ctx.send(
-            _("This week's Mythic+ affixes are: **{affixes}**").format(
+
+            msg = _("This week's Mythic+ affixes are: **{affixes}**.").format(
                 affixes=humanize_list([affix["name"] for affix in affixes])
             )
-        )
+            if region == "eu":
+                reset_day = 2  # Wednesday
+                now = datetime.utcnow()
+                reset_day = now + timedelta(days=(reset_day - now.weekday()) % 7)
+                reset_date = reset_day.replace(
+                    hour=7, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
+                )
+                msg += _("\nThe weekly reset is {timestamp}.").format(
+                    timestamp=f"<t:{int(reset_date.timestamp())}:R>"
+                )
+            elif region == "us":
+                reset_day = 1  # Tuesday
+                now = datetime.utcnow()
+                reset_day = now + timedelta(days=(reset_day - now.weekday()) % 7)
+                reset_date = reset_day.replace(
+                    hour=15, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
+                )
+                msg += _("\nThe weekly reset is {timestamp}.").format(
+                    timestamp=f"<t:{int(reset_date.timestamp())}:R>"
+                )
+            # TODO: Find out when the reset is for KR and CN
+        await ctx.send(msg)
 
     @staticmethod
     def _parse_date(tz_date) -> str:

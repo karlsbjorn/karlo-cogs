@@ -12,7 +12,7 @@ _ = Translator("WoWTools", __file__)
 
 
 class GuildManage:
-    @commands.group()
+    @commands.group(hidden=True)
     async def gm(self, ctx: commands.Context):
         """Manage guild member roles."""
         pass
@@ -80,7 +80,7 @@ class GuildManage:
             for page in pagify(msg, delims=["\n"]):
                 await ctx.send(page)
 
-    @commands.group()
+    @commands.group(hidden=True)
     @commands.admin()
     async def gmset(self, ctx: commands.Context):
         """Configure guild management."""
