@@ -260,8 +260,10 @@ class Raiderio:
             if region == "eu":
                 reset_day = 2  # Wednesday
                 now = datetime.utcnow()
-                reset_day = now + timedelta(days=(reset_day - now.weekday()) % 7)
-                reset_date = reset_day.replace(
+                reset_date = now + timedelta(days=(reset_day - now.weekday()) % 7)
+                if now.date() == reset_date.date() and now.hour > 7:
+                    reset_date += timedelta(days=7)
+                reset_date = reset_date.replace(
                     hour=7, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
                 )
                 msg += _("\nThe weekly reset is {timestamp}.").format(
@@ -270,8 +272,10 @@ class Raiderio:
             elif region == "us":
                 reset_day = 1  # Tuesday
                 now = datetime.utcnow()
-                reset_day = now + timedelta(days=(reset_day - now.weekday()) % 7)
-                reset_date = reset_day.replace(
+                reset_date = now + timedelta(days=(reset_day - now.weekday()) % 7)
+                if now.date() == reset_date.date() and now.hour > 15:
+                    reset_date += timedelta(days=7)
+                reset_date = reset_date.replace(
                     hour=15, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
                 )
                 msg += _("\nThe weekly reset is {timestamp}.").format(
