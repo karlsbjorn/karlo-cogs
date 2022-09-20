@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from dateutil.parser import isoparse
+from discord.embeds import EmptyEmbed
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
@@ -254,9 +255,7 @@ class Raiderio:
                 affixes = await rio.get_mythic_plus_affixes(region)
                 affixes = affixes["affix_details"]
 
-            msg = _("This week's Mythic+ affixes are: **{affixes}**.").format(
-                affixes=humanize_list([affix["name"] for affix in affixes])
-            )
+            msg = ""
             if region == "eu":
                 reset_day = 2  # Wednesday
                 now = datetime.utcnow()
@@ -282,7 +281,19 @@ class Raiderio:
                     timestamp=f"<t:{int(reset_date.timestamp())}:R>"
                 )
             # TODO: Find out when the reset is for KR and CN
-        await ctx.send(msg)
+            embed = discord.Embed(
+                title=_("This week's Mythic+ affixes"),
+                description=msg if msg else EmptyEmbed,
+                color=await ctx.embed_color(),
+            )
+            embed.set_thumbnail(url="https://i.imgur.com/kczQ4Jt.jpg")
+            for affix in affixes:
+                embed.add_field(
+                    name=affix["name"],
+                    value=affix["description"],
+                    inline=False,
+                )
+        await ctx.send(embed=embed)
 
     @staticmethod
     def _parse_date(tz_date) -> str:
