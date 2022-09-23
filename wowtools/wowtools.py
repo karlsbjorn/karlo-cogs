@@ -56,8 +56,6 @@ class WoWTools(
             "wow_character_name": None,
             "wow_character_realm": None,
             "wow_character_region": None,
-            "auth_serial": None,
-            "auth_secret": None,
         }
         self.config.register_global(**default_global)
         self.config.register_guild(**default_guild)

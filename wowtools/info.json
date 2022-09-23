@@ -9,7 +9,6 @@
         "rapidfuzz",
         "tabulate",
         "aiolimiter",
-        "bna",
         "Pillow",
         "aiowowapi",
         "git+https://github.com/karlsbjorn/raiderio-async.git@v1.1.1"
