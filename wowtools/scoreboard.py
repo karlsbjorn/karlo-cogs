@@ -491,6 +491,7 @@ class Scoreboard:
         for member in guild_roster["members"]:
             character_name = member["character"]["name"].lower()
             if character_name not in sb_blacklist:
+                log.debug(f"Getting PvP data for {character_name}")
                 try:
                     await self.limiter.acquire()
                     rbg_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(

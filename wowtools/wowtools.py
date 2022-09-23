@@ -1,11 +1,9 @@
 import logging
-from datetime import datetime, timedelta
 from typing import Literal
 
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
-from pyotp import TOTP
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
@@ -22,12 +20,6 @@ from .wowaudit import Wowaudit
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
-
-
-try:  # python-bna doesn't work on Red 3.4 by default due to `click` being too old
-    import bna
-except Exception as e:
-    log.warning(f"Failed to import bna: {e}\n`[p]battlenet` commands will not work.")
 
 
 @cog_i18n(_)
@@ -262,51 +254,6 @@ class WoWTools(
             return
         await self.config.user(ctx.author).wow_character_region.set(region)
         await ctx.send(_("Character region set."))
-
-    @commands.group()
-    async def battlenet(self, ctx: commands.Context):
-        """Battle.net authenticator commands."""
-        pass
-
-    @battlenet.command(name="set")
-    async def battlenet_set(self, ctx: commands.Context):
-        """Set up the authenticator."""
-        async with ctx.typing():
-            try:
-                serial, secret = bna.request_new_serial("EU")
-            except bna.HTTPError as e:
-                await ctx.send(_("Could not connect: {error}").format(error=e))
-                return
-            await self.config.user(ctx.author).auth_serial.set(serial)
-            await self.config.user(ctx.author).auth_secret.set(secret)
-            await ctx.author.send(
-                "Your serial is: **{serial}**\nYour secret is: **{secret}**".format(
-                    serial=serial, secret=secret
-                )
-            )
-
-            totp = TOTP(secret, digits=8)
-        await ctx.send(
-            _("Authenticator set.\nYour code is: **{code}**").format(code=totp.now())
-        )
-
-    @battlenet.command(name="code")
-    async def battlenet_code(self, ctx: commands.Context):
-        """Get your authenticator code."""
-        secret = await self.config.user(ctx.author).auth_secret()
-        if not secret:
-            await ctx.send(_("You haven't set up the authenticator yet."))
-            return
-        totp = TOTP(secret, digits=8)
-
-        now = datetime.now()
-        expiry = now + (datetime.min - now) % timedelta(seconds=30)
-
-        await ctx.send(
-            _("Your code is: **{code}**\nIt expires {time}").format(
-                code=totp.now(), time=f"<t:{int(expiry.timestamp())}:R>"
-            )
-        )
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
