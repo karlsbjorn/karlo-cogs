@@ -35,7 +35,7 @@ class Token:
                 wow_client = wow_client.Retail
                 await self.limiter.acquire()
                 wow_token = await wow_client.GameData.get_wow_token_index()
-            token_price = str(wow_token["price"])
+            token_price = wow_token["price"]
 
             gold_emotes = await self.config.emotes()
             message = _(

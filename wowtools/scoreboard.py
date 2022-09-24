@@ -50,7 +50,11 @@ class Scoreboard:
     @wowscoreboard.command(name="pvp")
     @commands.guild_only()
     async def wowscoreboard_pvp(self, ctx: commands.Context):
-        """Get all the PvP related scoreboards for this guild."""
+        """Get all the PvP related scoreboards for this guild.
+
+        **Characters that have not played all PvP gamemodes at
+        some point will not be shown.**
+        """
         async with ctx.typing():
             embed = await self._generate_pvp_scoreboard(ctx)
         if embed:
@@ -473,14 +477,14 @@ class Scoreboard:
         guild_name = guild_name.replace(" ", "-").lower()
 
         max_level = 60
-        async with api_client as wow_client:
-            wow_client = wow_client.Retail
-            #await self.limiter.acquire()
-            current_season: int = (
-                await wow_client.GameData.get_pvp_seasons_index()
-            )["current_season"]["id"]
+        async with api_client as client:
+            wow_client = client.Retail
+            # await self.limiter.acquire()
+            current_season: int = (await wow_client.GameData.get_pvp_seasons_index())[
+                "current_season"
+            ]["id"]
 
-            #await self.limiter.acquire()
+            # await self.limiter.acquire()
             try:
                 guild_roster = await wow_client.Profile.get_guild_roster(
                     name_slug=guild_name, realm_slug=realm
@@ -500,32 +504,31 @@ class Scoreboard:
 
                 log.debug(f"Getting PvP data for {character_name}")
                 try:
-                    #await self.limiter.acquire()
-                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="rbg",
+                    (
+                        rbg_statistics,
+                        duo_statistics,
+                        tri_statistics,
+                    ) = await client.multi_request(
+                        [
+                            wow_client.Profile.get_character_pvp_bracket_statistics(
+                                character_name=character_name,
+                                realm_slug=realm,
+                                pvp_bracket="rbg",
+                            ),
+                            wow_client.Profile.get_character_pvp_bracket_statistics(
+                                character_name=character_name,
+                                realm_slug=realm,
+                                pvp_bracket="2v2",
+                            ),
+                            wow_client.Profile.get_character_pvp_bracket_statistics(
+                                character_name=character_name,
+                                realm_slug=realm,
+                                pvp_bracket="3v3",
+                            ),
+                        ]
                     )
                 except ClientResponseError:
-                    rbg_statistics = {}
-                try:
-                    #await self.limiter.acquire()
-                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="2v2",
-                    )
-                except ClientResponseError:
-                    duo_statistics = {}
-                try:
-                    #await self.limiter.acquire()
-                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="3v3",
-                    )
-                except ClientResponseError:
-                    tri_statistics = {}
+                    continue
 
                 if "rating" in rbg_statistics:
                     # Have to nest this because there won't be a season key if

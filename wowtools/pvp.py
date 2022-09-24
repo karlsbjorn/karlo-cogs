@@ -79,22 +79,34 @@ class PvP:
 
                 try:
                     await self.limiter.acquire()
-                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name, realm_slug=realm, pvp_bracket="rbg"
+                    rbg_statistics = (
+                        await wow_client.Profile.get_character_pvp_bracket_statistics(
+                            character_name=character_name,
+                            realm_slug=realm,
+                            pvp_bracket="rbg",
+                        )
                     )
                 except ClientResponseError:
                     rbg_statistics = {}
                 try:
                     await self.limiter.acquire()
-                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name, realm_slug=realm, pvp_bracket="2v2"
+                    duo_statistics = (
+                        await wow_client.Profile.get_character_pvp_bracket_statistics(
+                            character_name=character_name,
+                            realm_slug=realm,
+                            pvp_bracket="2v2",
+                        )
                     )
                 except ClientResponseError:
                     duo_statistics = {}
                 try:
                     await self.limiter.acquire()
-                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name, realm_slug=realm, pvp_bracket="3v3"
+                    tri_statistics = (
+                        await wow_client.Profile.get_character_pvp_bracket_statistics(
+                            character_name=character_name,
+                            realm_slug=realm,
+                            pvp_bracket="3v3",
+                        )
                     )
                 except ClientResponseError:
                     tri_statistics = {}
