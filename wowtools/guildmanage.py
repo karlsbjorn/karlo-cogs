@@ -145,11 +145,13 @@ class GuildManage:
         region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).gmanage_realm()
         realm = realm.lower()
-        api_client = await get_api_client(self.bot, ctx, region)
 
-        guild_roster = await api_client.Retail.Profile.get_guild_roster(
-            guild=wow_guild_name, realm=realm
-        )
+        api_client = await get_api_client(self.bot, ctx, region)
+        async with api_client as wow_client:
+            wow_client = wow_client.Retail
+            guild_roster = await wow_client.Profile.get_guild_roster(
+                guild=wow_guild_name, realm=realm
+            )
 
         rank_roles: Dict[int, int] = await self.config.guild(ctx.guild).guild_roles()
         ranks: List[int] = [int(rank) for rank in list(rank_roles.keys())]

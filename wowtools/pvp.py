@@ -50,52 +50,54 @@ class PvP:
             tri_rating = "0"
             color = discord.Color.red()
 
-            try:
+            async with api_client as wow_client:
+                wow_client = wow_client.Retail
+                try:
+                    await self.limiter.acquire()
+                    profile = await wow_client.Profile.get_character_profile_summary(
+                        character_name=character_name, realm_slug=realm
+                    )
+                except ClientResponseError:
+                    await ctx.send(
+                        _('Character "{character_name}" not found.').format(
+                            character_name=character_name
+                        )
+                    )
+                    return
+
                 await self.limiter.acquire()
-                profile = await api_client.Retail.Profile.get_character_profile_summary(
-                    character_name=character_name, realm_slug=realm
-                )
-            except ClientResponseError:
-                await ctx.send(
-                    _('Character "{character_name}" not found.').format(
-                        character_name=character_name
+                achievements = (
+                    await wow_client.Profile.get_character_achievements_summary(
+                        character_name=character_name, realm_slug=realm
                     )
                 )
-                return
 
-            await self.limiter.acquire()
-            achievements = (
-                await api_client.Retail.Profile.get_character_achievements_summary(
+                await self.limiter.acquire()
+                media = await wow_client.Profile.get_character_media_summary(
                     character_name=character_name, realm_slug=realm
                 )
-            )
 
-            await self.limiter.acquire()
-            media = await api_client.Retail.Profile.get_character_media_summary(
-                character_name=character_name, realm_slug=realm
-            )
-
-            try:
-                await self.limiter.acquire()
-                rbg_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name, realm_slug=realm, pvp_bracket="rbg"
-                )
-            except ClientResponseError:
-                rbg_statistics = {}
-            try:
-                await self.limiter.acquire()
-                duo_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name, realm_slug=realm, pvp_bracket="2v2"
-                )
-            except ClientResponseError:
-                duo_statistics = {}
-            try:
-                await self.limiter.acquire()
-                tri_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name, realm_slug=realm, pvp_bracket="3v3"
-                )
-            except ClientResponseError:
-                tri_statistics = {}
+                try:
+                    await self.limiter.acquire()
+                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name, realm_slug=realm, pvp_bracket="rbg"
+                    )
+                except ClientResponseError:
+                    rbg_statistics = {}
+                try:
+                    await self.limiter.acquire()
+                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name, realm_slug=realm, pvp_bracket="2v2"
+                    )
+                except ClientResponseError:
+                    duo_statistics = {}
+                try:
+                    await self.limiter.acquire()
+                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name, realm_slug=realm, pvp_bracket="3v3"
+                    )
+                except ClientResponseError:
+                    tri_statistics = {}
 
             if "name" not in profile:
                 await ctx.send(_("That character or realm does not exist."))

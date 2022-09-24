@@ -31,8 +31,10 @@ class Token:
                 )
                 return
 
-            await self.limiter.acquire()
-            wow_token = await api_client.Retail.GameData.get_wow_token_index()
+            async with api_client as wow_client:
+                wow_client = wow_client.Retail
+                await self.limiter.acquire()
+                wow_token = await wow_client.GameData.get_wow_token_index()
             token_price = str(wow_token["price"])
 
             gold_emotes = await self.config.emotes()
@@ -58,8 +60,10 @@ class Token:
                 except Exception as e:
                     await ctx.send(_("Command failed successfully. {e}").format(e=e))
                     return
-                await self.limiter.acquire()
-                wow_token = await api_client.Retail.GameData.get_wow_token_index()
+                async with api_client as wow_client:
+                    wow_client = wow_client.Retail
+                    await self.limiter.acquire()
+                    wow_token = await wow_client.GameData.get_wow_token_index()
 
                 token_price = str(wow_token["price"])
                 gold_emotes = await self.config.emotes()

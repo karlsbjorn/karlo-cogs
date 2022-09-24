@@ -474,14 +474,15 @@ class Scoreboard:
 
         max_level = 60
         async with api_client as wow_client:
-            await self.limiter.acquire()
+            wow_client = wow_client.Retail
+            #await self.limiter.acquire()
             current_season: int = (
-                await wow_client.Retail.GameData.get_pvp_seasons_index()
+                await wow_client.GameData.get_pvp_seasons_index()
             )["current_season"]["id"]
 
-            await self.limiter.acquire()
+            #await self.limiter.acquire()
             try:
-                guild_roster = await wow_client.Retail.Profile.get_guild_roster(
+                guild_roster = await wow_client.Profile.get_guild_roster(
                     name_slug=guild_name, realm_slug=realm
                 )
             except ClientResponseError:
@@ -496,30 +497,29 @@ class Scoreboard:
                     continue
                 if member["character"]["level"] < max_level:
                     continue
+
                 log.debug(f"Getting PvP data for {character_name}")
                 try:
-                    await self.limiter.acquire()
-                    rbg_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    #await self.limiter.acquire()
+                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="rbg",
                     )
                 except ClientResponseError:
                     rbg_statistics = {}
-
                 try:
-                    await self.limiter.acquire()
-                    duo_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    #await self.limiter.acquire()
+                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="2v2",
                     )
                 except ClientResponseError:
                     duo_statistics = {}
-
                 try:
-                    await self.limiter.acquire()
-                    tri_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    #await self.limiter.acquire()
+                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="3v3",
@@ -532,19 +532,19 @@ class Scoreboard:
                     # the character never played the gamemode
                     if rbg_statistics["season"]["id"] == current_season:
                         roster["rbg"][character_name] = rbg_statistics["rating"]
-                        logging.debug(
+                        log.debug(
                             f"{character_name} has RBG rating {rbg_statistics['rating']}"
                         )
                 if "rating" in duo_statistics:
                     if duo_statistics["season"]["id"] == current_season:
                         roster["2v2"][character_name] = duo_statistics["rating"]
-                        logging.debug(
+                        log.debug(
                             f"{character_name} has 2v2 rating {duo_statistics['rating']}"
                         )
                 if "rating" in tri_statistics:
                     if tri_statistics["season"]["id"] == current_season:
                         roster["3v3"][character_name] = tri_statistics["rating"]
-                        logging.debug(
+                        log.debug(
                             f"{character_name} has 3v3 rating {tri_statistics['rating']}"
                         )
 
