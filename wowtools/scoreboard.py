@@ -472,29 +472,34 @@ class Scoreboard:
             return []
         guild_name = guild_name.replace(" ", "-").lower()
 
-        await self.limiter.acquire()
-        current_season: int = (
-            await api_client.Retail.GameData.get_pvp_seasons_index()
-        )["current_season"]["id"]
+        max_level = 60
+        async with api_client as wow_client:
+            await self.limiter.acquire()
+            current_season: int = (
+                await wow_client.Retail.GameData.get_pvp_seasons_index()
+            )["current_season"]["id"]
 
-        await self.limiter.acquire()
-        try:
-            guild_roster = await api_client.Retail.Profile.get_guild_roster(
-                name_slug=guild_name, realm_slug=realm
-            )
-        except ClientResponseError:
-            await ctx.send(_("Guild not found."))
-            return []
+            await self.limiter.acquire()
+            try:
+                guild_roster = await wow_client.Retail.Profile.get_guild_roster(
+                    name_slug=guild_name, realm_slug=realm
+                )
+            except ClientResponseError:
+                await ctx.send(_("Guild not found."))
+                return []
 
-        roster = {"rbg": {}, "2v2": {}, "3v3": {}}
+            roster = {"rbg": {}, "2v2": {}, "3v3": {}}
 
-        for member in guild_roster["members"]:
-            character_name = member["character"]["name"].lower()
-            if character_name not in sb_blacklist:
+            for member in guild_roster["members"]:
+                character_name = member["character"]["name"].lower()
+                if character_name in sb_blacklist:
+                    continue
+                if member["character"]["level"] < max_level:
+                    continue
                 log.debug(f"Getting PvP data for {character_name}")
                 try:
                     await self.limiter.acquire()
-                    rbg_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    rbg_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="rbg",
@@ -504,7 +509,7 @@ class Scoreboard:
 
                 try:
                     await self.limiter.acquire()
-                    duo_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    duo_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="2v2",
@@ -514,7 +519,7 @@ class Scoreboard:
 
                 try:
                     await self.limiter.acquire()
-                    tri_statistics = await api_client.Retail.Profile.get_character_pvp_bracket_statistics(
+                    tri_statistics = await wow_client.Retail.Profile.get_character_pvp_bracket_statistics(
                         character_name=character_name,
                         realm_slug=realm,
                         pvp_bracket="3v3",
