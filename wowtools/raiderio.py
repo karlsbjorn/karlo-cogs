@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta, timezone
+from typing import Dict, List
 
 import discord
 from dateutil.parser import isoparse
@@ -7,7 +8,10 @@ from discord.embeds import EmptyEmbed
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils import menus
+from redbot.core.utils.chat_formatting import box, humanize_list
+from redbot.core.utils.menus import DEFAULT_CONTROLS
+from tabulate import tabulate
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -70,6 +74,7 @@ class Raiderio:
                         "raid_progression",
                         "gear",
                         "covenant",
+                        "mythic_plus_best_runs",
                     ],
                 )
 
@@ -104,6 +109,8 @@ class Raiderio:
                 wcl_url = f"https://www.warcraftlogs.com/character/{region}/{realm}/{char_name}"
                 raidbots_url = f"https://www.raidbots.com/simbot/quick?region={region}&realm={realm}&name={char_name}"
 
+                embeds = []
+                # First page
                 embed = discord.Embed(
                     title=char_name,
                     url=char_url,
@@ -139,8 +146,50 @@ class Raiderio:
                         char_last_updated=char_last_updated
                     )
                 )
+                embeds.append(embed)
 
-        await ctx.send(embed=embed)
+                # Second page
+                dungeon_str = _("Dungeon")
+                key_level_str = _("Level")
+                runs = {
+                    dungeon_str: [],
+                    key_level_str: [],
+                }
+                best_runs: List[Dict] = profile_data["mythic_plus_best_runs"]
+                for run in best_runs:
+                    dungeon_short = run["short_name"]
+                    key_level = run["mythic_level"]
+                    runs[dungeon_str] += [dungeon_short]
+                    runs[key_level_str] += [f"+{key_level}"]
+                if not runs[dungeon_str]:
+                    # If no runs in current season, send basic profile embed
+                    await ctx.send(embed=embed)
+                    return
+                tabulated = tabulate(
+                    runs, headers="keys", tablefmt="simple", colalign=("left", "right")
+                )
+
+                embed = discord.Embed(
+                    title=char_name,
+                    description=box(
+                        tabulated,
+                    ),
+                    url=char_url,
+                    color=char_score_color,
+                )
+                embed.set_author(
+                    name=_("Raider.io profile"),
+                    icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+                )
+                embed.set_thumbnail(url=char_image)
+                embed.set_footer(
+                    text=_("Last updated: {char_last_updated}").format(
+                        char_last_updated=char_last_updated
+                    )
+                )
+                embeds.append(embed)
+
+        await menus.menu(ctx, pages=embeds, controls=DEFAULT_CONTROLS)
 
     @raiderio.command(name="guild")
     @commands.guild_only()
