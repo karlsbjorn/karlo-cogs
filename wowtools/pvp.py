@@ -26,6 +26,7 @@ class PvP:
                 character_name = armory_dict["name"]
                 realm = armory_dict["realm"]
                 region = armory_dict["region"]
+                api_client = await get_api_client(self.bot, ctx, region)
             if not character_name:
                 character_name: str = await self.config.user(
                     ctx.author

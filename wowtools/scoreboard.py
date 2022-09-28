@@ -47,6 +47,7 @@ class Scoreboard:
             else:
                 await ctx.send(embed=embed)
 
+    @commands.cooldown(rate=1, per=60, type=commands.BucketType.guild)
     @wowscoreboard.command(name="pvp")
     @commands.guild_only()
     async def wowscoreboard_pvp(self, ctx: commands.Context):
@@ -403,7 +404,12 @@ class Scoreboard:
             )
             return None
 
-        msg = await ctx.send(_("This may take a while..."))
+        msg = await ctx.send(
+            _(
+                "Fetching scoreboard...\n"
+                "This can take up to 30 minutes for very large guilds."
+            )
+        )
 
         embed_pvp = discord.Embed(
             title=_("Guild PvP Leaderboard"),
