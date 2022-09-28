@@ -14,6 +14,18 @@ class PvP:
     async def rating(self, ctx, character_name: str = None, *, realm: str = None):
         """Check a character's PVP ratings."""
         async with ctx.typing():
+            region: str = await self.config.user(ctx.author).wow_character_region()
+            try:
+                api_client = await get_api_client(self.bot, ctx, region)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
+
+            armory_dict = await api_client.parse_armory_link(character_name)
+            if armory_dict:
+                character_name = armory_dict["name"]
+                realm = armory_dict["realm"]
+                region = armory_dict["region"]
             if not character_name:
                 character_name: str = await self.config.user(
                     ctx.author
@@ -26,7 +38,6 @@ class PvP:
                 if not realm:
                     await ctx.send_help()
                     return
-            region: str = await self.config.user(ctx.author).wow_character_region()
             if not region:
                 region: str = await self.config.guild(ctx.guild).region()
                 if not region:
@@ -39,11 +50,6 @@ class PvP:
             realm = (
                 "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
             )
-            try:
-                api_client = await get_api_client(self.bot, ctx, region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
 
             rbg_rating = "0"
             duo_rating = "0"

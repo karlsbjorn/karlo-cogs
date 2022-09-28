@@ -13,6 +13,8 @@ from redbot.core.utils.chat_formatting import box, humanize_list
 from redbot.core.utils.menus import DEFAULT_CONTROLS
 from tabulate import tabulate
 
+from wowtools.utils import get_api_client
+
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
@@ -37,6 +39,18 @@ class Raiderio:
         [p]raiderio profile Karlo Ragnaros
         """
         async with ctx.typing():
+            region: str = await self.config.user(ctx.author).wow_character_region()
+            try:
+                api_client = await get_api_client(self.bot, ctx, region)
+            except ValueError:
+                api_client = None
+
+            if api_client:
+                armory_dict = await api_client.parse_armory_link(character)
+                if armory_dict:
+                    character = armory_dict["name"]
+                    realm = armory_dict["realm"]
+                    region = armory_dict["region"]
             if not character:
                 character: str = await self.config.user(ctx.author).wow_character_name()
                 if not character:
@@ -47,7 +61,6 @@ class Raiderio:
                 if not realm:
                     await ctx.send_help()
                     return
-            region: str = await self.config.user(ctx.author).wow_character_region()
             if not region:
                 region: str = await self.config.guild(ctx.guild).region()
                 if not region:
@@ -60,10 +73,10 @@ class Raiderio:
             realm = (
                 "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
             )
-
             if realm == "":
                 await ctx.send(_("You didn't give me a realm."))
                 return
+
             async with RaiderIO() as rio:
                 profile_data = await rio.get_character_profile(
                     region,
