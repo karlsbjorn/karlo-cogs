@@ -1,5 +1,6 @@
 import discord
 from aiohttp import ClientResponseError
+from aiowowapi import WowApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -9,24 +10,24 @@ _ = Translator("WoWTools", __file__)
 
 
 class PvP:
-    @commands.cooldown(rate=1, per=3, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.command()
     async def rating(self, ctx, character_name: str = None, *, realm: str = None):
         """Check a character's PVP ratings."""
         async with ctx.typing():
-            region: str = await self.config.user(ctx.author).wow_character_region()
-            try:
-                api_client = await get_api_client(self.bot, ctx, region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
-
-            armory_dict = await api_client.parse_armory_link(character_name)
+            region: str = await self.config.guild(ctx.guild).region()
+            armory_dict = await WowApi.parse_armory_link(character_name)
             if armory_dict:
                 character_name = armory_dict["name"]
                 realm = armory_dict["realm"]
                 region = armory_dict["region"]
-                api_client = await get_api_client(self.bot, ctx, region)
+            if not character_name and not realm:
+                region: str = await self.config.user(ctx.author).wow_character_region()
+                if not region:
+                    region: str = await self.config.guild(ctx.guild).region()
+                    if not region:
+                        await ctx.send_help()
+                        return
             if not character_name:
                 character_name: str = await self.config.user(
                     ctx.author
@@ -39,26 +40,20 @@ class PvP:
                 if not realm:
                     await ctx.send_help()
                     return
-            if not region:
-                region: str = await self.config.guild(ctx.guild).region()
-                if not region:
-                    await ctx.send(
-                        _(
-                            "A server admin needs to set a region with `{prefix}wowset region` first."
-                        ).format(prefix=ctx.clean_prefix)
-                    )
-                    return
-            realm = (
-                "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
-            )
+            try:
+                api_client = await get_api_client(self.bot, ctx, region)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                return
+            realm = await api_client.get_realm_slug(realm)
 
             rbg_rating = "0"
             duo_rating = "0"
             tri_rating = "0"
             color = discord.Color.red()
 
-            async with api_client as wow_client:
-                wow_client = wow_client.Retail
+            async with api_client:
+                wow_client = api_client.Retail
                 try:
                     await self.limiter.acquire()
                     profile = await wow_client.Profile.get_character_profile_summary(

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 
 import discord
+from aiowowapi import WowApi
 from dateutil.parser import isoparse
 from discord.embeds import EmptyEmbed
 from raiderio_async import RaiderIO
@@ -39,18 +40,19 @@ class Raiderio:
         [p]raiderio profile Karlo Ragnaros
         """
         async with ctx.typing():
-            region: str = await self.config.user(ctx.author).wow_character_region()
-            try:
-                api_client = await get_api_client(self.bot, ctx, region)
-            except ValueError:
-                api_client = None
-
-            if api_client:
-                armory_dict = await api_client.parse_armory_link(character)
-                if armory_dict:
-                    character = armory_dict["name"]
-                    realm = armory_dict["realm"]
-                    region = armory_dict["region"]
+            region: str = await self.config.guild(ctx.guild).region()
+            armory_dict = await WowApi.parse_armory_link(character)
+            if armory_dict:
+                character = armory_dict["name"]
+                realm = armory_dict["realm"]
+                region = armory_dict["region"]
+            if not character and not realm:
+                region: str = await self.config.user(ctx.author).wow_character_region()
+                if not region:
+                    region: str = await self.config.guild(ctx.guild).region()
+                    if not region:
+                        await ctx.send_help()
+                        return
             if not character:
                 character: str = await self.config.user(ctx.author).wow_character_name()
                 if not character:
@@ -60,15 +62,6 @@ class Raiderio:
                 realm: str = await self.config.user(ctx.author).wow_character_realm()
                 if not realm:
                     await ctx.send_help()
-                    return
-            if not region:
-                region: str = await self.config.guild(ctx.guild).region()
-                if not region:
-                    await ctx.send(
-                        _(
-                            "A server admin needs to set a region with `{prefix}wowset region` first."
-                        ).format(prefix=ctx.clean_prefix)
-                    )
                     return
             realm = (
                 "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
