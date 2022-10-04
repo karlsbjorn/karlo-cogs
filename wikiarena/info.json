@@ -3,7 +3,7 @@
     "description": "Each round pits two random Wikipedia articles against each other by their title, an intro section excerpt and an image (if available).\n\nYour task: Guess which article is longer or gets more views.",
     "short": "Guess which wikipedia article is longer or gets more views.",
     "tags": ["wiki", "wikipedia", "game"],
-    "requirements": ["git+https://github.com/Gelbpunkt/aiowiki"],
+    "requirements": ["thisdoesnotexistithinkbutillmakeitlongertomakesure", "thisalsodoesntexistsoillmakeitlonger", "thisislongenoughnowright"],
     "min_bot_version": "3.5.0.dev0",
     "max_bot_version": "3.5.99",
     "type": "COG",
