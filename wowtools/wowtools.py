@@ -14,7 +14,7 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
-    """I AM UPDATED"""
+    """I AM NOT UPDATED IF THE GODS ARE GOOD"""
 
     def __init__(self, bot):
         self.bot = bot
