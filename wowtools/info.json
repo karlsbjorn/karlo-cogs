@@ -3,7 +3,7 @@
     "description": "Cog for interacting with World of Warcraft",
     "short": "Cog for interacting with World of Warcraft",
     "tags": ["warcraft", "world of warcraft"],
-    "requirements": ["python-blizzardapi", "gspread-asyncio", "regex", "idonotexistoooooooooooo"],
+    "requirements": ["python-blizzardapi", "gspread-asyncio", "regex"],
     "min_bot_version": "3.4.0",
     "max_bot_version": "3.6.0.dev0",
     "type": "COG",

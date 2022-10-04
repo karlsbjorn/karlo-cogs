@@ -23,9 +23,7 @@ class WikiArena(commands.Cog):
     @commands.command()
     async def wikiarena(self, ctx):
         """
-        Starts a game of WikiArena.
-
-        Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
+        IF YOU SEE THIS I FAILED
         """
         score = 0
         async with ctx.typing():
