@@ -8,8 +8,8 @@ from datetime import datetime
 from typing import Literal, Mapping, Optional
 
 import discord
-from PIL import Image, ImageDraw, ImageFont
 from beautifultable import ALIGN_LEFT, BeautifulTable
+from PIL import Image, ImageDraw, ImageFont
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
