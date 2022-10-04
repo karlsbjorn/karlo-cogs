@@ -14,6 +14,8 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(Wowpvp, Raiderio, Wowtoken, Wowaudit, Raidbots, commands.Cog):
+    """I AM UPDATED"""
+
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=42069)

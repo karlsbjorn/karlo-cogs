@@ -13,12 +13,7 @@ _ = Translator("WikiArena", __file__)
 
 @cog_i18n(_)
 class WikiArena(commands.Cog):
-    """WikiArena
-
-    A Wikipedia game heavily inspired by **WikiArena** by Fabian Fischer.
-
-    Check out the original game! https://ludokultur.itch.io/wikiarena
-    """
+    """I SHOULD NOT BE UPDATED IF THE GODS ARE GOOD"""
 
     def __init__(self, bot):
         self.bot = bot
