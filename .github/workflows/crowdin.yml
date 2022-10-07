@@ -1,0 +1,31 @@
+name: Crowdin - Upload strings
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: github.repository == 'karlsbjorn/karlo-cogs'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        pip install redgettext
+    - name: Generate source files
+      run: |
+        python3.9 -m redgettext --command-docstrings --recursive .
+    - name: crowdin action
+      uses: crowdin/github-action@1.4.10
+      with:
+        upload_translations: true
+        download_translations: true
+      env:
+        CROWDIN_API_KEY: ${{ secrets.crowdin_token}}
+        CROWDIN_PROJECT_ID: ${{ secrets.crowdin_identifier }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

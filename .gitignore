@@ -4,3 +4,5 @@ venv
 
 *.pot
 *.mo
+
+.run/

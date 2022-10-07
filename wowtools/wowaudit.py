@@ -11,22 +11,23 @@ from redbot.core.utils.menus import DEFAULT_CONTROLS
 
 _ = Translator("WoWTools", __file__)
 
-MEMBERS_PER_PAGE = 20
+MEMBERS_PER_PAGE = 10
 
 
 class Wowaudit:
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.group()
-    async def wow(self, ctx: commands.Context):
-        """Commands for interacting with World of Warcraft"""
+    async def wowaudit(self, ctx: commands.Context):
+        """Commands for interacting with WowAudit."""
         pass
 
-    @wow.command()
+    @wowaudit.command()
     async def summary(self, ctx: commands.Context):
         """Show your wowaudit summary."""
         try:
             async with ctx.typing():
                 embed = await self.gen_summary(ctx)
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -76,13 +77,13 @@ class Wowaudit:
             output = ""
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def ilvl(self, ctx: commands.Context):
         """Show current equipped item level of your wowaudit group."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_avg_ilvl(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -139,13 +140,13 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def tier(self, ctx: commands.Context):
         """Show current equipped tier pieces of your wowaudit group."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_tier(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -210,13 +211,13 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def mplus(self, ctx: commands.Context):
         """Show mythic dungeons completed this week."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_mplus(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -268,13 +269,13 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def vault(self, ctx: commands.Context):
         """Shows the item level sum of all items in your wowaudit group's vault."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_vault(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -326,13 +327,13 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def wq(self, ctx: commands.Context):
         """Shows world quests completed this week."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_wq(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
@@ -382,13 +383,13 @@ class Wowaudit:
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
 
-    @wow.command()
+    @wowaudit.command()
     async def raidkills(self, ctx: commands.Context):
         """Shows raid kills for the current week."""
         try:
             async with ctx.typing():
                 embeds = await self.gen_raidkills(ctx)
-                await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
+            await menus.menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 

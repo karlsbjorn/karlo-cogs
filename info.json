@@ -1,6 +1,6 @@
 {
     "author" : ["Karlo"],
-    "install_msg" : "Thanks for installing. All of the cogs in this repo were made for a single Discord server and for the purpose of learning programming.\nIf you have any questions or suggestions, ping or DM Karlo#1000 in the **Red - Cog Support** server.",
+    "install_msg" : "Thanks for installing. All of the cogs in this repo were made for a single Discord server and for the purpose of learning programming.\nIf you have any questions or suggestions, please make an issue on the repo.",
     "name" : "karlo-cogs",
     "short" : "Cogs for WoW and other stuff.",
     "description" : "Cogs for WoW and other stuff."

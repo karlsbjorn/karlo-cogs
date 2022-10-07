@@ -1,0 +1,14 @@
+{
+    "author": ["Karlo"],
+    "description": "Battle.net authenticator in Discord.",
+    "short": "Battle.net authenticator in Discord.",
+    "install_msg": "This cog **requires** you to manually install `click==8.0.3` before it can load since Red currently uses an older version. If you don't know how to do this, please uninstall this cog.",
+    "tags": ["battlenet", "battle.net", "bnet", "totp", "authenticator", "2fa"],
+    "requirements": [
+        "bna"
+    ],
+    "min_bot_version": "3.4.0",
+    "max_bot_version": "3.4.99",
+    "type": "COG",
+    "end_user_data_statement": "This cog stores a Discord user's Battle.net authenticator details like the secret, serial and recovery keys. Users may delete their own data by making a data removal request."
+}

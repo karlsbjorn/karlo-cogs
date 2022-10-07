@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: karlo-cogs\n"
+"POT-Creation-Date: 2022-09-23 06:51+0000\n"
+"PO-Revision-Date: 2022-09-24 11:38\n"
+"Last-Translator: \n"
+"Language-Team: Croatian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Crowdin-Project: karlo-cogs\n"
+"X-Crowdin-Project-ID: 523580\n"
+"X-Crowdin-Language: hr\n"
+"X-Crowdin-File: /battlenetauth/locales/messages.pot\n"
+"X-Crowdin-File-ID: 20\n"
+"Language: hr_HR\n"
+
+#: battlenetauth/battlenetauth.py:32
+#, docstring
+msgid "Battle.net authenticator commands."
+msgstr "Naredbe Battle.net autentifikatora."
+
+#: battlenetauth/battlenetauth.py:41
+#, docstring
+msgid "Set up the authenticator."
+msgstr "Postavite autentifikator."
+
+#: battlenetauth/battlenetauth.py:43
+msgid "The owner of this bot will have **full access** to your authenticator details.\n"
+"If you do not fully trust the owner of this bot with this information, do not use this command.\n"
+"If you are sure you want to continue, type `yes`. Otherwise, type `no`."
+msgstr "Vlasnik ovog bota imat će **puni pristup** vašim podacima o autentifikatoru.\n"
+"Ako vlasniku ovog bota ne vjerujete u potpunosti, nemojte koristiti ovu naredbu.\n"
+"Ako ste sigurni da želite nastaviti, upišite `yes`. U protivnom upišite `no`."
+
+#: battlenetauth/battlenetauth.py:53
+msgid "Assuming `no`."
+msgstr "Pretpostavljam `no`."
+
+#: battlenetauth/battlenetauth.py:65
+msgid "Invalid serial or secret."
+msgstr "Nevažeći serijski ili tajni broj."
+
+#: battlenetauth/battlenetauth.py:68
+msgid "Could not connect: {error}"
+msgstr "Nije moguće povezati se: {error}"
+
+#: battlenetauth/battlenetauth.py:86
+msgid "Authenticator set.\n"
+"Your code is: **{code}**"
+msgstr "Autentifikator postavljen.\n"
+"Vaš kod je: **{code}**"
+
+#: battlenetauth/battlenetauth.py:91
+#, docstring
+msgid "Get your authenticator code."
+msgstr "Dobijte svoj autentifikacijski kod."
+
+#: battlenetauth/battlenetauth.py:94
+msgid "You haven't set up the authenticator yet."
+msgstr "Još niste postavili autentifikator."
+
+#: battlenetauth/battlenetauth.py:102
+msgid "Your code is: **{code}**\n"
+"It expires {time}"
+msgstr "Vaš kod je: **{code}**\n"
+"Ističe {time}"
+

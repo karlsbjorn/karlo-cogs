@@ -94,7 +94,12 @@ class WoWLogsClient:
             return True
 
     async def get_overview(
-        self, char_name: str, char_realm: str, char_server: str, zone_id: int
+        self,
+        char_name: str,
+        char_realm: str,
+        char_server: str,
+        zone_id: int,
+        difficulty: int,
     ):
         async with self.session.post(
             graphql_url,
@@ -105,6 +110,7 @@ class WoWLogsClient:
                     "char_realm": char_realm,
                     "char_server": char_server,
                     "zone_id": zone_id,
+                    "difficulty": difficulty,
                 },
             },
         ) as call:

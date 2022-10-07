@@ -30,7 +30,7 @@ class Queries:
 """
 
     get_overview = """
-    query ($char_realm: String!, $char_name: String!, $char_server: String!, $zone_id: Int!) {
+    query ($char_realm: String!, $char_name: String!, $char_server: String!, $zone_id: Int!, $difficulty: Int!) {
   rateLimitData {
     limitPerHour
     pointsSpentThisHour
@@ -40,7 +40,7 @@ class Queries:
     character(name: $char_name, serverSlug: $char_realm, serverRegion: $char_server) {
       name
       id
-      zoneRankings(zoneID: $zone_id)
+      zoneRankings(zoneID: $zone_id, difficulty: $difficulty)
       }
     }
   }

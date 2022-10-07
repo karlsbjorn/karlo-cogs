@@ -1,0 +1,265 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: karlo-cogs\n"
+"POT-Creation-Date: 2022-09-09 19:41+0000\n"
+"PO-Revision-Date: 2022-09-09 19:42\n"
+"Last-Translator: \n"
+"Language-Team: Serbian (Latin)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Crowdin-Project: karlo-cogs\n"
+"X-Crowdin-Project-ID: 523580\n"
+"X-Crowdin-Language: sr-CS\n"
+"X-Crowdin-File: /warcraftlogsretail/locales/messages.pot\n"
+"X-Crowdin-File-ID: 10\n"
+"Language: sr_CS\n"
+
+#: warcraftlogsretail/core.py:31
+#, docstring
+msgid "Retrieve World of Warcraft character information from WarcraftLogs."
+msgstr "Preuzmite informacije o karakteru World of Warcraft iz WarcraftLogs-a."
+
+#: warcraftlogsretail/core.py:95
+#, docstring
+msgid "\n"
+"        Fetch a character's gear.\n\n"
+"        Examples:\n"
+"        [p]getgear Username Draenor EU\n"
+"        [p]getgear Username Alterac-Mountains US\n\n"
+"        This is provided from the last log entry for a user that includes gear data.\n"
+"        Not every log has gear data.\n"
+"        Enchants can be shown - if the log provides them.\n"
+"        "
+msgstr "\n"
+"        Uzmite opremu lika.\n\n"
+"        Primeri:\n"
+"        [p]getgear Korisničko ime Draenor EU\n"
+"        [p]getgear Korisničko ime Alterac-Mountains US\n\n"
+"        Ovo je obezbeđeno iz poslednjeg unosa dnevnika za korisnika koji uključuje podatke o opremi.\n"
+"        Nema svaki dnevnik podatke o opremi.\n"
+"        čari se mogu prikazati - ako ih dnevnik pruža.\n"
+"        "
+
+#: warcraftlogsretail/core.py:112 warcraftlogsretail/core.py:316
+msgid "Please specify a character name with this command."
+msgstr "Molimo navedite ime karaktera ovom komandom."
+
+#: warcraftlogsretail/core.py:118 warcraftlogsretail/core.py:322
+msgid "Please specify a realm name with this command."
+msgstr "Molimo navedite ime područja ovom komandom."
+
+#: warcraftlogsretail/core.py:124 warcraftlogsretail/core.py:328
+msgid "Please specify a region name with this command."
+msgstr "Molimo navedite naziv regije ovom komandom."
+
+#: warcraftlogsretail/core.py:142 warcraftlogsretail/core.py:375
+#: warcraftlogsretail/core.py:393
+msgid "{name} wasn't found on the API."
+msgstr "{name} nije pronađeno na API-ju."
+
+#: warcraftlogsretail/core.py:151
+msgid "The bearer token was invalidated for some reason."
+msgstr "Token nosioca je iz nekog razloga poništen."
+
+#: warcraftlogsretail/core.py:159
+msgid "Check your API token and make sure you have added it to the bot correctly."
+msgstr "Provjerite svoj API token i provjerite jeste li ga ispravno dodali botu."
+
+#: warcraftlogsretail/core.py:192
+msgid "No gear for {name} found in the last report."
+msgstr "Nije pronađena oprema za {name} u posljednjem izvještaju."
+
+#: warcraftlogsretail/core.py:245
+msgid "Unknown (not present in log data from the API)"
+msgstr "Nepoznato (nije prisutno u podacima dnevnika iz API-ja)"
+
+#: warcraftlogsretail/core.py:258
+msgid "Average Item Level: {avg_ilevel}\n"
+msgstr "Prosječan nivo predmeta: {avg_ilevel}\n"
+
+#: warcraftlogsretail/core.py:260
+msgid "Encounter spec: {encounter_spec}\n"
+msgstr "Specifikacije susreta: {encounter_spec}\n"
+
+#: warcraftlogsretail/core.py:263
+msgid "Gear data pulled from {report_url}\n"
+msgstr "Podaci o zupčanicima izvučeni od {report_url}\n"
+
+#: warcraftlogsretail/core.py:266
+msgid "Log Date/Time: {datetime} UTC"
+msgstr "Datum/vrijeme zapisnika: {datetime} UTC"
+
+#: warcraftlogsretail/core.py:284
+#, docstring
+msgid "\n"
+"        Character rank overview.\n\n"
+"        If the realm name is two words, use a hyphen to connect the words.\n\n"
+"        Examples:\n"
+"        [p]getrank Username Draenor EU\n"
+"        [p]getrank Username Alterac-Mountains US\n\n"
+"        Specific Zones:\n"
+"        [p]getrank Username Draenor EU CN Heroic\n"
+"        [p]getrank Username Alterac-Mountains US SoD Mythic\n\n"
+"        Zone name must be formatted like:\n"
+"        CN, SoD, SotFO\n"
+"        "
+msgstr ""
+
+#: warcraftlogsretail/core.py:333
+msgid "Realm names that have a space (like 'Nethergarde Keep') must be written with a hyphen, "
+msgstr "Imena domena koja imaju razmak (poput 'Nethergarde Keep') moraju biti napisana crticom, "
+
+#: warcraftlogsretail/core.py:336
+msgid "upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`."
+msgstr "velika ili mala slova: `nethergarde-keep` ili `Nethergarde-Keep`."
+
+#: warcraftlogsretail/core.py:403
+msgid "Something went terribly wrong while trying to access the zone rankings for this character."
+msgstr "Nešto je užasno pošlo po zlu pri pokušaju pristupa rangiranju zona za ovog lika."
+
+#: warcraftlogsretail/core.py:429
+msgid "Best Perf. Avg"
+msgstr "Najbolji Perf. Avg"
+
+#: warcraftlogsretail/core.py:433
+msgid "Nothing found for {zone_name} for this player for Shadowlands."
+msgstr "Ništa nije pronađeno za {zone_name} za ovog igrača za Shadowlands."
+
+#: warcraftlogsretail/core.py:439
+msgid "Nothing at all found for this player for Shadowlands."
+msgstr "Ništa nije pronađeno za ovog igrača za Shadowlands."
+
+#: warcraftlogsretail/core.py:444
+msgid "Median Perf. Avg"
+msgstr "Median Perf. Avg"
+
+#: warcraftlogsretail/core.py:453
+msgid "Name"
+msgstr "Ime"
+
+#: warcraftlogsretail/core.py:454
+msgid "Best %"
+msgstr "najbolji %"
+
+#: warcraftlogsretail/core.py:455
+msgid "Spec"
+msgstr "Spec"
+
+#: warcraftlogsretail/core.py:456
+msgid "DPS"
+msgstr "DPS"
+
+#: warcraftlogsretail/core.py:457
+msgid "Kills"
+msgstr "Ubija"
+
+#: warcraftlogsretail/core.py:458
+msgid "Fastest"
+msgstr "Najbrži"
+
+#: warcraftlogsretail/core.py:459
+msgid "Med %"
+msgstr "srednji %"
+
+#: warcraftlogsretail/core.py:460
+msgid "AS Pts"
+msgstr "AS Pts"
+
+#: warcraftlogsretail/core.py:461
+msgid "AS Rank"
+msgstr "AS Rank"
+
+#: warcraftlogsretail/core.py:511
+msgid "⫷ Expansion All Stars ⫸"
+msgstr "⫷ Ekspanzija All Stars ⫸"
+
+#: warcraftlogsretail/core.py:518
+msgid "Points:\n"
+"`{points}`\n"
+msgstr "Bodovi:\n"
+"`{points}`\n"
+
+#: warcraftlogsretail/core.py:519
+msgid "Rank:\n"
+"`{rank}`\n"
+msgstr "Poredak:\n"
+"`{rank}`\n"
+
+#: warcraftlogsretail/core.py:542
+#, docstring
+msgid "Set your character's name."
+msgstr "Postavite ime svog lika."
+
+#: warcraftlogsretail/core.py:545
+msgid "Your character name was set to {charname}."
+msgstr "Ime vašeg lika je postavljeno na {charname}."
+
+#: warcraftlogsretail/core.py:552
+#, docstring
+msgid "Set your realm."
+msgstr "Postavite svoje carstvo."
+
+#: warcraftlogsretail/core.py:556
+msgid "Your realm was set to {realm.title()}."
+msgstr "Vaše područje je postavljeno na {realm.title()}."
+
+#: warcraftlogsretail/core.py:561
+#, docstring
+msgid "Set your region."
+msgstr "Postavite svoju regiju."
+
+#: warcraftlogsretail/core.py:565
+msgid "Valid regions are: {valid_regions}"
+msgstr "Važeće regije su: {valid_regions}"
+
+#: warcraftlogsretail/core.py:571
+msgid "Your realm's region was set to {region}."
+msgstr "Region vašeg carstva je postavljen na {region}."
+
+#: warcraftlogsretail/core.py:576
+#, docstring
+msgid "Show your current settings."
+msgstr "Prikažite svoje trenutne postavke."
+
+#: warcraftlogsretail/core.py:580
+msgid "[Settings for {user}]\n"
+msgstr "[Postavke za {user}]\n"
+
+#: warcraftlogsretail/core.py:586
+msgid "Character: {charname}\n"
+"Realm: {realmname}\n"
+"Region: {regionname}\n\n"
+msgstr "Karakter: {charname}\n"
+"Područje: {realmname}\n"
+"Regija: {regionname}\n\n"
+
+#: warcraftlogsretail/core.py:590
+msgid "[Bot Permissions Needed]\n"
+msgstr "[Potrebne su dozvole za bot]\n"
+
+#: warcraftlogsretail/core.py:592
+msgid "[X] Embed Links permissions\n"
+msgstr "[X] dozvola za ugradnju linkova\n"
+
+#: warcraftlogsretail/core.py:594
+msgid "[ ] I need Embed Links permissions\n"
+msgstr "[ ] Potrebna su mi dozvola za ugradnju linkova\n"
+
+#: warcraftlogsretail/core.py:601
+#, docstring
+msgid "Instructions for setting the api key."
+msgstr "Upute za postavljanje api ključa."
+
+#: warcraftlogsretail/core.py:614
+#, docstring
+msgid "[Depreciated] Fetch ranking info about a player."
+msgstr "[Depreciated] Dohvati informacije o rangiranju igrača."
+
+#: warcraftlogsretail/core.py:623
+#, docstring
+msgid "[Depreciated] Fetch gear info about a player."
+msgstr "[Depreciated] Dohvati informacije o opremi o igraču."
+

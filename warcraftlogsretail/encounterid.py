@@ -72,6 +72,13 @@ ZONES_BY_ID = {
 
 ZONES_BY_SHORT_NAME = {
     "CN": ["Castle Nathria", 26],
-    "SoD": ["Sanctum of Domination", 28],
-    "SotFO": ["Sepulcher of the First Ones", 29],
+    "SOD": ["Sanctum of Domination", 28],
+    "SOTFO": ["Sepulcher of the First Ones", 29],
+}
+
+DIFFICULTIES = {
+    5: "MYTHIC",
+    4: "HEROIC",
+    3: "NORMAL",
+    2: "LFR",
 }

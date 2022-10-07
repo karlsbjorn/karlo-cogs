@@ -45,4 +45,9 @@ ENCHANT_ID = {
     "6201": "Weighted IX",
     "6188": "Shadowcore Oil",
     "6225": "Reinforced (+32 Stamina)",
+    # Gems
+    "173128": "+16 Haste",
+    "173127": "+16 Critical Strike",
+    "173130": "+16 Mastery",
+    "173129": "+16 Versatility",
 }
