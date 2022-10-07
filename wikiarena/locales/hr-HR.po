@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-04-10 18:17+0200\n"
-"PO-Revision-Date: 2022-04-10 18:23+0200\n"
+"POT-Creation-Date: 2022-10-07 03:04+0200\n"
+"PO-Revision-Date: 2022-10-07 03:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hr_HR\n"
@@ -13,9 +13,9 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "Generated-By: redgettext 3.3\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
-#: wikiarena/wikiarena.py:16
+#: wikiarena\wikiarena.py:16
 msgid ""
 "WikiArena\n"
 "\n"
@@ -31,7 +31,7 @@ msgstr ""
 "    Pogledaj originalnu igru! https://ludokultur.itch.io/wikiarena\n"
 "    "
 
-#: wikiarena/wikiarena.py:30
+#: wikiarena\wikiarena.py:30
 msgid ""
 "\n"
 "        Starts a game of WikiArena.\n"
@@ -47,9 +47,9 @@ msgstr ""
 "io/wikiarena\n"
 "        "
 
-#: wikiarena/wikiarena.py:46 wikiarena/wikiarena.py:191
+#: wikiarena\wikiarena.py:54 wikiarena\wikiarena.py:252
 msgid ""
-"Guess which full article is __longer__ or got __more views__ in the last 60 "
+"Guess which full article has __more words__ or __more views__ in the last 60 "
 "days!\n"
 "Score: **{score}**"
 msgstr ""
@@ -57,23 +57,63 @@ msgstr ""
 "dana!\n"
 "Rezultat: **{score}**"
 
-#: wikiarena/wikiarena.py:141 wikiarena/wikiarena.py:150
-msgid "More Views"
+#: wikiarena\wikiarena.py:145 wikiarena\wikiarena.py:146
+msgid "More views"
 msgstr "Više pregleda"
 
-#: wikiarena/wikiarena.py:159 wikiarena/wikiarena.py:168
-msgid "Longer"
-msgstr "Duži"
-
+#: wikiarena\wikiarena.py:147 wikiarena\wikiarena.py:148
 msgid "More words"
 msgstr "Više riječi"
 
-#: wikiarena/wikiarena.py:204
+#: wikiarena\wikiarena.py:156
 msgid ""
-"Wrong! Better luck next time!\n"
+"Time's up! Be faster next time!\n"
+"🔵 Views: {blue_views}\n"
+"🔵 Words: {blue_words}\n"
+"🔴 Views: {red_views}\n"
+"🔴 Words: {red_words}\n"
 "\n"
 "Your final score was: **{score}**"
 msgstr ""
-"Pogrešno! Više sreće drugi put!\n"
+"Vrijeme je isteklo! Sljedeći put budi brži!\n"
+"🔵 Pregledi: {blue_views}\n"
+"🔵 Riječi: {blue_words}\n"
+"🔴 Pregledi: {red_views}\n"
+"🔴 Riječi: {red_words}\n"
 "\n"
-"Vaš konačni rezultat: **{score}**"
+"Tvoj završni broj bodova je: **{score}**"
+
+#: wikiarena\wikiarena.py:188 wikiarena\wikiarena.py:202
+#: wikiarena\wikiarena.py:216 wikiarena\wikiarena.py:230
+msgid "This isn't your game of WikiArena."
+msgstr "Ovo nije tvoja igra WikiArene."
+
+#: wikiarena\wikiarena.py:265
+msgid ""
+"Wrong! Better luck next time!\n"
+"🔵 Views: {blue_views}\n"
+"🔵 Words: {blue_words}\n"
+"🔴 Views: {red_views}\n"
+"🔴 Words: {red_words}\n"
+"\n"
+"Your final score was: **{score}**"
+msgstr ""
+"Krivo! Više sreće drugi put!\n"
+"🔵 Pregledi: {blue_views}\n"
+"🔵 Riječi: {blue_words}\n"
+"🔴 Pregledi: {red_views}\n"
+"🔴 Riječi: {red_words}\n"
+"\n"
+"Tvoj završni broj bodova je: **{score}**"
+
+#~ msgid "Longer"
+#~ msgstr "Duži"
+
+#~ msgid ""
+#~ "Wrong! Better luck next time!\n"
+#~ "\n"
+#~ "Your final score was: **{score}**"
+#~ msgstr ""
+#~ "Pogrešno! Više sreće drugi put!\n"
+#~ "\n"
+#~ "Vaš konačni rezultat: **{score}**"
