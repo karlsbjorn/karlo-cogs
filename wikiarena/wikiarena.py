@@ -43,13 +43,13 @@ class WikiArena(commands.Cog):
             ) = await self.game_setup()
 
             view = Buttons(
-                    score=score,
-                    blue_views=blue_views,
-                    red_views=red_views,
-                    blue_words=blue_word_count,
-                    red_words=red_word_count,
-                    author=ctx.author,
-                )
+                score=score,
+                blue_views=blue_views,
+                red_views=red_views,
+                blue_words=blue_word_count,
+                red_words=red_word_count,
+                author=ctx.author,
+            )
             view.message = await ctx.send(
                 _(
                     "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
@@ -141,10 +141,10 @@ class Buttons(discord.ui.View):
         self.blue_words = blue_words
         self.red_words = red_words
         # Thanks Flame!
-        self.blue_more_views.label = _("More views")
-        self.red_more_views.label = _("More views")
-        self.blue_more_words.label = _("More words")
-        self.red_more_words.label = _("More words")
+        self.blue_more_views.label = "aaaaaaaaaaaaaaaaaaa"
+        self.red_more_views.label = "bbbbbbbbbbbbbbbbbbb"
+        self.blue_more_words.label = "ccccccccccccccccccc"
+        self.red_more_words.label = "ddddddddddddddddddd"
         self.session = aiohttp.ClientSession()
 
     async def on_timeout(self):
@@ -155,8 +155,8 @@ class Buttons(discord.ui.View):
             content=_(
                 "Time's up! Be faster next time!\n"
                 "🔵 Views: {blue_views}\n"
-                "🔴 Views: {red_views}\n"
                 "🔵 Words: {blue_words}\n"
+                "🔴 Views: {red_views}\n"
                 "🔴 Words: {red_words}\n\n"
                 "Your final score was: **{score}**"
             ).format(
@@ -264,8 +264,8 @@ class Buttons(discord.ui.View):
             content=_(
                 "Wrong! Better luck next time!\n"
                 "🔵 Views: {blue_views}\n"
-                "🔴 Views: {red_views}\n"
                 "🔵 Words: {blue_words}\n"
+                "🔴 Views: {red_views}\n"
                 "🔴 Words: {red_words}\n\n"
                 "Your final score was: **{score}**"
             ).format(
