@@ -44,7 +44,7 @@ class WikiArena(commands.Cog):
 
             await ctx.send(
                 _(
-                    "Guess which full article has __more words__ or __more views in the last 60 days__!\n"
+                    "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                     "Score: **{score}**"
                 ).format(score=score),
                 embeds=embeds,
@@ -138,9 +138,45 @@ class Buttons(discord.ui.View):
         self.red_views = red_views
         self.blue_words = blue_words
         self.red_words = red_words
+        # Thanks Flame!
+        self.blue_more_views.label = _("More views")
+        self.red_more_views.label = _("More views")
+        self.blue_more_words.label = _("More words")
+        self.red_more_words.label = _("More words")
         self.session = aiohttp.ClientSession()
 
-    @discord.ui.button(label=_("More Views"), style=discord.ButtonStyle.blurple)
+    async def on_timeout(self):
+        embeds = []
+        for item in self.children:
+            item.disabled = True
+        await self.message.edit(
+            content=_(
+                "Time's up! Be faster next time!\n"
+                "🔵 Views: {blue_views}\n"
+                "🔴 Views: {red_views}\n"
+                "🔵 Words: {blue_words}\n"
+                "🔴 Words: {red_words}\n\n"
+                "Your final score was: **{score}**"
+            ).format(
+                score=self.score,
+                blue_views=self.blue_views
+                if not self.blue_views > self.red_views
+                else f"**{self.blue_views}**",
+                red_views=self.red_views
+                if not self.red_views > self.blue_views
+                else f"**{self.red_views}**",
+                blue_words=self.blue_words
+                if not self.blue_words > self.red_words
+                else f"**{self.blue_words}**",
+                red_words=self.red_words
+                if not self.red_words > self.blue_words
+                else f"**{self.red_words}**",
+            ),
+            embeds=embeds,
+            view=self,
+        )
+
+    @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_views(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
@@ -154,7 +190,7 @@ class Buttons(discord.ui.View):
         else:
             await self.end_game(interaction)
 
-    @discord.ui.button(label=_("More Views"), style=discord.ButtonStyle.red, row=1)
+    @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_more_views(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
@@ -168,7 +204,7 @@ class Buttons(discord.ui.View):
         else:
             await self.end_game(interaction)
 
-    @discord.ui.button(label=_("More Words"), style=discord.ButtonStyle.blurple)
+    @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_longer(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
@@ -182,7 +218,7 @@ class Buttons(discord.ui.View):
         else:
             await self.end_game(interaction)
 
-    @discord.ui.button(label=_("More Words"), style=discord.ButtonStyle.red, row=1)
+    @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_longer(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
@@ -211,7 +247,7 @@ class Buttons(discord.ui.View):
         self.red_words = red_word_count
         await interaction.response.edit_message(
             content=_(
-                "Guess which full article is __longer__ or got __more views__ in the last 60 days!\n"
+                "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                 "Score: **{score}**"
             ).format(score=self.score),
             embeds=embeds,

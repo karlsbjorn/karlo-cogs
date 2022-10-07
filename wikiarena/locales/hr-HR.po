@@ -65,6 +65,9 @@ msgstr "Više pregleda"
 msgid "Longer"
 msgstr "Duži"
 
+msgid "More words"
+msgstr "Više riječi"
+
 #: wikiarena/wikiarena.py:204
 msgid ""
 "Wrong! Better luck next time!\n"
