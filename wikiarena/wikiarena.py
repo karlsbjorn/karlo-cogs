@@ -205,7 +205,7 @@ class Buttons(discord.ui.View):
             await self.end_game(interaction)
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
-    async def blue_longer(
+    async def blue_more_words(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if self.author.id != interaction.user.id:
@@ -219,7 +219,7 @@ class Buttons(discord.ui.View):
             await self.end_game(interaction)
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
-    async def red_longer(
+    async def red_more_words(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if self.author.id != interaction.user.id:
