@@ -22,6 +22,7 @@ class WikiArena(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.wiki_language = "en"
         self.session = aiohttp.ClientSession()
         # TODO: Save a player's score
 
@@ -32,7 +33,7 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split(
+        self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split(
             "-"
         )[0]
         async with ctx.typing():
@@ -42,10 +43,10 @@ class WikiArena(commands.Cog):
                 blue_word_count,
                 red_views,
                 red_word_count,
-            ) = await self.game_setup(wiki_language)
+            ) = await self.game_setup(self.wiki_language)
 
             view = Buttons(
-                wiki_language=wiki_language,
+                wiki_language=self.wiki_language,
                 blue_views=blue_views,
                 red_views=red_views,
                 blue_words=blue_word_count,
@@ -109,7 +110,7 @@ class WikiArena(commands.Cog):
         ).strftime("%Y%m%d")
 
         page_title = page.title.replace(" ", "_")
-        request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
+        request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{self.wiki_language}.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
         async with self.session.request("GET", request_url) as resp:
             if resp.status != 200:
                 raise ValueError("That article does not exist")
