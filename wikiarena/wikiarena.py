@@ -46,6 +46,7 @@ class WikiArena(commands.Cog):
             ) = await self.game_setup(self.wiki_language)
 
             view = Buttons(
+                translator=_,
                 wiki_language=self.wiki_language,
                 blue_views=blue_views,
                 red_views=red_views,
@@ -134,7 +135,7 @@ class WikiArena(commands.Cog):
 class Buttons(discord.ui.View):
     def __init__(
         self,
-        _,  # The translator object
+        translator,
         wiki_language,
         blue_views,
         red_views,
@@ -144,7 +145,7 @@ class Buttons(discord.ui.View):
         timeout=180,
     ):
         super().__init__(timeout=timeout)
-        self._: Translator = _
+        self._: Translator = translator
         self.message = None
         self.author = author
         self.score = 0
