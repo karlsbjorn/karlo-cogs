@@ -33,9 +33,9 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split(
-            "-"
-        )[0]
+        self.wiki_language = (
+            await i18n.get_locale_from_guild(self.bot, ctx.guild)
+        ).split("-")[0]
         async with ctx.typing():
             (
                 embeds,
@@ -67,7 +67,7 @@ class WikiArena(commands.Cog):
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(
             wiki_language
-        )  # TODO: Use wikipedia language of bot's locale
+        )
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
         embed_colours = discord.Colour.blurple(), discord.Colour.red()
         page_view_counts = []
@@ -113,7 +113,7 @@ class WikiArena(commands.Cog):
         request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{self.wiki_language}.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
         async with self.session.request("GET", request_url) as resp:
             if resp.status != 200:
-                raise ValueError("That article does not exist")
+                raise ValueError(f"That article does not exist. {request_url}")
             data = await resp.json()
 
             page_views = 0
