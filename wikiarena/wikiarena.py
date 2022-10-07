@@ -78,7 +78,10 @@ class WikiArena(commands.Cog):
             page_title = page.title
             page_text: str = await page.summary()
             page_views = await WikiArena.get_page_views(self, page)
-            page_media = await page.media()
+            try:
+                page_media = await page.media()
+            except KeyError:
+                page_media = None
             if page_media:
                 embed.set_thumbnail(url=page_media[0])
 
