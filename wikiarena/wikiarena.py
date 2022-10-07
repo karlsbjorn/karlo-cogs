@@ -135,6 +135,7 @@ class WikiArena(commands.Cog):
         self.bot.loop.create_task(self.session.close())
 
 
+@cog_i18n(_)
 class Buttons(discord.ui.View):
     def __init__(
         self,
