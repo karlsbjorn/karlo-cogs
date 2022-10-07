@@ -46,7 +46,6 @@ class WikiArena(commands.Cog):
             ) = await self.game_setup(self.wiki_language)
 
             view = Buttons(
-                translator=_,
                 wiki_language=self.wiki_language,
                 blue_views=blue_views,
                 red_views=red_views,
@@ -138,7 +137,6 @@ class WikiArena(commands.Cog):
 class Buttons(discord.ui.View):
     def __init__(
         self,
-        translator,
         wiki_language,
         blue_views,
         red_views,
@@ -148,7 +146,6 @@ class Buttons(discord.ui.View):
         timeout=180,
     ):
         super().__init__(timeout=timeout)
-        self._: Translator = translator
         self.message = None
         self.author = author
         self.score = 0
@@ -211,7 +208,7 @@ class Buttons(discord.ui.View):
         self.blue_words = blue_word_count
         self.red_words = red_word_count
         await interaction.response.edit_message(
-            content=self._(
+            content=_(
                 "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                 "Score: **{score}**"
             ).format(score=self.score),
@@ -225,7 +222,7 @@ class Buttons(discord.ui.View):
         for child in self.children:
             child.disabled = True
         await interaction.response.edit_message(
-            content=self._(
+            content=_(
                 "Wrong! Better luck next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -258,7 +255,7 @@ class Buttons(discord.ui.View):
         for item in self.children:
             item.disabled = True
         await self.message.edit(
-            content=self._(
+            content=_(
                 "Time's up! Be faster next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -287,7 +284,7 @@ class Buttons(discord.ui.View):
     async def _owner_check(self, interaction: discord.Interaction) -> bool:
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
-                self._("This isn't your game of WikiArena."), ephemeral=True
+                _("This isn't your game of WikiArena."), ephemeral=True
             )
             return False
         return True
