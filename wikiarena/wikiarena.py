@@ -196,7 +196,7 @@ class Buttons(discord.ui.View):
         )
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
-    async def blue_more_views(self, interaction: discord.Interaction):
+    async def blue_more_views(self, interaction: discord.Interaction, button):
         await self._owner_check(interaction)
         if self.red_views < self.blue_views:
             await self.continue_game(interaction)
@@ -204,7 +204,7 @@ class Buttons(discord.ui.View):
             await self.end_game(interaction)
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
-    async def red_more_views(self, interaction: discord.Interaction):
+    async def red_more_views(self, interaction: discord.Interaction, button):
         await self._owner_check(interaction)
         if self.red_views > self.blue_views:
             await self.continue_game(interaction)
@@ -212,7 +212,7 @@ class Buttons(discord.ui.View):
             await self.end_game(interaction)
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
-    async def blue_more_words(self, interaction: discord.Interaction):
+    async def blue_more_words(self, interaction: discord.Interaction, button):
         await self._owner_check(interaction)
         if self.red_words < self.blue_words:
             await self.continue_game(interaction)
@@ -220,7 +220,7 @@ class Buttons(discord.ui.View):
             await self.end_game(interaction)
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
-    async def red_more_words(self, interaction: discord.Interaction):
+    async def red_more_words(self, interaction: discord.Interaction, button):
         await self._owner_check(interaction)
         if self.red_words > self.blue_words:
             await self.continue_game(interaction)
