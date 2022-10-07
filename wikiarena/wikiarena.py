@@ -135,7 +135,6 @@ class WikiArena(commands.Cog):
         self.bot.loop.create_task(self.session.close())
 
 
-@cog_i18n(_)
 class Buttons(discord.ui.View):
     def __init__(
         self,
@@ -153,6 +152,7 @@ class Buttons(discord.ui.View):
         self.message = None
         self.author = author
         self.score = 0
+        self.game_status = 0
         self.wiki_language = wiki_language
         self.blue_views = blue_views
         self.red_views = red_views
@@ -164,37 +164,6 @@ class Buttons(discord.ui.View):
         self.blue_more_words.label = _("More words")
         self.red_more_words.label = _("More words")
         self.session = aiohttp.ClientSession()
-
-    async def on_timeout(self):
-        embeds = []
-        for item in self.children:
-            item.disabled = True
-        await self.message.edit(
-            content=self._(
-                "Time's up! Be faster next time!\n"
-                "🔵 Views: {blue_views}\n"
-                "🔵 Words: {blue_words}\n"
-                "🔴 Views: {red_views}\n"
-                "🔴 Words: {red_words}\n\n"
-                "Your final score was: **{score}**"
-            ).format(
-                score=self.score,
-                blue_views=f"**{self.blue_views}**"
-                if self.blue_views > self.red_views
-                else self.blue_views,
-                red_views=f"**{self.red_views}**"
-                if self.red_views > self.blue_views
-                else self.red_views,
-                blue_words=f"**{self.blue_words}**"
-                if self.blue_words > self.red_words
-                else self.blue_words,
-                red_words=f"**{self.red_words}**"
-                if self.red_words > self.blue_words
-                else self.red_words,
-            ),
-            embeds=embeds,
-            view=self,
-        )
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_views(self, interaction: discord.Interaction, button):
@@ -251,12 +220,46 @@ class Buttons(discord.ui.View):
         )
 
     async def end_game(self, interaction):
+        self.game_status = -1
         embeds = []
         for child in self.children:
             child.disabled = True
         await interaction.response.edit_message(
             content=self._(
                 "Wrong! Better luck next time!\n"
+                "🔵 Views: {blue_views}\n"
+                "🔵 Words: {blue_words}\n"
+                "🔴 Views: {red_views}\n"
+                "🔴 Words: {red_words}\n\n"
+                "Your final score was: **{score}**"
+            ).format(
+                score=self.score,
+                blue_views=f"**{self.blue_views}**"
+                if self.blue_views > self.red_views
+                else self.blue_views,
+                red_views=f"**{self.red_views}**"
+                if self.red_views > self.blue_views
+                else self.red_views,
+                blue_words=f"**{self.blue_words}**"
+                if self.blue_words > self.red_words
+                else self.blue_words,
+                red_words=f"**{self.red_words}**"
+                if self.red_words > self.blue_words
+                else self.red_words,
+            ),
+            embeds=embeds,
+            view=self,
+        )
+
+    async def on_timeout(self):
+        if self.game_status == -1:
+            return
+        embeds = []
+        for item in self.children:
+            item.disabled = True
+        await self.message.edit(
+            content=self._(
+                "Time's up! Be faster next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
                 "🔴 Views: {red_views}\n"
