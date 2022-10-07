@@ -2,7 +2,6 @@ import datetime
 import random
 from typing import List, Tuple
 
-import aiohttp
 import aiowiki
 import discord
 from redbot.core import commands, i18n
@@ -23,7 +22,6 @@ class WikiArena(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.wiki_language = "en"
-        self.session = aiohttp.ClientSession()
         # TODO: Save a player's score
 
     @commands.command()
@@ -65,9 +63,7 @@ class WikiArena(commands.Cog):
     async def game_setup(
         self, wiki_language: str
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
-        wiki = aiowiki.Wiki.wikipedia(
-            wiki_language
-        )
+        wiki = aiowiki.Wiki.wikipedia(wiki_language)
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
         embed_colours = discord.Colour.blurple(), discord.Colour.red()
         page_view_counts = []
@@ -133,10 +129,10 @@ class WikiArena(commands.Cog):
         self.bot.loop.create_task(self.session.close())
 
 
-@cog_i18n(_)
 class Buttons(discord.ui.View):
     def __init__(
         self,
+        _,  # The translator object
         wiki_language,
         blue_views,
         red_views,
@@ -146,6 +142,7 @@ class Buttons(discord.ui.View):
         timeout=180,
     ):
         super().__init__(timeout=timeout)
+        self._: Translator = _
         self.message = None
         self.author = author
         self.score = 0
@@ -159,14 +156,12 @@ class Buttons(discord.ui.View):
         self.red_more_views.label = _("More views")
         self.blue_more_words.label = _("More words")
         self.red_more_words.label = _("More words")
-        self.session = aiohttp.ClientSession()
-
     async def on_timeout(self):
         embeds = []
         for item in self.children:
             item.disabled = True
         await self.message.edit(
-            content=_(
+            content=self._(
                 "Time's up! Be faster next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -198,7 +193,7 @@ class Buttons(discord.ui.View):
     ):
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
-                _("This isn't your game of WikiArena."), ephemeral=True
+                self._("This isn't your game of WikiArena."), ephemeral=True
             )
             return
         if self.red_views < self.blue_views:
@@ -212,7 +207,7 @@ class Buttons(discord.ui.View):
     ):
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
-                _("This isn't your game of WikiArena."), ephemeral=True
+                self._("This isn't your game of WikiArena."), ephemeral=True
             )
             return
         if self.red_views > self.blue_views:
@@ -226,7 +221,7 @@ class Buttons(discord.ui.View):
     ):
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
-                _("This isn't your game of WikiArena."), ephemeral=True
+                self._("This isn't your game of WikiArena."), ephemeral=True
             )
             return
         if self.red_words < self.blue_words:
@@ -240,7 +235,7 @@ class Buttons(discord.ui.View):
     ):
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
-                _("This isn't your game of WikiArena."), ephemeral=True
+                self._("This isn't your game of WikiArena."), ephemeral=True
             )
             return
         if self.red_words > self.blue_words:
@@ -262,7 +257,7 @@ class Buttons(discord.ui.View):
         self.blue_words = blue_word_count
         self.red_words = red_word_count
         await interaction.response.edit_message(
-            content=_(
+            content=self._(
                 "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                 "Score: **{score}**"
             ).format(score=self.score),
@@ -275,7 +270,7 @@ class Buttons(discord.ui.View):
         for child in self.children:
             child.disabled = True
         await interaction.response.edit_message(
-            content=_(
+            content=self._(
                 "Wrong! Better luck next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -300,6 +295,3 @@ class Buttons(discord.ui.View):
             embeds=embeds,
             view=self,
         )
-
-    async def cog_unload(self):
-        self.bot.loop.create_task(self.session.close())
