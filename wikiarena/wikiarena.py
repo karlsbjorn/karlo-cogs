@@ -7,6 +7,7 @@ import aiowiki
 import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator, cog_i18n
+from redbot.core import i18n
 
 _ = Translator("WikiArena", __file__)
 
@@ -32,7 +33,7 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        score = 0
+        wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("_")[0]
         async with ctx.typing():
             (
                 embeds,
@@ -40,10 +41,9 @@ class WikiArena(commands.Cog):
                 blue_word_count,
                 red_views,
                 red_word_count,
-            ) = await self.game_setup()
+            ) = await self.game_setup(wiki_language)
 
             view = Buttons(
-                score=score,
                 blue_views=blue_views,
                 red_views=red_views,
                 blue_words=blue_word_count,
@@ -54,14 +54,14 @@ class WikiArena(commands.Cog):
                 _(
                     "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                     "Score: **{score}**"
-                ).format(score=score),
+                ).format(score='0'),
                 embeds=embeds,
                 view=view,
             )
 
-    async def game_setup(self) -> Tuple[List[discord.Embed], int, int, int, int]:
+    async def game_setup(self, wiki_language: str) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(
-            "en"
+            wiki_language
         )  # TODO: Use wikipedia language of bot's locale
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
         embed_colours = discord.Colour.blurple(), discord.Colour.red()
@@ -131,12 +131,13 @@ class WikiArena(commands.Cog):
 @cog_i18n(_)
 class Buttons(discord.ui.View):
     def __init__(
-        self, score, blue_views, red_views, blue_words, red_words, author, timeout=180
+        self, wiki_language, blue_views, red_views, blue_words, red_words, author, timeout=180
     ):
         super().__init__(timeout=timeout)
         self.message = None
         self.author = author
-        self.score = score
+        self.score = 0
+        self.wiki_language = wiki_language
         self.blue_views = blue_views
         self.red_views = red_views
         self.blue_words = blue_words
@@ -243,7 +244,7 @@ class Buttons(discord.ui.View):
             blue_word_count,
             red_views,
             red_word_count,
-        ) = await WikiArena.game_setup(self)
+        ) = await WikiArena.game_setup(self, self.wiki_language)
         self.blue_views = blue_views
         self.red_views = red_views
         self.blue_words = blue_word_count
