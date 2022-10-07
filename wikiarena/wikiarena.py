@@ -141,10 +141,10 @@ class Buttons(discord.ui.View):
         self.blue_words = blue_words
         self.red_words = red_words
         # Thanks Flame!
-        self.blue_more_views.label = "aaaaaaaaaaaaaaaaaaa"
-        self.red_more_views.label = "bbbbbbbbbbbbbbbbbbb"
-        self.blue_more_words.label = "ccccccccccccccccccc"
-        self.red_more_words.label = "ddddddddddddddddddd"
+        self.blue_more_views.label = _("More views")
+        self.red_more_views.label = _("More views")
+        self.blue_more_words.label = _("More words")
+        self.red_more_words.label = _("More words")
         self.session = aiohttp.ClientSession()
 
     async def on_timeout(self):
