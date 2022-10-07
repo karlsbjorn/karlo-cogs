@@ -5,9 +5,8 @@ from typing import List, Tuple
 import aiohttp
 import aiowiki
 import discord
-from redbot.core import commands
+from redbot.core import commands, i18n
 from redbot.core.i18n import Translator, cog_i18n
-from redbot.core import i18n
 
 _ = Translator("WikiArena", __file__)
 
@@ -33,7 +32,9 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("_")[0]
+        wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split(
+            "-"
+        )[0]
         async with ctx.typing():
             (
                 embeds,
@@ -54,12 +55,14 @@ class WikiArena(commands.Cog):
                 _(
                     "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                     "Score: **{score}**"
-                ).format(score='0'),
+                ).format(score="0"),
                 embeds=embeds,
                 view=view,
             )
 
-    async def game_setup(self, wiki_language: str) -> Tuple[List[discord.Embed], int, int, int, int]:
+    async def game_setup(
+        self, wiki_language: str
+    ) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(
             wiki_language
         )  # TODO: Use wikipedia language of bot's locale
@@ -131,7 +134,14 @@ class WikiArena(commands.Cog):
 @cog_i18n(_)
 class Buttons(discord.ui.View):
     def __init__(
-        self, wiki_language, blue_views, red_views, blue_words, red_words, author, timeout=180
+        self,
+        wiki_language,
+        blue_views,
+        red_views,
+        blue_words,
+        red_words,
+        author,
+        timeout=180,
     ):
         super().__init__(timeout=timeout)
         self.message = None
