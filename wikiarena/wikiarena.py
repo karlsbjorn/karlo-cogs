@@ -2,6 +2,7 @@ import datetime
 import random
 from typing import List, Tuple
 
+import aiohttp
 import aiowiki
 import discord
 from redbot.core import commands, i18n
@@ -22,6 +23,7 @@ class WikiArena(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.wiki_language = "en"
+        self.session = aiohttp.ClientSession()
         # TODO: Save a player's score
 
     @commands.command()
@@ -156,6 +158,8 @@ class Buttons(discord.ui.View):
         self.red_more_views.label = _("More views")
         self.blue_more_words.label = _("More words")
         self.red_more_words.label = _("More words")
+        self.session = aiohttp.ClientSession()
+
     async def on_timeout(self):
         embeds = []
         for item in self.children:
@@ -295,3 +299,6 @@ class Buttons(discord.ui.View):
             embeds=embeds,
             view=self,
         )
+
+    async def cog_unload(self):
+        self.bot.loop.create_task(self.session.close())
