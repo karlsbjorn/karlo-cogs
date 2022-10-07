@@ -45,6 +45,7 @@ class WikiArena(commands.Cog):
             ) = await self.game_setup(wiki_language)
 
             view = Buttons(
+                wiki_language=wiki_language,
                 blue_views=blue_views,
                 red_views=red_views,
                 blue_words=blue_word_count,
