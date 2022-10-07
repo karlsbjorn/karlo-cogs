@@ -42,20 +42,21 @@ class WikiArena(commands.Cog):
                 red_word_count,
             ) = await self.game_setup()
 
-            await ctx.send(
-                _(
-                    "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
-                    "Score: **{score}**"
-                ).format(score=score),
-                embeds=embeds,
-                view=Buttons(
+            view = Buttons(
                     score=score,
                     blue_views=blue_views,
                     red_views=red_views,
                     blue_words=blue_word_count,
                     red_words=red_word_count,
                     author=ctx.author,
-                ),
+                )
+            view.message = await ctx.send(
+                _(
+                    "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
+                    "Score: **{score}**"
+                ).format(score=score),
+                embeds=embeds,
+                view=view,
             )
 
     async def game_setup(self) -> Tuple[List[discord.Embed], int, int, int, int]:
@@ -132,6 +133,7 @@ class Buttons(discord.ui.View):
         self, score, blue_views, red_views, blue_words, red_words, author, timeout=180
     ):
         super().__init__(timeout=timeout)
+        self.message = None
         self.author = author
         self.score = score
         self.blue_views = blue_views
