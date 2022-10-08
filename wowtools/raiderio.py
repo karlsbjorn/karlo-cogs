@@ -31,9 +31,7 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
-    async def raiderio_profile(
-        self, ctx, character: str = None, *, realm: str = None
-    ) -> None:
+    async def raiderio_profile(self, ctx, character: str = None, *, realm: str = None) -> None:
         """Display the raider.io profile of a character.
 
         **Example:**
@@ -63,9 +61,7 @@ class Raiderio:
                 if not realm:
                     await ctx.send_help()
                     return
-            realm = (
-                "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
-            )
+            realm = "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
             if realm == "":
                 await ctx.send(_("You didn't give me a realm."))
                 return
@@ -93,13 +89,11 @@ class Raiderio:
                 char_spec = profile_data["active_spec_name"]
                 char_class = profile_data["class"]
                 char_image = profile_data["thumbnail_url"]
-                char_score = profile_data["mythic_plus_scores_by_season"][0][
-                    "segments"
-                ]["all"]
+                char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
                 char_score_color = int("0x" + char_score["color"][1:], 0)
-                char_raid = profile_data["raid_progression"][
-                    "sepulcher-of-the-first-ones"
-                ]["summary"]
+                char_raid = profile_data["raid_progression"]["sepulcher-of-the-first-ones"][
+                    "summary"
+                ]
                 char_last_updated = self._parse_date(profile_data["last_crawled_at"])
                 char_ilvl = profile_data["gear"]["item_level_equipped"]
                 try:
@@ -111,7 +105,9 @@ class Raiderio:
                 banner = profile_data["profile_banner"]
 
                 banner_url = f"https://cdnassets.raider.io/images/profile/masthead_backdrops/v2/{banner}.jpg"
-                armory_url = f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{char_name}"
+                armory_url = (
+                    f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{char_name}"
+                )
                 wcl_url = f"https://www.warcraftlogs.com/character/{region}/{realm}/{char_name}"
                 raidbots_url = f"https://www.raidbots.com/simbot/quick?region={region}&realm={realm}&name={char_name}"
 
@@ -199,9 +195,7 @@ class Raiderio:
 
     @raiderio.command(name="guild")
     @commands.guild_only()
-    async def raiderio_guild(
-        self, ctx: commands.Context, guild: str, *realm: str
-    ) -> None:
+    async def raiderio_guild(self, ctx: commands.Context, guild: str, *realm: str) -> None:
         """Display the raider.io profile of a guild.
 
         If the guild or realm name have spaces in them, they need to be enclosed in quotes.
@@ -248,15 +242,9 @@ class Raiderio:
                 last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
                 ranks = (
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "normal"
-                    ],
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "heroic"
-                    ],
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "mythic"
-                    ],
+                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["normal"],
+                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["heroic"],
+                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["mythic"],
                 )
                 difficulties = ("Normal", "Heroic", "Mythic")
 
@@ -269,9 +257,7 @@ class Raiderio:
                     name=_("Guild profile"),
                     icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
                 )
-                embed.add_field(
-                    name=_("__**Progress**__"), value=raid_progression, inline=False
-                )
+                embed.add_field(name=_("__**Progress**__"), value=raid_progression, inline=False)
 
                 for rank, difficulty in zip(ranks, difficulties):
                     world = rank["world"]
@@ -280,15 +266,13 @@ class Raiderio:
 
                     embed.add_field(
                         name=_("{difficulty} rank").format(difficulty=difficulty),
-                        value=_(
-                            "World: {world}\nRegion: {region}\nRealm: {realm}"
-                        ).format(world=world, region=region, realm=realm),
+                        value=_("World: {world}\nRegion: {region}\nRealm: {realm}").format(
+                            world=world, region=region, realm=realm
+                        ),
                     )
 
                 embed.set_footer(
-                    text=_("Last updated: {last_updated}").format(
-                        last_updated=last_updated
-                    )
+                    text=_("Last updated: {last_updated}").format(last_updated=last_updated)
                 )
 
         await ctx.send(embed=embed)

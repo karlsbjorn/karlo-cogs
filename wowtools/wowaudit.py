@@ -44,12 +44,8 @@ class Wowaudit:
         embed = discord.Embed(title=_("Weekly summary"), colour=await ctx.embed_color())
         embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Missing Enchants/Gems"), value=missing_enchants)
-        embed.add_field(
-            name=_("Weekly Dungeons Completed"), value=weekly_dungeons_completed
-        )
-        embed.add_field(
-            name=_("Weekly World Quests Done"), value=weekly_world_quests_done
-        )
+        embed.add_field(name=_("Weekly Dungeons Completed"), value=weekly_dungeons_completed)
+        embed.add_field(name=_("Weekly World Quests Done"), value=weekly_world_quests_done)
 
         top_5 = {
             _("Average Item Level"): await ws.get_values("C9:F13"),
@@ -64,9 +60,7 @@ class Wowaudit:
             for member in value:
                 member_rank = member[0]
                 member_name = member[1]
-                member_stat = (
-                    member[-1] if not key == _("Tier Pieces Obtained") else member[2]
-                )
+                member_stat = member[-1] if not key == _("Tier Pieces Obtained") else member[2]
 
                 output += "{member_rank}. **{member_name}**: {member_stat}\n".format(
                     member_rank=member_rank,
@@ -102,25 +96,19 @@ class Wowaudit:
             member_name = member[1]
             member_ilvl = member[3]
 
-            avg_ilvl_output += _(
-                "{member_rank}. {member_name} - {member_ilvl}\n"
-            ).format(
+            avg_ilvl_output += _("{member_rank}. {member_name} - {member_ilvl}\n").format(
                 member_rank=member_rank,
                 member_name=member_name,
                 member_ilvl=chat_formatting.bold(member_ilvl),
             )
             if (int(member_rank) % MEMBERS_PER_PAGE) == 0:
                 page_n += 1
-                embed = await self.gen_avg_ilvl_page(
-                    ctx, page_n, sheet_title, avg_ilvl_output
-                )
+                embed = await self.gen_avg_ilvl_page(ctx, page_n, sheet_title, avg_ilvl_output)
                 embeds.append(embed)
                 avg_ilvl_output = ""
         if avg_ilvl_output != "":
             page_n += 1
-            embed = await self.gen_avg_ilvl_page(
-                ctx, page_n, sheet_title, avg_ilvl_output
-            )
+            embed = await self.gen_avg_ilvl_page(ctx, page_n, sheet_title, avg_ilvl_output)
             embeds.append(embed)
         return embeds
 
@@ -182,16 +170,12 @@ class Wowaudit:
             )
             if (int(member_rank) % MEMBERS_PER_PAGE) == 0:
                 page_n += 1
-                embed = await self.gen_tier_page(
-                    ctx, page_n, sheet_title, member_tier_output
-                )
+                embed = await self.gen_tier_page(ctx, page_n, sheet_title, member_tier_output)
                 embeds.append(embed)
                 member_tier_output = ""
         if member_tier_output != "":
             page_n += 1
-            embed = await self.gen_tier_page(
-                ctx, page_n, sheet_title, member_tier_output
-            )
+            embed = await self.gen_tier_page(ctx, page_n, sheet_title, member_tier_output)
             embeds.append(embed)
         return embeds
 
@@ -236,18 +220,14 @@ class Wowaudit:
             member_name = member[1]
             member_mplus_done = member[2]
 
-            mplus_output += _(
-                "{member_rank}. {member_name} - **{member_mplus_done}**\n"
-            ).format(
+            mplus_output += _("{member_rank}. {member_name} - **{member_mplus_done}**\n").format(
                 member_rank=member_rank,
                 member_name=member_name,
                 member_mplus_done=member_mplus_done,
             )
             if (int(member_rank) % MEMBERS_PER_PAGE) == 0:
                 page_n += 1
-                embed = await self.gen_mplus_page(
-                    ctx, page_n, sheet_title, mplus_output
-                )
+                embed = await self.gen_mplus_page(ctx, page_n, sheet_title, mplus_output)
                 embeds.append(embed)
                 mplus_output = ""
         if mplus_output != "":
@@ -294,18 +274,14 @@ class Wowaudit:
             member_name = member[1]
             member_vault_score = member[2]
 
-            vault_output += _(
-                "{member_rank}. {member_name} - **{member_vault_score}**\n"
-            ).format(
+            vault_output += _("{member_rank}. {member_name} - **{member_vault_score}**\n").format(
                 member_rank=member_rank,
                 member_name=member_name,
                 member_vault_score=member_vault_score,
             )
             if (int(member_rank) % MEMBERS_PER_PAGE) == 0:
                 page_n += 1
-                embed = await self.gen_vault_page(
-                    ctx, page_n, sheet_title, vault_output
-                )
+                embed = await self.gen_vault_page(ctx, page_n, sheet_title, vault_output)
                 embeds.append(embed)
                 vault_output = ""
         if vault_output != "":
@@ -352,9 +328,7 @@ class Wowaudit:
             member_name = member[1]
             member_wq_done = member[2]
 
-            wq_output += _(
-                "{member_rank}. {member_name} - **{member_wq_done}**\n"
-            ).format(
+            wq_output += _("{member_rank}. {member_name} - **{member_wq_done}**\n").format(
                 member_rank=member_rank,
                 member_name=member_name,
                 member_wq_done=member_wq_done,
@@ -417,16 +391,12 @@ class Wowaudit:
             )
             if (int(member_rank) % MEMBERS_PER_PAGE) == 0:
                 page_n += 1
-                embed = await self.gen_raidkills_page(
-                    ctx, page_n, sheet_title, raidkills_output
-                )
+                embed = await self.gen_raidkills_page(ctx, page_n, sheet_title, raidkills_output)
                 embeds.append(embed)
                 raidkills_output = ""
         if raidkills_output != "":
             page_n += 1
-            embed = await self.gen_raidkills_page(
-                ctx, page_n, sheet_title, raidkills_output
-            )
+            embed = await self.gen_raidkills_page(ctx, page_n, sheet_title, raidkills_output)
             embeds.append(embed)
         return embeds
 

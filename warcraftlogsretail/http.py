@@ -83,9 +83,7 @@ class WoWLogsClient:
         self._create_session(bearer)
 
     async def check_bearer(self):
-        async with self.session.post(
-            graphql_url, json={"query": Queries.check_bearer}
-        ) as call:
+        async with self.session.post(graphql_url, json={"query": Queries.check_bearer}) as call:
             try:
                 await call.json()
             except aiohttp.ContentTypeError:
@@ -126,9 +124,7 @@ class WoWLogsClient:
 
             return json
 
-    async def get_last_encounter(
-        self, char_name: str, char_realm: str, char_server: str
-    ):
+    async def get_last_encounter(self, char_name: str, char_realm: str, char_server: str):
         async with self.session.post(
             graphql_url,
             json={
@@ -164,9 +160,7 @@ class WoWLogsClient:
                     unique_encouters["latest_time"] = fight["endTime"]
             return unique_encouters
 
-    async def get_gear(
-        self, char_name: str, char_realm: str, char_server: str, encounter_id: int
-    ):
+    async def get_gear(self, char_name: str, char_realm: str, char_server: str, encounter_id: int):
         async with self.session.post(
             graphql_url,
             json={

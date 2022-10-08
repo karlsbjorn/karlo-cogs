@@ -5,9 +5,8 @@ from typing import List, Tuple
 import aiohttp
 import aiowiki
 import discord
-from redbot.core import commands, i18n
+from redbot.core import Config, commands, i18n
 from redbot.core.i18n import Translator, cog_i18n
-from redbot.core import Config
 
 _ = Translator("WikiArena", __file__)
 
@@ -37,9 +36,7 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        self.wiki_language = (
-            await i18n.get_locale_from_guild(self.bot, ctx.guild)
-        ).split("-")[0]
+        self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("-")[0]
         async with ctx.typing():
             (
                 embeds,
@@ -88,9 +85,7 @@ class WikiArena(commands.Cog):
             if page_media:
                 embed.set_thumbnail(url=page_media[0])
 
-            max_word_count = random.randint(
-                30, 60  # TODO: Make this a configurable value
-            )
+            max_word_count = random.randint(30, 60)  # TODO: Make this a configurable value
             page_word_count = len(page_text.split())
             embed_text = " ".join(page_text.split()[:max_word_count])
             if max_word_count < page_word_count:
@@ -110,9 +105,7 @@ class WikiArena(commands.Cog):
 
     async def get_page_views(self, page) -> int:
         today = datetime.datetime.now().strftime("%Y%m%d")
-        long_time_ago = (
-            datetime.datetime.now() - datetime.timedelta(days=60)
-        ).strftime("%Y%m%d")
+        long_time_ago = (datetime.datetime.now() - datetime.timedelta(days=60)).strftime("%Y%m%d")
 
         page_title = page.title.replace(" ", "_")
         request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{self.wiki_language}.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
@@ -226,35 +219,39 @@ class Buttons(discord.ui.View):
         for child in self.children:
             child.disabled = True
         end_msg = _(
-                "Wrong! Better luck next time!\n"
-                "🔵 Views: {blue_views}\n"
-                "🔵 Words: {blue_words}\n"
-                "🔴 Views: {red_views}\n"
-                "🔴 Words: {red_words}\n\n"
-                "Your final score was: **{score}**"
-            ).format(
-                score=self.score,
-                blue_views=f"**{self.blue_views}**"
-                if self.blue_views > self.red_views
-                else self.blue_views,
-                red_views=f"**{self.red_views}**"
-                if self.red_views > self.blue_views
-                else self.red_views,
-                blue_words=f"**{self.blue_words}**"
-                if self.blue_words > self.red_words
-                else self.blue_words,
-                red_words=f"**{self.red_words}**"
-                if self.red_words > self.blue_words
-                else self.red_words,
-            )
+            "Wrong! Better luck next time!\n"
+            "🔵 Views: {blue_views}\n"
+            "🔵 Words: {blue_words}\n"
+            "🔴 Views: {red_views}\n"
+            "🔴 Words: {red_words}\n\n"
+            "Your final score was: **{score}**"
+        ).format(
+            score=self.score,
+            blue_views=f"**{self.blue_views}**"
+            if self.blue_views > self.red_views
+            else self.blue_views,
+            red_views=f"**{self.red_views}**"
+            if self.red_views > self.blue_views
+            else self.red_views,
+            blue_words=f"**{self.blue_words}**"
+            if self.blue_words > self.red_words
+            else self.blue_words,
+            red_words=f"**{self.red_words}**"
+            if self.red_words > self.blue_words
+            else self.red_words,
+        )
 
         user_high_score = await self.config.user(self.author).high_score()
         if self.score > user_high_score:
             await self.config.user(self.author).high_score.set(self.score)
-            end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(user_high_score=user_high_score)
+            end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
+                user_high_score=user_high_score
+            )
             end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
         else:
-            end_msg += _("\nYour high score is **{user_high_score}**.").format(user_high_score=user_high_score)
+            end_msg += _("\nYour high score is **{user_high_score}**.").format(
+                user_high_score=user_high_score
+            )
         await interaction.response.edit_message(
             content=end_msg,
             embeds=embeds,
@@ -268,36 +265,38 @@ class Buttons(discord.ui.View):
         for item in self.children:
             item.disabled = True
         end_msg = _(
-                "Time's up! Be faster next time!\n"
-                "🔵 Views: {blue_views}\n"
-                "🔵 Words: {blue_words}\n"
-                "🔴 Views: {red_views}\n"
-                "🔴 Words: {red_words}\n\n"
-                "Your final score was: **{score}**"
-            ).format(
-                score=self.score,
-                blue_views=f"**{self.blue_views}**"
-                if self.blue_views > self.red_views
-                else self.blue_views,
-                red_views=f"**{self.red_views}**"
-                if self.red_views > self.blue_views
-                else self.red_views,
-                blue_words=f"**{self.blue_words}**"
-                if self.blue_words > self.red_words
-                else self.blue_words,
-                red_words=f"**{self.red_words}**"
-                if self.red_words > self.blue_words
-                else self.red_words,
-            )
+            "Time's up! Be faster next time!\n"
+            "🔵 Views: {blue_views}\n"
+            "🔵 Words: {blue_words}\n"
+            "🔴 Views: {red_views}\n"
+            "🔴 Words: {red_words}\n\n"
+            "Your final score was: **{score}**"
+        ).format(
+            score=self.score,
+            blue_views=f"**{self.blue_views}**"
+            if self.blue_views > self.red_views
+            else self.blue_views,
+            red_views=f"**{self.red_views}**"
+            if self.red_views > self.blue_views
+            else self.red_views,
+            blue_words=f"**{self.blue_words}**"
+            if self.blue_words > self.red_words
+            else self.blue_words,
+            red_words=f"**{self.red_words}**"
+            if self.red_words > self.blue_words
+            else self.red_words,
+        )
         user_high_score = await self.config.user(self.author).high_score()
         if self.score > user_high_score:
             await self.config.user(self.author).high_score.set(self.score)
             end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
-                user_high_score=user_high_score)
+                user_high_score=user_high_score
+            )
             end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
         else:
             end_msg += _("\nYour high score is **{user_high_score}**.").format(
-                user_high_score=user_high_score)
+                user_high_score=user_high_score
+            )
         await self.message.edit(
             content=end_msg,
             embeds=embeds,

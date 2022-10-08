@@ -72,9 +72,7 @@ class Scoreboard:
     @sbset.command(name="channel")
     @commands.admin()
     @commands.guild_only()
-    async def sbset_channel(
-        self, ctx: commands.Context, channel: discord.TextChannel = None
-    ):
+    async def sbset_channel(self, ctx: commands.Context, channel: discord.TextChannel = None):
         """Set the channel to send the scoreboard to."""
         # image_enabled = await self.config.guild(ctx.guild).sb_image()
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
@@ -161,9 +159,7 @@ class Scoreboard:
             await ctx.send(_("No characters are blacklisted."))
             return
         await ctx.send(
-            _("Blacklisted characters: {characters}").format(
-                characters=humanize_list(blacklist)
-            )
+            _("Blacklisted characters: {characters}").format(characters=humanize_list(blacklist))
         )
 
     @sbset_blacklist.command(name="clear")
@@ -190,9 +186,7 @@ class Scoreboard:
                     region: str = await self.config.guild(guild).region()
                     realm: str = await self.config.guild(guild).realm()
                     guild_name: str = await self.config.guild(guild).real_guild_name()
-                    sb_blacklist: List[str] = await self.config.guild(
-                        guild
-                    ).scoreboard_blacklist()
+                    sb_blacklist: List[str] = await self.config.guild(guild).scoreboard_blacklist()
                     if not region or not realm or not guild_name:
                         continue
 
@@ -242,8 +236,10 @@ class Scoreboard:
                 if score > 250 and char_name.lower() not in sb_blacklist:
                     if image:
                         score_color: str = char["keystoneScores"]["allScoreColor"]
-                        char_img: str = "https://render.worldofwarcraft.com/{region}/character/{}".format(
-                            char["character"]["thumbnail"], region=region
+                        char_img: str = (
+                            "https://render.worldofwarcraft.com/{region}/character/{}".format(
+                                char["character"]["thumbnail"], region=region
+                            )
                         )
                         lb[char_name] = (score, score_color, char_img)
                     else:
@@ -284,9 +280,7 @@ class Scoreboard:
 
         return tabulate_list
 
-    async def _generate_dungeon_scoreboard(
-        self, ctx: commands.Context, image: bool = False
-    ):
+    async def _generate_dungeon_scoreboard(self, ctx: commands.Context, image: bool = False):
         max_chars = 20
         headers = ["#", _("Name"), _("Score")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
@@ -364,9 +358,7 @@ class Scoreboard:
         return discord.File(fp=img_obj, filename="scoreboard.png")
 
     @staticmethod
-    async def _delete_scoreboard(
-        ctx: commands.Context, sb_channel_id: int, sb_msg_id: int
-    ):
+    async def _delete_scoreboard(ctx: commands.Context, sb_channel_id: int, sb_msg_id: int):
         try:
             sb_channel: discord.TextChannel = ctx.guild.get_channel(sb_channel_id)
             sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
@@ -376,9 +368,7 @@ class Scoreboard:
         if sb_msg:
             await sb_msg.delete()
 
-    async def _generate_pvp_scoreboard(
-        self, ctx: commands.Context
-    ) -> Optional[discord.Embed]:
+    async def _generate_pvp_scoreboard(self, ctx: commands.Context) -> Optional[discord.Embed]:
         max_chars = 10
         headers = ["#", _("Name"), _("Rating")]
         guild_name, realm, region, sb_blacklist = await self._get_guild_config(ctx)
@@ -405,10 +395,7 @@ class Scoreboard:
             return None
 
         msg = await ctx.send(
-            _(
-                "Fetching scoreboard...\n"
-                "This can take up to 30 minutes for very large guilds."
-            )
+            _("Fetching scoreboard...\n" "This can take up to 30 minutes for very large guilds.")
         )
 
         embed_pvp = discord.Embed(
@@ -510,11 +497,7 @@ class Scoreboard:
 
                 log.debug(f"Getting PvP data for {character_name}")
                 try:
-                    (
-                        rbg_statistics,
-                        duo_statistics,
-                        tri_statistics,
-                    ) = await client.multi_request(
+                    (rbg_statistics, duo_statistics, tri_statistics,) = await client.multi_request(
                         [
                             wow_client.Profile.get_character_pvp_bracket_statistics(
                                 character_name=character_name,
@@ -541,31 +524,19 @@ class Scoreboard:
                     # the character never played the gamemode
                     if rbg_statistics["season"]["id"] == current_season:
                         roster["rbg"][character_name] = rbg_statistics["rating"]
-                        log.debug(
-                            f"{character_name} has RBG rating {rbg_statistics['rating']}"
-                        )
+                        log.debug(f"{character_name} has RBG rating {rbg_statistics['rating']}")
                 if "rating" in duo_statistics:
                     if duo_statistics["season"]["id"] == current_season:
                         roster["2v2"][character_name] = duo_statistics["rating"]
-                        log.debug(
-                            f"{character_name} has 2v2 rating {duo_statistics['rating']}"
-                        )
+                        log.debug(f"{character_name} has 2v2 rating {duo_statistics['rating']}")
                 if "rating" in tri_statistics:
                     if tri_statistics["season"]["id"] == current_season:
                         roster["3v3"][character_name] = tri_statistics["rating"]
-                        log.debug(
-                            f"{character_name} has 3v3 rating {tri_statistics['rating']}"
-                        )
+                        log.debug(f"{character_name} has 3v3 rating {tri_statistics['rating']}")
 
-        roster["rbg"] = dict(
-            sorted(roster["rbg"].items(), key=lambda i: i[1], reverse=True)
-        )
-        roster["2v2"] = dict(
-            sorted(roster["2v2"].items(), key=lambda i: i[1], reverse=True)
-        )
-        roster["3v3"] = dict(
-            sorted(roster["3v3"].items(), key=lambda i: i[1], reverse=True)
-        )
+        roster["rbg"] = dict(sorted(roster["rbg"].items(), key=lambda i: i[1], reverse=True))
+        roster["2v2"] = dict(sorted(roster["2v2"].items(), key=lambda i: i[1], reverse=True))
+        roster["3v3"] = dict(sorted(roster["3v3"].items(), key=lambda i: i[1], reverse=True))
 
         characters_rbg = list(roster["rbg"].keys())[:max_chars]
         characters_2v2 = list(roster["2v2"].keys())[:max_chars]
@@ -611,7 +582,5 @@ class Scoreboard:
         region: str = await self.config.guild(ctx.guild).region()
         realm: str = await self.config.guild(ctx.guild).realm()
         guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
-        sb_blacklist: List[str] = await self.config.guild(
-            ctx.guild
-        ).scoreboard_blacklist()
+        sb_blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         return guild_name, realm, region, sb_blacklist

@@ -116,9 +116,7 @@ class AuctionHouse:
                 if not prices:
                     # Item could be a commodity
                     await self.limiter.acquire(25)
-                    commodities_data: Dict = (
-                        await wow_client.GameData.get_commodity_auctions()
-                    )
+                    commodities_data: Dict = await wow_client.GameData.get_commodity_auctions()
                     auctions = commodities_data["auctions"]
                     for auction in auctions:
                         item_id = auction["item"]["id"]
@@ -135,9 +133,7 @@ class AuctionHouse:
                 # Embed stuff
                 # Get item icon
                 await self.limiter.acquire()
-                item_media = await wow_client.GameData.get_item_media(
-                    item_id=found_item_id
-                )
+                item_media = await wow_client.GameData.get_item_media(item_id=found_item_id)
                 item_icon_url = item_media["assets"][0]["value"]
 
                 # Create embed
