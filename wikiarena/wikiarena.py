@@ -137,7 +137,6 @@ class WikiArena(commands.Cog):
         )
 
         if embeds:
-            embeds.append(embed)
             await menu(ctx, embeds, DEFAULT_CONTROLS)
         else:
             await ctx.send(embed=embed)
