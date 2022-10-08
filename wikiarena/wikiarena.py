@@ -95,9 +95,8 @@ class WikiArena(commands.Cog):
         if len(tabulate_friendly_list) > max_users_per_page:
             page_count = len(tabulate_friendly_list) // max_users_per_page
             for page in range(page_count):
-                page += 1
                 from_here = page
-                to_there = page * max_users_per_page
+                to_there = (page + 1) * max_users_per_page
                 scoreboard = box(
                     tabulate(
                         tabulate_friendly_list[from_here:to_there],
