@@ -72,7 +72,7 @@ class WikiArena(commands.Cog):
     @commands.command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
         """Display the WikiArena scoreboard for this guild."""
-        max_users_per_page = 1
+        max_users_per_page = 20
         user_data = await self.config.all_users()
         if not user_data:
             return await ctx.send(_("No users have played WikiArena yet."))
@@ -112,28 +112,28 @@ class WikiArena(commands.Cog):
                     color=await ctx.embed_color(),
                 )
                 embed.set_footer(
-                    text=_("Page {page}/{page_count}").format(page=page, page_count=page_count)
+                    text=_("Page {page}/{page_count} | Total players: {num_players}").format(page=page + 1, page_count=page_count, num_players=len(tabulate_friendly_list))
                 )
                 embeds.append(embed)
+        else:
+            scoreboard = box(
+                tabulate(
+                    tabulate_friendly_list,
+                    headers=["#", _("Name"), _("Score")],
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            )
 
-        scoreboard = box(
-            tabulate(
-                tabulate_friendly_list,
-                headers=["#", _("Name"), _("Score")],
-                tablefmt="plain",
-                disable_numparse=True,
-            ),
-            lang="md",
-        )
-
-        embed = discord.Embed(
-            title=_("WikiArena Scoreboard"),
-            description=scoreboard,
-            colour=await ctx.embed_colour(),
-        )
-        embed.set_footer(
-            text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
-        )
+            embed = discord.Embed(
+                title=_("WikiArena Scoreboard"),
+                description=scoreboard,
+                colour=await ctx.embed_colour(),
+            )
+            embed.set_footer(
+                text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
+            )
 
         if embeds:
             await menu(ctx, embeds, DEFAULT_CONTROLS)
