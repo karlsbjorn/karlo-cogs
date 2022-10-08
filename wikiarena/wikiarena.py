@@ -337,7 +337,6 @@ class Buttons(discord.ui.View):
             end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
                 user_high_score=user_high_score
             )
-            end_msg += _("\nYour new high score is **{score}**").format(score=self.score)
         else:
             end_msg += _("\nYour high score is **{user_high_score}**").format(
                 user_high_score=user_high_score
