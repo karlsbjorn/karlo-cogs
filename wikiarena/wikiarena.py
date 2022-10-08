@@ -7,6 +7,8 @@ import aiowiki
 import discord
 from redbot.core import Config, commands, i18n
 from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.utils.chat_formatting import box
+from tabulate import tabulate
 
 _ = Translator("WikiArena", __file__)
 
@@ -27,6 +29,7 @@ class WikiArena(commands.Cog):
         self.session = aiohttp.ClientSession()
         default_user = {
             "high_score": 0,
+            "games_played": 0,
         }
         self.config.register_user(**default_user)
 
@@ -64,6 +67,38 @@ class WikiArena(commands.Cog):
                 embeds=embeds,
                 view=view,
             )
+
+    @commands.command(aliases=["wikiarenascoreboard"])
+    async def wascoreboard(self, ctx):
+        """Display the WikiArena scoreboard for this guild."""
+        user_data = await self.config.all_users()
+        if not user_data:
+            return await ctx.send(_("No users have played WikiArena yet."))
+        user_data = dict(sorted(user_data.items(), key=lambda x: x[1]["high_score"], reverse=True))
+        scoreboard_dict = {}
+        for user_id, data in user_data.items():
+            member = ctx.guild.get_member(user_id)
+            if member is None:
+                continue
+
+            scoreboard_dict[member.display_name] = data["high_score"]
+        tabulate_friendly_list = []
+        for index, (member, score) in enumerate(scoreboard_dict.items()):
+            tabulate_friendly_list.append([f"{index + 1}.", member, score])
+        scoreboard = box(tabulate(
+            tabulate_friendly_list,
+            headers=[_("#"), _("User"), _("Score")],
+            tablefmt="plain",
+            disable_numparse=True,
+        ), lang="md")
+
+        embed = discord.Embed(
+            title=_("WikiArena Scoreboard"),
+            description=scoreboard,
+            colour=await ctx.embed_colour(),
+        )
+
+        await ctx.send(embed=embed)
 
     async def game_setup(
         self, wiki_language: str
@@ -245,15 +280,18 @@ class Buttons(discord.ui.View):
             else self.red_words,
         )
 
+        games_played = await self.config.user(self.author).games_played()
+        await self.config.user(self.author).games_played.set(games_played + 1)
+
         user_high_score = await self.config.user(self.author).high_score()
         if self.score > user_high_score:
             await self.config.user(self.author).high_score.set(self.score)
             end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
                 user_high_score=user_high_score
             )
-            end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
+            end_msg += _("\nYour new high score is **{score}**").format(score=self.score)
         else:
-            end_msg += _("\nYour high score is **{user_high_score}**.").format(
+            end_msg += _("\nYour high score is **{user_high_score}**").format(
                 user_high_score=user_high_score
             )
         await interaction.response.edit_message(
@@ -290,13 +328,16 @@ class Buttons(discord.ui.View):
             if self.red_words > self.blue_words
             else self.red_words,
         )
+
+        games_played = await self.config.member(self.author).games_played()
+        await self.config.member(self.author).games_played.set(games_played + 1)
+
         user_high_score = await self.config.user(self.author).high_score()
         if self.score > user_high_score:
             await self.config.user(self.author).high_score.set(self.score)
             end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
                 user_high_score=user_high_score
             )
-            end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
         else:
             end_msg += _("\nYour high score is **{user_high_score}**.").format(
                 user_high_score=user_high_score
@@ -308,6 +349,7 @@ class Buttons(discord.ui.View):
         )
 
     async def _owner_check(self, interaction: discord.Interaction) -> bool:
+        """Check if the interaction is from the player."""
         if self.author.id != interaction.user.id:
             await interaction.response.send_message(
                 _("This isn't your game of WikiArena."), ephemeral=True
