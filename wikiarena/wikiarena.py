@@ -8,6 +8,7 @@ import discord
 from redbot.core import Config, commands, i18n
 from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from tabulate import tabulate
 
 _ = Translator("WikiArena", __file__)
@@ -71,6 +72,7 @@ class WikiArena(commands.Cog):
     @commands.command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
         """Display the WikiArena scoreboard for this guild."""
+        max_users_per_page = 2
         user_data = await self.config.all_users()
         if not user_data:
             return await ctx.send(_("No users have played WikiArena yet."))
@@ -84,9 +86,37 @@ class WikiArena(commands.Cog):
             scoreboard_dict[member.display_name] = data["high_score"]
         if not scoreboard_dict:
             return await ctx.send(_("No users in this guild have played WikiArena yet."))
+
         tabulate_friendly_list = []
         for index, (member, score) in enumerate(scoreboard_dict.items()):
             tabulate_friendly_list.append([f"{index + 1}.", member, score])
+
+        embeds = []
+        if len(tabulate_friendly_list) > max_users_per_page:
+            page_count = len(tabulate_friendly_list) // max_users_per_page
+            for page in range(page_count):
+                page += 1
+                from_here = page
+                to_there = page * max_users_per_page
+                scoreboard = box(
+                    tabulate(
+                        tabulate_friendly_list[from_here:to_there],
+                        headers=["#", _("Name"), _("Score")],
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                    lang="md",
+                )
+                embed = discord.Embed(
+                    title=_("WikiArena Scoreboard"),
+                    description=scoreboard,
+                    color=await ctx.embed_color(),
+                )
+                embed.set_footer(
+                    text=_("Page {page}/{page_count}").format(page=page, page_count=page_count)
+                )
+                embeds.append(embed)
+
         scoreboard = box(
             tabulate(
                 tabulate_friendly_list,
@@ -106,7 +136,11 @@ class WikiArena(commands.Cog):
             text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
         )
 
-        await ctx.send(embed=embed)
+        if embeds:
+            embeds.append(embed)
+            await menu(ctx, embeds, DEFAULT_CONTROLS)
+        else:
+            await ctx.send(embed=embed)
 
     async def game_setup(
         self, wiki_language: str
