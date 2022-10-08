@@ -82,20 +82,28 @@ class WikiArena(commands.Cog):
                 continue
 
             scoreboard_dict[member.display_name] = data["high_score"]
+        if not scoreboard_dict:
+            return await ctx.send(_("No users in this guild have played WikiArena yet."))
         tabulate_friendly_list = []
         for index, (member, score) in enumerate(scoreboard_dict.items()):
             tabulate_friendly_list.append([f"{index + 1}.", member, score])
-        scoreboard = box(tabulate(
-            tabulate_friendly_list,
-            headers=[_("#"), _("User"), _("Score")],
-            tablefmt="plain",
-            disable_numparse=True,
-        ), lang="md")
+        scoreboard = box(
+            tabulate(
+                tabulate_friendly_list,
+                headers=["#", _("Name"), _("Score")],
+                tablefmt="plain",
+                disable_numparse=True,
+            ),
+            lang="md",
+        )
 
         embed = discord.Embed(
             title=_("WikiArena Scoreboard"),
             description=scoreboard,
             colour=await ctx.embed_colour(),
+        )
+        embed.set_footer(
+            text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
         )
 
         await ctx.send(embed=embed)
