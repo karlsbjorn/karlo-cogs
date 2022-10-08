@@ -72,7 +72,7 @@ class WikiArena(commands.Cog):
     @commands.command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
         """Display the WikiArena scoreboard for this guild."""
-        max_users_per_page = 2
+        max_users_per_page = 1
         user_data = await self.config.all_users()
         if not user_data:
             return await ctx.send(_("No users have played WikiArena yet."))
