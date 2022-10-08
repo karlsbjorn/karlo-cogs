@@ -7,6 +7,7 @@ import aiowiki
 import discord
 from redbot.core import commands, i18n
 from redbot.core.i18n import Translator, cog_i18n
+from redbot.core import Config
 
 _ = Translator("WikiArena", __file__)
 
@@ -24,7 +25,10 @@ class WikiArena(commands.Cog):
         self.bot = bot
         self.wiki_language = "en"
         self.session = aiohttp.ClientSession()
-        # TODO: Save a player's score
+        default_user = {
+            "high_score": 0,
+        }
+        self.config.register_user(**default_user)
 
     @commands.command()
     async def wikiarena(self, ctx):
@@ -221,8 +225,7 @@ class Buttons(discord.ui.View):
         embeds = []
         for child in self.children:
             child.disabled = True
-        await interaction.response.edit_message(
-            content=_(
+        end_msg = _(
                 "Wrong! Better luck next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -243,7 +246,17 @@ class Buttons(discord.ui.View):
                 red_words=f"**{self.red_words}**"
                 if self.red_words > self.blue_words
                 else self.red_words,
-            ),
+            )
+
+        user_high_score = await self.config.user(self.author).high_score()
+        if self.score > user_high_score:
+            await self.config.user(self.author).high_score.set(self.score)
+            end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(user_high_score=user_high_score)
+            end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
+        else:
+            end_msg += _("\nYour high score is **{user_high_score}**.").format(user_high_score=user_high_score)
+        await interaction.response.edit_message(
+            content=end_msg,
             embeds=embeds,
             view=self,
         )
@@ -254,8 +267,7 @@ class Buttons(discord.ui.View):
         embeds = []
         for item in self.children:
             item.disabled = True
-        await self.message.edit(
-            content=_(
+        end_msg = _(
                 "Time's up! Be faster next time!\n"
                 "🔵 Views: {blue_views}\n"
                 "🔵 Words: {blue_words}\n"
@@ -276,7 +288,18 @@ class Buttons(discord.ui.View):
                 red_words=f"**{self.red_words}**"
                 if self.red_words > self.blue_words
                 else self.red_words,
-            ),
+            )
+        user_high_score = await self.config.user(self.author).high_score()
+        if self.score > user_high_score:
+            await self.config.user(self.author).high_score.set(self.score)
+            end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
+                user_high_score=user_high_score)
+            end_msg += _("\nYour new high score is **{score}**.").format(score=self.score)
+        else:
+            end_msg += _("\nYour high score is **{user_high_score}**.").format(
+                user_high_score=user_high_score)
+        await self.message.edit(
+            content=end_msg,
             embeds=embeds,
             view=self,
         )
