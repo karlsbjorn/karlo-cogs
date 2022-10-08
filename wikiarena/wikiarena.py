@@ -112,7 +112,11 @@ class WikiArena(commands.Cog):
                     color=await ctx.embed_color(),
                 )
                 embed.set_footer(
-                    text=_("Page {page}/{page_count} | Total players: {num_players}").format(page=page + 1, page_count=page_count, num_players=len(tabulate_friendly_list))
+                    text=_("Page {page}/{page_count} | Total players: {num_players}").format(
+                        page=page + 1,
+                        page_count=page_count,
+                        num_players=len(tabulate_friendly_list),
+                    )
                 )
                 embeds.append(embed)
         else:
@@ -240,7 +244,8 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_views(self, interaction: discord.Interaction, button):
-        await self._owner_check(interaction)
+        if not await self._owner_check(interaction):
+            return
         if self.red_views < self.blue_views:
             await self.continue_game(interaction)
         else:
@@ -248,7 +253,8 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_more_views(self, interaction: discord.Interaction, button):
-        await self._owner_check(interaction)
+        if not await self._owner_check(interaction):
+            return
         if self.red_views > self.blue_views:
             await self.continue_game(interaction)
         else:
@@ -256,7 +262,8 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_words(self, interaction: discord.Interaction, button):
-        await self._owner_check(interaction)
+        if not await self._owner_check(interaction):
+            return
         if self.red_words < self.blue_words:
             await self.continue_game(interaction)
         else:
@@ -264,7 +271,8 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_more_words(self, interaction: discord.Interaction, button):
-        await self._owner_check(interaction)
+        if not await self._owner_check(interaction):
+            return
         if self.red_words > self.blue_words:
             await self.continue_game(interaction)
         else:
