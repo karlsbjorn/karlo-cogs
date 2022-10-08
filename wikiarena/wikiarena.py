@@ -22,6 +22,7 @@ class WikiArena(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.config = Config.get_conf(self, identifier=87446677010550784)
         self.wiki_language = "en"
         self.session = aiohttp.ClientSession()
         default_user = {
@@ -47,6 +48,7 @@ class WikiArena(commands.Cog):
             ) = await self.game_setup(self.wiki_language)
 
             view = Buttons(
+                config=self.config,
                 wiki_language=self.wiki_language,
                 blue_views=blue_views,
                 red_views=red_views,
@@ -134,6 +136,7 @@ class WikiArena(commands.Cog):
 class Buttons(discord.ui.View):
     def __init__(
         self,
+        config,
         wiki_language,
         blue_views,
         red_views,
@@ -143,6 +146,7 @@ class Buttons(discord.ui.View):
         timeout=180,
     ):
         super().__init__(timeout=timeout)
+        self.config: Config = config
         self.message = None
         self.author = author
         self.score = 0
