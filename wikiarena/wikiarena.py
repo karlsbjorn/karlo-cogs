@@ -36,6 +36,7 @@ class WikiArena(commands.Cog):
         }
         self.config.register_user(**default_user)
 
+    @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
     @commands.command()
     async def wikiarena(self, ctx):
         """
@@ -68,7 +69,7 @@ class WikiArena(commands.Cog):
                 _(
                     "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                     "Score: **{score}**\n"
-                    "Time's up {in_time}"
+                    "Time's up {in_time}!"
                 ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
                 embeds=embeds,
                 view=view,
