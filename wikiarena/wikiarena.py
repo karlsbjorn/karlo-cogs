@@ -11,6 +11,8 @@ from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from tabulate import tabulate
 
+from .utils import get_timeout_timestamp
+
 _ = Translator("WikiArena", __file__)
 
 
@@ -51,6 +53,8 @@ class WikiArena(commands.Cog):
                 red_word_count,
             ) = await self.game_setup(self.wiki_language)
 
+            timeout_timestamp = get_timeout_timestamp()
+
             view = Buttons(
                 config=self.config,
                 wiki_language=self.wiki_language,
@@ -63,8 +67,9 @@ class WikiArena(commands.Cog):
             view.message = await ctx.send(
                 _(
                     "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
-                    "Score: **{score}**"
-                ).format(score="0"),
+                    "Score: **{score}**\n"
+                    "Time's up {in_time}"
+                ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
                 embeds=embeds,
                 view=view,
             )
@@ -201,13 +206,6 @@ class WikiArena(commands.Cog):
 
             return page_views
 
-    # @commands.command()
-    # async def waleaderboard(self, ctx):
-    #     """
-    #     Displays the top 10 players of WikiArena.
-    #     """
-    #     raise NotImplementedError
-
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
@@ -287,15 +285,20 @@ class Buttons(discord.ui.View):
             red_views,
             red_word_count,
         ) = await WikiArena.game_setup(self, self.wiki_language)
+
         self.blue_views = blue_views
         self.red_views = red_views
         self.blue_words = blue_word_count
         self.red_words = red_word_count
+
+        timeout_timestamp = get_timeout_timestamp()
+
         await interaction.response.edit_message(
             content=_(
                 "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
-                "Score: **{score}**"
-            ).format(score=self.score),
+                "Score: **{score}**\n"
+                "Time's up {in_time}!"
+            ).format(score=self.score, in_time=f"<t:{timeout_timestamp}:R>"),
             embeds=embeds,
             view=self,
         )
