@@ -3,8 +3,14 @@ from typing import Dict, List
 import discord
 from redbot.core.bot import Red
 
-from raidtools.emojis import button_emojis, class_emojis, role_emojis, spec_emojis
-from raidtools.playerclasses import PlayerClasses, spec_roles
+from raidtools.emojis import (
+    button_emojis,
+    class_emojis,
+    generic_emojis,
+    role_emojis,
+    spec_emojis,
+)
+from raidtools.playerclasses import PlayerClasses
 
 
 async def create_event_embed(
@@ -26,12 +32,44 @@ async def create_event_embed(
     event_guild = bot.get_guild(event_info["event_guild"])
     event_id = str(event_info["event_id"])
 
+    zws = "\N{ZERO WIDTH SPACE}"
     embed = discord.Embed(
         title=event_name,
         description=f"{event_description if event_description else None}\n"
         f"{event_date if event_date else None}",
         color=discord.Color.yellow(),
     )
+
+    # Get the total number of members signed up for the event.
+    msg = ""
+    primary_members = set()
+    secondary_members = set()
+    for class_name, members in signed_up.items():
+        if class_name == "bench":
+            continue
+        elif class_name == "late":
+            secondary_members.update(members)
+            continue
+        elif class_name == "tentative":
+            continue
+        elif class_name == "absent":
+            continue
+        primary_members.update(members)
+    if secondary_members:
+        embed.add_field(
+            name=zws,
+            value=f"{generic_emojis['signups']} "
+            f"**{len(primary_members)}** "
+            f"(+{len(secondary_members)})",
+            inline=False,
+        )
+    else:
+        embed.add_field(
+            name=zws,
+            value=f"{generic_emojis['signups']} " f"**{len(primary_members)}**",
+            inline=False,
+        )
+
     # Get the number of tanks, healers and dps signed up for the event.
     if not preview_mode:
         tank_n = 0
@@ -51,23 +89,23 @@ async def create_event_embed(
         tank_n = 1
         healer_n = 1
         dps_n = 1
+
     # Add the number of tanks, healers and dps to the embed.
-    zws = "\N{ZERO WIDTH SPACE}"
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['tank']}**{tank_n} Tanks**"
+        value=f"{role_emojis['tank']}**{tank_n}** Tanks"
         if tank_n > 1 or tank_n == 0
-        else f"{role_emojis['tank']}**{tank_n} Tank**",
+        else f"{role_emojis['tank']}**{tank_n}** Tank",
     )
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['heal']}**{healer_n} Healers**"
+        value=f"{role_emojis['heal']}**{healer_n}** Healers"
         if healer_n > 1 or healer_n == 0
-        else f"{role_emojis['heal']}**{healer_n} Healer**",
+        else f"{role_emojis['heal']}**{healer_n}** Healer",
     )
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['dps']}**{dps_n} DPS**",
+        value=f"{role_emojis['dps']}**{dps_n}** DPS",
     )
 
     # Add fields for each class that has a member signed up.

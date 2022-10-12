@@ -64,3 +64,6 @@ role_emojis = {  # TODO: this has to be gotten from config before cog is public
     "heal": "<:heal:1029875466447900757>",
     "dps": "<:dps:1029875468020752425>",
 }
+generic_emojis = {  # TODO: this has to be gotten from config before cog is public
+    "signups": "<:signups:1029885326858125323>",
+}
