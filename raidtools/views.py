@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import discord.ui
 
 from raidtools.emojis import button_emojis, class_emojis, spec_emojis
-from raidtools.playerclasses import PlayerClasses, player_specs
+from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
 from raidtools.shared import create_event_embed
 
 
@@ -115,7 +115,7 @@ class EventPreviewView(discord.ui.View):
         pass
 
     @discord.ui.button(
-        label="Tentativno",
+        label="Neodlučan",
         style=discord.ButtonStyle.grey,
         disabled=True,
         row=1,
@@ -198,7 +198,11 @@ class EventView(discord.ui.View):
 
         user_events: Dict = await self.config.member(interaction.user).events()
         if event_id not in user_events:
-            user_events[event_id] = {"participating_class": None, "participating_spec": None}
+            user_events[event_id] = {
+                "participating_role": None,
+                "participating_class": None,
+                "participating_spec": None,
+            }
 
         user_this_event: Dict = user_events.get(event_id, {})
 
@@ -217,6 +221,7 @@ class EventView(discord.ui.View):
             current_events[event_id]["signed_up"]["bench"] += [interaction.user.id]
 
             user_events[event_id]["participating_class"] = "bench"
+            user_events[event_id]["participating_role"] = None
 
             await self.update_event(current_events, event_id, interaction, user_events)
         return
@@ -281,6 +286,7 @@ class EventView(discord.ui.View):
             current_events[event_id]["signed_up"]["tentative"] += [interaction.user.id]
 
             user_events[event_id]["participating_class"] = "tentative"
+            user_events[event_id]["participating_role"] = None
 
             await self.update_event(current_events, event_id, interaction, user_events)
         return
@@ -313,6 +319,7 @@ class EventView(discord.ui.View):
             current_events[event_id]["signed_up"]["absent"] += [interaction.user.id]
 
             user_events[event_id]["participating_class"] = "absent"
+            user_events[event_id]["participating_role"] = None
 
             await self.update_event(current_events, event_id, interaction, user_events)
         return
@@ -395,10 +402,10 @@ class EventSpecDropdown(discord.ui.Select):
             user_events[self.event_id] = {
                 "participating_role": None,
                 "participating_class": None,
+                "participating_spec": None,
             }
             user_this_event = user_events[self.event_id]
 
-        user_participating_role: str = user_this_event.get("participating_role", None)
         user_participating_class: str = user_this_event.get("participating_class", None)
 
         # Remove user from the class they were signed up for
@@ -413,6 +420,14 @@ class EventSpecDropdown(discord.ui.Select):
 
         user_events[self.event_id]["participating_class"] = self.picked_class
         user_events[self.event_id]["participating_spec"] = picked_spec.lower()
+
+        # Add user to the role of the spec they picked
+        if picked_spec.lower() in spec_roles["tank"]:
+            user_events[self.event_id]["participating_role"] = "tank"
+        elif picked_spec.lower() in spec_roles["healer"]:
+            user_events[self.event_id]["participating_role"] = "healer"
+        else:
+            user_events[self.event_id]["participating_role"] = "dps"
 
         await self.update_event(current_events, self.event_id, interaction, user_events)
 

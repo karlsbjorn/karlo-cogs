@@ -59,3 +59,8 @@ button_emojis = {  # TODO: this has to be gotten from config before cog is publi
     "tentative": "<:tentative:1029310569133649930>",
     "absent": "<:absence:1029310567879544872>",
 }
+role_emojis = {  # TODO: this has to be gotten from config before cog is public
+    "tank": "<:tank:1029875469216124958>",
+    "heal": "<:heal:1029875466447900757>",
+    "dps": "<:dps:1029875468020752425>",
+}

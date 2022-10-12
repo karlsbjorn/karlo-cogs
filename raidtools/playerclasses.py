@@ -34,3 +34,8 @@ player_specs = {
     "death_knight": {"blood", "frost", "unholy"},
     "evoker": {"preservation", "devastation"},
 }
+
+spec_roles = {
+    "tank": ["protection", "guardian", "brewmaster", "blood"],
+    "healer": ["holy", "restoration", "mistweaver", "discipline", "preservation"],
+}

@@ -3,8 +3,8 @@ from typing import Dict, List
 import discord
 from redbot.core.bot import Red
 
-from raidtools.emojis import button_emojis, class_emojis, spec_emojis
-from raidtools.playerclasses import PlayerClasses
+from raidtools.emojis import button_emojis, class_emojis, role_emojis, spec_emojis
+from raidtools.playerclasses import PlayerClasses, spec_roles
 
 
 async def create_event_embed(
@@ -13,6 +13,7 @@ async def create_event_embed(
     """
     Create an embed for the event.
 
+    :param preview_mode: Whether the embed is for previewing the event.
     :param config: Red config to get member info from
     :param signed_up: A dictionary of classes and members who signed up for the event.
     :param event_info: Information about the event that can be added to the embed.
@@ -31,8 +32,45 @@ async def create_event_embed(
         f"{event_date if event_date else None}",
         color=discord.Color.yellow(),
     )
+    # Get the number of tanks, healers and dps signed up for the event.
+    if not preview_mode:
+        tank_n = 0
+        healer_n = 0
+        dps_n = 0
+        for player_class in signed_up:
+            for user in signed_up[player_class]:
+                user_obj = event_guild.get_member(user)
+                signee_event_info = await config.member(user_obj).events()
+                if signee_event_info[event_id]["participating_role"] == "tank":
+                    tank_n += 1
+                elif signee_event_info[event_id]["participating_role"] == "healer":
+                    healer_n += 1
+                else:
+                    dps_n += 1
+    else:
+        tank_n = 1
+        healer_n = 1
+        dps_n = 1
+    # Add the number of tanks, healers and dps to the embed.
+    zws = "\N{ZERO WIDTH SPACE}"
+    embed.add_field(
+        name=zws,
+        value=f"{role_emojis['tank']}**{tank_n} Tanks**"
+        if tank_n > 1 or tank_n == 0
+        else f"{role_emojis['tank']}**{tank_n} Tank**",
+    )
+    embed.add_field(
+        name=zws,
+        value=f"{role_emojis['heal']}**{healer_n} Healers**"
+        if healer_n > 1 or healer_n == 0
+        else f"{role_emojis['heal']}**{healer_n} Healer**",
+    )
+    embed.add_field(
+        name=zws,
+        value=f"{role_emojis['dps']}**{dps_n} DPS**",
+    )
 
-    # All classes
+    # Add fields for each class that has a member signed up.
     for player_class in PlayerClasses:
         player_class = str(player_class.value)
         player_class = player_class.replace(" ", "_").lower()
@@ -47,12 +85,16 @@ async def create_event_embed(
                     spec_emoji = f'{player_class}_{member_spec.replace(" ", "_").lower()}'
                     value_str += f"{spec_emojis[spec_emoji]} {user_obj.mention}\n"
                 embed.add_field(
-                    name=f"{class_emojis[player_class]} {player_class.replace('_', ' ').title()} ({len(signed_up[player_class])})",
+                    name=f"{class_emojis[player_class]} "
+                    f"{player_class.replace('_', ' ').title()} "
+                    f"({len(signed_up[player_class])})",
                     value=value_str,
                 )
             else:
                 embed.add_field(
-                    name=f"{class_emojis[player_class]} {player_class.replace('_', ' ').title()} ({len(signed_up[player_class])})",
+                    name=f"{class_emojis[player_class]} "
+                    f"{player_class.replace('_', ' ').title()} "
+                    f"({len(signed_up[player_class])})",
                     value="\n".join(
                         [
                             event_guild.get_member(member).mention
@@ -62,7 +104,7 @@ async def create_event_embed(
                 )
 
     # Other statuses
-    zws = "\N{ZERO WIDTH SPACE}"
+
     if len(signed_up.get("bench", [])) > 0 or len(signed_up.get("late", [])) > 0:
         msg = ""
         if len(signed_up.get("bench", [])) > 0:
@@ -84,7 +126,7 @@ async def create_event_embed(
         msg = ""
         if len(signed_up.get("tentative", [])) > 0:
             msg += (
-                f"{button_emojis['tentative']} Tentativ ({len(signed_up['tentative'])}): "
+                f"{button_emojis['tentative']} Neodlučan ({len(signed_up['tentative'])}): "
                 f"{', '.join([event_guild.get_member(member).mention for member in signed_up['tentative']])}\n"
             )
         if len(signed_up.get("absent", [])) > 0:
