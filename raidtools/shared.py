@@ -1,0 +1,101 @@
+from typing import Dict, List
+
+import discord
+from redbot.core.bot import Red
+
+from raidtools.emojis import button_emojis, class_emojis, spec_emojis
+from raidtools.playerclasses import PlayerClasses
+
+
+async def create_event_embed(
+    signed_up: Dict[str, List[int]], event_info: dict, bot: Red, config, preview_mode: bool = False
+) -> discord.Embed:
+    """
+    Create an embed for the event.
+
+    :param config: Red config to get member info from
+    :param signed_up: A dictionary of classes and members who signed up for the event.
+    :param event_info: Information about the event that can be added to the embed.
+    :param bot: Bot instance
+    :return: An embed for the event.
+    """
+    event_name = event_info["event_name"]
+    event_description = event_info["event_description"]
+    event_date = event_info["event_date"]
+    event_guild = bot.get_guild(event_info["event_guild"])
+    event_id = str(event_info["event_id"])
+
+    embed = discord.Embed(
+        title=event_name,
+        description=f"{event_description if event_description else None}\n"
+        f"{event_date if event_date else None}",
+        color=discord.Color.yellow(),
+    )
+
+    # All classes
+    for player_class in PlayerClasses:
+        player_class = str(player_class.value)
+        player_class = player_class.replace(" ", "_").lower()
+        if player_class in signed_up.keys() and len(signed_up[player_class]) > 0:
+            signed_up_users = [member for member in signed_up[player_class]]
+            value_str = ""
+            if not preview_mode:
+                for user in signed_up_users:
+                    user_obj = event_guild.get_member(user)
+                    member = await config.member(user_obj).events()
+                    member_spec = member[event_id]["participating_spec"]
+                    spec_emoji = f'{player_class}_{member_spec.replace(" ", "_").lower()}'
+                    value_str += f"{spec_emojis[spec_emoji]} {user_obj.mention}\n"
+                embed.add_field(
+                    name=f"{class_emojis[player_class]} {player_class.replace('_', ' ').title()} ({len(signed_up[player_class])})",
+                    value=value_str,
+                )
+            else:
+                embed.add_field(
+                    name=f"{class_emojis[player_class]} {player_class.replace('_', ' ').title()} ({len(signed_up[player_class])})",
+                    value="\n".join(
+                        [
+                            event_guild.get_member(member).mention
+                            for member in signed_up[player_class]
+                        ]
+                    ),
+                )
+
+    # Other statuses
+    zws = "\N{ZERO WIDTH SPACE}"
+    if len(signed_up.get("bench", [])) > 0 or len(signed_up.get("late", [])) > 0:
+        msg = ""
+        if len(signed_up.get("bench", [])) > 0:
+            msg += (
+                f"{button_emojis['bench']} Bench ({len(signed_up['bench'])}): "
+                f"{', '.join([event_guild.get_member(member).mention for member in signed_up['bench']])}\n"
+            )
+        if len(signed_up.get("late", [])) > 0:
+            msg += (
+                f"{button_emojis['late']} Kasni ({len(signed_up['late'])}): "
+                f"{', '.join([event_guild.get_member(member).mention for member in signed_up['late']])}"
+            )
+        embed.add_field(
+            name=zws,
+            value=msg,
+            inline=False,
+        )
+    if len(signed_up.get("tentative", [])) > 0 or len(signed_up.get("absent", [])) > 0:
+        msg = ""
+        if len(signed_up.get("tentative", [])) > 0:
+            msg += (
+                f"{button_emojis['tentative']} Tentativ ({len(signed_up['tentative'])}): "
+                f"{', '.join([event_guild.get_member(member).mention for member in signed_up['tentative']])}\n"
+            )
+        if len(signed_up.get("absent", [])) > 0:
+            msg += (
+                f"{button_emojis['absent']} Odsutan ({len(signed_up['absent'])}): "
+                f"{', '.join([event_guild.get_member(member).mention for member in signed_up['absent']])}"
+            )
+        embed.add_field(
+            name=zws,
+            value=msg,
+            inline=False,
+        )
+
+    return embed
