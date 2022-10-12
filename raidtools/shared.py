@@ -93,19 +93,19 @@ async def create_event_embed(
     # Add the number of tanks, healers and dps to the embed.
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['tank']}**{tank_n}** Tanks"
+        value=f"{role_emojis['tank']} **{tank_n}** Tanks"
         if tank_n > 1 or tank_n == 0
-        else f"{role_emojis['tank']}**{tank_n}** Tank",
+        else f"{role_emojis['tank']} **{tank_n}** Tank",
     )
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['heal']}**{healer_n}** Healers"
+        value=f"{role_emojis['heal']} **{healer_n}** Healers"
         if healer_n > 1 or healer_n == 0
-        else f"{role_emojis['heal']}**{healer_n}** Healer",
+        else f"{role_emojis['heal']} **{healer_n}** Healer",
     )
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['dps']}**{dps_n}** DPS",
+        value=f"{role_emojis['dps'] }**{dps_n}** DPS",
     )
 
     # Add fields for each class that has a member signed up.
