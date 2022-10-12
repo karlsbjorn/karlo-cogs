@@ -9,7 +9,7 @@ class SlashCommands:
         name="create",
         description="Kreiraj novi event u ovom kanalu.",
     )
-    @app_commands.guilds(133049272517001216, 742457855008964800)
+    @app_commands.guilds(133049272517001216, 742457855008964800, 362298824854863882)
     @app_commands.guild_only()
     async def slash_event_create(self, interaction: discord.Interaction):
         embed = discord.Embed(
