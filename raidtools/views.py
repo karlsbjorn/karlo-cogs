@@ -225,7 +225,7 @@ class EventEditNameModal(discord.ui.Modal):
 
 
 class EventEditTimeModal(discord.ui.Modal):
-    raise NotImplementedError
+    pass
 
 
 class EventPreviewView(discord.ui.View):
