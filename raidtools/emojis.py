@@ -66,4 +66,7 @@ role_emojis = {  # TODO: this has to be gotten from config before cog is public
 }
 generic_emojis = {  # TODO: this has to be gotten from config before cog is public
     "signups": "<:signups:1029885326858125323>",
+    "date": "<:datum:1030617980918304839>",
+    "add_player": "",
+    "remove_player": "",
 }

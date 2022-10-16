@@ -34,9 +34,9 @@ async def create_event_embed(
 
     zws = "\N{ZERO WIDTH SPACE}"
     embed = discord.Embed(
-        title=event_name,
-        description=f"{event_description if event_description else None}\n"
-        f"{event_date if event_date else None}",
+        description=f"ID: {event_id}\n"
+        f"**{event_name}**\n"
+        f"{event_description if event_description else None}\n",
         color=discord.Color.yellow(),
     )
 
@@ -58,15 +58,17 @@ async def create_event_embed(
     if secondary_members:
         embed.add_field(
             name=zws,
-            value=f"{generic_emojis['signups']} "
-            f"**{len(primary_members)}** "
-            f"(+{len(secondary_members)})",
+            value=f"{generic_emojis['signups']} **{len(primary_members)}** "
+            f"(+{len(secondary_members)})\n{generic_emojis['date']} {event_date}",
             inline=False,
         )
     else:
         embed.add_field(
             name=zws,
-            value=f"{generic_emojis['signups']} " f"**{len(primary_members)}**",
+            value=f"{generic_emojis['signups']} "
+            f"**{len(primary_members)}**\n"
+            f"{generic_emojis['date']} "
+            f"{event_date}",
             inline=False,
         )
 
@@ -105,7 +107,7 @@ async def create_event_embed(
     )
     embed.add_field(
         name=zws,
-        value=f"{role_emojis['dps'] }**{dps_n}** DPS",
+        value=f"{role_emojis['dps'] } **{dps_n}** DPS",
     )
 
     # Add fields for each class that has a member signed up.
@@ -142,7 +144,6 @@ async def create_event_embed(
                 )
 
     # Other statuses
-
     if len(signed_up.get("bench", [])) > 0 or len(signed_up.get("late", [])) > 0:
         msg = ""
         if len(signed_up.get("bench", [])) > 0:

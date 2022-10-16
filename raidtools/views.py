@@ -7,6 +7,18 @@ from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
 from raidtools.shared import create_event_embed
 
 
+class CreateEventView(discord.ui.View):
+    def __init__(self, config):
+        self.config = config
+        super().__init__()
+
+    @discord.ui.button(label="Kreiraj event", style=discord.ButtonStyle.primary)
+    async def create_event(
+        self, interaction: discord.Interaction, button: discord.ui.Button, /
+    ) -> None:
+        await interaction.response.send_modal(CreateEventModal(self.config))
+
+
 class CreateEventModal(discord.ui.Modal):
     def __init__(self, config):
         self.config = config
@@ -75,16 +87,145 @@ class CreateEventModal(discord.ui.Modal):
         )
 
 
-class CreateEventView(discord.ui.View):
-    def __init__(self, config):
+class ManageEventView(discord.ui.View):
+    def __init__(self, config, events):
+        self.config = config
+        self.events = events
+        super().__init__()
+        self.add_item(ManageEventDropdown(self.config, events=events))
+
+
+class ManageEventDropdown(discord.ui.Select):
+    def __init__(self, config, events):
+        self.config = config
+        self.events = events
+        options = [
+            discord.SelectOption(
+                label=event["event_name"], description=f"ID: {event_id}", value=event_id
+            )
+            for event_id, event in events.items()
+        ]
+
+        super().__init__(placeholder="Odaberi event", options=options)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        event_id = self.values[0]
+        event = self.events[event_id]
+        embed = await create_event_embed(
+            signed_up=event["signed_up"],
+            event_info=event,
+            bot=interaction.client,
+            config=self.config,
+        )
+        await interaction.response.send_message(
+            content="Uređuješ ovaj event:",
+            embed=embed,
+            view=EventEditView(
+                event_id=event_id, config=self.config, preview_msg=interaction.message
+            ),
+            ephemeral=True,
+        )
+
+
+class EventEditView(discord.ui.View):
+    def __init__(self, event_id, config, preview_msg: discord.Message):
+        self.event_id = event_id
         self.config = config
         super().__init__()
+        self.add_item(EventEditDropdown(event_id=event_id, config=config, preview_msg=preview_msg))
 
-    @discord.ui.button(label="Kreiraj event", style=discord.ButtonStyle.primary)
-    async def create_event(
+    @discord.ui.button(label="Izbriši event", style=discord.ButtonStyle.danger, row=1)
+    async def delete_event(
         self, interaction: discord.Interaction, button: discord.ui.Button, /
     ) -> None:
-        await interaction.response.send_modal(CreateEventModal(self.config))
+        await interaction.response.send_message(
+            "Jesi siguran?",
+            ephemeral=True,
+            view=DeleteConfirmationView(self.config, self.event_id),
+        )
+
+
+class EventEditDropdown(discord.ui.Select):
+    def __init__(self, event_id, config, preview_msg: discord.Message):
+        self.event_id = event_id
+        self.config = config
+        self.preview_msg = preview_msg
+        options = [
+            discord.SelectOption(label="Uredi naziv i opis", value="edit_name"),
+            discord.SelectOption(label="Uredi vrijeme eventa", value="edit_time"),
+        ]
+
+        super().__init__(placeholder="Odaberi radnju", options=options)
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.values[0] == "edit_name":
+            await interaction.response.send_modal(
+                EventEditNameModal(
+                    event_id=self.event_id, config=self.config, preview_msg=self.preview_msg
+                )
+            )
+        elif self.values[0] == "edit_time":
+            await interaction.response.send_modal(
+                EventEditTimeModal(
+                    event_id=self.event_id, config=self.config, preview_msg=self.preview_msg
+                )
+            )
+
+
+class EventEditNameModal(discord.ui.Modal):
+    def __init__(self, event_id, config, preview_msg: discord.Message):
+        self.event_id = event_id
+        self.config = config
+        self.preview_msg = preview_msg
+        self.title = "Uredi naziv i opis eventa"
+        super().__init__(timeout=600, title=self.title)
+
+        self.event_name = discord.ui.TextInput(
+            label="Naziv eventa",
+            style=discord.TextStyle.short,
+            placeholder="Sepulcher of the First Ones",
+            min_length=1,
+            max_length=100,
+        )
+        self.event_description = discord.ui.TextInput(
+            label="Opis eventa",
+            style=discord.TextStyle.long,
+            placeholder="SotFO HC, ako je moguće, 11/11",
+            min_length=1,
+            max_length=300,
+        )
+
+        self.add_item(self.event_name)
+        self.add_item(self.event_description)
+
+    async def on_submit(self, interaction: discord.Interaction, /) -> None:
+        events: Dict = await self.config.guild(interaction.guild).events()
+
+        event = events[self.event_id]
+        event["event_name"] = str(self.event_name)
+        event["event_description"] = str(self.event_description)
+        events[self.event_id] = event
+
+        await self.config.guild(interaction.guild).events.set(events)
+
+        # Update event
+        embed = await create_event_embed(
+            signed_up=event["signed_up"],
+            event_info=event,
+            bot=interaction.client,
+            config=self.config,
+        )
+        event_channel = interaction.guild.get_channel_or_thread(event["event_channel"])
+        event_msg = await event_channel.fetch_message(event["event_id"])
+        await event_msg.edit(embed=embed)
+
+        await interaction.response.send_message(
+            "Naziv i opis eventa su promijenjeni.", ephemeral=True
+        )
+
+
+class EventEditTimeModal(discord.ui.Modal):
+    raise NotImplementedError
 
 
 class EventPreviewView(discord.ui.View):
@@ -174,6 +315,7 @@ class EventPreviewView(discord.ui.View):
         current_events: Dict = await self.config.guild(msg.guild).events()
         current_events[msg.id] = {
             "event_id": msg.id,
+            "event_channel": msg.channel.id,
             "event_guild": msg.guild.id,
             "event_name": self.extras["event_name"],
             "event_description": self.extras["event_description"],
@@ -359,7 +501,7 @@ class EventClassDropdown(discord.ui.Select):
         picked_class = self.values[0]
         event_id = str(interaction.message.id)
         await interaction.response.send_message(
-            f"Sad odaberi spec.",
+            "Sad odaberi spec.",
             ephemeral=True,
             view=EventSpecView(picked_class, self.config, event_id=event_id),
         )
@@ -443,3 +585,39 @@ class EventSpecDropdown(discord.ui.Select):
         event_msg = await interaction.channel.fetch_message(int(event_id))
         await event_msg.edit(embed=embed)
         await interaction.response.send_message("Uspješno si se prijavio.", ephemeral=True)
+
+
+class DeleteConfirmationView(discord.ui.View):
+    def __init__(self, config, event_id):
+        self.config = config
+        self.event_id = event_id
+        super().__init__()
+
+    @discord.ui.button(label="Da", style=discord.ButtonStyle.danger)
+    async def confirmed_delete_event(
+        self, interaction: discord.Interaction, button: discord.ui.Button, /
+    ) -> None:
+        events: Dict = await self.config.guild(interaction.guild).events()
+        event_channel = interaction.guild.get_channel_or_thread(
+            events[self.event_id]["event_channel"]
+        )
+
+        # Remove from config
+        events.pop(self.event_id)
+        await self.config.guild(interaction.guild).events.set(events)
+
+        # Remove event message
+        event_message = await event_channel.fetch_message(self.event_id)
+        await event_message.delete()
+
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message("Event je izbrisan.", view=self)
+
+    @discord.ui.button(label="Ne", style=discord.ButtonStyle.success)
+    async def cancel_delete_event(
+        self, interaction: discord.Interaction, button: discord.ui.Button, /
+    ) -> None:
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(view=self)
