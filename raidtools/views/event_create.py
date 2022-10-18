@@ -41,13 +41,22 @@ class EventCreateModal(discord.ui.Modal):
         self.event_date = discord.ui.TextInput(
             label="Datum eventa",
             style=discord.TextStyle.short,
-            placeholder="<t:1665464280:R>",
-            max_length=100,
+            placeholder="<t:1665464280:R> (pročitaj upute)",
+            min_length=1,
+            max_length=20,
+        )
+        self.event_end_date = discord.ui.TextInput(
+            label="Datum završetka eventa",
+            style=discord.TextStyle.short,
+            placeholder="<t:1823764123:R> (pročitaj upute)",
+            min_length=1,
+            max_length=20,
         )
 
         self.add_item(self.event_name)
         self.add_item(self.event_description)
         self.add_item(self.event_date)
+        self.add_item(self.event_end_date)
 
     async def on_submit(self, interaction: discord.Interaction, /) -> None:
         if not self.event_name:
@@ -68,6 +77,7 @@ class EventCreateModal(discord.ui.Modal):
             "event_name": str(self.event_name),
             "event_description": str(self.event_description),
             "event_date": str(self.event_date),
+            "event_end_date": str(self.event_end_date),
             "event_guild": interaction.guild.id,
             "event_id": interaction.message.id,
         }
@@ -179,6 +189,7 @@ class EventPreviewView(discord.ui.View):
             "event_name": self.extras["event_name"],
             "event_description": self.extras["event_description"],
             "event_date": self.extras["event_date"],
+            "event_end_date": self.extras["event_end_date"],
             "signed_up": mock_signed_up,
         }
         await self.config.guild(msg.guild).events.set(current_events)

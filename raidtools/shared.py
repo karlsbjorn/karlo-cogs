@@ -34,6 +34,7 @@ async def create_event_embed(
     event_name = event_info["event_name"]
     event_description = event_info["event_description"]
     event_date = event_info["event_date"]
+    event_end_date = event_info["event_end_date"]
     event_guild = bot.get_guild(event_info["event_guild"])
     event_id = str(event_info["event_id"])
 
@@ -64,7 +65,8 @@ async def create_event_embed(
         embed.add_field(
             name=zws,
             value=f"{generic_emojis['signups']} **{len(primary_members)}** "
-            f"(+{len(secondary_members)})\n{generic_emojis['date']} {event_date}",
+            f"(+{len(secondary_members)})\n"
+            f"{generic_emojis['date']} {event_date} - {event_end_date}",
             inline=False,
         )
     else:
@@ -73,7 +75,7 @@ async def create_event_embed(
             value=f"{generic_emojis['signups']} "
             f"**{len(primary_members)}**\n"
             f"{generic_emojis['date']} "
-            f"{event_date}",
+            f"{event_date} - {event_end_date}",
             inline=False,
         )
 

@@ -32,7 +32,10 @@ class SlashCommands:
         embed.add_field(name="Opis eventa", value="Unesi opis", inline=False)
         embed.add_field(
             name="Datum eventa",
-            value="Unesi datum kao [vremensku oznaku](https://r.3v.fi/discord-timestamps/)",
+            value="**PROČITAJ ME**\n"
+            "Unesi datum kao [vremensku oznaku koju možeš dobit ovdje.]"
+            "(https://r.3v.fi/discord-timestamps/)\n"
+            "Klikni gumb nakon što imaš vremensku oznaku kopiranu.",
             inline=False,
         )
 

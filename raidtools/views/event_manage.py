@@ -106,26 +106,31 @@ class EventEditNameModal(discord.ui.Modal):
             label="Naziv eventa",
             style=discord.TextStyle.short,
             placeholder="Sepulcher of the First Ones",
-            min_length=1,
             max_length=100,
+            required=False,
         )
         self.event_description = discord.ui.TextInput(
             label="Opis eventa",
             style=discord.TextStyle.long,
             placeholder="SotFO HC, ako je moguće, 11/11",
-            min_length=1,
             max_length=300,
+            required=False,
         )
 
         self.add_item(self.event_name)
         self.add_item(self.event_description)
 
     async def on_submit(self, interaction: discord.Interaction, /) -> None:
+        event_name = str(self.event_name)
+        event_description = str(self.event_description)
+
         events: Dict = await self.config.guild(interaction.guild).events()
 
         event = events[self.event_id]
-        event["event_name"] = str(self.event_name)
-        event["event_description"] = str(self.event_description)
+        if event_name:
+            event["event_name"] = event_name
+        if event_description:
+            event["event_description"] = event_description
         events[self.event_id] = event
 
         await self.config.guild(interaction.guild).events.set(events)
@@ -168,21 +173,35 @@ class EventEditTimeModal(discord.ui.Modal):
         self.title = "Uredi vrijeme eventa"
         super().__init__(timeout=600, title=self.title)
 
-        self.event_time = discord.ui.TextInput(
-            label="Vrijeme eventa",
+        self.event_date = discord.ui.TextInput(
+            label="Početak eventa",
             style=discord.TextStyle.short,
             placeholder="<t:1666087800:R> (pročitaj upute)",
-            min_length=1,
             max_length=20,
+            required=False,
+        )
+        self.event_end_date = discord.ui.TextInput(
+            label="Kraj eventa",
+            style=discord.TextStyle.short,
+            placeholder="<t:1823764123:R> (pročitaj upute)",
+            max_length=20,
+            required=False,
         )
 
-        self.add_item(self.event_time)
+        self.add_item(self.event_date)
+        self.add_item(self.event_end_date)
 
     async def on_submit(self, interaction: discord.Interaction, /) -> None:
+        event_date = str(self.event_date)
+        event_end_date = str(self.event_end_date)
+
         events: Dict = await self.config.guild(interaction.guild).events()
 
         event = events[self.event_id]
-        event["event_date"] = str(self.event_time)
+        if event_date:
+            event["event_date"] = event_date
+        if event_end_date:
+            event["event_end_date"] = event_end_date
         events[self.event_id] = event
 
         await self.config.guild(interaction.guild).events.set(events)
