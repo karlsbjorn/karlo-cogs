@@ -1,7 +1,8 @@
 import discord
 from discord import app_commands
 
-from raidtools.views import CreateEventView, ManageEventView
+from raidtools.views.event_create import EventCreateView
+from raidtools.views.event_manage import EventManageView
 
 
 class SlashCommands:
@@ -12,6 +13,16 @@ class SlashCommands:
     @app_commands.guilds(133049272517001216, 742457855008964800, 362298824854863882)
     @app_commands.guild_only()
     async def slash_event_create(self, interaction: discord.Interaction):
+        # Don't do anything if the user doesn't have manage guild permission
+        if (  # TODO: Add a role check too
+            not interaction.user.guild_permissions.manage_guild
+            and not await interaction.client.is_owner(interaction.user)
+        ):
+            await interaction.response.send_message(
+                "Nemaš dozvolu za kreiranje eventa u ovom guildu.", ephemeral=True
+            )
+            return
+
         embed = discord.Embed(
             title="Kreirajmo event!",
             description="Upute za kreiranje eventa:",
@@ -26,21 +37,32 @@ class SlashCommands:
         )
 
         await interaction.response.send_message(
-            embed=embed, ephemeral=True, view=CreateEventView(self.config)
+            embed=embed, ephemeral=True, view=EventCreateView(self.config)
         )
 
     @app_commands.command(name="manage", description="Upravljaj eventima.")
     @app_commands.guilds(133049272517001216, 742457855008964800, 362298824854863882)
     @app_commands.guild_only()
     async def slash_event_manage(self, interaction: discord.Interaction):
+        # Don't do anything if the user doesn't have manage guild permission
+        if (  # TODO: Add a role check too
+            not interaction.user.guild_permissions.manage_guild
+            and not await interaction.client.is_owner(interaction.user)
+        ):
+            await interaction.response.send_message(
+                "Nemaš dozvolu za upravljanje eventima u ovom guildu.", ephemeral=True
+            )
+            return
+
         events = await self.config.guild(interaction.guild).events()
         if not events:
             await interaction.response.send_message(
                 "U ovom guildu nema aktivnih eventa.", ephemeral=True
             )
             return
+
         await interaction.response.send_message(
             "Odaberi event kojim želiš upravljati.",
             ephemeral=True,
-            view=ManageEventView(self.config, events=events),
+            view=EventManageView(self.config, events=events),
         )

@@ -1,6 +1,7 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import discord
+from discord import Client
 from redbot.core.bot import Red
 
 from raidtools.emojis import (
@@ -14,7 +15,11 @@ from raidtools.playerclasses import PlayerClasses
 
 
 async def create_event_embed(
-    signed_up: Dict[str, List[int]], event_info: dict, bot: Red, config, preview_mode: bool = False
+    signed_up: Dict[str, List[int]],
+    event_info: dict,
+    bot: Union[Client, Red],
+    config,
+    preview_mode: bool = False,
 ) -> discord.Embed:
     """
     Create an embed for the event.
