@@ -212,8 +212,8 @@ class Scoreboard:
                         )
                     except ValueError as e:
                         log.error(
-                            f"Error getting dungeon scores. Skipping guild {guild.id}: {e}",
-                            exc_info=True,
+                            f"Error getting dungeon scores for {guild.id}, skipping. "
+                            f"Response: {e}",
                         )
                         continue
 
@@ -233,7 +233,10 @@ class Scoreboard:
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
-        log.error(f"Error in update_dungeon_scoreboard task: {error}", exc_info=True)
+        # Thanks Flame!
+        log.error(
+            f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
+        )
 
     @staticmethod
     async def _get_dungeon_scores(
