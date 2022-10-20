@@ -201,9 +201,21 @@ class Scoreboard:
                         color=await self.bot.get_embed_color(sb_msg),
                     )
                     embed.set_author(name=guild.name, icon_url=guild.icon_url)
-                    tabulate_list = await self._get_dungeon_scores(
-                        guild_name, max_chars, realm, region, sb_blacklist, image=False
-                    )
+                    try:
+                        tabulate_list = await self._get_dungeon_scores(
+                            guild_name,
+                            max_chars,
+                            realm,
+                            region,
+                            sb_blacklist,
+                            image=False,
+                        )
+                    except ValueError as e:
+                        log.error(
+                            f"Error getting dungeon scores. Skipping guild {guild.id}: {e}",
+                            exc_info=True,
+                        )
+                        continue
 
                     embed.description = box(
                         tabulate(
@@ -221,7 +233,7 @@ class Scoreboard:
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
-        log.error(f"Error in update_dungeon_scoreboard task: {error}")
+        log.error(f"Error in update_dungeon_scoreboard task: {error}", exc_info=True)
 
     @staticmethod
     async def _get_dungeon_scores(
