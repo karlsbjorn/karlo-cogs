@@ -219,6 +219,10 @@ class Scoreboard:
                         continue
                     await sb_msg.edit(embed=embed)
 
+    @update_dungeon_scoreboard.error
+    async def update_dungeon_scoreboard_error(self, error):
+        log.error(f"Error in update_dungeon_scoreboard task: {error}")
+
     @staticmethod
     async def _get_dungeon_scores(
         guild_name: str,
