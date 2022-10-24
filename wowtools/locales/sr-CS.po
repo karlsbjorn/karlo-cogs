@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-09-24 11:28+0000\n"
-"PO-Revision-Date: 2022-09-24 11:28\n"
+"POT-Creation-Date: 2022-10-20 02:30+0000\n"
+"PO-Revision-Date: 2022-10-20 02:31\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Latin)\n"
 "MIME-Version: 1.0\n"
@@ -32,8 +32,8 @@ msgid "The Auction House is not available in China.\n"
 msgstr ""
 
 #: wowtools/auctionhouse.py:39 wowtools/guildmanage.py:118
-#: wowtools/guildmanage.py:134 wowtools/pvp.py:45 wowtools/scoreboard.py:42
-#: wowtools/scoreboard.py:105 wowtools/scoreboard.py:475 wowtools/token.py:23
+#: wowtools/guildmanage.py:134 wowtools/pvp.py:46 wowtools/scoreboard.py:42
+#: wowtools/scoreboard.py:106 wowtools/scoreboard.py:500 wowtools/token.py:23
 #: wowtools/token.py:61 wowtools/wowaudit.py:32 wowtools/wowaudit.py:88
 #: wowtools/wowaudit.py:151 wowtools/wowaudit.py:222 wowtools/wowaudit.py:280
 #: wowtools/wowaudit.py:338 wowtools/wowaudit.py:394 wowtools/wowtools.py:90
@@ -166,45 +166,41 @@ msgstr "Cehovsko carstvo set."
 msgid "(Dev) Reset all guild settings."
 msgstr "(Dev) Resetujte sve postavke saveza."
 
-#: wowtools/pvp.py:15
+#: wowtools/pvp.py:16
 #, docstring
 msgid "Check a character's PVP ratings."
 msgstr "Provjerite PVP ocjene lika."
 
-#: wowtools/pvp.py:34 wowtools/raiderio.py:51 wowtools/raiderio.py:163
-msgid "A server admin needs to set a region with `{prefix}wowset region` first."
-msgstr ""
-
-#: wowtools/pvp.py:62
+#: wowtools/pvp.py:64
 msgid "Character \"{character_name}\" not found."
 msgstr ""
 
-#: wowtools/pvp.py:115
+#: wowtools/pvp.py:117
 msgid "That character or realm does not exist."
 msgstr "Taj lik ili carstvo ne postoji."
 
-#: wowtools/pvp.py:210
+#: wowtools/pvp.py:212
 msgid "RBG Rating"
 msgstr "RBG Rating"
 
-#: wowtools/pvp.py:211
+#: wowtools/pvp.py:213
 msgid "2v2 Rating"
 msgstr "2v2 Rating"
 
-#: wowtools/pvp.py:212
+#: wowtools/pvp.py:214
 msgid "3v3 Rating"
 msgstr "3v3 Rating"
 
-#: wowtools/pvp.py:219
+#: wowtools/pvp.py:221
 msgid "Achievements"
 msgstr "Dostignuća"
 
-#: wowtools/raiderio.py:22
+#: wowtools/raiderio.py:29
 #, docstring
 msgid "Commands for interacting with Raider.io"
 msgstr "Komande za interakciju sa Raider.io"
 
-#: wowtools/raiderio.py:30
+#: wowtools/raiderio.py:37
 #, docstring
 msgid "Display the raider.io profile of a character.\n\n"
 "        **Example:**\n"
@@ -212,47 +208,55 @@ msgid "Display the raider.io profile of a character.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/raiderio.py:61
+#: wowtools/raiderio.py:70
 msgid "You didn't give me a realm."
 msgstr "Nisi mi dao carstvo."
 
-#: wowtools/raiderio.py:79
+#: wowtools/raiderio.py:90
 msgid "Character not found."
 msgstr ""
 
-#: wowtools/raiderio.py:114
+#: wowtools/raiderio.py:127 wowtools/raiderio.py:187
 msgid "Raider.io profile"
 msgstr "Raider.io profil"
 
-#: wowtools/raiderio.py:119
+#: wowtools/raiderio.py:132
 msgid "__**Mythic+ Score**__"
 msgstr "__**Mythic+ Score**__"
 
-#: wowtools/raiderio.py:123
+#: wowtools/raiderio.py:136
 msgid "Raid progress"
 msgstr "Raid napredak"
 
-#: wowtools/raiderio.py:124
+#: wowtools/raiderio.py:137
 msgid "Item level"
 msgstr "Nivo stavke"
 
-#: wowtools/raiderio.py:125
+#: wowtools/raiderio.py:138
 msgid "Covenant"
 msgstr "Covenant"
 
-#: wowtools/raiderio.py:127
+#: wowtools/raiderio.py:140
 msgid "__Other links__"
 msgstr "__Ostali linkovi__"
 
-#: wowtools/raiderio.py:128
+#: wowtools/raiderio.py:141
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:138
+#: wowtools/raiderio.py:151 wowtools/raiderio.py:192
 msgid "Last updated: {char_last_updated}"
 msgstr "Posljednje ažurirano: {char_last_updated}"
 
-#: wowtools/raiderio.py:150
+#: wowtools/raiderio.py:158
+msgid "Dungeon"
+msgstr ""
+
+#: wowtools/raiderio.py:159
+msgid "Level"
+msgstr ""
+
+#: wowtools/raiderio.py:205
 #, docstring
 msgid "Display the raider.io profile of a guild.\n\n"
 "        If the guild or realm name have spaces in them, they need to be enclosed in quotes.\n\n"
@@ -265,27 +269,31 @@ msgstr "Prikaži raider.io profil ceha.\n\n"
 "        [p]Raiderio ceh \"Jahaci Rumene Kadulje\" Ragnaros\n"
 "        "
 
-#: wowtools/raiderio.py:170
+#: wowtools/raiderio.py:218
+msgid "A server admin needs to set a region with `{prefix}wowset region` first."
+msgstr ""
+
+#: wowtools/raiderio.py:225
 msgid "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr ""
 
-#: wowtools/raiderio.py:187
+#: wowtools/raiderio.py:242
 msgid "The guild {guild} does not exist on {realm}."
 msgstr ""
 
-#: wowtools/raiderio.py:214
+#: wowtools/raiderio.py:269
 msgid "Guild profile"
 msgstr "Profil saveza"
 
-#: wowtools/raiderio.py:218
+#: wowtools/raiderio.py:273
 msgid "__**Progress**__"
 msgstr "__**Napredak**__"
 
-#: wowtools/raiderio.py:227
+#: wowtools/raiderio.py:282
 msgid "{difficulty} rank"
 msgstr "{difficulty} rang"
 
-#: wowtools/raiderio.py:228
+#: wowtools/raiderio.py:283
 msgid "World: {world}\n"
 "Region: {region}\n"
 "Realm: {realm}"
@@ -293,25 +301,25 @@ msgstr "Svijet: {world}\n"
 "Region: {region}\n"
 "Kraljevstvo: {realm}"
 
-#: wowtools/raiderio.py:234
+#: wowtools/raiderio.py:289
 msgid "Last updated: {last_updated}"
 msgstr "Posljednje ažurirano: {last_updated}"
 
-#: wowtools/raiderio.py:244
+#: wowtools/raiderio.py:299
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Prikaži ovosedmične afikse."
 
-#: wowtools/raiderio.py:254
+#: wowtools/raiderio.py:309
 msgid "Region must be one of the following: {regions}"
 msgstr ""
 
-#: wowtools/raiderio.py:273 wowtools/raiderio.py:285
+#: wowtools/raiderio.py:328 wowtools/raiderio.py:340
 msgid "\n"
 "The weekly reset is {timestamp}."
 msgstr ""
 
-#: wowtools/raiderio.py:290
+#: wowtools/raiderio.py:345
 msgid "This week's Mythic+ affixes"
 msgstr ""
 
@@ -325,7 +333,7 @@ msgstr "Pokažite različite tabele sa rezultatima za svoj ceh."
 msgid "Get the Mythic+ scoreboard for this guild."
 msgstr "Nabavite Mythic+ semafor za ovaj ceh."
 
-#: wowtools/scoreboard.py:53
+#: wowtools/scoreboard.py:54
 #, docstring
 msgid "Get all the PvP related scoreboards for this guild.\n\n"
 "        **Characters that have not played all PvP gamemodes at\n"
@@ -333,30 +341,30 @@ msgid "Get all the PvP related scoreboards for this guild.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/scoreboard.py:68
+#: wowtools/scoreboard.py:69
 #, docstring
 msgid "Change scoreboard settings"
 msgstr "Promijenite postavke semafora"
 
-#: wowtools/scoreboard.py:77
+#: wowtools/scoreboard.py:78
 #, docstring
 msgid "Set the channel to send the scoreboard to."
 msgstr "Postavite kanal na koji ćete slati semafor."
 
-#: wowtools/scoreboard.py:90
+#: wowtools/scoreboard.py:91
 msgid "Scoreboard channel cleared."
 msgstr "Kanal semafora je očišćen."
 
-#: wowtools/scoreboard.py:112
+#: wowtools/scoreboard.py:113
 msgid "Scoreboard channel set."
 msgstr "Scoreboard set kanala."
 
-#: wowtools/scoreboard.py:118
+#: wowtools/scoreboard.py:119
 #, docstring
 msgid "Manage the scoreboard blacklist."
 msgstr "Upravljajte crnom listom semafora."
 
-#: wowtools/scoreboard.py:125
+#: wowtools/scoreboard.py:126
 #, docstring
 msgid "Add characters to the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -365,11 +373,11 @@ msgstr "Dodajte likove na crnu listu semafora.\n\n"
 "        Znakovi se mogu odvojiti razmacima ili zarezima.\n"
 "        "
 
-#: wowtools/scoreboard.py:135
+#: wowtools/scoreboard.py:136
 msgid "Blacklisted characters added."
 msgstr "Dodani su likovi na crnoj listi."
 
-#: wowtools/scoreboard.py:141
+#: wowtools/scoreboard.py:142
 #, docstring
 msgid "Remove characters from the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -378,85 +386,86 @@ msgstr "Uklonite likove sa crne liste sa semafora.\n\n"
 "        Znakovi se mogu odvojiti razmacima ili zarezima.\n"
 "        "
 
-#: wowtools/scoreboard.py:151
+#: wowtools/scoreboard.py:152
 msgid "Blacklisted characters removed."
 msgstr "Uklonjeni likovi sa crne liste."
 
-#: wowtools/scoreboard.py:157
+#: wowtools/scoreboard.py:158
 #, docstring
 msgid "List the characters on the scoreboard blacklist."
 msgstr "Navedite likove na crnoj listi semafora."
 
-#: wowtools/scoreboard.py:160
+#: wowtools/scoreboard.py:161
 msgid "No characters are blacklisted."
 msgstr "Nijedan lik nije na crnoj listi."
 
-#: wowtools/scoreboard.py:163
+#: wowtools/scoreboard.py:164
 msgid "Blacklisted characters: {characters}"
 msgstr "Likovi na crnoj listi: {characters}"
 
-#: wowtools/scoreboard.py:172
+#: wowtools/scoreboard.py:173
 #, docstring
 msgid "Clear the scoreboard blacklist."
 msgstr "Obrišite crnu listu sa semafora."
 
-#: wowtools/scoreboard.py:174
+#: wowtools/scoreboard.py:175
 msgid "Blacklisted characters cleared."
 msgstr "Likovi sa crne liste su obrisani."
 
-#: wowtools/scoreboard.py:188 wowtools/scoreboard.py:290
-#: wowtools/scoreboard.py:382
+#: wowtools/scoreboard.py:189 wowtools/scoreboard.py:310
+#: wowtools/scoreboard.py:402
 msgid "Name"
 msgstr "Ime"
 
-#: wowtools/scoreboard.py:188 wowtools/scoreboard.py:290
+#: wowtools/scoreboard.py:189 wowtools/scoreboard.py:310
 msgid "Score"
 msgstr "Rezultat"
 
-#: wowtools/scoreboard.py:199 wowtools/scoreboard.py:312
+#: wowtools/scoreboard.py:200 wowtools/scoreboard.py:332
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Mythic+ Guild Scoreboard"
 
-#: wowtools/scoreboard.py:294 wowtools/scoreboard.py:386
+#: wowtools/scoreboard.py:314 wowtools/scoreboard.py:406
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:300 wowtools/scoreboard.py:393
+#: wowtools/scoreboard.py:320 wowtools/scoreboard.py:413
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:306 wowtools/scoreboard.py:400
+#: wowtools/scoreboard.py:326 wowtools/scoreboard.py:420
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:382
+#: wowtools/scoreboard.py:402
 msgid "Rating"
 msgstr "Ocjena"
 
-#: wowtools/scoreboard.py:406
-msgid "This may take a while..."
-msgstr "Ovo može potrajati..."
+#: wowtools/scoreboard.py:427
+msgid "Fetching scoreboard...\n"
+"This can take up to 30 minutes for very large guilds."
+msgstr ""
 
-#: wowtools/scoreboard.py:409
+#: wowtools/scoreboard.py:434
 msgid "Guild PvP Leaderboard"
 msgstr "Guild PvP Leaderboard"
 
-#: wowtools/scoreboard.py:421
+#: wowtools/scoreboard.py:446
 msgid "RBG Leaderboard"
 msgstr "RBG Leaderboard"
 
-#: wowtools/scoreboard.py:434
+#: wowtools/scoreboard.py:459
 msgid "2v2 Arena Leaderboard"
 msgstr "2v2 Arena Leaderboard"
 
-#: wowtools/scoreboard.py:447
+#: wowtools/scoreboard.py:472
 msgid "3v3 Arena Leaderboard"
 msgstr "3v3 Arena Leaderboard"
 
-#: wowtools/scoreboard.py:493
+#: wowtools/scoreboard.py:518
 msgid "Guild not found."
 msgstr ""
 
