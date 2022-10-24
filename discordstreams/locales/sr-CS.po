@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: karlo-cogs\n"
+"POT-Creation-Date: 2022-10-24 13:44+0000\n"
+"PO-Revision-Date: 2022-10-24 13:44\n"
+"Last-Translator: \n"
+"Language-Team: Serbian (Latin)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Crowdin-Project: karlo-cogs\n"
+"X-Crowdin-Project-ID: 523580\n"
+"X-Crowdin-Language: sr-CS\n"
+"X-Crowdin-File: /discordstreams/locales/messages.pot\n"
+"X-Crowdin-File-ID: 26\n"
+"Language: sr_CS\n"
+
+#: discordstreams/discordstreams.py:31
+#, docstring
+msgid "Set the channel for live alerts."
+msgstr ""
+
+#: discordstreams/discordstreams.py:40
+msgid "Live alerts will no longer be sent to {channel}."
+msgstr ""
+
+#: discordstreams/discordstreams.py:49
+msgid "Go Live alerts will be sent to {channel}"
+msgstr ""
+
+#: discordstreams/discordstreams.py:149
+msgid "{member} is live!"
+msgstr ""
+
+#: discordstreams/discordstreams.py:202
+msgid "Stream started {relative_timestamp}"
+msgstr ""
+
+#: discordstreams/discordstreams.py:209
+msgid "Playing: {activity}"
+msgstr ""
+
+#: discordstreams/discordstreams.py:210
+msgid "Nothing"
+msgstr ""
+
