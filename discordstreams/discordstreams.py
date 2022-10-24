@@ -70,7 +70,7 @@ class DiscordStreams(commands.Cog):
             return
 
         # Stream ended
-        if before.self_stream and not after.self_stream:
+        if before.self_stream and not (after.channel and after.self_stream):
             active_messages: Dict = guild_config["active_messages"]
             member_id = str(member.id)
             if member_id not in active_messages:
@@ -79,10 +79,12 @@ class DiscordStreams(commands.Cog):
             await self._remove_stream_alerts(
                 active_messages, guild_config, member_guild, member_id
             )
+            return
 
         # Stream started
-        if (not before.self_stream) and after.self_stream:
+        if not (before.channel and before.self_stream) and after.self_stream:
             await self._send_stream_alerts(member, after)
+            return
 
     async def _remove_stream_alerts(
         self, active_messages, guild_config, member_guild, member_id
@@ -108,7 +110,6 @@ class DiscordStreams(commands.Cog):
             try:
                 message_id = active_messages[member_id][str(channel_id)]["message"]
             except KeyError:
-                log.info("Channel ID was provided after stream started. Ignoring.")
                 continue
 
             try:
