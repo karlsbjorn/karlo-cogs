@@ -70,7 +70,7 @@ class DiscordStreams(commands.Cog):
             return
 
         # Stream ended
-        if not after.self_stream:
+        if before.self_stream and not after.self_stream:
             active_messages: Dict = guild_config["active_messages"]
             member_id = str(member.id)
             if member_id not in active_messages:
@@ -181,6 +181,7 @@ class DiscordStream:
         self.member = member
 
     def make_embed(self) -> discord.Embed:
+        zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
 
@@ -193,9 +194,17 @@ class DiscordStream:
         embed = discord.Embed(
             title=member.display_name,
             color=discord.Color.blurple(),
-            description=voice_channel.mention,
+            description=f"{voice_channel.mention}",
         )
         embed.set_thumbnail(url=member.avatar.url)
+        embed.add_field(
+            name=zws,
+            value=_("Stream started {relative_timestamp}").format(
+                relative_timestamp=discord.utils.format_dt(
+                    discord.utils.utcnow(), style="R"
+                )
+            ),
+        )
         embed.set_footer(
             text=_("Playing: {activity}").format(
                 activity=member_activity if member_activity else _("Nothing")
