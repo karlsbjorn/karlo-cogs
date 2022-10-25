@@ -146,6 +146,15 @@ class EventEditNameModal(discord.ui.Modal):
         event_msg = await event_channel.fetch_message(event["event_id"])
         await event_msg.edit(embed=embed)
 
+        # Update Discord scheduled event
+        scheduled_event_id = event["scheduled_event_id"]
+        if scheduled_event_id:
+            scheduled_event = await interaction.guild.fetch_scheduled_event(scheduled_event_id)
+            await scheduled_event.edit(
+                name=event_name,
+                description=event_description,
+            )
+
         await interaction.response.send_message(
             "Naziv i opis eventa su promijenjeni.", ephemeral=True
         )
