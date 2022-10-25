@@ -7,7 +7,7 @@ import discord.ui
 from raidtools.discordevent import RaidtoolsDiscordEvent
 from raidtools.emojis import button_emojis, class_emojis, spec_emojis
 from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
-from raidtools.shared import create_event_embed
+from raidtools.shared import EventEmbed
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
 
@@ -86,7 +86,7 @@ class EventCreateModal(discord.ui.Modal):
             "event_guild": interaction.guild.id,
             "event_id": interaction.message.id,
         }
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=mock_signed_up,
             event_info=extras,
             bot=interaction.client,
@@ -175,7 +175,7 @@ class EventPreviewView(discord.ui.View):
         }
         await interaction.response.edit_message(view=None)
 
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up={},
             event_info=self.extras,
             bot=interaction.client,
@@ -357,7 +357,7 @@ class EventView(discord.ui.View):
     async def update_event(self, current_events, event_id, interaction, user_events):
         await self.config.guild(interaction.guild).events.set(current_events)
         await self.config.member(interaction.user).events.set(user_events)
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=current_events[event_id]["signed_up"],
             event_info=current_events[event_id],
             bot=interaction.client,
@@ -464,7 +464,7 @@ class EventSpecDropdown(discord.ui.Select):
     async def update_event(self, current_events, event_id, interaction, user_events):
         await self.config.guild(interaction.guild).events.set(current_events)
         await self.config.member(interaction.user).events.set(user_events)
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=current_events[event_id]["signed_up"],
             event_info=current_events[event_id],
             bot=interaction.client,

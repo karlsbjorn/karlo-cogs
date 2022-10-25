@@ -1,10 +1,13 @@
+import logging
 from typing import Dict
 
 import discord.ui
 
 from raidtools.confirmation import DeleteConfirmationView
 from raidtools.discordevent import RaidtoolsDiscordEvent
-from raidtools.shared import create_event_embed
+from raidtools.shared import EventEmbed
+
+log = logging.getLogger("red.karlo-cogs.raidtools")
 
 
 class EventManageView(discord.ui.View):
@@ -31,7 +34,7 @@ class EventManageDropdown(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction) -> None:
         event_id = self.values[0]
         event = self.events[event_id]
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=event["signed_up"],
             event_info=event,
             bot=interaction.client,
@@ -137,7 +140,7 @@ class EventEditNameModal(discord.ui.Modal):
         await self.config.guild(interaction.guild).events.set(events)
 
         # Update event
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=event["signed_up"],
             event_info=event,
             bot=interaction.client,
@@ -153,7 +156,10 @@ class EventEditNameModal(discord.ui.Modal):
 
         # Update Discord scheduled event
         scheduled_event = RaidtoolsDiscordEvent(event_msg, interaction, event)
-        await scheduled_event.edit_event()
+        try:
+            await scheduled_event.edit_event()
+        except ValueError as e:
+            log.debug()
 
 
 class EventEditTimeView(discord.ui.View):
@@ -212,7 +218,7 @@ class EventEditTimeModal(discord.ui.Modal):
         await self.config.guild(interaction.guild).events.set(events)
 
         # Update event
-        embed = await create_event_embed(
+        embed = await EventEmbed.create_event_embed(
             signed_up=event["signed_up"],
             event_info=event,
             bot=interaction.client,
