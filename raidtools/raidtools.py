@@ -6,7 +6,7 @@ from redbot.core.i18n import Translator, cog_i18n
 
 from raidtools.slash_commands import SlashCommands
 
-log = logging.getLogger("red.karlo-cogs.wowtools")
+log = logging.getLogger("red.karlo-cogs.raidtools")
 _ = Translator("WoWTools", __file__)
 
 

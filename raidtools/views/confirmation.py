@@ -18,13 +18,19 @@ class DeleteConfirmationView(discord.ui.View):
             events[self.event_id]["event_channel"]
         )
 
-        # Remove from config
-        events.pop(self.event_id)
-        await self.config.guild(interaction.guild).events.set(events)
-
         # Remove event message
         event_message = await event_channel.fetch_message(self.event_id)
         await event_message.delete()
+
+        # Remove scheduled event if there is one
+        scheduled_event_id = events[self.event_id].get("scheduled_event_id")
+        if scheduled_event_id:
+            scheduled_event = await interaction.guild.fetch_scheduled_event(scheduled_event_id)
+            await scheduled_event.delete()
+
+        # Remove from config
+        events.pop(self.event_id)
+        await self.config.guild(interaction.guild).events.set(events)
 
         for child in self.children:
             child.disabled = True

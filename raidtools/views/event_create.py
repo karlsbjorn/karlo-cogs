@@ -1,3 +1,5 @@
+import logging
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 import discord.ui
@@ -5,6 +7,8 @@ import discord.ui
 from raidtools.emojis import button_emojis, class_emojis, spec_emojis
 from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
 from raidtools.shared import create_event_embed
+
+log = logging.getLogger("red.karlo-cogs.raidtools")
 
 
 class EventCreateView(discord.ui.View):
@@ -176,11 +180,22 @@ class EventPreviewView(discord.ui.View):
             bot=interaction.client,
             config=self.config,
         )
+
         channel_id = interaction.channel_id
+
+        # Send event message
         msg = await interaction.client.get_channel(channel_id).send(
             embed=embed, view=EventView(self.config)
         )
 
+        # Send a Discord scheduled event
+        try:
+            scheduled_event = await self._add_scheduled_event(msg, interaction)
+        except Exception as e:
+            scheduled_event = None
+            log.error(f"Failed to create scheduled event: {e}", exc_info=True)
+
+        # Add event to config
         current_events: Dict = await self.config.guild(msg.guild).events()
         current_events[msg.id] = {
             "event_id": msg.id,
@@ -191,8 +206,51 @@ class EventPreviewView(discord.ui.View):
             "event_date": self.extras["event_date"],
             "event_end_date": self.extras["event_end_date"],
             "signed_up": mock_signed_up,
+            "scheduled_event_id": scheduled_event.id if scheduled_event else None,
         }
         await self.config.guild(msg.guild).events.set(current_events)
+
+    async def _add_scheduled_event(
+        self, event_message: discord.Message, interaction: discord.Interaction
+    ) -> Optional[discord.ScheduledEvent]:
+        """
+        Add a Discord scheduled event to the guild.
+
+        :param interaction: The interaction that triggered the event.
+        :return: The Discord scheduled event.
+        """
+        try:
+            parsed_start_timestamp = int(self.extras["event_date"][3:-3])
+            parsed_end_timestamp = int(self.extras["event_end_date"][3:-3])
+        except ValueError:
+            return None
+
+        event_start = datetime.fromtimestamp(parsed_start_timestamp, tz=timezone.utc)
+        event_end = datetime.fromtimestamp(parsed_end_timestamp, tz=timezone.utc)
+
+        event_message_link = (
+            f"https://discord.com/channels/"
+            f"{event_message.guild.id}/"
+            f"{event_message.channel.id}/"
+            f"{event_message.id}"
+        )
+
+        scheduled_event_description = (
+            f"<a:ForTheAlliance:923196137626828821> "
+            f"{interaction.user.mention}             "
+            f"⌛ {discord.utils.format_dt(event_start, style='R')}\n\n"
+            f"{event_message_link}\n\n"
+            f"{self.extras['event_description']}"
+        )
+
+        scheduled_event = await interaction.guild.create_scheduled_event(
+            name=self.extras["event_name"],
+            description=scheduled_event_description,
+            start_time=event_start,
+            end_time=event_end,
+            location="WoW Dragonflight",
+        )
+        return scheduled_event
 
 
 class EventView(discord.ui.View):
