@@ -1,6 +1,7 @@
 import discord
 from discord import app_commands
 
+from . import views
 from views.event_create import EventCreateView
 from views.event_manage import EventManageView
 
