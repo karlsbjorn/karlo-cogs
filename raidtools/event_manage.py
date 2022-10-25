@@ -3,6 +3,7 @@ from typing import Dict
 import discord.ui
 
 from raidtools.confirmation import DeleteConfirmationView
+from raidtools.discordevent import RaidtoolsDiscordEvent
 from raidtools.shared import create_event_embed
 
 
@@ -146,17 +147,13 @@ class EventEditNameModal(discord.ui.Modal):
         event_msg = await event_channel.fetch_message(event["event_id"])
         await event_msg.edit(embed=embed)
 
-        # Update Discord scheduled event
-        scheduled_event_id = event["scheduled_event_id"]
-        if scheduled_event_id:
-            scheduled_event = await interaction.guild.fetch_scheduled_event(scheduled_event_id)
-            await scheduled_event.edit(
-                name=event_name, description=event_description, location="WoW Dragonflight"
-            )
-
         await interaction.response.send_message(
             "Naziv i opis eventa su promijenjeni.", ephemeral=True
         )
+
+        # Update Discord scheduled event
+        scheduled_event = RaidtoolsDiscordEvent(event_msg, interaction, event)
+        await scheduled_event.edit_event()
 
 
 class EventEditTimeView(discord.ui.View):

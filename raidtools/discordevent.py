@@ -54,6 +54,32 @@ class RaidtoolsDiscordEvent:
 
         return scheduled_event
 
+    async def edit_event(self) -> discord.ScheduledEvent:
+        parsed_start_timestamp = int(self.extras["event_date"][3:-3])
+        parsed_end_timestamp = int(self.extras["event_end_date"][3:-3])
+
+        self.event_start = datetime.fromtimestamp(parsed_start_timestamp, tz=timezone.utc)
+        self.event_end = datetime.fromtimestamp(parsed_end_timestamp, tz=timezone.utc)
+
+        event = self.extras
+        interaction = self.interaction
+
+        event_name = event["event_name"]
+
+        scheduled_event_id = event["scheduled_event_id"]
+        if scheduled_event_id:
+            scheduled_event = await interaction.guild.fetch_scheduled_event(scheduled_event_id)
+            await scheduled_event.edit(
+                name=event_name,
+                description=self.event_description,
+                start_time=scheduled_event.start_time,
+                end_time=scheduled_event.end_time,
+                location="WoW Dragonflight",
+            )
+            return scheduled_event
+        else:
+            raise
+
     @property
     def event_description(self):
         return (
