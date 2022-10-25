@@ -39,8 +39,8 @@ async def create_event_embed(
     event_id = str(event_info["event_id"])
 
     # Reformat timestamps
-    event_date = event_date.replace(":R>", ":F>")   # long date w/ day of week and short time
-    event_end_date = event_end_date.replace(":R>", ":t>")   # short time
+    event_date = event_date.replace(":R>", ":F>")  # long date w/ day of week and short time
+    event_end_date = event_end_date.replace(":R>", ":t>")  # short time
 
     zws = "\N{ZERO WIDTH SPACE}"
     embed = discord.Embed(
