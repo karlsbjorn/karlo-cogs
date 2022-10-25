@@ -1,7 +1,6 @@
 import discord
 from discord import app_commands
-
-from views import event_create, event_manage
+from .views import event_create, event_manage
 
 
 class SlashCommands:
