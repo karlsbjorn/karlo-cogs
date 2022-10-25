@@ -31,12 +31,16 @@ async def create_event_embed(
     :param bot: Bot instance
     :return: An embed for the event.
     """
-    event_name = event_info["event_name"]
-    event_description = event_info["event_description"]
-    event_date = event_info["event_date"]
-    event_end_date = event_info["event_end_date"]
-    event_guild = bot.get_guild(event_info["event_guild"])
+    event_name: str = event_info["event_name"]
+    event_description: str = event_info["event_description"]
+    event_date: str = event_info["event_date"]
+    event_end_date: str = event_info["event_end_date"]
+    event_guild: discord.Guild = bot.get_guild(event_info["event_guild"])
     event_id = str(event_info["event_id"])
+
+    # Reformat timestamps
+    event_date = event_date.replace(":R>", ":F>")   # long date w/ day of week and short time
+    event_end_date = event_end_date.replace(":R>", ":t>")   # short time
 
     zws = "\N{ZERO WIDTH SPACE}"
     embed = discord.Embed(
