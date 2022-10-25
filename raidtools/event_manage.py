@@ -151,8 +151,7 @@ class EventEditNameModal(discord.ui.Modal):
         if scheduled_event_id:
             scheduled_event = await interaction.guild.fetch_scheduled_event(scheduled_event_id)
             await scheduled_event.edit(
-                name=event_name,
-                description=event_description,
+                name=event_name, description=event_description, location="WoW Dragonflight"
             )
 
         await interaction.response.send_message(

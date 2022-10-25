@@ -57,12 +57,12 @@ class RaidtoolsDiscordEvent:
     @property
     def event_description(self):
         return (
-        f"<a:ForTheAlliance:923196137626828821> "
-        f"{self.interaction.user.mention}             "
-        f"⌛ {discord.utils.format_dt(self.event_start, style='R')}\n\n"
-        f"{self.event_link()}\n\n"
-        f"{self.extras['event_description']}"
-    )
+            f"<a:ForTheAlliance:923196137626828821> "
+            f"{self.interaction.user.mention}             "
+            f"⌛ {discord.utils.format_dt(self.event_start, style='R')}\n\n"
+            f"{self.event_link()}\n\n"
+            f"{self.extras['event_description']}"
+        )
 
     def event_link(self):
         return (

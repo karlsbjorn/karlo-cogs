@@ -4,10 +4,10 @@ from typing import Dict, Optional
 
 import discord.ui
 
+from raidtools.discordevent import RaidtoolsDiscordEvent
 from raidtools.emojis import button_emojis, class_emojis, spec_emojis
 from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
 from raidtools.shared import create_event_embed
-from raidtools.discordevent import RaidtoolsDiscordEvent
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
 
