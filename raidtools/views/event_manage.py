@@ -3,7 +3,8 @@ from typing import Dict
 import discord.ui
 
 from raidtools.shared import create_event_embed
-from raidtools.views.confirmation import DeleteConfirmationView
+
+from .confirmation import DeleteConfirmationView
 
 
 class EventManageView(discord.ui.View):
