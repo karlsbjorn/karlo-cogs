@@ -1,8 +1,8 @@
 import discord
 from discord import app_commands
 
-from views import event_create
-from views import event_manage
+from raidtools.event_create import EventCreateView
+from raidtools.event_manage import EventManageView
 
 
 class SlashCommands:
@@ -40,7 +40,7 @@ class SlashCommands:
         )
 
         await interaction.response.send_message(
-            embed=embed, ephemeral=True, view=event_create.EventCreateView(self.config)
+            embed=embed, ephemeral=True, view=EventCreateView(self.config)
         )
 
     @app_commands.command(name="manage", description="Upravljaj eventima.")
@@ -67,5 +67,5 @@ class SlashCommands:
         await interaction.response.send_message(
             "Odaberi event kojim želiš upravljati.",
             ephemeral=True,
-            view=event_manage.EventManageView(self.config, events=events),
+            view=EventManageView(self.config, events=events),
         )
