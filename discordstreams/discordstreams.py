@@ -118,6 +118,10 @@ class DiscordStreams(commands.Cog):
                 active_messages[member_id].pop(str(channel_id))
             except discord.NotFound:  # Message was already deleted
                 active_messages[member_id].pop(str(channel_id))
+
+            if not active_messages[member_id]:
+                # No more active messages for this member
+                active_messages.pop(member_id)
         await self.config.guild(member_guild).active_messages.set(active_messages)
 
     async def _send_stream_alerts(
@@ -136,7 +140,7 @@ class DiscordStreams(commands.Cog):
         stream = DiscordStream(after.channel, member)
         embed = stream.make_embed()
 
-        active_messages = {}
+        active_messages = await self.config.guild(member_guild).active_messages()
         for channel_id in channels_to_send_to:
             channel: discord.TextChannel = member_guild.get_channel(channel_id)
             if channel is None:
