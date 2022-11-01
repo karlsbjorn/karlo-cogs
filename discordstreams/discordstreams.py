@@ -192,7 +192,7 @@ class DiscordStream:
 
         member_activity = None
         for activity in member.activities:
-            if isinstance(activity, discord.Game):
+            if activity.type == discord.ActivityType.playing:
                 member_activity = activity.name
                 break
 
