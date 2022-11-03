@@ -219,140 +219,140 @@ class EventView(discord.ui.View):
         super().__init__(timeout=None)
         self.add_item(EventClassDropdown(self.config))
 
-    @discord.ui.button(
-        label="Bench", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["bench"]
-    )
-    async def bench(self, interaction: discord.Interaction, button: discord.ui.Button):
-        current_events = await self.config.guild(interaction.guild).events()
-        event_id = str(interaction.message.id)
-
-        user_events: Dict = await self.config.member(interaction.user).events()
-        if event_id not in user_events:
-            user_events[event_id] = {
-                "participating_role": None,
-                "participating_class": None,
-                "participating_spec": None,
-            }
-
-        user_this_event: Dict = user_events.get(event_id, {})
-
-        user_participating_class: str = user_this_event.get("participating_class", None)
-
-        bench_participants = current_events[event_id]["signed_up"]["bench"]
-        if interaction.user.id in bench_participants:
-            await interaction.response.send_message("Već si benchan.", ephemeral=True)
-        else:
-            # Remove user from the class they were signed up for
-            if user_participating_class:
-                current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
-                    interaction.user.id
-                )
-
-            current_events[event_id]["signed_up"]["bench"] += [interaction.user.id]
-
-            user_events[event_id]["participating_class"] = "bench"
-            user_events[event_id]["participating_role"] = None
-
-            await self.update_event(current_events, event_id, interaction, user_events)
-        return
-
-    @discord.ui.button(
-        label="Kasnim", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["late"]
-    )
-    async def late(self, interaction: discord.Interaction, button: discord.ui.Button):
-        current_events = await self.config.guild(interaction.guild).events()
-        event_id = str(interaction.message.id)
-
-        user_events: Dict = await self.config.member(interaction.user).events()
-        if event_id not in user_events:
-            user_events[event_id] = {"participating_class": None, "participating_spec": None}
-
-        user_this_event: Dict = user_events.get(event_id, {})
-
-        user_participating_class: str = user_this_event.get("participating_class", None)
-
-        late_participants = current_events[event_id]["signed_up"]["late"]
-        if interaction.user.id in late_participants:
-            await interaction.response.send_message("Već kasniš.", ephemeral=True)
-        else:
-            # Remove user from the class they were signed up for
-            if user_participating_class:
-                current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
-                    interaction.user.id
-                )
-
-            current_events[event_id]["signed_up"]["late"] += [interaction.user.id]
-
-            user_events[event_id]["participating_class"] = "late"
-
-            await self.update_event(current_events, event_id, interaction, user_events)
-        return
-
-    @discord.ui.button(
-        label="Neodlučan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["tentative"]
-    )
-    async def tentative(self, interaction: discord.Interaction, button: discord.ui.Button):
-        current_events = await self.config.guild(interaction.guild).events()
-        event_id = str(interaction.message.id)
-
-        user_events: Dict = await self.config.member(interaction.user).events()
-        if event_id not in user_events:
-            user_events[event_id] = {"participating_class": None, "participating_spec": None}
-
-        user_this_event: Dict = user_events.get(event_id, {})
-
-        user_participating_class: str = user_this_event.get("participating_class", None)
-
-        tentative_participants = current_events[event_id]["signed_up"]["tentative"]
-        if interaction.user.id in tentative_participants:
-            await interaction.response.send_message("Već si neodlučan.", ephemeral=True)
-        else:
-            # Remove user from the class they were signed up for
-            if user_participating_class:
-                current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
-                    interaction.user.id
-                )
-
-            current_events[event_id]["signed_up"]["tentative"] += [interaction.user.id]
-
-            user_events[event_id]["participating_class"] = "tentative"
-            user_events[event_id]["participating_role"] = None
-
-            await self.update_event(current_events, event_id, interaction, user_events)
-        return
-
-    @discord.ui.button(
-        label="Odsutan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["absent"]
-    )
-    async def absent(self, interaction: discord.Interaction, button: discord.ui.Button):
-        current_events = await self.config.guild(interaction.guild).events()
-        event_id = str(interaction.message.id)
-
-        user_events: Dict = await self.config.member(interaction.user).events()
-        if event_id not in user_events:
-            user_events[event_id] = {"participating_class": None, "participating_spec": None}
-
-        user_this_event: Dict = user_events.get(event_id, {})
-
-        user_participating_class: str = user_this_event.get("participating_class", None)
-
-        no_show_participants = current_events[event_id]["signed_up"]["absent"]
-        if interaction.user.id in no_show_participants:
-            await interaction.response.send_message("Već si odsutan.", ephemeral=True)
-        else:
-            # Remove user from the class they were signed up for
-            if user_participating_class:
-                current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
-                    interaction.user.id
-                )
-
-            current_events[event_id]["signed_up"]["absent"] += [interaction.user.id]
-
-            user_events[event_id]["participating_class"] = "absent"
-            user_events[event_id]["participating_role"] = None
-
-            await self.update_event(current_events, event_id, interaction, user_events)
-        return
+    # @discord.ui.button(
+    #     label="Bench", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["bench"]
+    # )
+    # async def bench(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     current_events = await self.config.guild(interaction.guild).events()
+    #     event_id = str(interaction.message.id)
+    #
+    #     user_events: Dict = await self.config.member(interaction.user).events()
+    #     if event_id not in user_events:
+    #         user_events[event_id] = {
+    #             "participating_role": None,
+    #             "participating_class": None,
+    #             "participating_spec": None,
+    #         }
+    #
+    #     user_this_event: Dict = user_events.get(event_id, {})
+    #
+    #     user_participating_class: str = user_this_event.get("participating_class", None)
+    #
+    #     bench_participants = current_events[event_id]["signed_up"]["bench"]
+    #     if interaction.user.id in bench_participants:
+    #         await interaction.response.send_message("Već si benchan.", ephemeral=True)
+    #     else:
+    #         # Remove user from the class they were signed up for
+    #         if user_participating_class:
+    #             current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
+    #                 interaction.user.id
+    #             )
+    #
+    #         current_events[event_id]["signed_up"]["bench"] += [interaction.user.id]
+    #
+    #         user_events[event_id]["participating_class"] = "bench"
+    #         user_events[event_id]["participating_role"] = None
+    #
+    #         await self.update_event(current_events, event_id, interaction, user_events)
+    #     return
+    #
+    # @discord.ui.button(
+    #     label="Kasnim", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["late"]
+    # )
+    # async def late(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     current_events = await self.config.guild(interaction.guild).events()
+    #     event_id = str(interaction.message.id)
+    #
+    #     user_events: Dict = await self.config.member(interaction.user).events()
+    #     if event_id not in user_events:
+    #         user_events[event_id] = {"participating_class": None, "participating_spec": None}
+    #
+    #     user_this_event: Dict = user_events.get(event_id, {})
+    #
+    #     user_participating_class: str = user_this_event.get("participating_class", None)
+    #
+    #     late_participants = current_events[event_id]["signed_up"]["late"]
+    #     if interaction.user.id in late_participants:
+    #         await interaction.response.send_message("Već kasniš.", ephemeral=True)
+    #     else:
+    #         # Remove user from the class they were signed up for
+    #         if user_participating_class:
+    #             current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
+    #                 interaction.user.id
+    #             )
+    #
+    #         current_events[event_id]["signed_up"]["late"] += [interaction.user.id]
+    #
+    #         user_events[event_id]["participating_class"] = "late"
+    #
+    #         await self.update_event(current_events, event_id, interaction, user_events)
+    #     return
+    #
+    # @discord.ui.button(
+    #     label="Neodlučan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["tentative"]
+    # )
+    # async def tentative(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     current_events = await self.config.guild(interaction.guild).events()
+    #     event_id = str(interaction.message.id)
+    #
+    #     user_events: Dict = await self.config.member(interaction.user).events()
+    #     if event_id not in user_events:
+    #         user_events[event_id] = {"participating_class": None, "participating_spec": None}
+    #
+    #     user_this_event: Dict = user_events.get(event_id, {})
+    #
+    #     user_participating_class: str = user_this_event.get("participating_class", None)
+    #
+    #     tentative_participants = current_events[event_id]["signed_up"]["tentative"]
+    #     if interaction.user.id in tentative_participants:
+    #         await interaction.response.send_message("Već si neodlučan.", ephemeral=True)
+    #     else:
+    #         # Remove user from the class they were signed up for
+    #         if user_participating_class:
+    #             current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
+    #                 interaction.user.id
+    #             )
+    #
+    #         current_events[event_id]["signed_up"]["tentative"] += [interaction.user.id]
+    #
+    #         user_events[event_id]["participating_class"] = "tentative"
+    #         user_events[event_id]["participating_role"] = None
+    #
+    #         await self.update_event(current_events, event_id, interaction, user_events)
+    #     return
+    #
+    # @discord.ui.button(
+    #     label="Odsutan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["absent"]
+    # )
+    # async def absent(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     current_events = await self.config.guild(interaction.guild).events()
+    #     event_id = str(interaction.message.id)
+    #
+    #     user_events: Dict = await self.config.member(interaction.user).events()
+    #     if event_id not in user_events:
+    #         user_events[event_id] = {"participating_class": None, "participating_spec": None}
+    #
+    #     user_this_event: Dict = user_events.get(event_id, {})
+    #
+    #     user_participating_class: str = user_this_event.get("participating_class", None)
+    #
+    #     no_show_participants = current_events[event_id]["signed_up"]["absent"]
+    #     if interaction.user.id in no_show_participants:
+    #         await interaction.response.send_message("Već si odsutan.", ephemeral=True)
+    #     else:
+    #         # Remove user from the class they were signed up for
+    #         if user_participating_class:
+    #             current_events[event_id]["signed_up"][user_participating_class.lower()].remove(
+    #                 interaction.user.id
+    #             )
+    #
+    #         current_events[event_id]["signed_up"]["absent"] += [interaction.user.id]
+    #
+    #         user_events[event_id]["participating_class"] = "absent"
+    #         user_events[event_id]["participating_role"] = None
+    #
+    #         await self.update_event(current_events, event_id, interaction, user_events)
+    #     return
 
     async def update_event(self, current_events, event_id, interaction, user_events):
         await self.config.guild(interaction.guild).events.set(current_events)
