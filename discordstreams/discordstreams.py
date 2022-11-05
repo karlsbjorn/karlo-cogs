@@ -209,15 +209,17 @@ class DiscordStream:
             inline=False,
         )
 
-        if activity.details:
+        details_msg = (
+            "" + f"{activity.details}\n"
+            if activity.details
+            else "" + f"{activity.state}"
+            if activity.state
+            else ""
+        )
+        if details_msg:
             embed.add_field(
                 name=_("Details"),
-                value=activity.details,
-            )
-        if activity.state:
-            embed.add_field(
-                name=_("State"),
-                value=activity.state,
+                value=details_msg,
             )
 
         embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
