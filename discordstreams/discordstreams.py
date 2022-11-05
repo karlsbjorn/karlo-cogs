@@ -190,11 +190,7 @@ class DiscordStream:
         member = self.member
         voice_channel = self.voice_channel
 
-        member_activity = None
-        for activity in member.activities:
-            if activity.type == discord.ActivityType.playing:
-                member_activity = activity.name
-                break
+        activity = self.get_activity()
 
         embed = discord.Embed(
             title=member.display_name,
@@ -202,6 +198,7 @@ class DiscordStream:
             description=f"{voice_channel.mention}",
         )
         embed.set_thumbnail(url=member.avatar.url)
+
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
@@ -209,11 +206,26 @@ class DiscordStream:
                     discord.utils.utcnow(), style="R"
                 )
             ),
-        )
-        embed.set_footer(
-            text=_("Playing: {activity}").format(
-                activity=member_activity if member_activity else _("Nothing")
-            )
+            inline=False,
         )
 
+        if activity.details:
+            embed.add_field(
+                name=_("Details"),
+                value=activity.details,
+            )
+        if activity.state:
+            embed.add_field(
+                name=_("State"),
+                value=activity.state,
+            )
+
+        embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
+
         return embed
+
+    def get_activity(self) -> discord.Activity:
+        for activity in self.member.activities:
+            if activity.type == discord.ActivityType.playing:
+                return activity
+        return discord.Activity(type=discord.ActivityType.playing, name=_("Nothing"))
