@@ -210,11 +210,9 @@ class DiscordStream:
         )
 
         details_msg = (
-            "" + f"{activity.details}\n"
-            if activity.details
-            else "" + f"{activity.state}"
-            if activity.state
-            else ""
+            ""
+            + (f"{activity.details}\n" if activity.details else "")
+            + (f"{activity.state}" if activity.state else "")
         )
         if details_msg:
             embed.add_field(
