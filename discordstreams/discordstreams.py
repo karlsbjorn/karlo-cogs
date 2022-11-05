@@ -1,7 +1,9 @@
 import logging
-from typing import Dict, List
+from datetime import datetime
+from typing import Dict, List, Optional
 
 import discord
+from discord.ext import tasks
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -22,6 +24,7 @@ class DiscordStreams(commands.Cog):
             "active_messages": {},
         }
         self.config.register_guild(**default_guild)
+        self.update_stream_messages.start()
 
     @commands.command()
     @commands.guild_only()
@@ -50,6 +53,67 @@ class DiscordStreams(commands.Cog):
                     channel=channel.mention
                 )
             )
+
+    @tasks.loop(seconds=10)
+    async def update_stream_messages(self):
+        for guild in self.bot.guilds:
+            if await self.bot.cog_disabled_in_guild(self, guild):
+                continue
+            await self.update_guild_embeds(guild)
+
+    @update_stream_messages.error
+    async def update_stream_messages_error(self, error):
+        log.error(
+            f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
+        )
+
+    async def update_guild_embeds(self, guild: discord.Guild):
+        """
+        Update the stream alert embeds for a guild.
+
+        :param guild: The guild to update the embeds for.
+        :return: None
+        """
+        active_messages: Dict = await self.config.guild(guild).active_messages()
+        for member_id, message in active_messages.items():
+            member: discord.Member = guild.get_member(int(member_id))
+            if member is None:
+                continue
+
+            await self.update_message_embeds(guild, member, message)
+
+    @staticmethod
+    async def update_message_embeds(
+        guild: discord.Guild, member: discord.Member, message: Dict
+    ):
+        """
+        Update the stream alert embeds for a member.
+
+        :param guild: The guild the member is in.
+        :param member: The member to update the embeds for.
+        :param message: Dictionary of messages to update and their channel IDs.
+        :return:
+        """
+        for channel_id, message_info in message.items():
+            channel: discord.TextChannel = guild.get_channel(int(channel_id))
+            if channel is None:
+                continue
+
+            message_id = message_info["message"]
+            try:
+                message: discord.Message = await channel.fetch_message(message_id)
+            except discord.NotFound:
+                continue
+
+            stream = DiscordStream(member.voice.channel, member)
+
+            current_embed = message.embeds[0]
+            new_embed = stream.make_embed(start_time=message.created_at)
+            if current_embed.to_dict() == new_embed.to_dict():
+                # Don't edit if there's no change
+                continue
+
+            await message.edit(embed=new_embed)
 
     @commands.Cog.listener("on_voice_state_update")
     async def on_voice_state_update(
@@ -173,6 +237,9 @@ class DiscordStreams(commands.Cog):
         active_messages[str(ctx.author.id)].pop(str(channel.id))
         await self.config.guild(ctx.guild).active_messages.set(active_messages)
 
+    def cog_unload(self) -> None:
+        self.update_stream_messages.stop()
+
 
 class DiscordStream:
     def __init__(self, voice_channel: discord.VoiceChannel, member: discord.Member):
@@ -185,7 +252,7 @@ class DiscordStream:
         self.voice_channel = voice_channel
         self.member = member
 
-    def make_embed(self) -> discord.Embed:
+    def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
         zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
@@ -205,6 +272,8 @@ class DiscordStream:
                 relative_timestamp=discord.utils.format_dt(
                     discord.utils.utcnow(), style="R"
                 )
+                if not start_time
+                else discord.utils.format_dt(start_time, style="R")
             ),
             inline=False,
         )
