@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-11-05 10:32+0000\n"
-"PO-Revision-Date: 2022-11-05 10:32\n"
+"POT-Creation-Date: 2022-11-05 21:58+0000\n"
+"PO-Revision-Date: 2022-11-05 21:59\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,40 +17,36 @@ msgstr ""
 "X-Crowdin-File-ID: 26\n"
 "Language: sr_SP\n"
 
-#: discordstreams/discordstreams.py:31
+#: discordstreams/discordstreams.py:34
 #, docstring
 msgid "Set the channel for live alerts."
 msgstr ""
 
-#: discordstreams/discordstreams.py:40
+#: discordstreams/discordstreams.py:43
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr ""
 
-#: discordstreams/discordstreams.py:49
+#: discordstreams/discordstreams.py:52
 msgid "Go Live alerts will be sent to {channel}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:154
+#: discordstreams/discordstreams.py:218
 msgid "{member} is live!"
 msgstr ""
 
-#: discordstreams/discordstreams.py:204
+#: discordstreams/discordstreams.py:271
 msgid "Stream started {relative_timestamp}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:214
+#: discordstreams/discordstreams.py:288
 msgid "Details"
 msgstr ""
 
-#: discordstreams/discordstreams.py:219
-msgid "State"
-msgstr ""
-
-#: discordstreams/discordstreams.py:223
+#: discordstreams/discordstreams.py:292
 msgid "Playing: {activity}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:231
+#: discordstreams/discordstreams.py:300
 msgid "Nothing"
 msgstr ""
 

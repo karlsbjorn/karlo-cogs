@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-10-20 02:30+0000\n"
-"PO-Revision-Date: 2022-11-05 10:35\n"
+"POT-Creation-Date: 2022-11-08 22:03+0000\n"
+"PO-Revision-Date: 2022-11-08 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -33,8 +33,8 @@ msgstr "Aukcijska kuća nije dostupna u Kini.\n"
 "Molim da postavite drugu regiju s `{prefix}wowset region`."
 
 #: wowtools/auctionhouse.py:39 wowtools/guildmanage.py:118
-#: wowtools/guildmanage.py:134 wowtools/pvp.py:46 wowtools/scoreboard.py:42
-#: wowtools/scoreboard.py:106 wowtools/scoreboard.py:500 wowtools/token.py:23
+#: wowtools/guildmanage.py:134 wowtools/pvp.py:46 wowtools/scoreboard.py:43
+#: wowtools/scoreboard.py:107 wowtools/scoreboard.py:530 wowtools/token.py:23
 #: wowtools/token.py:61 wowtools/wowaudit.py:32 wowtools/wowaudit.py:88
 #: wowtools/wowaudit.py:151 wowtools/wowaudit.py:222 wowtools/wowaudit.py:280
 #: wowtools/wowaudit.py:338 wowtools/wowaudit.py:394 wowtools/wowtools.py:90
@@ -328,17 +328,17 @@ msgstr "\n"
 msgid "This week's Mythic+ affixes"
 msgstr "Mythic+ afiksi ovaj za ovaj tjedan"
 
-#: wowtools/scoreboard.py:27
+#: wowtools/scoreboard.py:28
 #, docstring
 msgid "Show various scoreboards for your guild."
 msgstr "Prikaži razne ljestvice za ovaj guild."
 
-#: wowtools/scoreboard.py:33
+#: wowtools/scoreboard.py:34
 #, docstring
 msgid "Get the Mythic+ scoreboard for this guild."
 msgstr "Prikaži Mythic+ ljestvicu za ovaj guild."
 
-#: wowtools/scoreboard.py:54
+#: wowtools/scoreboard.py:55
 #, docstring
 msgid "Get all the PvP related scoreboards for this guild.\n\n"
 "        **Characters that have not played all PvP gamemodes at\n"
@@ -349,30 +349,30 @@ msgstr "Prikaži sve PvP ljestvice za ovaj guild.\n\n"
 "        barem jednom nece biti prikazani.**\n"
 "        "
 
-#: wowtools/scoreboard.py:69
+#: wowtools/scoreboard.py:70
 #, docstring
 msgid "Change scoreboard settings"
 msgstr "Promjeni postavke ljestvice"
 
-#: wowtools/scoreboard.py:78
+#: wowtools/scoreboard.py:79
 #, docstring
 msgid "Set the channel to send the scoreboard to."
 msgstr "Postavite kanal u koji želite poslati ljestvicu."
 
-#: wowtools/scoreboard.py:91
+#: wowtools/scoreboard.py:92
 msgid "Scoreboard channel cleared."
 msgstr "Kanal za ljestvicu očišćen."
 
-#: wowtools/scoreboard.py:113
+#: wowtools/scoreboard.py:114
 msgid "Scoreboard channel set."
 msgstr "Kanal za ljestvicu postavljen."
 
-#: wowtools/scoreboard.py:119
+#: wowtools/scoreboard.py:120
 #, docstring
 msgid "Manage the scoreboard blacklist."
 msgstr "Upravljaj popisom blokiranih."
 
-#: wowtools/scoreboard.py:126
+#: wowtools/scoreboard.py:127
 #, docstring
 msgid "Add characters to the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -381,11 +381,11 @@ msgstr "Dodaj charactere na popis blokiranih.\n\n"
 "        Characteri se mogu odvajati razmacima ili zarezima.\n"
 "        "
 
-#: wowtools/scoreboard.py:136
+#: wowtools/scoreboard.py:137
 msgid "Blacklisted characters added."
 msgstr "Characteri dodani na popis blokiranih."
 
-#: wowtools/scoreboard.py:142
+#: wowtools/scoreboard.py:143
 #, docstring
 msgid "Remove characters from the scoreboard blacklist.\n\n"
 "        Characters can be separated by spaces or commas.\n"
@@ -394,90 +394,98 @@ msgstr "Ukloni charactere s popisa blokiranih.\n\n"
 "        Characteri se mogu odvajati razmacima ili zarezima.\n"
 "        "
 
-#: wowtools/scoreboard.py:152
+#: wowtools/scoreboard.py:153
 msgid "Blacklisted characters removed."
 msgstr "Characteri maknuti s popisa blokiranih."
 
-#: wowtools/scoreboard.py:158
+#: wowtools/scoreboard.py:159
 #, docstring
 msgid "List the characters on the scoreboard blacklist."
 msgstr "Pokaži charactere na popisu blokiranih."
 
-#: wowtools/scoreboard.py:161
+#: wowtools/scoreboard.py:162
 msgid "No characters are blacklisted."
 msgstr "Nema charactera na popisu blokiranih."
 
-#: wowtools/scoreboard.py:164
+#: wowtools/scoreboard.py:165
 msgid "Blacklisted characters: {characters}"
 msgstr "Characteri na popisu blokiranih: {characters}"
 
-#: wowtools/scoreboard.py:173
+#: wowtools/scoreboard.py:174
 #, docstring
 msgid "Clear the scoreboard blacklist."
 msgstr "Izbriši popis blokiranih."
 
-#: wowtools/scoreboard.py:175
+#: wowtools/scoreboard.py:176
 msgid "Blacklisted characters cleared."
 msgstr "Svi characteri s popisa blokiranih su izbrisani."
 
-#: wowtools/scoreboard.py:189 wowtools/scoreboard.py:310
-#: wowtools/scoreboard.py:402
+#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:340
+#: wowtools/scoreboard.py:432
 msgid "Name"
 msgstr "Ime"
 
-#: wowtools/scoreboard.py:189 wowtools/scoreboard.py:310
+#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:340
 msgid "Score"
 msgstr "Score"
 
-#: wowtools/scoreboard.py:200 wowtools/scoreboard.py:332
+#: wowtools/scoreboard.py:208 wowtools/scoreboard.py:362
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Guild Mythic+ Ljestvica"
 
-#: wowtools/scoreboard.py:314 wowtools/scoreboard.py:406
+#: wowtools/scoreboard.py:229
+msgid "Last updated: <t:{timestamp}:R>\n"
+msgstr "Zadnje ažuriranje: <t:{timestamp}:R>\n"
+
+#: wowtools/scoreboard.py:247
+msgid "Updates only when there is a ranking change."
+msgstr "Ažurira se samo kada dođe do promjene u poretku."
+
+#: wowtools/scoreboard.py:344 wowtools/scoreboard.py:436
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset region`."
 
-#: wowtools/scoreboard.py:320 wowtools/scoreboard.py:413
+#: wowtools/scoreboard.py:350 wowtools/scoreboard.py:443
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti realm s `{prefix}wowset realm`."
 
-#: wowtools/scoreboard.py:326 wowtools/scoreboard.py:420
+#: wowtools/scoreboard.py:356 wowtools/scoreboard.py:450
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset guild`."
 
-#: wowtools/scoreboard.py:402
+#: wowtools/scoreboard.py:432
 msgid "Rating"
 msgstr "Rating"
 
-#: wowtools/scoreboard.py:427
+#: wowtools/scoreboard.py:457
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr "Dohvaćanje ljestvice...\n"
 "Ovo može potrajati do 30 minuta za velike guilde."
 
-#: wowtools/scoreboard.py:434
+#: wowtools/scoreboard.py:464
 msgid "Guild PvP Leaderboard"
 msgstr "Guild PvP Ljestvica"
 
-#: wowtools/scoreboard.py:446
+#: wowtools/scoreboard.py:476
 msgid "RBG Leaderboard"
 msgstr "RBG Ljestvica"
 
-#: wowtools/scoreboard.py:459
+#: wowtools/scoreboard.py:489
 msgid "2v2 Arena Leaderboard"
 msgstr "2v2 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:472
+#: wowtools/scoreboard.py:502
 msgid "3v3 Arena Leaderboard"
 msgstr "3v3 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:518
+#: wowtools/scoreboard.py:548
 msgid "Guild not found."
 msgstr "Guild nije pronađen."
 

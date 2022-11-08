@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-11-05 10:32+0000\n"
-"PO-Revision-Date: 2022-11-05 10:35\n"
+"POT-Creation-Date: 2022-11-05 21:58+0000\n"
+"PO-Revision-Date: 2022-11-08 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,40 +17,36 @@ msgstr ""
 "X-Crowdin-File-ID: 26\n"
 "Language: hr_HR\n"
 
-#: discordstreams/discordstreams.py:31
+#: discordstreams/discordstreams.py:34
 #, docstring
 msgid "Set the channel for live alerts."
 msgstr "Postavi kanal za obavijesti."
 
-#: discordstreams/discordstreams.py:40
+#: discordstreams/discordstreams.py:43
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr "Obavijesti više neće biti slane u {channel}."
 
-#: discordstreams/discordstreams.py:49
+#: discordstreams/discordstreams.py:52
 msgid "Go Live alerts will be sent to {channel}"
 msgstr "Go Live obavijesti će se sada slati u {channel}"
 
-#: discordstreams/discordstreams.py:154
+#: discordstreams/discordstreams.py:218
 msgid "{member} is live!"
 msgstr "{member} prenosi uživo!"
 
-#: discordstreams/discordstreams.py:204
+#: discordstreams/discordstreams.py:271
 msgid "Stream started {relative_timestamp}"
 msgstr "Prijenos je započeo {relative_timestamp}"
 
-#: discordstreams/discordstreams.py:214
+#: discordstreams/discordstreams.py:288
 msgid "Details"
 msgstr "Opis"
 
-#: discordstreams/discordstreams.py:219
-msgid "State"
-msgstr "Stanje"
-
-#: discordstreams/discordstreams.py:223
+#: discordstreams/discordstreams.py:292
 msgid "Playing: {activity}"
 msgstr "Igra: {activity}"
 
-#: discordstreams/discordstreams.py:231
+#: discordstreams/discordstreams.py:300
 msgid "Nothing"
 msgstr "Ništa"
 
