@@ -246,7 +246,7 @@ class Scoreboard:
                     old_rankings = sb_msg.embeds[0].description.splitlines(
                         keepends=True
                     )
-                    old_rankings = "\n".join(old_rankings[2:])
+                    old_rankings = "\n".join(old_rankings[2:-1])
                     if old_rankings == formatted_rankings:
                         continue
 
