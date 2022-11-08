@@ -225,11 +225,7 @@ class Scoreboard:
                         )
                         continue
 
-                    # TODO: When dpy2 is out, use discord.utils.format_dt()
-                    desc = _("Last updated: <t:{timestamp}:R>\n").format(
-                        timestamp=int(datetime.now(timezone.utc).timestamp())
-                    )
-                    desc += box(
+                    formatted_rankings = box(
                         tabulate(
                             tabulate_list,
                             headers=headers,
@@ -238,13 +234,24 @@ class Scoreboard:
                         ),
                         lang="md",
                     )
+
+                    # TODO: When dpy2 is out, use discord.utils.format_dt()
+                    desc = _("Last updated <t:{timestamp}:R>\n").format(
+                        timestamp=int(datetime.now(timezone.utc).timestamp())
+                    )
+                    desc += formatted_rankings
                     embed.description = desc
+
                     # Don't edit if there wouldn't be a change
-                    if sb_msg.embeds[0].description == embed.description:
+                    old_rankings = sb_msg.embeds[0].description.splitlines(
+                        keepends=True
+                    )
+                    old_rankings = "\n".join(old_rankings[2:])
+                    if old_rankings == formatted_rankings:
                         continue
 
                     embed.set_footer(
-                        text=_("Updates only when there is a ranking change.")
+                        text=_("Updates only when there is a ranking change")
                     )
 
                     try:
