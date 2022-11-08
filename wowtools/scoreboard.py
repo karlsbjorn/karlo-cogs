@@ -243,10 +243,8 @@ class Scoreboard:
                     embed.description = desc
 
                     # Don't edit if there wouldn't be a change
-                    old_rankings = sb_msg.embeds[0].description.splitlines(
-                        keepends=True
-                    )
-                    old_rankings = "\n".join(old_rankings[2:-1])
+                    old_rankings = sb_msg.embeds[0].description.splitlines()
+                    old_rankings = "\n".join(old_rankings[1:])
                     if old_rankings == formatted_rankings:
                         continue
 
