@@ -1,5 +1,6 @@
 import io
 import logging
+from datetime import datetime, timezone
 from typing import List, Optional
 
 import discord
@@ -224,7 +225,11 @@ class Scoreboard:
                         )
                         continue
 
-                    embed.description = box(
+                    # TODO: When dpy2 is out, use discord.utils.format_dt()
+                    desc = _("Last updated: <t:{timestamp}:R>\n").format(
+                        timestamp=int(datetime.now(timezone.utc).timestamp())
+                    )
+                    desc += box(
                         tabulate(
                             tabulate_list,
                             headers=headers,
@@ -233,9 +238,14 @@ class Scoreboard:
                         ),
                         lang="md",
                     )
+                    embed.description = desc
                     # Don't edit if there wouldn't be a change
                     if sb_msg.embeds[0].description == embed.description:
                         continue
+
+                    embed.set_footer(
+                        text=_("Updates only when there is a ranking change.")
+                    )
 
                     try:
                         await sb_msg.edit(embed=embed)
