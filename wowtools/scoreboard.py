@@ -183,7 +183,14 @@ class Scoreboard:
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
             if sb_channel_id and sb_msg_id:
                 sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
-                sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+                try:
+                    sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+                except discord.HTTPException:
+                    log.error(
+                        f"Failed to fetch scoreboard message in guild {guild.id} ({guild.name}).",
+                        exc_info=True,
+                    )
+                    continue
                 if sb_msg:
                     max_chars = 20
                     headers = ["#", _("Name"), _("Score")]
@@ -229,7 +236,20 @@ class Scoreboard:
                     # Don't edit if there wouldn't be a change
                     if sb_msg.embeds[0].description == embed.description:
                         continue
-                    await sb_msg.edit(embed=embed)
+
+                    try:
+                        await sb_msg.edit(embed=embed)
+                    except discord.Forbidden:
+                        log.error(
+                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}) "
+                            f"due to missing permissions.",
+                            exc_info=True,
+                        )
+                    except discord.HTTPException:
+                        log.error(
+                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}).",
+                            exc_info=True,
+                        )
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
