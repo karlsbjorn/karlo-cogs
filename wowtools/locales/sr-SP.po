@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-11-08 22:03+0000\n"
-"PO-Revision-Date: 2022-11-08 22:04\n"
+"POT-Creation-Date: 2022-11-08 22:23+0000\n"
+"PO-Revision-Date: 2022-11-08 22:23\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: wowtools/auctionhouse.py:39 wowtools/guildmanage.py:118
 #: wowtools/guildmanage.py:134 wowtools/pvp.py:46 wowtools/scoreboard.py:43
-#: wowtools/scoreboard.py:107 wowtools/scoreboard.py:530 wowtools/token.py:23
+#: wowtools/scoreboard.py:107 wowtools/scoreboard.py:537 wowtools/token.py:23
 #: wowtools/token.py:61 wowtools/wowaudit.py:32 wowtools/wowaudit.py:88
 #: wowtools/wowaudit.py:151 wowtools/wowaudit.py:222 wowtools/wowaudit.py:280
 #: wowtools/wowaudit.py:338 wowtools/wowaudit.py:394 wowtools/wowtools.py:90
@@ -412,68 +412,68 @@ msgstr "Обришите црну листу са семафора."
 msgid "Blacklisted characters cleared."
 msgstr "Ликови са црне листе су обрисани."
 
-#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:340
-#: wowtools/scoreboard.py:432
+#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:347
+#: wowtools/scoreboard.py:439
 msgid "Name"
 msgstr "Име"
 
-#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:340
+#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:347
 msgid "Score"
 msgstr "Резултат"
 
-#: wowtools/scoreboard.py:208 wowtools/scoreboard.py:362
+#: wowtools/scoreboard.py:208 wowtools/scoreboard.py:369
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Митхиц+ Гуилд Сцоребоард"
 
-#: wowtools/scoreboard.py:229
-msgid "Last updated: <t:{timestamp}:R>\n"
+#: wowtools/scoreboard.py:239
+msgid "Last updated <t:{timestamp}:R>\n"
 msgstr ""
 
-#: wowtools/scoreboard.py:247
-msgid "Updates only when there is a ranking change."
+#: wowtools/scoreboard.py:254
+msgid "Updates only when there is a ranking change"
 msgstr ""
 
-#: wowtools/scoreboard.py:344 wowtools/scoreboard.py:436
+#: wowtools/scoreboard.py:351 wowtools/scoreboard.py:443
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:350 wowtools/scoreboard.py:443
+#: wowtools/scoreboard.py:357 wowtools/scoreboard.py:450
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:356 wowtools/scoreboard.py:450
+#: wowtools/scoreboard.py:363 wowtools/scoreboard.py:457
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:432
+#: wowtools/scoreboard.py:439
 msgid "Rating"
 msgstr "Оцена"
 
-#: wowtools/scoreboard.py:457
+#: wowtools/scoreboard.py:464
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr ""
 
-#: wowtools/scoreboard.py:464
+#: wowtools/scoreboard.py:471
 msgid "Guild PvP Leaderboard"
 msgstr "Гуилд ПвП Леадербоард"
 
-#: wowtools/scoreboard.py:476
+#: wowtools/scoreboard.py:483
 msgid "RBG Leaderboard"
 msgstr "РБГ Леадербоард"
 
-#: wowtools/scoreboard.py:489
+#: wowtools/scoreboard.py:496
 msgid "2v2 Arena Leaderboard"
 msgstr "2в2 Арена Леадербоард"
 
-#: wowtools/scoreboard.py:502
+#: wowtools/scoreboard.py:509
 msgid "3v3 Arena Leaderboard"
 msgstr "3в3 Арена Леадербоард"
 
-#: wowtools/scoreboard.py:548
+#: wowtools/scoreboard.py:555
 msgid "Guild not found."
 msgstr ""
 
