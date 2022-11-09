@@ -103,6 +103,18 @@ class DiscordStreams(commands.Cog):
             try:
                 message: discord.Message = await channel.fetch_message(message_id)
             except discord.NotFound:
+                log.error(
+                    f"Message {message_id} not found in channel {channel_id}, skipping."
+                )
+                continue
+            except discord.HTTPException:
+                log.error(
+                    f"Error fetching message {message_id} in {channel_id}, skipping.",
+                    exc_info=True,
+                )
+                continue
+
+            if member.voice is None:
                 continue
 
             stream = DiscordStream(member.voice.channel, member)
