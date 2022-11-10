@@ -92,7 +92,7 @@ class DiscordStreams(commands.Cog):
         :param guild: The guild the member is in.
         :param member: The member to update the embeds for.
         :param message: Dictionary of messages to update and their channel IDs.
-        :return:
+        :return: None
         """
         for channel_id, message_info in message.items():
             channel: discord.TextChannel = guild.get_channel(int(channel_id))
@@ -117,12 +117,16 @@ class DiscordStreams(commands.Cog):
             if member.voice is None:
                 continue
 
+            current_embed = message.embeds[0]
+            current_embed_dict = current_embed.to_dict()
+
             stream = DiscordStream(member.voice.channel, member)
 
-            current_embed = message.embeds[0]
             new_embed = stream.make_embed(start_time=message.created_at)
-            same_fields: bool = current_embed.to_dict()["fields"] == new_embed.to_dict()["fields"]
-            same_footer: bool = current_embed.to_dict()["footer"] == new_embed.to_dict()["footer"]
+            new_embed_dict = new_embed.to_dict()
+
+            same_fields: bool = current_embed_dict["fields"] == new_embed_dict["fields"]
+            same_footer: bool = current_embed_dict["footer"] == new_embed_dict["footer"]
             if same_fields and same_footer:
                 # Don't edit if there's no change
                 continue
@@ -136,6 +140,14 @@ class DiscordStreams(commands.Cog):
         before: discord.VoiceState,
         after: discord.VoiceState,
     ):
+        """
+        Send or remove a stream alert when a member starts or stops streaming.
+
+        :param member: The member who started or stopped streaming.
+        :param before: The member's voice state before the change.
+        :param after: The member's voice state after the change.
+        :return: None
+        """
         member_guild: discord.Guild = member.guild
         guild_config: Dict = await self.config.guild(member_guild).all()
         enabled = bool(guild_config["alert_channels"])
@@ -174,7 +186,7 @@ class DiscordStreams(commands.Cog):
         :param guild_config: The guild's config info.
         :param member_guild: The guild the member is in.
         :param member_id: The ID of the member.
-        :return:
+        :return: None
         """
         alert_channels: List = guild_config["alert_channels"]
         for channel_id in alert_channels:
@@ -206,7 +218,7 @@ class DiscordStreams(commands.Cog):
         self, member: discord.Member, after: discord.VoiceState
     ) -> None:
         """
-        Send a message to the alert channels when a member starts streaming.
+        Send a message to the alert channels.
 
         :param member: The member who started streaming.
         :param after: The member's voice state after starting their stream.
@@ -267,6 +279,12 @@ class DiscordStream:
         self.member = member
 
     def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
+        """
+        Make an embed for the stream.
+
+        :param start_time: The time the stream started. If None, the current time is used.
+        :return: An embed showing the stream's details.
+        """
         zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
@@ -308,6 +326,11 @@ class DiscordStream:
         return embed
 
     def get_activity(self) -> discord.Activity:
+        """
+        Get the activity object relevant to the stream.
+
+        :return: The activity object.
+        """
         for activity in self.member.activities:
             if activity.type == discord.ActivityType.playing:
                 return activity
