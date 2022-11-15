@@ -45,8 +45,12 @@ class WarcraftLogsRetail(commands.Cog):
             "realm": None,
             "region": None,
         }
+        default_guild = {
+            "notification_channel": None,
+        }
 
         self.config.register_user(**default_user)
+        self.config.register_guild(**default_guild)
 
     async def _create_client(self) -> None:
         self.http = WoWLogsClient(bearer=await self._get_bearer())
@@ -545,8 +549,13 @@ class WarcraftLogsRetail(commands.Cog):
 
             await ctx.send(file=image_file, embed=embed)
 
-    @commands.command()
-    async def wclcharname(self, ctx, charname: str):
+    @commands.group()
+    async def wclset(self, ctx: commands.Context):
+        """Commands for setting up WCL settings."""
+        pass
+
+    @wclset.command(name="charname")
+    async def wclset_charname(self, ctx, charname: str):
         """Set your character's name."""
         await self.config.user(ctx.author).charname.set(charname)
         await ctx.send(
@@ -555,15 +564,15 @@ class WarcraftLogsRetail(commands.Cog):
             )
         )
 
-    @commands.command()
-    async def wclrealm(self, ctx, *, realm: str):
+    @wclset.command(name="realm")
+    async def wclset_realm(self, ctx, *, realm: str):
         """Set your realm."""
         realmname = realm.replace(" ", "-")
         await self.config.user(ctx.author).realm.set(realmname)
         await ctx.send(_("Your realm was set to {realm}.").format(realm=realm.title()))
 
-    @commands.command()
-    async def wclregion(self, ctx, region: str):
+    @wclset.command(name="region")
+    async def wclset_region(self, ctx, region: str):
         """Set your region."""
         valid_regions = ["EU", "US"]
         if region.upper() not in valid_regions:
@@ -577,13 +586,34 @@ class WarcraftLogsRetail(commands.Cog):
             _("Your realm's region was set to {region}.").format(region=region.upper())
         )
 
-    @commands.command()
-    async def wclsettings(self, ctx, user: discord.User = None):
+    @wclset.command(name="channel")
+    async def wclset_channel(self, ctx, channel: discord.TextChannel):
+        """Set the channel where WCL updates will be sent."""
+        await self.config.guild(ctx.guild).notification_channel.set(channel.id)
+        await ctx.send(
+            _("WCL updates will now be sent to {channel}.").format(
+                channel=channel.mention
+            )
+        )
+
+    @wclset.command(name="settings")
+    async def wclset_settings(self, ctx, user: discord.User = None):
         """Show your current settings."""
         if not user:
             user = ctx.author
         userinfo = await self.config.user(user).all()
-        msg = _("[Settings for {user}]\n").format(user=user.display_name)
+        guildinfo = await self.config.guild(ctx.guild).all()
+
+        msg = _("[Settings for {guild}]\n").format(guild=ctx.guild.name)
+        notification_channel: discord.TextChannel = ctx.guild.get_channel(
+            guildinfo["notification_channel"]
+        )
+        msg += _("Notification channel: {channel}\n").format(
+            channel=notification_channel.name
+        )
+        msg += "\n"
+
+        msg += _("[Settings for {user}]\n").format(user=user.display_name)
         charname = userinfo["charname"].title() if userinfo["charname"] else "None"
         realmname = (
             userinfo["realm"].title().replace("-", " ") if userinfo["realm"] else "None"
@@ -601,9 +631,9 @@ class WarcraftLogsRetail(commands.Cog):
 
         await ctx.send(box(msg, lang="ini"))
 
-    @commands.command()
+    @wclset.command(name="apikey")
     @checks.is_owner()
-    async def wclapikey(self, ctx):
+    async def wclset_apikey(self, ctx):
         """Instructions for setting the api key."""
         msg = _(
             "Set your API key by adding it to Red's API key storage.\n"
