@@ -229,18 +229,18 @@ class WarcraftLogsRetail(commands.Cog):
                 gem_text = ENCHANT_ID.get(gem_id, None)
 
                 if perm_enchant_id:
-                    if temp_enchant_id:
+                    if temp_enchant_id and temp_enchant_text:
                         symbol = "├"
-                    elif gem_id:
+                    elif gem_id and gem_text:
                         symbol = "├"
                     else:
                         symbol = "└"
                     if perm_enchant_text:
                         item_list.append(f"`{symbol}──` {perm_enchant_text}")
-                    if gem_text:
+                    elif gem_text:
                         item_list.append(f"`{symbol}──` {gem_text}")
                 if gem_id:
-                    if temp_enchant_id:
+                    if temp_enchant_id and temp_enchant_text:
                         symbol = "├"
                     else:
                         symbol = "└"
