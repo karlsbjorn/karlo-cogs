@@ -1,4 +1,5 @@
-# Most of the source of this file can be found at: https://github.com/Kowlin/GraphQL-WoWLogs/blob/master/wowlogs/calls.py
+# Most of the source of this file can be found at:
+# https://github.com/Kowlin/GraphQL-WoWLogs/blob/master/wowlogs/calls.py
 
 
 class Queries:

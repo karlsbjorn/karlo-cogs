@@ -35,7 +35,7 @@ class WarcraftLogsRetail(commands.Cog):
         self.config = Config.get_conf(
             self, identifier=87446677010550784, force_registration=True
         )
-        self.http: WoWLogsClient = None
+        self.http = None
         self.path = bundled_data_path(self)
 
         self.config.register_global(bearer_timestamp=0)
@@ -55,7 +55,7 @@ class WarcraftLogsRetail(commands.Cog):
             await generate_bearer(self.bot, self.config)
             await self.http.recreate_session(await self._get_bearer())
 
-    async def _get_bearer(self) -> str:
+    async def _get_bearer(self) -> Optional[str]:
         api_tokens = await self.bot.get_shared_api_tokens("warcraftlogs")
         bearer = api_tokens.get("bearer", "")
 
@@ -157,7 +157,8 @@ class WarcraftLogsRetail(commands.Cog):
             if not char_data:
                 return await ctx.send(
                     _(
-                        "Check your API token and make sure you have added it to the bot correctly."
+                        "Check your API token and make sure you "
+                        "have added it to the bot correctly."
                     )
                 )
             gear = None
@@ -167,7 +168,8 @@ class WarcraftLogsRetail(commands.Cog):
                 await self._create_client()
 
             if len(char_data["encounterRankings"]["ranks"]) != 0:
-                # Ensure this is the encounter that has gear listed. IF its not, we're moving on with the other encounters.
+                # Ensure this is the encounter that has gear listed.
+                # IF it's not, we're moving on with the other encounters.
                 sorted_by_time = sorted(
                     char_data["encounterRankings"]["ranks"],
                     key=lambda k: k["report"]["startTime"],
@@ -198,7 +200,13 @@ class WarcraftLogsRetail(commands.Cog):
             for item in gear:
                 if item["id"] == 0:
                     continue
-                # item can be {'name': 'Unknown Item', 'quality': 'common', 'id': None, 'icon': 'inv_axe_02.jpg'} here
+                # item can be:
+                # {
+                #   'name': 'Unknown Item',
+                #   'quality': 'common',
+                #   'id': None,
+                #   'icon': 'inv_axe_02.jpg'
+                # }
                 rarity = self._get_rarity(item)
                 item_ilevel_entry = item.get("itemLevel", None)
                 if item_ilevel_entry:
@@ -215,7 +223,6 @@ class WarcraftLogsRetail(commands.Cog):
                 perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
                 temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
                 gem_text = ENCHANT_ID.get(gem_id, None)
-                # TODO: Add sockets and socketed gems to the embed.
 
                 if perm_enchant_id:
                     if temp_enchant_id:
@@ -297,7 +304,7 @@ class WarcraftLogsRetail(commands.Cog):
         Zone name must be formatted like:
         CN, SoD, SotFO
         """
-        # someone has their data saved so they are just trying
+        # someone has their data saved, so they are just trying
         # to look up a zone for themselves
         async with ctx.typing():
             if name:
@@ -331,7 +338,8 @@ class WarcraftLogsRetail(commands.Cog):
             region = region.upper()
             if region not in ["US", "EU"]:
                 msg = _(
-                    "Realm names that have a space (like 'Nethergarde Keep') must be written with a hyphen, "
+                    "Realm names that have a space (like 'Nethergarde Keep') must "
+                    "be written with a hyphen, "
                 )
                 msg += _(
                     "upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`."
@@ -395,13 +403,13 @@ class WarcraftLogsRetail(commands.Cog):
 
             # embed and data setup
             zws = "\N{ZERO WIDTH SPACE}"
-            space = "\N{SPACE}"
 
             try:
                 char_data = data["data"]["characterData"]["character"]["zoneRankings"]
             except (KeyError, TypeError):
                 msg = _(
-                    "Something went terribly wrong while trying to access the zone rankings for this character."
+                    "Something went terribly wrong while trying to "
+                    "access the zone rankings for this character."
                 )
                 return await ctx.send(msg)
 
@@ -597,31 +605,20 @@ class WarcraftLogsRetail(commands.Cog):
     @checks.is_owner()
     async def wclapikey(self, ctx):
         """Instructions for setting the api key."""
-        msg = "Set your API key by adding it to Red's API key storage.\n"
-        msg += "Get a key from <https://www.warcraftlogs.com> by signing up for an account, then visit your settings.\n"
-        msg += "At the bottom is a section called Web API. Click on the blue link that says `manage your V2 clients here`.\n"
-        msg += "Do NOT sign up for a v1 API key, it will not work with this cog.\n"
-        msg += "Click on Create Client. Be ready to write down your information somewhere, you cannot retrive the secret after this.\n"
-        msg += "Enter a name (whatever you want), `https://localhost` for the redirect URL, and leave the Public Client box unchecked.\n"
-        msg += f"Use `{ctx.prefix}set api warcraftlogs client_id,client-id-goes-here client_secret,client-secret-goes-here` to set your key.\n"
-        await ctx.send(msg)
-
-    @commands.command(hidden=True)
-    @checks.is_owner()
-    async def wclrank(self, ctx):
-        """[Depreciated] Fetch ranking info about a player."""
-        msg = "This cog has changed significantly from the last update.\n"
-        msg += f"Use `{ctx.prefix}help WarcraftLogsRetail` to see all commands.\n"
-        msg += f"Use `{ctx.prefix}wclapikey` to see instructions on how to get the new API key.\n"
-        await ctx.send(msg)
-
-    @commands.command(hidden=True)
-    @commands.guild_only()
-    async def wclgear(self, ctx):
-        """[Depreciated] Fetch gear info about a player."""
-        msg = "This cog has changed significantly from the last update.\n"
-        msg += f"Use `{ctx.prefix}help WarcraftLogsRetail` to see all commands.\n"
-        msg += f"Use `{ctx.prefix}wclapikey` to see instructions on how to get the new API key.\n"
+        msg = _(
+            "Set your API key by adding it to Red's API key storage.\n"
+            "Get a key from <https://www.warcraftlogs.com> by signing up for an account, "
+            "then visit your settings.\n"
+            "At the bottom is a section called Web API. "
+            "Click on the blue link that says `manage your V2 clients here`.\n"
+            "Do NOT sign up for a v1 API key, it will not work with this cog.\n"
+            "Click on Create Client. Be ready to write down your information somewhere, "
+            "you cannot retrieve the secret after this.\n"
+            "Enter a name (whatever you want), `https://localhost` for the redirect URL, "
+            "and leave the Public Client box unchecked.\n"
+            "Use `{prefix}set api warcraftlogs client_id,client-id-goes-here client_secret,"
+            "client-secret-goes-here` to set your key.\n "
+        ).format(prefix=ctx.prefix)
         await ctx.send(msg)
 
     async def _make_table_image(self, table):
@@ -742,7 +739,10 @@ class WarcraftLogsRetail(commands.Cog):
     async def on_red_api_tokens_update(
         self, service_name: str, api_tokens: Mapping[str, str]
     ):
-        """Lifted shamelessly from GHC. Thanks Kowlin for this and everything else you did on this cog."""
+        """
+        Lifted shamelessly from GHC.
+        Thanks Kowlin for this and everything else you did on this cog.
+        """
         if service_name != "warcraftlogs":
             return
         await self.http.recreate_session(await self._get_token(api_tokens))
