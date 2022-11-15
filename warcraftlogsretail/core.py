@@ -552,9 +552,7 @@ class WarcraftLogsRetail(commands.Cog):
         """Set your realm."""
         realmname = realm.replace(" ", "-")
         await self.config.user(ctx.author).realm.set(realmname)
-        await ctx.send(
-            _("Your realm was set to {realm.title()}.").format(realm=realm.title())
-        )
+        await ctx.send(_("Your realm was set to {realm}.").format(realm=realm.title()))
 
     @commands.command()
     async def wclregion(self, ctx, region: str):
