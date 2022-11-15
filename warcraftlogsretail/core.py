@@ -21,7 +21,7 @@ from .encounterid import DIFFICULTIES, ZONES_BY_ID, ZONES_BY_SHORT_NAME
 from .http import WoWLogsClient, generate_bearer
 
 _ = Translator("WarcraftLogsRetail", __file__)
-log = logging.getLogger("red.aikaterna.warcraftlogs")
+log = logging.getLogger("red.karlo-cogs.warcraftlogs")
 
 WCL_URL = "https://www.warcraftlogs.com/reports/{}"
 

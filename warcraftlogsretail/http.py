@@ -10,7 +10,7 @@ from redbot.core.config import Config
 
 from .calls import Queries
 
-log = logging.getLogger("red.aikaterna.warcraftlogs.http")
+log = logging.getLogger("red.karlo-cogs.warcraftlogs.http")
 baseurl = "https://www.warcraftlogs.com"
 graphql_url = baseurl + "/api/v2/client"
 
