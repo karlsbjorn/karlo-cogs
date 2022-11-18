@@ -296,7 +296,10 @@ class DiscordStream:
             color=discord.Color.blurple(),
             description=f"{voice_channel.mention}",
         )
-        embed.set_thumbnail(url=member.avatar.url)
+        if member.avatar:
+            embed.set_thumbnail(url=member.avatar.url)
+        else:
+            embed.set_thumbnail(url=member.default_avatar.url)
 
         embed.add_field(
             name=zws,
