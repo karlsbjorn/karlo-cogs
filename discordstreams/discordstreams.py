@@ -6,7 +6,7 @@ import discord
 from discord.ext import tasks
 from redbot.core import Config, commands
 from redbot.core.bot import Red
-from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 
 log = logging.getLogger("red.karlo-cogs.discordstreams")
 _ = Translator("DiscordStreams", __file__)
@@ -59,6 +59,7 @@ class DiscordStreams(commands.Cog):
         for guild in self.bot.guilds:
             if await self.bot.cog_disabled_in_guild(self, guild):
                 continue
+            await set_contextual_locales_from_guild(self.bot, guild)
             await self.update_guild_embeds(guild)
 
     @update_stream_messages.error
@@ -67,7 +68,7 @@ class DiscordStreams(commands.Cog):
             f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
         )
 
-    async def update_guild_embeds(self, guild: discord.Guild):
+    async def update_guild_embeds(self, guild: discord.Guild) -> None:
         """
         Update the stream alert embeds for a guild.
 
@@ -85,7 +86,7 @@ class DiscordStreams(commands.Cog):
     @staticmethod
     async def update_message_embeds(
         guild: discord.Guild, member: discord.Member, message: Dict
-    ):
+    ) -> None:
         """
         Update the stream alert embeds for a member.
 

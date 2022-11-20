@@ -10,7 +10,7 @@ from PIL import Image, ImageColor, ImageDraw, ImageFont
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
-from redbot.core.i18n import Translator
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
@@ -180,6 +180,8 @@ class Scoreboard:
         for guild in self.bot.guilds:
             if await self.bot.cog_disabled_in_guild(self, guild):
                 continue
+            await set_contextual_locales_from_guild(self.bot, guild)
+
             sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
             if sb_channel_id and sb_msg_id:
