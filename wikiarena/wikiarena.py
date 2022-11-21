@@ -384,8 +384,8 @@ class Buttons(discord.ui.View):
             else self.red_words,
         )
 
-        games_played = await self.config.member(self.author).games_played()
-        await self.config.member(self.author).games_played.set(games_played + 1)
+        games_played = await self.config.user(self.author).games_played()
+        await self.config.user(self.author).games_played.set(games_played + 1)
 
         user_high_score = await self.config.user(self.author).high_score()
         if self.score > user_high_score:
