@@ -6,7 +6,7 @@ import aiohttp
 import aiowiki
 import discord
 from redbot.core import Config, commands, i18n
-from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from tabulate import tabulate
@@ -243,6 +243,7 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_views(self, interaction: discord.Interaction, button):
+        await set_contextual_locales_from_guild(interaction.client, interaction.guild)
         if not await self._owner_check(interaction):
             return
         if self.red_views < self.blue_views:
@@ -252,6 +253,7 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_more_views(self, interaction: discord.Interaction, button):
+        await set_contextual_locales_from_guild(interaction.client, interaction.guild)
         if not await self._owner_check(interaction):
             return
         if self.red_views > self.blue_views:
@@ -261,6 +263,7 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_words(self, interaction: discord.Interaction, button):
+        await set_contextual_locales_from_guild(interaction.client, interaction.guild)
         if not await self._owner_check(interaction):
             return
         if self.red_words < self.blue_words:
@@ -270,6 +273,7 @@ class Buttons(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.red, row=1)
     async def red_more_words(self, interaction: discord.Interaction, button):
+        await set_contextual_locales_from_guild(interaction.client, interaction.guild)
         if not await self._owner_check(interaction):
             return
         if self.red_words > self.blue_words:
