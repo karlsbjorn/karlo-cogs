@@ -155,7 +155,7 @@ class WikiArena(commands.Cog):
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(wiki_language)
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
-        embed_colours = discord.Colour.blurple(), discord.Colour.red()
+        embed_colours = discord.Colour.blue(), discord.Colour.red()
         page_view_counts = []
         page_word_counts = []
         embeds = []
