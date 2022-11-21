@@ -551,9 +551,7 @@ class WarcraftLogsRetail(commands.Cog):
         """Set the channel where WCL updates will be sent."""
         await self.config.guild(ctx.guild).notification_channel.set(channel.id)
         await ctx.send(
-            _("WCL updates will now be sent to {channel}.").format(
-                channel=channel.mention
-            )
+            _("WCL updates will now be sent to {channel}.").format(channel=channel.mention)
         )
 
     @wclset.command(name="settings")
@@ -568,9 +566,7 @@ class WarcraftLogsRetail(commands.Cog):
         notification_channel: discord.TextChannel = ctx.guild.get_channel(
             guildinfo["notification_channel"]
         )
-        msg += _("Notification channel: {channel}\n").format(
-            channel=notification_channel.name
-        )
+        msg += _("Notification channel: {channel}\n").format(channel=notification_channel.name)
         msg += "\n"
 
         msg += _("[Settings for {user}]\n").format(user=user.display_name)
@@ -724,9 +720,7 @@ class WarcraftLogsRetail(commands.Cog):
         return new_number
 
     @commands.Cog.listener()
-    async def on_red_api_tokens_update(
-        self, service_name: str, api_tokens: Mapping[str, str]
-    ):
+    async def on_red_api_tokens_update(self, service_name: str, api_tokens: Mapping[str, str]):
         """
         Lifted shamelessly from GHC.
         Thanks Kowlin for this and everything else you did on this cog.

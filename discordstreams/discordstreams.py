@@ -16,9 +16,7 @@ _ = Translator("DiscordStreams", __file__)
 class DiscordStreams(commands.Cog):
     def __init__(self, bot):
         self.bot: Red = bot
-        self.config = Config.get_conf(
-            self, identifier=87446677010550784, force_registration=True
-        )
+        self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
         default_guild = {
             "alert_channels": [],
             "active_messages": {},
@@ -28,9 +26,7 @@ class DiscordStreams(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def golivealert(
-        self, ctx: commands.Context, channel: discord.TextChannel = None
-    ):
+    async def golivealert(self, ctx: commands.Context, channel: discord.TextChannel = None):
         """Set the channel for live alerts."""
         if channel is None:
             channel = ctx.channel
@@ -49,9 +45,7 @@ class DiscordStreams(commands.Cog):
             alert_channels.append(channel.id)
             await self.config.guild(ctx.guild).alert_channels.set(alert_channels)
             await ctx.send(
-                _("Go Live alerts will be sent to {channel}").format(
-                    channel=channel.mention
-                )
+                _("Go Live alerts will be sent to {channel}").format(channel=channel.mention)
             )
 
     @tasks.loop(seconds=10)
@@ -64,9 +58,7 @@ class DiscordStreams(commands.Cog):
 
     @update_stream_messages.error
     async def update_stream_messages_error(self, error):
-        log.error(
-            f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
-        )
+        log.error(f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True)
 
     async def update_guild_embeds(self, guild: discord.Guild) -> None:
         """
@@ -104,9 +96,7 @@ class DiscordStreams(commands.Cog):
             try:
                 message: discord.Message = await channel.fetch_message(message_id)
             except discord.NotFound:
-                log.error(
-                    f"Message {message_id} not found in channel {channel_id}, skipping."
-                )
+                log.error(f"Message {message_id} not found in channel {channel_id}, skipping.")
                 continue
             except discord.HTTPException:
                 log.error(
@@ -153,11 +143,7 @@ class DiscordStreams(commands.Cog):
         guild_config: Dict = await self.config.guild(member_guild).all()
         enabled = bool(guild_config["alert_channels"])
 
-        if (
-            not enabled
-            or await self.bot.cog_disabled_in_guild(self, member_guild)
-            or member.bot
-        ):
+        if not enabled or await self.bot.cog_disabled_in_guild(self, member_guild) or member.bot:
             return
 
         # Stream ended
@@ -215,9 +201,7 @@ class DiscordStreams(commands.Cog):
                 active_messages.pop(member_id)
         await self.config.guild(member_guild).active_messages.set(active_messages)
 
-    async def _send_stream_alerts(
-        self, member: discord.Member, after: discord.VoiceState
-    ) -> None:
+    async def _send_stream_alerts(self, member: discord.Member, after: discord.VoiceState) -> None:
         """
         Send a message to the alert channels.
 
@@ -236,9 +220,7 @@ class DiscordStreams(commands.Cog):
             channel: discord.TextChannel = member_guild.get_channel(channel_id)
             if channel is None:
                 channels_to_send_to.remove(channel_id)
-                await self.config.guild(member_guild).alert_channels.set(
-                    channels_to_send_to
-                )
+                await self.config.guild(member_guild).alert_channels.set(channels_to_send_to)
                 continue
 
             message = await channel.send(
@@ -305,9 +287,7 @@ class DiscordStream:
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
-                relative_timestamp=discord.utils.format_dt(
-                    discord.utils.utcnow(), style="R"
-                )
+                relative_timestamp=discord.utils.format_dt(discord.utils.utcnow(), style="R")
                 if not start_time
                 else discord.utils.format_dt(start_time, style="R")
             ),

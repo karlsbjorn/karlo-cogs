@@ -244,9 +244,7 @@ class Scoreboard:
                     if old_rankings == formatted_rankings:
                         continue
 
-                    embed.set_footer(
-                        text=_("Updates only when there is a ranking change")
-                    )
+                    embed.set_footer(text=_("Updates only when there is a ranking change"))
 
                     try:
                         await sb_msg.edit(embed=embed)
@@ -265,9 +263,7 @@ class Scoreboard:
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
         # Thanks Flame!
-        log.error(
-            f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
-        )
+        log.error(f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True)
 
     @staticmethod
     async def _get_dungeon_scores(
