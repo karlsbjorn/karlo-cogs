@@ -196,16 +196,17 @@ class WikiArena(commands.Cog):
 
         page_title = page.title.replace(" ", "_")
         request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{self.wiki_language}.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
-        async with self.session.request("GET", request_url) as resp:
-            if resp.status != 200:
-                raise ValueError(f"That article does not exist. {request_url}")
+        while True:
+            async with self.session.request("GET", request_url) as resp:
+                if resp.status != 200:
+                    return 0
 
-            data = await resp.json()
-            page_views = 0
-            for day in data["items"]:
-                page_views += day["views"]
+                data = await resp.json()
+                page_views = 0
+                for day in data["items"]:
+                    page_views += day["views"]
 
-            return page_views
+                return page_views
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
@@ -310,7 +311,6 @@ class Buttons(discord.ui.View):
 
     async def end_game(self, interaction):
         self.game_status = -1
-        embeds = []
         for child in self.children:
             child.disabled = True
         end_msg = _(
@@ -351,7 +351,6 @@ class Buttons(discord.ui.View):
             )
         await interaction.response.edit_message(
             content=end_msg,
-            embeds=embeds,
             view=self,
         )
 
