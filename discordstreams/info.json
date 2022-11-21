@@ -1,0 +1,11 @@
+{
+    "author": ["Karlo"],
+    "description": "Display a stream alert in a channel when a member of a guild starts a Go Live stream.",
+    "short": "Display a Go Live stream alert.",
+    "tags": ["discord", "live", "go live", "screenshare", "stream", "livestream"],
+    "requirements": [],
+    "min_bot_version": "3.5.0.dev0",
+    "max_bot_version": "3.5.99",
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

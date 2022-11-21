@@ -1,5 +1,6 @@
 import io
 import logging
+from datetime import datetime, timezone
 from typing import List, Optional
 
 import discord
@@ -9,7 +10,7 @@ from PIL import Image, ImageColor, ImageDraw, ImageFont
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
-from redbot.core.i18n import Translator
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
@@ -175,11 +176,20 @@ class Scoreboard:
         for guild in self.bot.guilds:
             if await self.bot.cog_disabled_in_guild(self, guild):
                 continue
+            await set_contextual_locales_from_guild(self.bot, guild)
+
             sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
             if sb_channel_id and sb_msg_id:
                 sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
-                sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+                try:
+                    sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+                except discord.HTTPException:
+                    log.error(
+                        f"Failed to fetch scoreboard message in guild {guild.id} ({guild.name}).",
+                        exc_info=True,
+                    )
+                    continue
                 if sb_msg:
                     max_chars = 20
                     headers = ["#", _("Name"), _("Score")]
@@ -195,11 +205,23 @@ class Scoreboard:
                         color=await self.bot.get_embed_color(sb_msg),
                     )
                     embed.set_author(name=guild.name, icon_url=guild.icon_url)
-                    tabulate_list = await self._get_dungeon_scores(
-                        guild_name, max_chars, realm, region, sb_blacklist, image=False
-                    )
+                    try:
+                        tabulate_list = await self._get_dungeon_scores(
+                            guild_name,
+                            max_chars,
+                            realm,
+                            region,
+                            sb_blacklist,
+                            image=False,
+                        )
+                    except ValueError as e:
+                        log.error(
+                            f"Error getting dungeon scores for {guild.id}, skipping. "
+                            f"Response: {e}",
+                        )
+                        continue
 
-                    embed.description = box(
+                    formatted_rankings = box(
                         tabulate(
                             tabulate_list,
                             headers=headers,
@@ -208,10 +230,44 @@ class Scoreboard:
                         ),
                         lang="md",
                     )
+
+                    # TODO: When dpy2 is out, use discord.utils.format_dt()
+                    desc = _("Last updated <t:{timestamp}:R>\n").format(
+                        timestamp=int(datetime.now(timezone.utc).timestamp())
+                    )
+                    desc += formatted_rankings
+                    embed.description = desc
+
                     # Don't edit if there wouldn't be a change
-                    if sb_msg.embeds[0].description == embed.description:
+                    old_rankings = sb_msg.embeds[0].description.splitlines()
+                    old_rankings = "\n".join(old_rankings[1:])
+                    if old_rankings == formatted_rankings:
                         continue
-                    await sb_msg.edit(embed=embed)
+
+                    embed.set_footer(
+                        text=_("Updates only when there is a ranking change")
+                    )
+
+                    try:
+                        await sb_msg.edit(embed=embed)
+                    except discord.Forbidden:
+                        log.error(
+                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}) "
+                            f"due to missing permissions.",
+                            exc_info=True,
+                        )
+                    except discord.HTTPException:
+                        log.error(
+                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}).",
+                            exc_info=True,
+                        )
+
+    @update_dungeon_scoreboard.error
+    async def update_dungeon_scoreboard_error(self, error):
+        # Thanks Flame!
+        log.error(
+            f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True
+        )
 
     @staticmethod
     async def _get_dungeon_scores(

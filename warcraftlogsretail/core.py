@@ -21,7 +21,7 @@ from .encounterid import DIFFICULTIES, ZONES_BY_ID, ZONES_BY_SHORT_NAME
 from .http import WoWLogsClient, generate_bearer
 
 _ = Translator("WarcraftLogsRetail", __file__)
-log = logging.getLogger("red.aikaterna.warcraftlogs")
+log = logging.getLogger("red.karlo-cogs.warcraftlogs")
 
 WCL_URL = "https://www.warcraftlogs.com/reports/{}"
 
@@ -43,8 +43,12 @@ class WarcraftLogsRetail(commands.Cog):
             "realm": None,
             "region": None,
         }
+        default_guild = {
+            "notification_channel": None,
+        }
 
         self.config.register_user(**default_user)
+        self.config.register_guild(**default_guild)
 
     async def _create_client(self) -> None:
         self.http = WoWLogsClient(bearer=await self._get_bearer())
@@ -53,7 +57,7 @@ class WarcraftLogsRetail(commands.Cog):
             await generate_bearer(self.bot, self.config)
             await self.http.recreate_session(await self._get_bearer())
 
-    async def _get_bearer(self) -> str:
+    async def _get_bearer(self) -> Optional[str]:
         api_tokens = await self.bot.get_shared_api_tokens("warcraftlogs")
         bearer = api_tokens.get("bearer", "")
 
@@ -140,7 +144,10 @@ class WarcraftLogsRetail(commands.Cog):
             char_data = await self.http.get_gear(name, realm, region, encounters["latest"])
             if not char_data:
                 return await ctx.send(
-                    _("Check your API token and make sure you have added it to the bot correctly.")
+                    _(
+                        "Check your API token and make sure you "
+                        "have added it to the bot correctly."
+                    )
                 )
             gear = None
 
@@ -149,7 +156,8 @@ class WarcraftLogsRetail(commands.Cog):
                 await self._create_client()
 
             if len(char_data["encounterRankings"]["ranks"]) != 0:
-                # Ensure this is the encounter that has gear listed. IF its not, we're moving on with the other encounters.
+                # Ensure this is the encounter that has gear listed.
+                # IF it's not, we're moving on with the other encounters.
                 sorted_by_time = sorted(
                     char_data["encounterRankings"]["ranks"],
                     key=lambda k: k["report"]["startTime"],
@@ -180,7 +188,13 @@ class WarcraftLogsRetail(commands.Cog):
             for item in gear:
                 if item["id"] == 0:
                     continue
-                # item can be {'name': 'Unknown Item', 'quality': 'common', 'id': None, 'icon': 'inv_axe_02.jpg'} here
+                # item can be:
+                # {
+                #   'name': 'Unknown Item',
+                #   'quality': 'common',
+                #   'id': None,
+                #   'icon': 'inv_axe_02.jpg'
+                # }
                 rarity = self._get_rarity(item)
                 item_ilevel_entry = item.get("itemLevel", None)
                 if item_ilevel_entry:
@@ -197,21 +211,20 @@ class WarcraftLogsRetail(commands.Cog):
                 perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
                 temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
                 gem_text = ENCHANT_ID.get(gem_id, None)
-                # TODO: Add sockets and socketed gems to the embed.
 
                 if perm_enchant_id:
-                    if temp_enchant_id:
+                    if temp_enchant_id and temp_enchant_text:
                         symbol = "├"
-                    elif gem_id:
+                    elif gem_id and gem_text:
                         symbol = "├"
                     else:
                         symbol = "└"
                     if perm_enchant_text:
                         item_list.append(f"`{symbol}──` {perm_enchant_text}")
-                    if gem_text:
+                    elif gem_text:
                         item_list.append(f"`{symbol}──` {gem_text}")
                 if gem_id:
-                    if temp_enchant_id:
+                    if temp_enchant_id and temp_enchant_text:
                         symbol = "├"
                     else:
                         symbol = "└"
@@ -277,7 +290,7 @@ class WarcraftLogsRetail(commands.Cog):
         Zone name must be formatted like:
         CN, SoD, SotFO
         """
-        # someone has their data saved so they are just trying
+        # someone has their data saved, so they are just trying
         # to look up a zone for themselves
         async with ctx.typing():
             if name:
@@ -305,7 +318,8 @@ class WarcraftLogsRetail(commands.Cog):
             region = region.upper()
             if region not in ["US", "EU"]:
                 msg = _(
-                    "Realm names that have a space (like 'Nethergarde Keep') must be written with a hyphen, "
+                    "Realm names that have a space (like 'Nethergarde Keep') must "
+                    "be written with a hyphen, "
                 )
                 msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
                 return await ctx.send(msg)
@@ -359,13 +373,13 @@ class WarcraftLogsRetail(commands.Cog):
 
             # embed and data setup
             zws = "\N{ZERO WIDTH SPACE}"
-            space = "\N{SPACE}"
 
             try:
                 char_data = data["data"]["characterData"]["character"]["zoneRankings"]
             except (KeyError, TypeError):
                 msg = _(
-                    "Something went terribly wrong while trying to access the zone rankings for this character."
+                    "Something went terribly wrong while trying to "
+                    "access the zone rankings for this character."
                 )
                 return await ctx.send(msg)
 
@@ -499,23 +513,28 @@ class WarcraftLogsRetail(commands.Cog):
 
             await ctx.send(file=image_file, embed=embed)
 
-    @commands.command()
-    async def wclcharname(self, ctx, charname: str):
+    @commands.group()
+    async def wclset(self, ctx: commands.Context):
+        """Commands for setting up WCL settings."""
+        pass
+
+    @wclset.command(name="charname")
+    async def wclset_charname(self, ctx, charname: str):
         """Set your character's name."""
         await self.config.user(ctx.author).charname.set(charname)
         await ctx.send(
             _("Your character name was set to {charname}.").format(charname=charname.title())
         )
 
-    @commands.command()
-    async def wclrealm(self, ctx, *, realm: str):
+    @wclset.command(name="realm")
+    async def wclset_realm(self, ctx, *, realm: str):
         """Set your realm."""
         realmname = realm.replace(" ", "-")
         await self.config.user(ctx.author).realm.set(realmname)
-        await ctx.send(_("Your realm was set to {realm.title()}.").format(realm=realm.title()))
+        await ctx.send(_("Your realm was set to {realm}.").format(realm=realm.title()))
 
-    @commands.command()
-    async def wclregion(self, ctx, region: str):
+    @wclset.command(name="region")
+    async def wclset_region(self, ctx, region: str):
         """Set your region."""
         valid_regions = ["EU", "US"]
         if region.upper() not in valid_regions:
@@ -527,13 +546,34 @@ class WarcraftLogsRetail(commands.Cog):
         await self.config.user(ctx.author).region.set(region)
         await ctx.send(_("Your realm's region was set to {region}.").format(region=region.upper()))
 
-    @commands.command()
-    async def wclsettings(self, ctx, user: discord.User = None):
+    @wclset.command(name="channel")
+    async def wclset_channel(self, ctx, channel: discord.TextChannel):
+        """Set the channel where WCL updates will be sent."""
+        await self.config.guild(ctx.guild).notification_channel.set(channel.id)
+        await ctx.send(
+            _("WCL updates will now be sent to {channel}.").format(
+                channel=channel.mention
+            )
+        )
+
+    @wclset.command(name="settings")
+    async def wclset_settings(self, ctx, user: discord.User = None):
         """Show your current settings."""
         if not user:
             user = ctx.author
         userinfo = await self.config.user(user).all()
-        msg = _("[Settings for {user}]\n").format(user=user.display_name)
+        guildinfo = await self.config.guild(ctx.guild).all()
+
+        msg = _("[Settings for {guild}]\n").format(guild=ctx.guild.name)
+        notification_channel: discord.TextChannel = ctx.guild.get_channel(
+            guildinfo["notification_channel"]
+        )
+        msg += _("Notification channel: {channel}\n").format(
+            channel=notification_channel.name
+        )
+        msg += "\n"
+
+        msg += _("[Settings for {user}]\n").format(user=user.display_name)
         charname = userinfo["charname"].title() if userinfo["charname"] else "None"
         realmname = userinfo["realm"].title().replace("-", " ") if userinfo["realm"] else "None"
         regionname = userinfo["region"].upper() if userinfo["region"] else "None"
@@ -549,35 +589,24 @@ class WarcraftLogsRetail(commands.Cog):
 
         await ctx.send(box(msg, lang="ini"))
 
-    @commands.command()
+    @wclset.command(name="apikey")
     @checks.is_owner()
-    async def wclapikey(self, ctx):
+    async def wclset_apikey(self, ctx):
         """Instructions for setting the api key."""
-        msg = "Set your API key by adding it to Red's API key storage.\n"
-        msg += "Get a key from <https://www.warcraftlogs.com> by signing up for an account, then visit your settings.\n"
-        msg += "At the bottom is a section called Web API. Click on the blue link that says `manage your V2 clients here`.\n"
-        msg += "Do NOT sign up for a v1 API key, it will not work with this cog.\n"
-        msg += "Click on Create Client. Be ready to write down your information somewhere, you cannot retrive the secret after this.\n"
-        msg += "Enter a name (whatever you want), `https://localhost` for the redirect URL, and leave the Public Client box unchecked.\n"
-        msg += f"Use `{ctx.prefix}set api warcraftlogs client_id,client-id-goes-here client_secret,client-secret-goes-here` to set your key.\n"
-        await ctx.send(msg)
-
-    @commands.command(hidden=True)
-    @checks.is_owner()
-    async def wclrank(self, ctx):
-        """[Depreciated] Fetch ranking info about a player."""
-        msg = "This cog has changed significantly from the last update.\n"
-        msg += f"Use `{ctx.prefix}help WarcraftLogsRetail` to see all commands.\n"
-        msg += f"Use `{ctx.prefix}wclapikey` to see instructions on how to get the new API key.\n"
-        await ctx.send(msg)
-
-    @commands.command(hidden=True)
-    @commands.guild_only()
-    async def wclgear(self, ctx):
-        """[Depreciated] Fetch gear info about a player."""
-        msg = "This cog has changed significantly from the last update.\n"
-        msg += f"Use `{ctx.prefix}help WarcraftLogsRetail` to see all commands.\n"
-        msg += f"Use `{ctx.prefix}wclapikey` to see instructions on how to get the new API key.\n"
+        msg = _(
+            "Set your API key by adding it to Red's API key storage.\n"
+            "Get a key from <https://www.warcraftlogs.com> by signing up for an account, "
+            "then visit your settings.\n"
+            "At the bottom is a section called Web API. "
+            "Click on the blue link that says `manage your V2 clients here`.\n"
+            "Do NOT sign up for a v1 API key, it will not work with this cog.\n"
+            "Click on Create Client. Be ready to write down your information somewhere, "
+            "you cannot retrieve the secret after this.\n"
+            "Enter a name (whatever you want), `https://localhost` for the redirect URL, "
+            "and leave the Public Client box unchecked.\n"
+            "Use `{prefix}set api warcraftlogs client_id,client-id-goes-here client_secret,"
+            "client-secret-goes-here` to set your key.\n "
+        ).format(prefix=ctx.prefix)
         await ctx.send(msg)
 
     async def _make_table_image(self, table):
@@ -695,8 +724,13 @@ class WarcraftLogsRetail(commands.Cog):
         return new_number
 
     @commands.Cog.listener()
-    async def on_red_api_tokens_update(self, service_name: str, api_tokens: Mapping[str, str]):
-        """Lifted shamelessly from GHC. Thanks Kowlin for this and everything else you did on this cog."""
+    async def on_red_api_tokens_update(
+        self, service_name: str, api_tokens: Mapping[str, str]
+    ):
+        """
+        Lifted shamelessly from GHC.
+        Thanks Kowlin for this and everything else you did on this cog.
+        """
         if service_name != "warcraftlogs":
             return
         await self.http.recreate_session(await self._get_token(api_tokens))

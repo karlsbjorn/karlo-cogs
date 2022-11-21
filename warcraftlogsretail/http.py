@@ -1,8 +1,12 @@
-# Most of this code is copied from https://github.com/Kowlin/Sentinel/blob/master/githubcards/http.py
-# Most of the source of this file can be found at: https://github.com/Kowlin/GraphQL-WoWLogs/blob/master/wowlogs/http.py
+# Most of this code is copied from
+# https://github.com/Kowlin/Sentinel/blob/master/githubcards/http.py
+
+# Most of the source of this file can be found at:
+# https://github.com/Kowlin/GraphQL-WoWLogs/blob/master/wowlogs/http.py
 
 import logging
 from datetime import datetime
+from typing import Optional
 
 import aiohttp
 from redbot.core.bot import Red
@@ -10,12 +14,12 @@ from redbot.core.config import Config
 
 from .calls import Queries
 
-log = logging.getLogger("red.aikaterna.warcraftlogs.http")
+log = logging.getLogger("red.karlo-cogs.warcraftlogs.http")
 baseurl = "https://www.warcraftlogs.com"
 graphql_url = baseurl + "/api/v2/client"
 
 
-async def generate_bearer(bot: Red, config: Config) -> str:
+async def generate_bearer(bot: Red, config: Config) -> Optional[str]:
     """Generate the Bearer token used in GraphQL queries
 
     Bot and Config are imported here from the main class,
@@ -42,7 +46,8 @@ async def generate_bearer(bot: Red, config: Config) -> str:
             json = await request.json()
             if json.get("error", ""):
                 log.error(
-                    "There is an error generating the bearer key, probably a misconfigured client id and secret."
+                    "There is an error generating the bearer key, "
+                    "probably a misconfigured client id and secret."
                 )
                 log.error(f"{json['error']}: {json['error_description']}")
                 return None
