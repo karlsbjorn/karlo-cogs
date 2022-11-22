@@ -198,7 +198,7 @@ class Raiderio:
 
     @raiderio.command(name="guild")
     @commands.guild_only()
-    async def raiderio_guild(self, ctx: commands.Context, guild: str, *realm: str) -> None:
+    async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
         """Display the raider.io profile of a guild.
 
         If the guild or realm name have spaces in them, they need to be enclosed in quotes.
