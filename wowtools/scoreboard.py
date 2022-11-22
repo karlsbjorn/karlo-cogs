@@ -212,7 +212,7 @@ class Scoreboard:
                         title=_("Mythic+ Guild Scoreboard"),
                         color=await self.bot.get_embed_color(sb_msg),
                     )
-                    embed.set_author(name=guild.name, icon_url=guild.icon_url)
+                    embed.set_author(name=guild.name, icon_url=guild.icon.url)
                     try:
                         tabulate_list = await self._get_dungeon_scores(
                             guild_name,
@@ -367,7 +367,7 @@ class Scoreboard:
             title=_("Mythic+ Guild Scoreboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
 
         tabulate_list = await self._get_dungeon_scores(
             guild_name, max_chars, realm, region, sb_blacklist, image

@@ -1,6 +1,6 @@
 import discord
 from redbot.core import commands
-from redbot.core.i18n import Translator
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
 from .utils import format_to_gold, get_api_client
 
@@ -13,6 +13,11 @@ class Token:
     @commands.hybrid_command()
     async def wowtoken(self, ctx: commands.Context, region: str = "all"):
         """Check price of WoW token in a region"""
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
         if region == "all":
             await self.priceall(ctx)
             return
