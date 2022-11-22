@@ -2,7 +2,7 @@ import discord
 from aiohttp import ClientResponseError
 from aiowowapi import WowApi
 from redbot.core import commands
-from redbot.core.i18n import Translator
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
 from .utils import get_api_client
 
@@ -11,45 +11,51 @@ _ = Translator("WoWTools", __file__)
 
 class PvP:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    @commands.command()
+    @commands.hybrid_command()
     async def rating(self, ctx, character_name: str = None, *, realm: str = None):
         """Check a character's PVP ratings."""
-        async with ctx.typing():
-            region: str = await self.config.guild(ctx.guild).region()
-            armory_dict = await WowApi.parse_armory_link(character_name)
-            if armory_dict:
-                character_name = armory_dict["name"]
-                realm = armory_dict["realm"]
-                region = armory_dict["region"]
-            if not character_name and not realm:
-                region: str = await self.config.user(ctx.author).wow_character_region()
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
+        region: str = await self.config.guild(ctx.guild).region()
+        armory_dict = await WowApi.parse_armory_link(character_name)
+        if armory_dict:
+            character_name = armory_dict["name"]
+            realm = armory_dict["realm"]
+            region = armory_dict["region"]
+        if not character_name and not realm:
+            region: str = await self.config.user(ctx.author).wow_character_region()
+            if not region:
+                region: str = await self.config.guild(ctx.guild).region()
                 if not region:
-                    region: str = await self.config.guild(ctx.guild).region()
-                    if not region:
-                        await ctx.send_help()
-                        return
+                    await ctx.send_help()
+                    return
+        if not character_name:
+            character_name: str = await self.config.user(ctx.author).wow_character_name()
             if not character_name:
-                character_name: str = await self.config.user(ctx.author).wow_character_name()
-                if not character_name:
-                    await ctx.send_help()
-                    return
-            if not realm:
-                realm: str = await self.config.user(ctx.author).wow_character_realm()
-                if not realm:
-                    await ctx.send_help()
-                    return
-            try:
-                api_client = await get_api_client(self.bot, ctx, region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
+                await ctx.send_help()
                 return
-            realm = await api_client.get_realm_slug(realm)
+        if not realm:
+            realm: str = await self.config.user(ctx.author).wow_character_realm()
+            if not realm:
+                await ctx.send_help()
+                return
 
-            rbg_rating = "0"
-            duo_rating = "0"
-            tri_rating = "0"
-            color = discord.Color.red()
+        try:
+            api_client = await get_api_client(self.bot, ctx, region)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            return
+        realm = await api_client.get_realm_slug(realm)
 
+        rbg_rating = "0"
+        duo_rating = "0"
+        tri_rating = "0"
+        color = discord.Color.red()
+
+        async with ctx.typing():
             async with api_client:
                 wow_client = api_client.Retail
                 try:

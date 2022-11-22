@@ -14,7 +14,7 @@ class AuctionHouse:
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     @commands.hybrid_command()
     async def price(self, ctx: commands.Context, *, item: str):
-        """Get the current market price of an item."""
+        """Get the current auction price of an item."""
         if ctx.interaction:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
