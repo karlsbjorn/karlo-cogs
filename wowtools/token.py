@@ -29,6 +29,7 @@ class Token:
             )
             return
 
+        await ctx.defer()
         async with api_client as wow_client:
             wow_client = wow_client.Retail
             await self.limiter.acquire()
@@ -47,6 +48,7 @@ class Token:
         """Check price of the WoW token in all supported regions"""
         embed = discord.Embed(title=_("WoW Token prices"), colour=await ctx.embed_colour())
 
+        await ctx.defer()
         for region in VALID_REGIONS:
             try:
                 api_client = await get_api_client(self.bot, ctx, region)
