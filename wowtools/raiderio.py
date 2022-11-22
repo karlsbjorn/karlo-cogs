@@ -5,7 +5,6 @@ from typing import Dict, List
 import discord
 from aiowowapi import WowApi
 from dateutil.parser import isoparse
-from discord.embeds import EmptyEmbed
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator
@@ -327,7 +326,7 @@ class Raiderio:
             # TODO: Find out when the reset is for KR and CN
             embed = discord.Embed(
                 title=_("This week's Mythic+ affixes"),
-                description=msg if msg else EmptyEmbed,
+                description=msg if msg else None,
                 color=await ctx.embed_color(),
             )
             embed.set_thumbnail(url="https://i.imgur.com/kczQ4Jt.jpg")
