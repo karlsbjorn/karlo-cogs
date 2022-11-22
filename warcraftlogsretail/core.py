@@ -340,6 +340,8 @@ class WarcraftLogsRetail(commands.Cog):
             msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
             return await ctx.send(msg)
 
+        await ctx.defer()
+
         name = name.title()
         realm = realm.title()
 
