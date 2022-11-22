@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
-from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .enchantid import ENCHANT_ID
@@ -108,6 +108,11 @@ class WarcraftLogsRetail(commands.Cog):
         Not every log has gear data.
         Enchants can be shown - if the log provides them.
         """
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
         userdata = await self.config.user(ctx.author).all()
         if not name:
             name = userdata["charname"]
@@ -297,6 +302,11 @@ class WarcraftLogsRetail(commands.Cog):
         Zone name must be formatted like:
         CN, SoD, SotFO
         """
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
         # someone has their data saved, so they are just trying
         # to look up a zone for themselves
         if name:
