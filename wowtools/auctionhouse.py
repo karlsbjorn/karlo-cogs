@@ -19,43 +19,43 @@ class AuctionHouse:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
-        async with ctx.typing(ephemeral=True):
-            config_region: str = await self.config.guild(ctx.guild).region()
-            if not config_region:
-                await ctx.send(
-                    _(
-                        "Please set a region with `{prefix}wowset region` before using this command."
-                    ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
-                    ephemeral=True,
-                )
-                return
-            if config_region == "cn":
-                await ctx.send(
-                    _(
-                        "The Auction House is not available in China.\n"
-                        "Please set a different region with `{prefix}wowset region`."
-                    ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
-                    ephemeral=True,
-                )
-                return
+        config_region: str = await self.config.guild(ctx.guild).region()
+        if not config_region:
+            await ctx.send(
+                _(
+                    "Please set a region with `{prefix}wowset region` before using this command."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
+        if config_region == "cn":
+            await ctx.send(
+                _(
+                    "The Auction House is not available in China.\n"
+                    "Please set a different region with `{prefix}wowset region`."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
 
-            try:
-                api_client = await get_api_client(self.bot, ctx, config_region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
-                return
+        try:
+            api_client = await get_api_client(self.bot, ctx, config_region)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
+            return
 
-            config_realm: str = await self.config.guild(ctx.guild).realm()
-            if not config_realm:
-                await ctx.send(
-                    _(
-                        "Please set a realm with `{prefix}wowset realm` before using this command."
-                    ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
-                    ephemeral=True,
-                )
-                return
-            boe_disclaimer = False
+        config_realm: str = await self.config.guild(ctx.guild).realm()
+        if not config_realm:
+            await ctx.send(
+                _(
+                    "Please set a realm with `{prefix}wowset realm` before using this command."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
+        boe_disclaimer = False
 
+        async with ctx.typing():
             async with api_client as wow_client:
                 wow_client = wow_client.Retail
                 # Search for the item
@@ -96,7 +96,7 @@ class AuctionHouse:
                         if config_realm in realm_names:
                             c_realm_id = c_realm_data["id"]
                 if not c_realm_id:
-                    await ctx.send(_("Could not find realm."), ephemeral=True)
+                    await ctx.send(_("Could not find realm."))
                     return
 
                 # Get price of item
