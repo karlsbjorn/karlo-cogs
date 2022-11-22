@@ -55,165 +55,162 @@ class PvP:
         tri_rating = "0"
         color = discord.Color.red()
 
-        async with ctx.typing():
-            async with api_client:
-                wow_client = api_client.Retail
-                try:
-                    await self.limiter.acquire()
-                    profile = await wow_client.Profile.get_character_profile_summary(
-                        character_name=character_name, realm_slug=realm
-                    )
-                except ClientResponseError:
-                    await ctx.send(
-                        _('Character "{character_name}" not found.').format(
-                            character_name=character_name
-                        )
-                    )
-                    return
-
+        async with api_client:
+            wow_client = api_client.Retail
+            try:
                 await self.limiter.acquire()
-                achievements = await wow_client.Profile.get_character_achievements_summary(
+                profile = await wow_client.Profile.get_character_profile_summary(
                     character_name=character_name, realm_slug=realm
                 )
-
-                await self.limiter.acquire()
-                media = await wow_client.Profile.get_character_media_summary(
-                    character_name=character_name, realm_slug=realm
+            except ClientResponseError:
+                await ctx.send(
+                    _('Character "{character_name}" not found.').format(
+                        character_name=character_name
+                    )
                 )
-
-                try:
-                    await self.limiter.acquire()
-                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="rbg",
-                    )
-                except ClientResponseError:
-                    rbg_statistics = {}
-                try:
-                    await self.limiter.acquire()
-                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="2v2",
-                    )
-                except ClientResponseError:
-                    duo_statistics = {}
-                try:
-                    await self.limiter.acquire()
-                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                        character_name=character_name,
-                        realm_slug=realm,
-                        pvp_bracket="3v3",
-                    )
-                except ClientResponseError:
-                    tri_statistics = {}
-
-            if "name" not in profile:
-                await ctx.send(_("That character or realm does not exist."))
                 return
 
-            real_char_name: str = profile["name"]
-            char_img_url: str = media["assets"][0]["value"]
-            char_race: str = profile["race"]["name"]
-            char_class: str = profile["character_class"]["name"]
-            char_faction: str = profile["faction"]["name"]
-
-            # TODO: Fetch current expansion seasons programmatically
-            season_achievements = {
-                # Hero of the Horde, Hero of the Alliance, Gladiator, Elite, Duelist, Rival, Challenger, Combatant
-                "Season 1": (
-                    14693,
-                    14692,
-                    14689,
-                    14691,
-                    14688,
-                    14687,
-                    14686,
-                    14685,
-                ),
-                "Season 2": (
-                    14976,
-                    14975,
-                    14972,
-                    14974,
-                    14971,
-                    14970,
-                    14969,
-                    14968,
-                ),
-                "Season 3": (
-                    15356,
-                    15355,
-                    15352,
-                    15354,
-                    15351,
-                    15350,
-                    15349,
-                    15348,
-                ),
-                "Season 4": (
-                    15607,
-                    15608,
-                    15605,
-                    15639,
-                    15604,
-                    15603,
-                    15602,
-                    15601,
-                    15600,
-                    15610,
-                    15609,
-                ),
-            }
-            own_season_achievements = {
-                "Season 1": {},
-                "Season 2": {},
-                "Season 3": {},
-                "Season 4": {},
-            }
-            for char_achievement in achievements["achievements"]:
-                for season in season_achievements.keys():
-                    achi_id: int = char_achievement["id"]
-                    if achi_id in season_achievements[season]:
-                        own_season_achievements[season][achi_id] = char_achievement["achievement"][
-                            "name"
-                        ]
-            achi_to_post = []
-            for season in own_season_achievements.keys():
-                if own_season_achievements[season] != {}:
-                    achi_to_post.append(
-                        own_season_achievements[season][
-                            max(own_season_achievements[season].keys())
-                        ]
-                    )
-
-            if char_faction != "Horde":
-                color = discord.Color.blue()
-
-            if "rating" in rbg_statistics:
-                rbg_rating: str = rbg_statistics["rating"]
-            if "rating" in duo_statistics:
-                duo_rating: str = duo_statistics["rating"]
-            if "rating" in tri_statistics:
-                tri_rating: str = tri_statistics["rating"]
-
-            embed = discord.Embed(
-                color=color,
-                title=real_char_name,
-                description=f"{char_race} {char_class}",
-                url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}",
+            await self.limiter.acquire()
+            achievements = await wow_client.Profile.get_character_achievements_summary(
+                character_name=character_name, realm_slug=realm
             )
-            embed.set_thumbnail(url=char_img_url)
-            embed.add_field(name=_("RBG Rating"), value=rbg_rating)
-            embed.add_field(name=_("2v2 Rating"), value=duo_rating)
-            embed.add_field(name=_("3v3 Rating"), value=tri_rating)
-            if (
-                own_season_achievements["Season 1"] != {}
-                or own_season_achievements["Season 2"] != {}
-                or own_season_achievements["Season 3"] != {}
-                or own_season_achievements["Season 4"] != {}
-            ):
-                embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
+
+            await self.limiter.acquire()
+            media = await wow_client.Profile.get_character_media_summary(
+                character_name=character_name, realm_slug=realm
+            )
+
+            try:
+                await self.limiter.acquire()
+                rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name,
+                    realm_slug=realm,
+                    pvp_bracket="rbg",
+                )
+            except ClientResponseError:
+                rbg_statistics = {}
+            try:
+                await self.limiter.acquire()
+                duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name,
+                    realm_slug=realm,
+                    pvp_bracket="2v2",
+                )
+            except ClientResponseError:
+                duo_statistics = {}
+            try:
+                await self.limiter.acquire()
+                tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                    character_name=character_name,
+                    realm_slug=realm,
+                    pvp_bracket="3v3",
+                )
+            except ClientResponseError:
+                tri_statistics = {}
+
+        if "name" not in profile:
+            await ctx.send(_("That character or realm does not exist."))
+            return
+
+        real_char_name: str = profile["name"]
+        char_img_url: str = media["assets"][0]["value"]
+        char_race: str = profile["race"]["name"]
+        char_class: str = profile["character_class"]["name"]
+        char_faction: str = profile["faction"]["name"]
+
+        # TODO: Fetch current expansion seasons programmatically
+        season_achievements = {
+            # Hero of the Horde, Hero of the Alliance, Gladiator, Elite, Duelist, Rival, Challenger, Combatant
+            "Season 1": (
+                14693,
+                14692,
+                14689,
+                14691,
+                14688,
+                14687,
+                14686,
+                14685,
+            ),
+            "Season 2": (
+                14976,
+                14975,
+                14972,
+                14974,
+                14971,
+                14970,
+                14969,
+                14968,
+            ),
+            "Season 3": (
+                15356,
+                15355,
+                15352,
+                15354,
+                15351,
+                15350,
+                15349,
+                15348,
+            ),
+            "Season 4": (
+                15607,
+                15608,
+                15605,
+                15639,
+                15604,
+                15603,
+                15602,
+                15601,
+                15600,
+                15610,
+                15609,
+            ),
+        }
+        own_season_achievements = {
+            "Season 1": {},
+            "Season 2": {},
+            "Season 3": {},
+            "Season 4": {},
+        }
+        for char_achievement in achievements["achievements"]:
+            for season in season_achievements.keys():
+                achi_id: int = char_achievement["id"]
+                if achi_id in season_achievements[season]:
+                    own_season_achievements[season][achi_id] = char_achievement["achievement"][
+                        "name"
+                    ]
+        achi_to_post = []
+        for season in own_season_achievements.keys():
+            if own_season_achievements[season] != {}:
+                achi_to_post.append(
+                    own_season_achievements[season][max(own_season_achievements[season].keys())]
+                )
+
+        if char_faction != "Horde":
+            color = discord.Color.blue()
+
+        if "rating" in rbg_statistics:
+            rbg_rating: str = rbg_statistics["rating"]
+        if "rating" in duo_statistics:
+            duo_rating: str = duo_statistics["rating"]
+        if "rating" in tri_statistics:
+            tri_rating: str = tri_statistics["rating"]
+
+        embed = discord.Embed(
+            color=color,
+            title=real_char_name,
+            description=f"{char_race} {char_class}",
+            url=f"https://worldofwarcraft.com/en-gb/character/{region}/{realm}/{real_char_name}",
+        )
+        embed.set_thumbnail(url=char_img_url)
+        embed.add_field(name=_("RBG Rating"), value=rbg_rating)
+        embed.add_field(name=_("2v2 Rating"), value=duo_rating)
+        embed.add_field(name=_("3v3 Rating"), value=tri_rating)
+        if (
+            own_season_achievements["Season 1"] != {}
+            or own_season_achievements["Season 2"] != {}
+            or own_season_achievements["Season 3"] != {}
+            or own_season_achievements["Season 4"] != {}
+        ):
+            embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
 
         await ctx.send(embed=embed)
