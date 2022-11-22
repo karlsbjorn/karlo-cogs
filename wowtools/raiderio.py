@@ -11,9 +11,8 @@ from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils import menus
 from redbot.core.utils.chat_formatting import box, humanize_list
 from redbot.core.utils.menus import DEFAULT_CONTROLS
+from redbot.core.utils.views import SimpleMenu
 from tabulate import tabulate
-
-from wowtools.utils import get_api_client
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -194,7 +193,7 @@ class Raiderio:
             )
             embeds.append(embed)
 
-        await menus.menu(ctx, pages=embeds, controls=DEFAULT_CONTROLS)
+        await SimpleMenu(embeds).start(ctx)
 
     @raiderio.command(name="guild")
     @commands.guild_only()
