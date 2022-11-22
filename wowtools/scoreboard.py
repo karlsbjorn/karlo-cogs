@@ -22,7 +22,7 @@ _ = Translator("WoWTools", __file__)
 
 class Scoreboard:
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-    @commands.group(name="wowscoreboard", aliases=["sb"])
+    @commands.hybrid_group(name="wowscoreboard", aliases=["sb"])
     @commands.guild_only()
     async def wowscoreboard(self, ctx: commands.Context):
         """Show various scoreboards for your guild."""
@@ -32,16 +32,20 @@ class Scoreboard:
     @commands.guild_only()
     async def wowscoreboard_dungeon(self, ctx: commands.Context):
         """Get the Mythic+ scoreboard for this guild."""
-        async with ctx.typing():
-            image_enabled = await self.config.guild(ctx.guild).sb_image()
-            try:
-                if image_enabled:
-                    embed, img_file = await self._generate_dungeon_scoreboard(ctx, True)
-                else:
-                    embed = await self._generate_dungeon_scoreboard(ctx)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
+        image_enabled = await self.config.guild(ctx.guild).sb_image()
+        try:
+            if image_enabled:
+                embed, img_file = await self._generate_dungeon_scoreboard(ctx, True)
+            else:
+                embed = await self._generate_dungeon_scoreboard(ctx)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            return
         if embed:
             if image_enabled:
                 await ctx.send(embed=embed, file=img_file)
@@ -57,8 +61,12 @@ class Scoreboard:
         **Characters that have not played all PvP gamemodes at
         some point will not be shown.**
         """
-        async with ctx.typing():
-            embed = await self._generate_pvp_scoreboard(ctx)
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
+        embed = await self._generate_pvp_scoreboard(ctx)
         if embed:
             # TODO: In dpy2, make this a list of embeds to send in a single message
             await ctx.send(embed=embed)

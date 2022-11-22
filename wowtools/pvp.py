@@ -18,7 +18,6 @@ class PvP:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
-            await ctx.defer()
 
         region: str = await self.config.guild(ctx.guild).region()
         armory_dict = await WowApi.parse_armory_link(character_name)
