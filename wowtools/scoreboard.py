@@ -40,6 +40,7 @@ class Scoreboard:
         image_enabled = await self.config.guild(ctx.guild).sb_image()
         try:
             if image_enabled:
+                await ctx.defer()
                 embed, img_file = await self._generate_dungeon_scoreboard(ctx, True)
             else:
                 embed = await self._generate_dungeon_scoreboard(ctx)
