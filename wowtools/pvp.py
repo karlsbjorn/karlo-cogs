@@ -55,6 +55,7 @@ class PvP:
         tri_rating = "0"
         color = discord.Color.red()
 
+        await ctx.defer()
         async with api_client:
             wow_client = api_client.Retail
             try:

@@ -437,21 +437,21 @@ class Scoreboard:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
             return None
         if not realm:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
             return None
         if not guild_name:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
             return None
 
