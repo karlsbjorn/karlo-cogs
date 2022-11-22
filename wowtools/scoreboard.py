@@ -349,19 +349,19 @@ class Scoreboard:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
         if not realm:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
         if not guild_name:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
-                ).format(prefix=ctx.clean_prefix)
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
             )
 
         embed = discord.Embed(

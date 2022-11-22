@@ -217,14 +217,14 @@ class Raiderio:
             await ctx.send(
                 _(
                     "A server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix),
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
                 ephemeral=True,
             )
             return
         if not realm:
             await ctx.send(
                 _("A server admin needs to set a realm with `{prefix}wowset realm` first.").format(
-                    prefix=ctx.clean_prefix
+                    prefix=ctx.clean_prefix if not ctx.interaction else "",
                 ),
                 ephemeral=True,
             )

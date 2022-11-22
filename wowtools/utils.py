@@ -26,7 +26,7 @@ async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
                 "filling in `whoops` with your client's ID and secret."
-            ).format(prefix=ctx.prefix)
+            ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
         )
     api_client = WowApi(client_id=cid, client_secret=secret, client_region=region)
     return api_client
