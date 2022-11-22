@@ -89,7 +89,7 @@ class WarcraftLogsRetail(commands.Cog):
     ):
         await self.config.user_from_id(user_id).clear()
 
-    @commands.hybrid_group()
+    @commands.hybrid_group(aliases=["wcl"])
     async def warcraftlogs(self, ctx: commands.Context):
         """Retrieve World of Warcraft character information from WarcraftLogs."""
         pass
@@ -108,165 +108,167 @@ class WarcraftLogsRetail(commands.Cog):
         Not every log has gear data.
         Enchants can be shown - if the log provides them.
         """
-        async with ctx.typing():
-            userdata = await self.config.user(ctx.author).all()
+        userdata = await self.config.user(ctx.author).all()
+        if not name:
+            name = userdata["charname"]
             if not name:
-                name = userdata["charname"]
-                if not name:
-                    return await ctx.send(_("Please specify a character name with this command."))
+                return await ctx.send(
+                    _("Please specify a character name with this command."), ephemeral=True
+                )
+        if not realm:
+            realm = userdata["realm"]
             if not realm:
-                realm = userdata["realm"]
-                if not realm:
-                    return await ctx.send(_("Please specify a realm name with this command."))
+                return await ctx.send(
+                    _("Please specify a realm name with this command."), ephemeral=True
+                )
+        if not region:
+            region = userdata["region"]
             if not region:
-                region = userdata["region"]
-                if not region:
-                    return await ctx.send(_("Please specify a region name with this command."))
-
-            if len(region.split(" ")) > 1:
-                presplit = region.split(" ")
-                realm = f"{realm}-{presplit[0]}"
-                region = presplit[1]
-
-            name = name.title()
-            realm = realm.title()
-            region = region.upper()
-
-            # Get the user's last raid encounters
-            encounters = await self.http.get_last_encounter(name, realm, region)
-
-            if encounters is False:
-                # the user wasn't found on the API.
-                return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
-
-            error = encounters.get("error", None)
-            if error:
-                return await ctx.send(f"WCL API Error: {error}")
-
-            if encounters is None:
-                return await ctx.send(_("The bearer token was invalidated for some reason."))
-
-            char_data = await self.http.get_gear(name, realm, region, encounters["latest"])
-            if not char_data:
                 return await ctx.send(
-                    _(
-                        "Check your API token and make sure you "
-                        "have added it to the bot correctly."
+                    _("Please specify a region name with this command."), ephemeral=True
+                )
+
+        await ctx.defer()
+
+        if len(region.split(" ")) > 1:
+            presplit = region.split(" ")
+            realm = f"{realm}-{presplit[0]}"
+            region = presplit[1]
+
+        name = name.title()
+        realm = realm.title()
+        region = region.upper()
+
+        # Get the user's last raid encounters
+        encounters = await self.http.get_last_encounter(name, realm, region)
+
+        if encounters is False:
+            # the user wasn't found on the API.
+            return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
+
+        error = encounters.get("error", None)
+        if error:
+            return await ctx.send(f"WCL API Error: {error}")
+
+        if encounters is None:
+            return await ctx.send(_("The bearer token was invalidated for some reason."))
+
+        char_data = await self.http.get_gear(name, realm, region, encounters["latest"])
+        if not char_data:
+            return await ctx.send(
+                _("Check your API token and make sure you " "have added it to the bot correctly.")
+            )
+        gear = None
+
+        if char_data is None:
+            # Assuming bearer has been invalidated.
+            await self._create_client()
+
+        if len(char_data["encounterRankings"]["ranks"]) != 0:
+            # Ensure this is the encounter that has gear listed.
+            # IF it's not, we're moving on with the other encounters.
+            sorted_by_time = sorted(
+                char_data["encounterRankings"]["ranks"],
+                key=lambda k: k["report"]["startTime"],
+                reverse=True,
+            )
+            gear = sorted_by_time[0]["gear"]
+        else:
+            encounters["ids"].remove(encounters["latest"])
+            for encounter in encounters["ids"]:
+                char_data = await self.http.get_gear(name, realm, region, encounter)
+                if len(char_data["encounterRankings"]["ranks"]) != 0:
+                    sorted_by_time = sorted(
+                        char_data["encounterRankings"]["ranks"],
+                        key=lambda k: k["report"]["startTime"],
+                        reverse=True,
                     )
-                )
-            gear = None
+                    gear = sorted_by_time[0]["gear"]
+                    break
 
-            if char_data is None:
-                # Assuming bearer has been invalidated.
-                await self._create_client()
-
-            if len(char_data["encounterRankings"]["ranks"]) != 0:
-                # Ensure this is the encounter that has gear listed.
-                # IF it's not, we're moving on with the other encounters.
-                sorted_by_time = sorted(
-                    char_data["encounterRankings"]["ranks"],
-                    key=lambda k: k["report"]["startTime"],
-                    reverse=True,
-                )
-                gear = sorted_by_time[0]["gear"]
-            else:
-                encounters["ids"].remove(encounters["latest"])
-                for encounter in encounters["ids"]:
-                    char_data = await self.http.get_gear(name, realm, region, encounter)
-                    if len(char_data["encounterRankings"]["ranks"]) != 0:
-                        sorted_by_time = sorted(
-                            char_data["encounterRankings"]["ranks"],
-                            key=lambda k: k["report"]["startTime"],
-                            reverse=True,
-                        )
-                        gear = sorted_by_time[0]["gear"]
-                        break
-
-            if gear is None:
-                return await ctx.send(
-                    _("No gear for {name} found in the last report.").format(name=name)
-                )
-
-            item_list = []
-            item_ilevel = 0
-            item_count = 0
-            for item in gear:
-                if item["id"] == 0:
-                    continue
-                # item can be:
-                # {
-                #   'name': 'Unknown Item',
-                #   'quality': 'common',
-                #   'id': None,
-                #   'icon': 'inv_axe_02.jpg'
-                # }
-                rarity = self._get_rarity(item)
-                item_ilevel_entry = item.get("itemLevel", None)
-                if item_ilevel_entry:
-                    if int(item["itemLevel"]) > 5:
-                        item_ilevel += int(item["itemLevel"])
-                        item_count += 1
-                item_list.append(
-                    f"{rarity} [{item['name']}](https://wowhead.com/item={item['id']})"
-                )
-                perm_enchant_id = item.get("permanentEnchant", None)
-                temp_enchant_id = item.get("temporaryEnchant", None)
-                gem_id = item.get("gems", None)
-                gem_id = gem_id[0].get("id", None) if gem_id else None
-                perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
-                temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
-                gem_text = ENCHANT_ID.get(gem_id, None)
-
-                if perm_enchant_id:
-                    if temp_enchant_id and temp_enchant_text:
-                        symbol = "├"
-                    elif gem_id and gem_text:
-                        symbol = "├"
-                    else:
-                        symbol = "└"
-                    if perm_enchant_text:
-                        item_list.append(f"`{symbol}──` {perm_enchant_text}")
-                    elif gem_text:
-                        item_list.append(f"`{symbol}──` {gem_text}")
-                if gem_id:
-                    if temp_enchant_id and temp_enchant_text:
-                        symbol = "├"
-                    else:
-                        symbol = "└"
-                    if gem_text:
-                        item_list.append(f"`{symbol}──` {gem_text}")
-                if temp_enchant_id:
-                    if temp_enchant_text:
-                        item_list.append(f"`└──` {temp_enchant_text}")
-
-            if item_ilevel > 0:
-                avg_ilevel = "{:g}".format(item_ilevel / item_count)
-            else:
-                avg_ilevel = _("Unknown (not present in log data from the API)")
-
-            # embed
-            embed = discord.Embed()
-            title = f"{name.title()} - {realm.title()} ({region.upper()})"
-            guild_name = sorted_by_time[0]["guild"].get("name", None)
-            if guild_name:
-                title += f"\n{guild_name}"
-            embed.title = title
-            embed.description = "\n".join(item_list)
-            embed.colour = await ctx.embed_color()
-
-            # embed footer
-            ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
-            encounter_spec = sorted_by_time[0].get("spec", None)
-            spec = _("Encounter spec: {encounter_spec}\n").format(encounter_spec=encounter_spec)
-            gear_data = _("Gear data pulled from {report_url}\n").format(
-                report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
+        if gear is None:
+            return await ctx.send(
+                _("No gear for {name} found in the last report.").format(name=name)
             )
-            log_date = _("Log Date/Time: {datetime} UTC").format(
-                datetime=self._time_convert(sorted_by_time[0]["startTime"])
-            )
-            embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log_date}")
 
-            await ctx.send(embed=embed)
+        item_list = []
+        item_ilevel = 0
+        item_count = 0
+        for item in gear:
+            if item["id"] == 0:
+                continue
+            # item can be:
+            # {
+            #   'name': 'Unknown Item',
+            #   'quality': 'common',
+            #   'id': None,
+            #   'icon': 'inv_axe_02.jpg'
+            # }
+            rarity = self._get_rarity(item)
+            item_ilevel_entry = item.get("itemLevel", None)
+            if item_ilevel_entry:
+                if int(item["itemLevel"]) > 5:
+                    item_ilevel += int(item["itemLevel"])
+                    item_count += 1
+            item_list.append(f"{rarity} [{item['name']}](https://wowhead.com/item={item['id']})")
+            perm_enchant_id = item.get("permanentEnchant", None)
+            temp_enchant_id = item.get("temporaryEnchant", None)
+            gem_id = item.get("gems", None)
+            gem_id = gem_id[0].get("id", None) if gem_id else None
+            perm_enchant_text = ENCHANT_ID.get(perm_enchant_id, None)
+            temp_enchant_text = ENCHANT_ID.get(temp_enchant_id, None)
+            gem_text = ENCHANT_ID.get(gem_id, None)
+
+            if perm_enchant_id:
+                if temp_enchant_id and temp_enchant_text:
+                    symbol = "├"
+                elif gem_id and gem_text:
+                    symbol = "├"
+                else:
+                    symbol = "└"
+                if perm_enchant_text:
+                    item_list.append(f"`{symbol}──` {perm_enchant_text}")
+                elif gem_text:
+                    item_list.append(f"`{symbol}──` {gem_text}")
+            if gem_id:
+                if temp_enchant_id and temp_enchant_text:
+                    symbol = "├"
+                else:
+                    symbol = "└"
+                if gem_text:
+                    item_list.append(f"`{symbol}──` {gem_text}")
+            if temp_enchant_id:
+                if temp_enchant_text:
+                    item_list.append(f"`└──` {temp_enchant_text}")
+
+        if item_ilevel > 0:
+            avg_ilevel = "{:g}".format(item_ilevel / item_count)
+        else:
+            avg_ilevel = _("Unknown (not present in log data from the API)")
+
+        # embed
+        embed = discord.Embed()
+        title = f"{name.title()} - {realm.title()} ({region.upper()})"
+        guild_name = sorted_by_time[0]["guild"].get("name", None)
+        if guild_name:
+            title += f"\n{guild_name}"
+        embed.title = title
+        embed.description = "\n".join(item_list)
+        embed.colour = await ctx.embed_color()
+
+        # embed footer
+        ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
+        encounter_spec = sorted_by_time[0].get("spec", None)
+        spec = _("Encounter spec: {encounter_spec}\n").format(encounter_spec=encounter_spec)
+        gear_data = _("Gear data pulled from {report_url}\n").format(
+            report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
+        )
+        log_date = _("Log Date/Time: {datetime} UTC").format(
+            datetime=self._time_convert(sorted_by_time[0]["startTime"])
+        )
+        embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log_date}")
+
+        await ctx.send(embed=embed)
 
     @commands.bot_has_permissions(embed_links=True)
     @warcraftlogs.command()
@@ -297,226 +299,213 @@ class WarcraftLogsRetail(commands.Cog):
         """
         # someone has their data saved, so they are just trying
         # to look up a zone for themselves
-        async with ctx.typing():
-            if name:
-                if name.upper() in ZONES_BY_SHORT_NAME:
-                    zone = name
-                    name = None
-                    realm = None
-                    region = None
+        if name:
+            if name.upper() in ZONES_BY_SHORT_NAME:
+                zone = name
+                name = None
+                realm = None
+                region = None
 
-            # look up any saved info
-            userdata = await self.config.user(ctx.author).all()
+        # look up any saved info
+        userdata = await self.config.user(ctx.author).all()
+        if not name:
+            name = userdata["charname"]
             if not name:
-                name = userdata["charname"]
-                if not name:
-                    return await ctx.send(_("Please specify a character name with this command."))
+                return await ctx.send(_("Please specify a character name with this command."))
+        if not realm:
+            realm = userdata["realm"]
             if not realm:
-                realm = userdata["realm"]
-                if not realm:
-                    return await ctx.send(_("Please specify a realm name with this command."))
+                return await ctx.send(_("Please specify a realm name with this command."))
+        if not region:
+            region = userdata["region"]
             if not region:
-                region = userdata["region"]
-                if not region:
-                    return await ctx.send(_("Please specify a region name with this command."))
+                return await ctx.send(_("Please specify a region name with this command."))
 
-            region = region.upper()
-            if region not in ["US", "EU"]:
-                msg = _(
-                    "Realm names that have a space (like 'Nethergarde Keep') must "
-                    "be written with a hyphen, "
-                )
-                msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
-                return await ctx.send(msg)
+        region = region.upper()
+        if region not in ["US", "EU"]:
+            msg = _(
+                "Realm names that have a space (like 'Nethergarde Keep') must "
+                "be written with a hyphen, "
+            )
+            msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
+            return await ctx.send(msg)
 
-            name = name.title()
-            realm = realm.title()
+        name = name.title()
+        realm = realm.title()
 
-            # fetch zone name and zone id from user input
-            zone_id = None
-            if zone:
-                if zone.upper() in ZONES_BY_SHORT_NAME:
-                    zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
-                    zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
-            if difficulty and difficulty.upper() in DIFFICULTIES.values():
-                difficulty_ids = list(DIFFICULTIES.keys())
-                for difficulty_id in difficulty_ids:
-                    if difficulty.upper() == DIFFICULTIES[difficulty_id]:
-                        difficulty = difficulty_id
-                        break
-            else:
-                difficulty = 0
+        # fetch zone name and zone id from user input
+        zone_id = None
+        if zone:
+            if zone.upper() in ZONES_BY_SHORT_NAME:
+                zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
+                zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
+        if difficulty and difficulty.upper() in DIFFICULTIES.values():
+            difficulty_ids = list(DIFFICULTIES.keys())
+            for difficulty_id in difficulty_ids:
+                if difficulty.upper() == DIFFICULTIES[difficulty_id]:
+                    difficulty = difficulty_id
+                    break
+        else:
+            difficulty = 0
 
-            if zone_id is None:
-                # return first raid that actually has parse info in shadowlands
-                # as no specific zone was requested
-                zone_ids = list(ZONES_BY_ID.keys())
-                zone_ids.reverse()
-                for zone_number in zone_ids:
-                    data = await self.http.get_overview(
-                        name, realm, region, zone_number, difficulty
-                    )
-                    error = data.get("error", None)
-                    if error:
-                        return await ctx.send(f"WCL API Error: {error}")
-                    if (data is False) or (not data["data"]["characterData"]["character"]):
-                        return await ctx.send(
-                            _("{name} wasn't found on the API.").format(name=name)
-                        )
-                    char_data = data["data"]["characterData"]["character"]["zoneRankings"]
-                    data_test = char_data.get("bestPerformanceAverage", None)
-                    if data_test is not None:
-                        break
-            else:
-                # try getting a specific zone's worth of info for this character
-                data = await self.http.get_overview(name, realm, region, zone_id, difficulty)
+        if zone_id is None:
+            # return first raid that actually has parse info in shadowlands
+            # as no specific zone was requested
+            zone_ids = list(ZONES_BY_ID.keys())
+            zone_ids.reverse()
+            for zone_number in zone_ids:
+                data = await self.http.get_overview(name, realm, region, zone_number, difficulty)
                 error = data.get("error", None)
                 if error:
                     return await ctx.send(f"WCL API Error: {error}")
                 if (data is False) or (not data["data"]["characterData"]["character"]):
                     return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
-
-            # embed and data setup
-            zws = "\N{ZERO WIDTH SPACE}"
-
-            try:
                 char_data = data["data"]["characterData"]["character"]["zoneRankings"]
-            except (KeyError, TypeError):
-                msg = _(
-                    "Something went terribly wrong while trying to "
-                    "access the zone rankings for this character."
+                data_test = char_data.get("bestPerformanceAverage", None)
+                if data_test is not None:
+                    break
+        else:
+            # try getting a specific zone's worth of info for this character
+            data = await self.http.get_overview(name, realm, region, zone_id, difficulty)
+            error = data.get("error", None)
+            if error:
+                return await ctx.send(f"WCL API Error: {error}")
+            if (data is False) or (not data["data"]["characterData"]["character"]):
+                return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
+
+        # embed and data setup
+        zws = "\N{ZERO WIDTH SPACE}"
+
+        try:
+            char_data = data["data"]["characterData"]["character"]["zoneRankings"]
+        except (KeyError, TypeError):
+            msg = _(
+                "Something went terribly wrong while trying to "
+                "access the zone rankings for this character."
+            )
+            return await ctx.send(msg)
+
+        try:
+            difficulty = (
+                await self._difficulty_name_from_id(char_data["difficulty"])
+            ).capitalize()
+        except KeyError:
+            await ctx.send("No data found for that difficulty.")
+            return
+        zone_name = await self._zone_name_from_id(char_data["zone"])
+        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(40, " ")
+
+        embed = discord.Embed()
+        embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
+        embed.colour = await ctx.embed_color()
+
+        # perf averages
+        embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)
+
+        perf_avg = char_data.get("bestPerformanceAverage", None)
+        if perf_avg:
+            pf_avg = "{:.1f}".format(char_data["bestPerformanceAverage"])
+            pf_avg = self._get_color(float(pf_avg))
+            embed.add_field(name=_("Best Perf. Avg"), value=pf_avg, inline=True)
+        else:
+            if zone_id:
+                return await ctx.send(
+                    _("Nothing found for {zone_name} for this player for Shadowlands.").format(
+                        zone_name=zone_id_to_name.title()
+                    )
                 )
-                return await ctx.send(msg)
-
-            try:
-                difficulty = (
-                    await self._difficulty_name_from_id(char_data["difficulty"])
-                ).capitalize()
-            except KeyError:
-                await ctx.send("No data found for that difficulty.")
-                return
-            zone_name = await self._zone_name_from_id(char_data["zone"])
-            zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(40, " ")
-
-            embed = discord.Embed()
-            embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
-            embed.colour = await ctx.embed_color()
-
-            # perf averages
-            embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)
-
-            perf_avg = char_data.get("bestPerformanceAverage", None)
-            if perf_avg:
-                pf_avg = "{:.1f}".format(char_data["bestPerformanceAverage"])
-                pf_avg = self._get_color(float(pf_avg))
-                embed.add_field(name=_("Best Perf. Avg"), value=pf_avg, inline=True)
             else:
-                if zone_id:
-                    return await ctx.send(
-                        _("Nothing found for {zone_name} for this player for Shadowlands.").format(
-                            zone_name=zone_id_to_name.title()
-                        )
-                    )
-                else:
-                    return await ctx.send(
-                        _("Nothing at all found for this player for Shadowlands.")
-                    )
+                return await ctx.send(_("Nothing at all found for this player for Shadowlands."))
 
-            md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
-            md_avg = self._get_color(float(md_avg))
-            embed.add_field(name=_("Median Perf. Avg"), value=md_avg, inline=True)
+        md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
+        md_avg = self._get_color(float(md_avg))
+        embed.add_field(name=_("Median Perf. Avg"), value=md_avg, inline=True)
 
-            # perf avg filler space
-            embed.add_field(name=zws, value=zws, inline=True)
+        # perf avg filler space
+        embed.add_field(name=zws, value=zws, inline=True)
 
-            # table setup
-            table = BeautifulTable(default_alignment=ALIGN_LEFT, maxwidth=500)
-            table.set_style(BeautifulTable.STYLE_COMPACT)
-            table.columns.header = [
-                _("Name"),
-                _("Best %"),
-                _("Spec"),
-                _("DPS"),
-                _("Kills"),
-                _("Fastest"),
-                _("Med %"),
-                _("AS Pts"),
-                _("AS Rank"),
-            ]
+        # table setup
+        table = BeautifulTable(default_alignment=ALIGN_LEFT, maxwidth=500)
+        table.set_style(BeautifulTable.STYLE_COMPACT)
+        table.columns.header = [
+            _("Name"),
+            _("Best %"),
+            _("Spec"),
+            _("DPS"),
+            _("Kills"),
+            _("Fastest"),
+            _("Med %"),
+            _("AS Pts"),
+            _("AS Rank"),
+        ]
 
-            # add rankings per encounter to table
-            rankings = char_data["rankings"]
-            for encounter in rankings:
-                all_stars = encounter["allStars"]
-                enc_details = encounter["encounter"]
-                best_amt = (
-                    "{:.1f}".format(encounter["bestAmount"])
-                    if encounter["bestAmount"] != 0
-                    else "-"
-                )
-                median_pct = (
-                    "{:.1f}".format(encounter["medianPercent"])
-                    if encounter["medianPercent"]
-                    else "-"
-                )
-                rank_pct = (
-                    "{:.1f}".format(encounter["rankPercent"])
-                    if encounter["medianPercent"]
-                    else "-"
-                )
-                fastest_kill_tup = self._dynamic_time(encounter["fastestKill"] / 1000)
+        # add rankings per encounter to table
+        rankings = char_data["rankings"]
+        for encounter in rankings:
+            all_stars = encounter["allStars"]
+            enc_details = encounter["encounter"]
+            best_amt = (
+                "{:.1f}".format(encounter["bestAmount"]) if encounter["bestAmount"] != 0 else "-"
+            )
+            median_pct = (
+                "{:.1f}".format(encounter["medianPercent"]) if encounter["medianPercent"] else "-"
+            )
+            rank_pct = (
+                "{:.1f}".format(encounter["rankPercent"]) if encounter["medianPercent"] else "-"
+            )
+            fastest_kill_tup = self._dynamic_time(encounter["fastestKill"] / 1000)
 
-                if fastest_kill_tup == (0, 0):
-                    fastest_kill = "-"
-                else:
-                    if len(str(fastest_kill_tup[1])) == 1:
-                        seconds = f"0{fastest_kill_tup[1]}"
-                    else:
-                        seconds = fastest_kill_tup[1]
-                    fastest_kill = f"{fastest_kill_tup[0]}:{seconds}"
-
-                table.rows.append(
-                    (
-                        enc_details.get("name", None),
-                        rank_pct,
-                        encounter["spec"],
-                        best_amt,
-                        encounter["totalKills"],
-                        fastest_kill,
-                        median_pct,
-                        all_stars.get("points", None) if all_stars else "-",
-                        all_stars.get("rank", None) if all_stars else "-",
-                    )
-                )
-
-            # all stars
-            all_stars = char_data["allStars"]
-            section_name = _("⫷ Expansion All Stars ⫸").center(40, " ")
-            embed.add_field(name=zws, value=box(section_name, lang="Prolog"), inline=False)
-            for item in all_stars:
-                msg = f"**{item['spec']}**\n"
-                rank_percent = "{:.1f}".format(item["rankPercent"])
-                msg += _("Points:\n`{points}`\n").format(points=item["points"])
-                msg += _("Rank:\n`{rank}`\n").format(rank=item["rank"])
-                msg += f"{self._get_color(float(rank_percent), '%')}\n"
-                embed.add_field(name=zws, value=msg, inline=True)
-
-            # all stars filler space
-            if not len(all_stars) % 3 == 0:
-                nearest_multiple = 3 * math.ceil(len(all_stars) / 3)
+            if fastest_kill_tup == (0, 0):
+                fastest_kill = "-"
             else:
-                nearest_multiple = len(all_stars)
-            bonus_empty_fields = nearest_multiple - len(all_stars)
-            if bonus_empty_fields > 0:
-                for _1 in range(bonus_empty_fields):
-                    embed.add_field(name=zws, value=zws, inline=True)
+                if len(str(fastest_kill_tup[1])) == 1:
+                    seconds = f"0{fastest_kill_tup[1]}"
+                else:
+                    seconds = fastest_kill_tup[1]
+                fastest_kill = f"{fastest_kill_tup[0]}:{seconds}"
 
-            # table time
-            table_image = await self._make_table_image(str(table))
-            image_file = discord.File(fp=table_image, filename="table_image.png")
-            embed.set_image(url=f"attachment://{image_file.filename}")
+            table.rows.append(
+                (
+                    enc_details.get("name", None),
+                    rank_pct,
+                    encounter["spec"],
+                    best_amt,
+                    encounter["totalKills"],
+                    fastest_kill,
+                    median_pct,
+                    all_stars.get("points", None) if all_stars else "-",
+                    all_stars.get("rank", None) if all_stars else "-",
+                )
+            )
 
-            await ctx.send(file=image_file, embed=embed)
+        # all stars
+        all_stars = char_data["allStars"]
+        section_name = _("⫷ Expansion All Stars ⫸").center(40, " ")
+        embed.add_field(name=zws, value=box(section_name, lang="Prolog"), inline=False)
+        for item in all_stars:
+            msg = f"**{item['spec']}**\n"
+            rank_percent = "{:.1f}".format(item["rankPercent"])
+            msg += _("Points:\n`{points}`\n").format(points=item["points"])
+            msg += _("Rank:\n`{rank}`\n").format(rank=item["rank"])
+            msg += f"{self._get_color(float(rank_percent), '%')}\n"
+            embed.add_field(name=zws, value=msg, inline=True)
+
+        # all stars filler space
+        if not len(all_stars) % 3 == 0:
+            nearest_multiple = 3 * math.ceil(len(all_stars) / 3)
+        else:
+            nearest_multiple = len(all_stars)
+        bonus_empty_fields = nearest_multiple - len(all_stars)
+        if bonus_empty_fields > 0:
+            for _1 in range(bonus_empty_fields):
+                embed.add_field(name=zws, value=zws, inline=True)
+
+        # table time
+        table_image = await self._make_table_image(str(table))
+        image_file = discord.File(fp=table_image, filename="table_image.png")
+        embed.set_image(url=f"attachment://{image_file.filename}")
+
+        await ctx.send(file=image_file, embed=embed)
 
     @commands.group()
     async def wclset(self, ctx: commands.Context):
