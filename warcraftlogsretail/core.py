@@ -89,9 +89,14 @@ class WarcraftLogsRetail(commands.Cog):
     ):
         await self.config.user_from_id(user_id).clear()
 
+    @commands.hybrid_group()
+    async def warcraftlogs(self, ctx: commands.Context):
+        """Retrieve World of Warcraft character information from WarcraftLogs."""
+        pass
+
     @commands.bot_has_permissions(embed_links=True)
-    @commands.command()
-    async def getgear(self, ctx, name: str = None, realm: str = None, *, region: str = None):
+    @warcraftlogs.command()
+    async def gear(self, ctx, name: str = None, realm: str = None, *, region: str = None):
         """
         Fetch a character's gear.
 
@@ -264,8 +269,8 @@ class WarcraftLogsRetail(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.bot_has_permissions(embed_links=True)
-    @commands.command()
-    async def getrank(
+    @warcraftlogs.command()
+    async def rank(
         self,
         ctx,
         name: str = None,
