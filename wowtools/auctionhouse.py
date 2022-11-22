@@ -19,7 +19,7 @@ class AuctionHouse:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
-        async with ctx.typing() if not ctx.interaction else None:
+        async with ctx.typing(ephemeral=True):
             config_region: str = await self.config.guild(ctx.guild).region()
             if not config_region:
                 await ctx.send(
