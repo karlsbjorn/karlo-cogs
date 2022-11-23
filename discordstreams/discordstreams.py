@@ -44,7 +44,6 @@ class DiscordStreams(commands.Cog):
                     channel=channel.mention
                 )
             )
-            await self._clean_up_config(channel, ctx)
         else:
             alert_channels.append(channel.id)
             await self.config.guild(ctx.guild).alert_channels.set(alert_channels)
@@ -258,11 +257,6 @@ class DiscordStreams(commands.Cog):
             active_messages[member_id][channel_id]["message"] = message.id
 
         await self.config.guild(member_guild).active_messages.set(active_messages)
-
-    async def _clean_up_config(self, channel, ctx):
-        active_messages: Dict = await self.config.guild(ctx.guild).active_messages()
-        active_messages[str(ctx.author.id)].pop(str(channel.id))
-        await self.config.guild(ctx.guild).active_messages.set(active_messages)
 
     def cog_unload(self) -> None:
         self.update_stream_messages.stop()
