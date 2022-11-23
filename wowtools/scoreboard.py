@@ -391,7 +391,7 @@ class Scoreboard:
             return embed
 
     async def _generate_scoreboard_image(self, tabulate_list: list):
-        img_path = str(bundled_data_path(self) / "scoreboard-sl-s4.png")
+        img_path = str(bundled_data_path(self) / "scoreboard-df-s1.png")
         img = Image.open(img_path)
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(str(bundled_data_path(self) / "Roboto-Bold.ttf"), 28)
