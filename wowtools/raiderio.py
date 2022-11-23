@@ -187,7 +187,7 @@ class Raiderio:
         )
         embeds.append(embed)
 
-        await SimpleMenu(pages=embeds, disable_after_timeout=True, use_select_menu=True).start(ctx)
+        await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
 
     @raiderio.command(name="guild")
     @commands.guild_only()
