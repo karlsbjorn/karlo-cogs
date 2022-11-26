@@ -45,7 +45,6 @@ class SlashCommands:
         )
 
     @app_commands.command(name="manage", description="Upravljaj eventima.")
-    @app_commands.guilds(133049272517001216, 742457855008964800, 362298824854863882)
     @app_commands.guild_only()
     async def slash_event_manage(self, interaction: discord.Interaction):
         # Don't do anything if the user doesn't have manage guild permission
