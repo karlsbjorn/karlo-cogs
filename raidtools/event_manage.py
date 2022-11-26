@@ -160,7 +160,7 @@ class EventEditNameModal(discord.ui.Modal):
         event_channel = interaction.guild.get_channel_or_thread(event["event_channel"])
         event_msg: discord.Message = await event_channel.fetch_message(event["event_id"])
 
-        await event_msg.edit(embed=embed, view=EventView(self.config))
+        await event_msg.edit(embed=embed)
         await interaction.response.send_message(
             "Naziv i opis eventa su promijenjeni.", ephemeral=True
         )
