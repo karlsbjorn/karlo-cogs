@@ -4,6 +4,7 @@ from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 
+from .event_create import EventView
 from .slash_commands import SlashCommands
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
@@ -25,3 +26,5 @@ class RaidTools(SlashCommands, commands.Cog):
         }
         self.config.register_guild(**default_guild)
         self.config.register_member(**default_member)
+        # Persistent view
+        self.bot.add_view(EventView(self.config))
