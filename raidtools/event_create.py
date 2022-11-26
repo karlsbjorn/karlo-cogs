@@ -383,7 +383,7 @@ class EventClassDropdown(discord.ui.Select):
             max_values=1,
             options=options,
             disabled=disabled,
-            custom_id="raidtools:class-dropdown" if not disabled else None,
+            custom_id="raidtools:class-dropdown",
         )
 
     async def callback(self, interaction: discord.Interaction):
