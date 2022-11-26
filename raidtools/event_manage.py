@@ -160,7 +160,7 @@ class EventEditNameModal(discord.ui.Modal):
         try:
             await scheduled_event.edit_event()
         except ValueError as e:
-            log.error(f"Error while editing scheduled event: {e}", exc_info=True)
+            log.error(f"Error while editing scheduled event: {e}")
 
 
 class EventEditTimeView(discord.ui.View):
