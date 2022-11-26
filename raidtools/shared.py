@@ -11,7 +11,7 @@ from raidtools.emojis import (
     role_emojis,
     spec_emojis,
 )
-from raidtools.playerclasses import PlayerClasses
+from raidtools.playerclasses import player_classes
 
 
 class EventEmbed:
@@ -119,10 +119,7 @@ class EventEmbed:
     async def _add_signed_up_classes(
         config, embed, event_guild, event_id, preview_mode, signed_up
     ):
-        for player_class in PlayerClasses:
-            player_class = str(player_class.value)
-            player_class = player_class.replace(" ", "_").lower()
-
+        for player_class in player_classes:
             if player_class in signed_up.keys() and len(signed_up[player_class]) > 0:
                 signed_up_users = [member for member in signed_up[player_class]]
 

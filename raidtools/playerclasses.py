@@ -1,23 +1,18 @@
-from enum import Enum
-
-
-class PlayerClasses(Enum):
-    """Enum for player classes"""
-
-    warrior: str = "Warrior"
-    hunter: str = "Hunter"
-    mage: str = "Mage"
-    priest: str = "Priest"
-    rogue: str = "Rogue"
-    druid: str = "Druid"
-    paladin: str = "Paladin"
-    warlock: str = "Warlock"
-    shaman: str = "Shaman"
-    monk: str = "Monk"
-    demon_hunter: str = "Demon Hunter"
-    death_knight: str = "Death Knight"
-    evoker: str = "Evoker"
-
+player_classes = [
+    "warrior",
+    "hunter",
+    "mage",
+    "priest",
+    "rogue",
+    "druid",
+    "paladin",
+    "warlock",
+    "shaman",
+    "monk",
+    "demon_hunter",
+    "death_knight",
+    "evoker",
+]
 
 player_specs = {
     "warrior": {"arms", "fury", "protection"},

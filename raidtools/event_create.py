@@ -1,12 +1,11 @@
 import logging
-from datetime import datetime, timezone
 from typing import Dict, Optional
 
 import discord.ui
 
 from raidtools.discordevent import RaidtoolsDiscordEvent
 from raidtools.emojis import button_emojis, class_emojis, spec_emojis
-from raidtools.playerclasses import PlayerClasses, player_specs, spec_roles
+from raidtools.playerclasses import player_classes, player_specs, spec_roles
 from raidtools.shared import EventEmbed
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
@@ -69,9 +68,7 @@ class EventCreateModal(discord.ui.Modal):
             return
 
         mock_signed_up = {}
-        for player_class in PlayerClasses:
-            player_class = player_class.value
-            player_class = player_class.replace(" ", "_").lower()
+        for player_class in player_classes:
             mock_signed_up[player_class] = [interaction.user.id]
         mock_signed_up["bench"] = [interaction.user.id]
         mock_signed_up["late"] = [interaction.user.id]
@@ -353,17 +350,17 @@ class EventView(discord.ui.View):
     #
     #         await self.update_event(current_events, event_id, interaction, user_events)
     #     return
-
-    async def update_event(self, current_events, event_id, interaction, user_events):
-        await self.config.guild(interaction.guild).events.set(current_events)
-        await self.config.member(interaction.user).events.set(user_events)
-        embed = await EventEmbed.create_event_embed(
-            signed_up=current_events[event_id]["signed_up"],
-            event_info=current_events[event_id],
-            bot=interaction.client,
-            config=self.config,
-        )
-        await interaction.response.edit_message(embed=embed, view=self)
+    #
+    # async def update_event(self, current_events, event_id, interaction, user_events):
+    #     await self.config.guild(interaction.guild).events.set(current_events)
+    #     await self.config.member(interaction.user).events.set(user_events)
+    #     embed = await EventEmbed.create_event_embed(
+    #         signed_up=current_events[event_id]["signed_up"],
+    #         event_info=current_events[event_id],
+    #         bot=interaction.client,
+    #         config=self.config,
+    #     )
+    #     await interaction.response.edit_message(embed=embed, view=self)
 
 
 class EventClassDropdown(discord.ui.Select):
@@ -371,10 +368,10 @@ class EventClassDropdown(discord.ui.Select):
         self.config = config
         options = [
             discord.SelectOption(
-                label=f"{player_class.value}",
-                emoji=class_emojis[str(player_class.value).lower().replace(" ", "_")],
+                label=f"{player_class.replace('_', ' ').title()}",
+                emoji=class_emojis[str(player_class)],
             )
-            for player_class in PlayerClasses
+            for player_class in player_classes
         ]
 
         super().__init__(

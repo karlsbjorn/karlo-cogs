@@ -140,20 +140,7 @@ class EventEditNameModal(discord.ui.Modal):
 
         await self.config.guild(interaction.guild).events.set(events)
 
-        # Update event
-        embed = await EventEmbed.create_event_embed(
-            signed_up=event["signed_up"],
-            event_info=event,
-            bot=interaction.client,
-            config=self.config,
-        )
-        event_channel = interaction.guild.get_channel_or_thread(event["event_channel"])
-        event_msg = await event_channel.fetch_message(event["event_id"])
-        await event_msg.edit(embed=embed, view=EventView(self.config))
-
-        await interaction.response.send_message(
-            "Naziv i opis eventa su promijenjeni.", ephemeral=True
-        )
+        event_msg = await self.update_event(event, interaction)
 
         # Update Discord scheduled event
         scheduled_event = RaidtoolsDiscordEvent(event_msg, interaction, event)
@@ -161,6 +148,23 @@ class EventEditNameModal(discord.ui.Modal):
             await scheduled_event.edit_event()
         except ValueError as e:
             log.error(f"Error while editing scheduled event: {e}")
+
+    async def update_event(self, event, interaction) -> discord.Message:
+        embed = await EventEmbed.create_event_embed(
+            signed_up=event["signed_up"],
+            event_info=event,
+            bot=interaction.client,
+            config=self.config,
+        )
+
+        event_channel = interaction.guild.get_channel_or_thread(event["event_channel"])
+        event_msg: discord.Message = await event_channel.fetch_message(event["event_id"])
+
+        await event_msg.edit(embed=embed, view=EventView(self.config))
+        await interaction.response.send_message(
+            "Naziv i opis eventa su promijenjeni.", ephemeral=True
+        )
+        return event_msg
 
 
 class EventEditTimeView(discord.ui.View):
