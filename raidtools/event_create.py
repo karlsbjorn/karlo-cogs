@@ -110,6 +110,10 @@ class EventPreviewView(discord.ui.View):
         self.extras = extras
         self.add_item(EventClassDropdown(self.config, disabled=True))
 
+    @discord.ui.button(label="Potvrdi event", style=discord.ButtonStyle.green, row=1)
+    async def confirm_event(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.post_event(interaction)
+
     async def post_event(self, interaction: discord.Interaction):
         mock_signed_up = {
             "warrior": [],
@@ -296,7 +300,11 @@ class EventWithButtonsView(discord.ui.View):
 
     # TODO: Assign custom_id to these after uncommenting
     @discord.ui.button(
-        label="Bench", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["bench"]
+        label="Bench",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        emoji=button_emojis["bench"],
+        custom_id="raidtools:eventbutton:bench",
     )
     async def bench(self, interaction: discord.Interaction, button: discord.ui.Button):
         current_events = await self.config.guild(interaction.guild).events()
@@ -333,7 +341,11 @@ class EventWithButtonsView(discord.ui.View):
         return
 
     @discord.ui.button(
-        label="Kasnim", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["late"]
+        label="Kasnim",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        emoji=button_emojis["late"],
+        custom_id="raidtools:eventbutton:late",
     )
     async def late(self, interaction: discord.Interaction, button: discord.ui.Button):
         current_events = await self.config.guild(interaction.guild).events()
@@ -365,7 +377,11 @@ class EventWithButtonsView(discord.ui.View):
         return
 
     @discord.ui.button(
-        label="Neodlučan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["tentative"]
+        label="Neodlučan",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        emoji=button_emojis["tentative"],
+        custom_id="raidtools:eventbutton:tentative",
     )
     async def tentative(self, interaction: discord.Interaction, button: discord.ui.Button):
         current_events = await self.config.guild(interaction.guild).events()
@@ -398,7 +414,11 @@ class EventWithButtonsView(discord.ui.View):
         return
 
     @discord.ui.button(
-        label="Odsutan", style=discord.ButtonStyle.grey, row=1, emoji=button_emojis["absent"]
+        label="Odsutan",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        emoji=button_emojis["absent"],
+        custom_id="raidtools:eventbutton:absent",
     )
     async def absent(self, interaction: discord.Interaction, button: discord.ui.Button):
         current_events = await self.config.guild(interaction.guild).events()
