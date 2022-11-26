@@ -10,13 +10,14 @@ class SlashCommands:
         name="create",
         description="Kreiraj novi event u ovom kanalu.",
     )
-    @app_commands.guilds(133049272517001216, 742457855008964800, 362298824854863882)
     @app_commands.guild_only()
-    async def slash_event_create(self, interaction: discord.Interaction):
+    async def slash_event_create(
+        self, interaction: discord.Interaction, extra_buttons: bool = False
+    ):
         # Don't do anything if the user doesn't have manage guild permission
-        if (  # TODO: Add a role check too
-            not interaction.user.guild_permissions.manage_guild
-            and not await interaction.client.is_owner(interaction.user)
+        if not (  # TODO: Add a role check too
+            interaction.user.guild_permissions.manage_guild
+            or await interaction.client.is_owner(interaction.user)
         ):
             await interaction.response.send_message(
                 "Nemaš dozvolu za kreiranje eventa u ovom guildu.", ephemeral=True
@@ -40,7 +41,7 @@ class SlashCommands:
         )
 
         await interaction.response.send_message(
-            embed=embed, ephemeral=True, view=EventCreateView(self.config)
+            embed=embed, ephemeral=True, view=EventCreateView(self.config, extra_buttons)
         )
 
     @app_commands.command(name="manage", description="Upravljaj eventima.")
