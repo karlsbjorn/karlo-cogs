@@ -5,6 +5,7 @@ import discord.ui
 
 from raidtools.confirmation import DeleteConfirmationView
 from raidtools.discordevent import RaidtoolsDiscordEvent
+from raidtools.event_create import EventView
 from raidtools.shared import EventEmbed
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
@@ -148,7 +149,7 @@ class EventEditNameModal(discord.ui.Modal):
         )
         event_channel = interaction.guild.get_channel_or_thread(event["event_channel"])
         event_msg = await event_channel.fetch_message(event["event_id"])
-        await event_msg.edit(embed=embed)
+        await event_msg.edit(embed=embed, view=EventView(self.config))
 
         await interaction.response.send_message(
             "Naziv i opis eventa su promijenjeni.", ephemeral=True
@@ -159,7 +160,7 @@ class EventEditNameModal(discord.ui.Modal):
         try:
             await scheduled_event.edit_event()
         except ValueError as e:
-            log.debug()
+            log.error(f"Error while editing scheduled event: {e}", exc_info=True)
 
 
 class EventEditTimeView(discord.ui.View):

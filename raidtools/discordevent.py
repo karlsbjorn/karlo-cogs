@@ -78,7 +78,7 @@ class RaidtoolsDiscordEvent:
             )
             return scheduled_event
         else:
-            raise
+            raise ValueError
 
     @property
     def event_description(self):
