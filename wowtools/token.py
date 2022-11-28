@@ -17,18 +17,18 @@ class Token:
             if region == "all":
                 await self.priceall(ctx)
                 return
-            try:
-                api_client = await get_api_client(self.bot, ctx, region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
-
             if region not in VALID_TOKEN_REGIONS and region != "all":
                 await ctx.send(
                     _("Invalid region. Valid regions are: {regions} or `all`.").format(
                         regions=", ".join(VALID_TOKEN_REGIONS)
                     )
                 )
+                return
+
+            try:
+                api_client = await get_api_client(self.bot, ctx, region)
+            except Exception as e:
+                await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
 
             async with api_client as wow_client:
