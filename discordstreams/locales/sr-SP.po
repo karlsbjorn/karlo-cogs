@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-11-05 21:58+0000\n"
-"PO-Revision-Date: 2022-11-05 21:59\n"
+"POT-Creation-Date: 2022-11-23 18:55+0000\n"
+"PO-Revision-Date: 2022-11-23 18:55\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -26,27 +26,27 @@ msgstr ""
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr ""
 
-#: discordstreams/discordstreams.py:52
+#: discordstreams/discordstreams.py:51
 msgid "Go Live alerts will be sent to {channel}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:218
+#: discordstreams/discordstreams.py:244
 msgid "{member} is live!"
 msgstr ""
 
-#: discordstreams/discordstreams.py:271
+#: discordstreams/discordstreams.py:301
 msgid "Stream started {relative_timestamp}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:288
+#: discordstreams/discordstreams.py:318
 msgid "Details"
 msgstr ""
 
-#: discordstreams/discordstreams.py:292
+#: discordstreams/discordstreams.py:322
 msgid "Playing: {activity}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:300
+#: discordstreams/discordstreams.py:335
 msgid "Nothing"
 msgstr ""
 
