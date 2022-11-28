@@ -405,7 +405,7 @@ class WarcraftLogsRetail(commands.Cog):
             await ctx.send("No data found for that difficulty.")
             return
         zone_name = await self._zone_name_from_id(char_data["zone"])
-        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(40, " ")
+        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(80, " ")
 
         embed = discord.Embed()
         embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
@@ -422,12 +422,12 @@ class WarcraftLogsRetail(commands.Cog):
         else:
             if zone_id:
                 return await ctx.send(
-                    _("Nothing found for {zone_name} for this player for Shadowlands.").format(
+                    _("Nothing found for {zone_name} for this player.").format(
                         zone_name=zone_id_to_name.title()
                     )
                 )
             else:
-                return await ctx.send(_("Nothing at all found for this player for Shadowlands."))
+                return await ctx.send(_("Nothing at all found for this player."))
 
         md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
         md_avg = self._get_color(float(md_avg))
@@ -492,7 +492,7 @@ class WarcraftLogsRetail(commands.Cog):
 
         # all stars
         all_stars = char_data["allStars"]
-        section_name = _("⫷ Expansion All Stars ⫸").center(40, " ")
+        section_name = _("⫷ Expansion All Stars ⫸").center(80, " ")
         embed.add_field(name=zws, value=box(section_name, lang="Prolog"), inline=False)
         for item in all_stars:
             msg = f"**{item['spec']}**\n"
@@ -693,35 +693,35 @@ class WarcraftLogsRetail(commands.Cog):
     @staticmethod
     def _red(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
-        text = f" [  {output_center}  ]"
+        text = f"[  {output_center}  ]"
         new_number = f"{box(text, lang='css')}"
         return new_number
 
     @staticmethod
     def _orange(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
-        text = f" [  {output_center}  ]"
+        text = f"[  {output_center}  ]"
         new_number = f"{box(text, lang='fix')}"
         return new_number
 
     @staticmethod
     def _green(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
-        text = f" [  {output_center}  ]"
+        text = f"[  {output_center}  ]"
         new_number = f"{box(text, lang='py')}"
         return new_number
 
     @staticmethod
     def _blue(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
-        text = f" [  {output_center}  ]"
+        text = f"[  {output_center}  ]"
         new_number = f"{box(text, lang='ini')}"
         return new_number
 
     @staticmethod
     def _grey(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
-        text = f" [  {output_center}  ]"
+        text = f"[  {output_center}  ]"
         new_number = f"{box(text, lang='bf')}"
         return new_number
 
