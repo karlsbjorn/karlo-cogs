@@ -24,10 +24,10 @@ class AuctionHouse:
                     ).format(prefix=ctx.clean_prefix)
                 )
                 return
-            if config_region == "cn":
+            if config_region in ("cn", "tw"):
                 await ctx.send(
                     _(
-                        "The Auction House is not available in China.\n"
+                        "The Auction House is not available in China or Taiwan.\n"
                         "Please set a different region with `{prefix}wowset region`."
                     ).format(prefix=ctx.clean_prefix)
                 )

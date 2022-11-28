@@ -6,6 +6,7 @@ from redbot.core.utils.chat_formatting import humanize_number
 
 _ = Translator("WoWTools", __file__)
 
+BLIZZARD_VALID_REGIONS = ("eu", "us", "kr", "cn")
 
 async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi:
     """

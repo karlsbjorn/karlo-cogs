@@ -4,7 +4,7 @@ from aiowowapi import WowApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import get_api_client
+from .utils import get_api_client, BLIZZARD_VALID_REGIONS
 
 _ = Translator("WoWTools", __file__)
 
@@ -28,6 +28,9 @@ class PvP:
                     if not region:
                         await ctx.send_help()
                         return
+            if region not in BLIZZARD_VALID_REGIONS:
+                await ctx.send_help()
+                return
             if not character_name:
                 character_name: str = await self.config.user(
                     ctx.author
