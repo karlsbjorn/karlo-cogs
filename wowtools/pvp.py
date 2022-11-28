@@ -3,6 +3,7 @@ from aiohttp import ClientResponseError
 from aiowowapi import WowApi
 from redbot.core import commands
 from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .utils import get_api_client, BLIZZARD_VALID_REGIONS
 
@@ -26,10 +27,19 @@ class PvP:
                 if not region:
                     region: str = await self.config.guild(ctx.guild).region()
                     if not region:
-                        await ctx.send_help()
+                        await ctx.send(
+                            _(
+                                "Please set a region with `{prefix}wowset region` before using this command."
+                            ).format(prefix=ctx.clean_prefix)
+                        )
                         return
             if region not in BLIZZARD_VALID_REGIONS:
-                await ctx.send_help()
+                await ctx.send(
+                    _(
+                        "Please set a supported region with `{prefix}wowset region` before using this command.\n"
+                        "Supported regions: {regions}"
+                    ).format(prefix=ctx.clean_prefix, regions=humanize_list(BLIZZARD_VALID_REGIONS))
+                )
                 return
             if not character_name:
                 character_name: str = await self.config.user(
