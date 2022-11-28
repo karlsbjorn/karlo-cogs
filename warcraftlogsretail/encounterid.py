@@ -80,5 +80,5 @@ DIFFICULTIES = {
     5: "MYTHIC",
     4: "HEROIC",
     3: "NORMAL",
-    2: "LFR",
+    1: "LFR",
 }
