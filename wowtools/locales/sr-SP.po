@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-11-08 22:23+0000\n"
-"PO-Revision-Date: 2022-11-08 22:23\n"
+"POT-Creation-Date: 2022-11-28 07:29+0000\n"
+"PO-Revision-Date: 2022-11-28 07:29\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,24 @@ msgstr ""
 "X-Crowdin-File-ID: 12\n"
 "Language: sr_SP\n"
 
-#: wowtools/auctionhouse.py:17
+#: wowtools/auctionhouse.py:20
 #, docstring
 msgid "Get the current market price of an item."
 msgstr "Добијте тренутну тржишну цену артикла."
 
-#: wowtools/auctionhouse.py:22
+#: wowtools/auctionhouse.py:25 wowtools/pvp.py:33
 msgid "Please set a region with `{prefix}wowset region` before using this command."
 msgstr "Подесите регион са `{prefix}вовсет регион` пре употребе ове команде."
 
-#: wowtools/auctionhouse.py:29
-msgid "The Auction House is not available in China.\n"
-"Please set a different region with `{prefix}wowset region`."
+#: wowtools/auctionhouse.py:32
+msgid "The Auction House is not available in China or Taiwan.\n"
+"Please set a supported region with `{prefix}wowset region` before using this command.\n"
+"Supported regions: {regions}"
 msgstr ""
 
-#: wowtools/auctionhouse.py:39 wowtools/guildmanage.py:118
-#: wowtools/guildmanage.py:134 wowtools/pvp.py:46 wowtools/scoreboard.py:43
-#: wowtools/scoreboard.py:107 wowtools/scoreboard.py:537 wowtools/token.py:23
+#: wowtools/auctionhouse.py:46 wowtools/guildmanage.py:118
+#: wowtools/guildmanage.py:134 wowtools/pvp.py:64 wowtools/scoreboard.py:43
+#: wowtools/scoreboard.py:107 wowtools/scoreboard.py:537 wowtools/token.py:31
 #: wowtools/token.py:61 wowtools/wowaudit.py:32 wowtools/wowaudit.py:88
 #: wowtools/wowaudit.py:151 wowtools/wowaudit.py:222 wowtools/wowaudit.py:280
 #: wowtools/wowaudit.py:338 wowtools/wowaudit.py:394 wowtools/wowtools.py:90
@@ -41,45 +42,45 @@ msgstr ""
 msgid "Command failed successfully. {e}"
 msgstr "Команда није успела. {e}"
 
-#: wowtools/auctionhouse.py:45
+#: wowtools/auctionhouse.py:52
 msgid "Please set a realm with `{prefix}wowset realm` before using this command."
 msgstr "Подесите област са `{prefix}вовсет реалм` пре употребе ове команде."
 
-#: wowtools/auctionhouse.py:72
+#: wowtools/auctionhouse.py:79
 msgid "No results found."
 msgstr "Нема резултата."
 
-#: wowtools/auctionhouse.py:92
+#: wowtools/auctionhouse.py:99
 msgid "Could not find realm."
 msgstr "Није могуће пронаћи царство."
 
-#: wowtools/auctionhouse.py:132
+#: wowtools/auctionhouse.py:139
 msgid "No auctions could be found for this item."
 msgstr "Није пронађена ниједна аукција за овај артикал."
 
-#: wowtools/auctionhouse.py:144
+#: wowtools/auctionhouse.py:151
 msgid "Price: {item}"
 msgstr "Цена: {item}"
 
-#: wowtools/auctionhouse.py:155
+#: wowtools/auctionhouse.py:162
 msgid "Min Buyout"
 msgstr "Мин Буиоут"
 
-#: wowtools/auctionhouse.py:156
+#: wowtools/auctionhouse.py:163
 msgid "Current quantity"
 msgstr "Тренутна количина"
 
-#: wowtools/auctionhouse.py:159
+#: wowtools/auctionhouse.py:166
 msgid "Warning"
 msgstr "Упозорење"
 
-#: wowtools/auctionhouse.py:160
+#: wowtools/auctionhouse.py:167
 msgid "The expected price of this item may be incorrect due to\n"
 "item level differences or other factors."
 msgstr "Очекивана цена овог артикла може бити нетачна због\n"
 "разлика у нивоу ставке или других фактора."
 
-#: wowtools/auctionhouse.py:168
+#: wowtools/auctionhouse.py:175
 msgid "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
 msgstr "[Детаљне информације](хттпс://тхеундерминејоурнал.цом/#{region}/{realm}/итем/{item_id})"
 
@@ -166,32 +167,37 @@ msgstr "Постављено царство савеза."
 msgid "(Dev) Reset all guild settings."
 msgstr "(Дев) Ресетујте сва подешавања савеза."
 
-#: wowtools/pvp.py:16
+#: wowtools/pvp.py:19
 #, docstring
 msgid "Check a character's PVP ratings."
 msgstr "Проверите ПВП оцене лика."
 
-#: wowtools/pvp.py:64
+#: wowtools/pvp.py:40
+msgid "Please set a supported region with `{prefix}wowset region` before using this command.\n"
+"Supported regions: {regions}"
+msgstr ""
+
+#: wowtools/pvp.py:82
 msgid "Character \"{character_name}\" not found."
 msgstr ""
 
-#: wowtools/pvp.py:117
+#: wowtools/pvp.py:135
 msgid "That character or realm does not exist."
 msgstr "Тај лик или царство не постоји."
 
-#: wowtools/pvp.py:212
+#: wowtools/pvp.py:230
 msgid "RBG Rating"
 msgstr "РБГ Ратинг"
 
-#: wowtools/pvp.py:213
+#: wowtools/pvp.py:231
 msgid "2v2 Rating"
 msgstr "2в2 Ратинг"
 
-#: wowtools/pvp.py:214
+#: wowtools/pvp.py:232
 msgid "3v3 Rating"
 msgstr "3в3 Ратинг"
 
-#: wowtools/pvp.py:221
+#: wowtools/pvp.py:239
 msgid "Achievements"
 msgstr "Достигнућа"
 
@@ -412,20 +418,20 @@ msgstr "Обришите црну листу са семафора."
 msgid "Blacklisted characters cleared."
 msgstr "Ликови са црне листе су обрисани."
 
-#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:347
+#: wowtools/scoreboard.py:199 wowtools/scoreboard.py:347
 #: wowtools/scoreboard.py:439
 msgid "Name"
 msgstr "Име"
 
-#: wowtools/scoreboard.py:197 wowtools/scoreboard.py:347
+#: wowtools/scoreboard.py:199 wowtools/scoreboard.py:347
 msgid "Score"
 msgstr "Резултат"
 
-#: wowtools/scoreboard.py:208 wowtools/scoreboard.py:369
+#: wowtools/scoreboard.py:210 wowtools/scoreboard.py:369
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Митхиц+ Гуилд Сцоребоард"
 
-#: wowtools/scoreboard.py:239
+#: wowtools/scoreboard.py:241
 msgid "Last updated <t:{timestamp}:R>\n"
 msgstr ""
 
@@ -482,8 +488,8 @@ msgstr ""
 msgid "Check price of WoW token in a region"
 msgstr "Проверите цену ВоВ токена у региону"
 
-#: wowtools/token.py:28
-msgid "Invalid region. Valid regions are: `eu`, `us`, `kr`, 'cn' or `all`."
+#: wowtools/token.py:22
+msgid "Invalid region. Valid regions are: {regions} or `all`."
 msgstr ""
 
 #: wowtools/token.py:41
