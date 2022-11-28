@@ -5,9 +5,11 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .utils import get_api_client, BLIZZARD_VALID_REGIONS
+from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
+
+VALID_PVP_REGIONS = ("eu", "us", "kr")
 
 
 class PvP:
@@ -33,12 +35,15 @@ class PvP:
                             ).format(prefix=ctx.clean_prefix)
                         )
                         return
-            if region not in BLIZZARD_VALID_REGIONS:
+            if region not in VALID_PVP_REGIONS:
                 await ctx.send(
                     _(
                         "Please set a supported region with `{prefix}wowset region` before using this command.\n"
                         "Supported regions: {regions}"
-                    ).format(prefix=ctx.clean_prefix, regions=humanize_list(BLIZZARD_VALID_REGIONS))
+                    ).format(
+                        prefix=ctx.clean_prefix,
+                        regions=humanize_list(VALID_PVP_REGIONS),
+                    )
                 )
                 return
             if not character_name:

@@ -4,10 +4,13 @@ from typing import Dict
 import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
+
+VALID_AUCTION_REGIONS = ("eu", "us", "kr")
 
 
 class AuctionHouse:
@@ -24,12 +27,16 @@ class AuctionHouse:
                     ).format(prefix=ctx.clean_prefix)
                 )
                 return
-            if config_region in ("cn", "tw"):
+            if config_region not in VALID_AUCTION_REGIONS:
                 await ctx.send(
                     _(
                         "The Auction House is not available in China or Taiwan.\n"
-                        "Please set a different region with `{prefix}wowset region`."
-                    ).format(prefix=ctx.clean_prefix)
+                        "Please set a supported region with `{prefix}wowset region` before using this command.\n"
+                        "Supported regions: {regions}"
+                    ).format(
+                        prefix=ctx.clean_prefix,
+                        regions=humanize_list(VALID_AUCTION_REGIONS),
+                    )
                 )
                 return
 

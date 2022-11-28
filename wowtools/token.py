@@ -2,9 +2,11 @@ import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
-from .utils import format_to_gold, get_api_client, BLIZZARD_VALID_REGIONS
+from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
+
+VALID_TOKEN_REGIONS = ("eu", "us", "kr", "cn")
 
 
 class Token:
@@ -21,11 +23,11 @@ class Token:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
 
-            if region not in BLIZZARD_VALID_REGIONS and region != "all":
+            if region not in VALID_TOKEN_REGIONS and region != "all":
                 await ctx.send(
-                    _(
-                        "Invalid region. Valid regions are: {regions} or `all`."
-                    ).format(regions=", ".join(BLIZZARD_VALID_REGIONS))
+                    _("Invalid region. Valid regions are: {regions} or `all`.").format(
+                        regions=", ".join(VALID_TOKEN_REGIONS)
+                    )
                 )
                 return
 
