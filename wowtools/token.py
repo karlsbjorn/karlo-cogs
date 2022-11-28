@@ -6,7 +6,7 @@ from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
 
-VALID_REGIONS = ("eu", "us", "kr", "cn")
+VALID_REGIONS = ("eu", "us", "kr", "cn", "tw")
 
 
 class Token:

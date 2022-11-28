@@ -303,7 +303,7 @@ class Raiderio:
                 if not region:
                     await ctx.send_help()
                     return
-            regions = ("us", "eu", "kr", "cn")
+            regions = ("us", "eu", "kr", "cn", "tw")
             if region.lower() not in regions:
                 await ctx.send(
                     _("Region must be one of the following: {regions}").format(

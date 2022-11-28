@@ -75,7 +75,7 @@ class WoWTools(
     @commands.admin()
     async def wowset_region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
-        regions = ("us", "eu", "kr", "cn")
+        regions = ("us", "eu", "kr", "cn", "tw")
         try:
             async with ctx.typing():
                 if region not in regions:
@@ -242,7 +242,7 @@ class WoWTools(
     @wowset_character.command(name="region")
     async def wowset_character_region(self, ctx, region: str):
         """Set your character's region."""
-        regions = ("us", "eu", "kr", "cn")
+        regions = ("us", "eu", "kr", "cn", "tw")
         if region.lower() not in regions:
             await ctx.send(
                 _("That region does not exist.\nValid regions are: {regions}.").format(
