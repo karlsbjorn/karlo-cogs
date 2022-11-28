@@ -405,7 +405,7 @@ class WarcraftLogsRetail(commands.Cog):
             await ctx.send("No data found for that difficulty.")
             return
         zone_name = await self._zone_name_from_id(char_data["zone"])
-        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(60, " ")
+        zone_name = f"⫷ {difficulty} {zone_name} ⫸".center(50, " ")
 
         embed = discord.Embed()
         embed.title = f"{name.title()} - {realm.title()} ({region.upper()})"
@@ -492,7 +492,7 @@ class WarcraftLogsRetail(commands.Cog):
 
         # all stars
         all_stars = char_data["allStars"]
-        section_name = _("⫷ Expansion All Stars ⫸").center(60, " ")
+        section_name = _("⫷ Expansion All Stars ⫸").center(50, " ")
         embed.add_field(name=zws, value=box(section_name, lang="Prolog"), inline=False)
         for item in all_stars:
             msg = f"**{item['spec']}**\n"
