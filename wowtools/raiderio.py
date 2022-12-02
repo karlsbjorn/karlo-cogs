@@ -98,7 +98,7 @@ class Raiderio:
                 ]["all"]
                 char_score_color = int("0x" + char_score["color"][1:], 0)
                 char_raid = profile_data["raid_progression"][
-                    "sepulcher-of-the-first-ones"
+                    "vault-of-the-incarnates"
                 ]["summary"]
                 char_last_updated = self._parse_date(profile_data["last_crawled_at"])
                 char_ilvl = profile_data["gear"]["item_level_equipped"]
