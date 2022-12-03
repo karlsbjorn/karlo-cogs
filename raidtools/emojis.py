@@ -58,11 +58,14 @@ button_emojis = {  # TODO: this has to be gotten from config before cog is publi
     "late": "<:late:1029310570488406077>",
     "tentative": "<:tentative:1029310569133649930>",
     "absent": "<:absence:1029310567879544872>",
+    "dps": "<:dps:1048459665677242469>",
+    "rdps": "<:rdps:1048460980939665458>",
 }
 role_emojis = {  # TODO: this has to be gotten from config before cog is public
     "tank": "<:tank:1029875469216124958>",
     "heal": "<:heal:1029875466447900757>",
     "dps": "<:dps:1029875468020752425>",
+    "rdps": "<:rdps:1048435477331574847>",
 }
 generic_emojis = {  # TODO: this has to be gotten from config before cog is public
     "signups": "<:signups:1029885326858125323>",

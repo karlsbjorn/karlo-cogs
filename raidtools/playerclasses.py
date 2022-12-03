@@ -31,6 +31,6 @@ player_specs = {
 }
 
 spec_roles = {
-    "tank": ["protection", "guardian", "brewmaster", "blood"],
+    "tank": ["protection", "guardian", "brewmaster", "blood", "vengeance"],
     "healer": ["holy", "restoration", "mistweaver", "discipline", "preservation"],
 }

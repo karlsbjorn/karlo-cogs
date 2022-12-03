@@ -188,7 +188,6 @@ class EventEmbed:
                 value=msg,
                 inline=False,
             )
-
         if len(signed_up.get("tentative", [])) > 0 or len(signed_up.get("absent", [])) > 0:
             msg = ""
             if len(signed_up.get("tentative", [])) > 0:
@@ -207,14 +206,55 @@ class EventEmbed:
                 inline=False,
             )
 
+        if (
+            len(signed_up.get("offspec_tank", [])) > 0
+            or len(signed_up.get("offspec_healer", [])) > 0
+        ):
+            msg = ""
+            if len(signed_up.get("offspec_tank", [])) > 0:
+                msg += (
+                    f"{role_emojis['tank']} Offspec Tank ({len(signed_up['offspec_tank'])}): "
+                    f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_tank']])}\n"
+                )
+            if len(signed_up.get("offspec_healer", [])) > 0:
+                msg += (
+                    f"{role_emojis['heal']} Offspec Healer ({len(signed_up['offspec_healer'])}): "
+                    f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_healer']])}"
+                )
+            embed.add_field(
+                name=zws,
+                value=msg,
+                inline=False,
+            )
+        if len(signed_up.get("offspec_dps", [])) > 0 or len(signed_up.get("offspec_rdps", [])) > 0:
+            msg = ""
+            if len(signed_up.get("offspec_dps", [])) > 0:
+                msg += (
+                    f"{role_emojis['dps']} Offspec DPS ({len(signed_up['offspec_dps'])}): "
+                    f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_dps']])}\n"
+                )
+            if len(signed_up.get("offspec_rdps", [])) > 0:
+                msg += (
+                    f"{role_emojis['rdps']} Offspec Ranged DPS ({len(signed_up['offspec_rdps'])}): "
+                    f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_rdps']])}"
+                )
+            embed.add_field(
+                name=zws,
+                value=msg,
+                inline=False,
+            )
+
     @staticmethod
     async def _get_n_of_roles(config, event_guild, event_id, signed_up):
         tank_n = 0
         healer_n = 0
         dps_n = 0
+        counted_users = []
 
         for player_class in signed_up:
             for user in signed_up[player_class]:
+                if user in counted_users:
+                    continue
                 user_obj = event_guild.get_member(user)
 
                 signee_event_info = await config.member(user_obj).events()
@@ -224,4 +264,5 @@ class EventEmbed:
                     healer_n += 1
                 else:
                     dps_n += 1
+                counted_users.append(user)
         return dps_n, healer_n, tank_n

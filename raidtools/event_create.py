@@ -4,7 +4,7 @@ from typing import Dict, Optional
 import discord.ui
 
 from raidtools.discordevent import RaidtoolsDiscordEvent
-from raidtools.emojis import button_emojis, class_emojis, spec_emojis
+from raidtools.emojis import button_emojis, class_emojis, role_emojis, spec_emojis
 from raidtools.playerclasses import player_classes, player_specs, spec_roles
 from raidtools.shared import EventEmbed
 
@@ -14,7 +14,7 @@ log = logging.getLogger("red.karlo-cogs.raidtools")
 class EventCreateView(discord.ui.View):
     def __init__(self, config, extra_buttons):
         self.config = config
-        self.extra_buttons: bool = extra_buttons
+        self.extra_buttons: str = extra_buttons
         super().__init__()
 
     @discord.ui.button(label="Kreiraj event", style=discord.ButtonStyle.primary)
@@ -27,7 +27,7 @@ class EventCreateView(discord.ui.View):
 class EventCreateModal(discord.ui.Modal):
     def __init__(self, config, extra_buttons):
         self.config = config
-        self.extra_buttons: bool = extra_buttons
+        self.extra_buttons: str = extra_buttons
         self.title = "Kreirajmo event!"
         super().__init__(timeout=600, title=self.title)
 
@@ -72,10 +72,16 @@ class EventCreateModal(discord.ui.Modal):
         mock_signed_up = {}
         for player_class in player_classes:
             mock_signed_up[player_class] = [interaction.user.id]
-        mock_signed_up["bench"] = [interaction.user.id]
-        mock_signed_up["late"] = [interaction.user.id]
-        mock_signed_up["tentative"] = [interaction.user.id]
-        mock_signed_up["absent"] = [interaction.user.id]
+        if self.extra_buttons == "buttons":
+            mock_signed_up["bench"] = [interaction.user.id]
+            mock_signed_up["late"] = [interaction.user.id]
+            mock_signed_up["tentative"] = [interaction.user.id]
+            mock_signed_up["absent"] = [interaction.user.id]
+        elif self.extra_buttons == "offspec_buttons":
+            mock_signed_up["offspec_tank"] = [interaction.user.id]
+            mock_signed_up["offspec_healer"] = [interaction.user.id]
+            mock_signed_up["offspec_dps"] = [interaction.user.id]
+            mock_signed_up["offspec_rdps"] = [interaction.user.id]
 
         extras = {
             "event_name": str(self.event_name),
@@ -93,12 +99,18 @@ class EventCreateModal(discord.ui.Modal):
             preview_mode=True,
         )
 
+        view = None
+        if self.extra_buttons == "no_buttons":
+            view = EventPreviewView(extras=extras, config=self.config)
+        elif self.extra_buttons == "buttons":
+            view = EventPreviewWithButtonsView(extras=extras, config=self.config)
+        elif self.extra_buttons == "offspec_buttons":
+            view = EventPreviewWithOffspecButtonsView(extras=extras, config=self.config)
+
         await interaction.response.send_message(
             content="Event će ovako izgledati:",
             embed=embed,
-            view=EventPreviewView(extras=extras, config=self.config)
-            if not self.extra_buttons
-            else EventPreviewWithButtonsView(extras=extras, config=self.config),
+            view=view,
             ephemeral=True,
         )
 
@@ -259,6 +271,127 @@ class EventPreviewWithButtonsView(discord.ui.View):
         # Send event message
         msg = await interaction.client.get_channel(channel_id).send(
             embed=embed, view=EventWithButtonsView(self.config)
+        )
+
+        # Send a Discord scheduled event
+        try:
+            scheduled_event = RaidtoolsDiscordEvent(msg, interaction, self.extras)
+            scheduled_event = await scheduled_event.add_to_guild()
+        except Exception as e:
+            scheduled_event = None
+            log.error(f"Failed to create scheduled event: {e}", exc_info=True)
+
+        # Add event to config
+        current_events: Dict = await self.config.guild(msg.guild).events()
+        current_events[msg.id] = {
+            "event_id": msg.id,
+            "event_channel": msg.channel.id,
+            "event_guild": msg.guild.id,
+            "event_name": self.extras["event_name"],
+            "event_description": self.extras["event_description"],
+            "event_date": self.extras["event_date"],
+            "event_end_date": self.extras["event_end_date"],
+            "signed_up": mock_signed_up,
+            "scheduled_event_id": scheduled_event.id if scheduled_event else None,
+        }
+        await self.config.guild(msg.guild).events.set(current_events)
+
+
+class EventPreviewWithOffspecButtonsView(discord.ui.View):
+    def __init__(self, extras: Dict[str, Optional[str]], config):
+        self.config = config
+        super().__init__()
+        self.extras = extras
+        self.add_item(EventClassDropdown(self.config, disabled=True))
+
+    @discord.ui.button(
+        label="Offspec:",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        custom_id="raidtools:eventbutton:offspec",
+        disabled=True,
+    )
+    async def offspec(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.blurple,
+        row=1,
+        emoji=role_emojis["tank"],
+        custom_id="raidtools:eventbutton:tank",
+        disabled=True,
+    )
+    async def tank(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.green,
+        row=1,
+        emoji=role_emojis["heal"],
+        custom_id="raidtools:eventbutton:healer",
+        disabled=True,
+    )
+    async def healer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.red,
+        row=1,
+        emoji=button_emojis["dps"],
+        custom_id="raidtools:eventbutton:dps",
+        disabled=True,
+    )
+    async def dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.red,
+        row=1,
+        emoji=button_emojis["rdps"],
+        custom_id="raidtools:eventbutton:rdps",
+        disabled=True,
+    )
+    async def ranged_dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(label="Potvrdi event", style=discord.ButtonStyle.green, row=3)
+    async def confirm_event(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.post_event(interaction)
+
+    async def post_event(self, interaction: discord.Interaction):
+        mock_signed_up = {
+            "warrior": [],
+            "hunter": [],
+            "mage": [],
+            "priest": [],
+            "rogue": [],
+            "druid": [],
+            "paladin": [],
+            "warlock": [],
+            "shaman": [],
+            "monk": [],
+            "demon_hunter": [],
+            "death_knight": [],
+            "evoker": [],
+            "offspec_tank": [],
+            "offspec_healer": [],
+            "offspec_dps": [],
+            "offspec_rdps": [],
+        }
+        await interaction.response.edit_message(view=None)
+
+        embed = await EventEmbed.create_event_embed(
+            signed_up={},
+            event_info=self.extras,
+            bot=interaction.client,
+            config=self.config,
+        )
+
+        channel_id = interaction.channel_id
+
+        # Send event message
+        msg = await interaction.client.get_channel(channel_id).send(
+            embed=embed, view=EventWithOffspecView(self.config)
         )
 
         # Send a Discord scheduled event
@@ -462,6 +595,178 @@ class EventWithButtonsView(discord.ui.View):
         await interaction.response.edit_message(embed=embed, view=self)
 
 
+class EventWithOffspecView(discord.ui.View):
+    def __init__(self, config):
+        self.config = config
+        super().__init__(timeout=None)
+        self.add_item(EventClassDropdown(self.config))
+
+    @discord.ui.button(
+        label="Offspec:",
+        style=discord.ButtonStyle.grey,
+        row=1,
+        custom_id="raidtools:eventbutton:offspec",
+        disabled=True,
+    )
+    async def offspec(self, interaction: discord.Interaction, button: discord.ui.Button):
+        pass
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.blurple,
+        row=1,
+        emoji=role_emojis["tank"],
+        custom_id="raidtools:eventbutton:tank",
+    )
+    async def tank(self, interaction: discord.Interaction, button: discord.ui.Button):
+        current_events = await self.config.guild(interaction.guild).events()
+        event_id = str(interaction.message.id)
+
+        user_events: Dict = await self.config.member(interaction.user).events()
+        if event_id not in user_events:
+            user_events[event_id] = {
+                "participating_role": None,
+                "participating_class": None,
+                "participating_spec": None,
+                "offspec_role": None,
+            }
+
+        user_this_event: Dict = user_events.get(event_id, {})
+        user_participating_role: str = user_this_event.get("offspec_role", None)
+
+        tank_offspec_members = current_events[event_id]["signed_up"]["offspec_tank"]
+        if interaction.user.id in tank_offspec_members:
+            await interaction.response.send_message("Već si Tank offspec.", ephemeral=True)
+        else:
+            # Add user to the offspec role
+            if user_participating_role:
+                current_events[event_id]["signed_up"][user_participating_role.lower()].remove(
+                    interaction.user.id
+                )
+            current_events[event_id]["signed_up"]["offspec_tank"] += [interaction.user.id]
+            user_events[event_id]["offspec_role"] = "offspec_tank"
+            await self.update_event(current_events, event_id, interaction, user_events)
+        return
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.green,
+        row=1,
+        emoji=role_emojis["heal"],
+        custom_id="raidtools:eventbutton:healer",
+    )
+    async def healer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        current_events = await self.config.guild(interaction.guild).events()
+        event_id = str(interaction.message.id)
+
+        user_events: Dict = await self.config.member(interaction.user).events()
+        if event_id not in user_events:
+            user_events[event_id] = {
+                "participating_role": None,
+                "participating_class": None,
+                "participating_spec": None,
+                "offspec_role": None,
+            }
+
+        user_this_event: Dict = user_events.get(event_id, {})
+        user_participating_role: str = user_this_event.get("offspec_role", None)
+
+        heal_offspec_members = current_events[event_id]["signed_up"]["offspec_healer"]
+        if interaction.user.id in heal_offspec_members:
+            await interaction.response.send_message("Već si Healer offspec.", ephemeral=True)
+        else:
+            # Add user to the offspec role
+            if user_participating_role:
+                current_events[event_id]["signed_up"][user_participating_role.lower()].remove(
+                    interaction.user.id
+                )
+            current_events[event_id]["signed_up"]["offspec_healer"] += [interaction.user.id]
+            user_events[event_id]["offspec_role"] = "offspec_healer"
+            await self.update_event(current_events, event_id, interaction, user_events)
+        return
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.red,
+        row=1,
+        emoji=button_emojis["dps"],
+        custom_id="raidtools:eventbutton:dps",
+    )
+    async def dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        current_events = await self.config.guild(interaction.guild).events()
+        event_id = str(interaction.message.id)
+
+        user_events: Dict = await self.config.member(interaction.user).events()
+        if event_id not in user_events:
+            user_events[event_id] = {
+                "participating_role": None,
+                "participating_class": None,
+                "participating_spec": None,
+                "offspec_role": None,
+            }
+
+        user_this_event: Dict = user_events.get(event_id, {})
+        user_participating_role: str = user_this_event.get("offspec_role", None)
+
+        dps_offspec_members = current_events[event_id]["signed_up"]["offspec_dps"]
+        if interaction.user.id in dps_offspec_members:
+            await interaction.response.send_message("Već si DPS offspec.", ephemeral=True)
+        else:
+            # Add user to the offspec role
+            if user_participating_role:
+                current_events[event_id]["signed_up"][user_participating_role.lower()].remove(
+                    interaction.user.id
+                )
+            current_events[event_id]["signed_up"]["offspec_dps"] += [interaction.user.id]
+            user_events[event_id]["offspec_role"] = "offspec_dps"
+            await self.update_event(current_events, event_id, interaction, user_events)
+        return
+
+    @discord.ui.button(
+        style=discord.ButtonStyle.red,
+        row=1,
+        emoji=button_emojis["rdps"],
+        custom_id="raidtools:eventbutton:rdps",
+    )
+    async def ranged_dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        current_events = await self.config.guild(interaction.guild).events()
+        event_id = str(interaction.message.id)
+
+        user_events: Dict = await self.config.member(interaction.user).events()
+        if event_id not in user_events:
+            user_events[event_id] = {
+                "participating_role": None,
+                "participating_class": None,
+                "participating_spec": None,
+                "offspec_role": None,
+            }
+
+        user_this_event: Dict = user_events.get(event_id, {})
+        user_participating_role: str = user_this_event.get("offspec_role", None)
+
+        rdps_offspec_members = current_events[event_id]["signed_up"]["offspec_rdps"]
+        if interaction.user.id in rdps_offspec_members:
+            await interaction.response.send_message("Već si Ranged DPS offspec.", ephemeral=True)
+        else:
+            # Add user to the offspec role
+            if user_participating_role:
+                current_events[event_id]["signed_up"][user_participating_role.lower()].remove(
+                    interaction.user.id
+                )
+            current_events[event_id]["signed_up"]["offspec_rdps"] += [interaction.user.id]
+            user_events[event_id]["offspec_role"] = "offspec_rdps"
+            await self.update_event(current_events, event_id, interaction, user_events)
+        return
+
+    async def update_event(self, current_events, event_id, interaction, user_events):
+        await self.config.guild(interaction.guild).events.set(current_events)
+        await self.config.member(interaction.user).events.set(user_events)
+        embed = await EventEmbed.create_event_embed(
+            signed_up=current_events[event_id]["signed_up"],
+            event_info=current_events[event_id],
+            bot=interaction.client,
+            config=self.config,
+        )
+        await interaction.response.edit_message(embed=embed, view=self)
+
+
 class EventClassDropdown(discord.ui.Select):
     def __init__(self, config, disabled: bool = False):
         self.config = config
@@ -486,7 +791,7 @@ class EventClassDropdown(discord.ui.Select):
         picked_class = self.values[0]
         event_id = str(interaction.message.id)
         await interaction.response.send_message(
-            "Sad odaberi spec.",
+            "Sad odaberi spec",
             ephemeral=True,
             view=EventSpecView(picked_class, self.config, event_id=event_id),
         )

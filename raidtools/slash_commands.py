@@ -10,9 +10,16 @@ class SlashCommands:
         name="create",
         description="Kreiraj novi event u ovom kanalu.",
     )
+    @app_commands.choices(
+        choices=[
+            app_commands.Choice(name="No buttons", value="no_buttons"),
+            app_commands.Choice(name="Buttons", value="buttons"),
+            app_commands.Choice(name="Offspec buttons", value="offspec_buttons"),
+        ]
+    )
     @app_commands.guild_only()
     async def slash_event_create(
-        self, interaction: discord.Interaction, extra_buttons: bool = False
+        self, interaction: discord.Interaction, choices: app_commands.Choice[str]
     ):
         # Don't do anything if the user doesn't have manage guild permission
         if not (  # TODO: Add a role check too
@@ -41,7 +48,7 @@ class SlashCommands:
         )
 
         await interaction.response.send_message(
-            embed=embed, ephemeral=True, view=EventCreateView(self.config, extra_buttons)
+            embed=embed, ephemeral=True, view=EventCreateView(self.config, choices.value)
         )
 
     @app_commands.command(name="manage", description="Upravljaj eventima.")

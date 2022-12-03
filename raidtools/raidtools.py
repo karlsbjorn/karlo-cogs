@@ -4,7 +4,7 @@ from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 
-from .event_create import EventView, EventWithButtonsView
+from .event_create import EventView, EventWithButtonsView, EventWithOffspecView
 from .slash_commands import SlashCommands
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
@@ -29,3 +29,4 @@ class RaidTools(SlashCommands, commands.Cog):
         # Persistent views
         self.bot.add_view(EventView(self.config))
         self.bot.add_view(EventWithButtonsView(self.config))
+        self.bot.add_view(EventWithOffspecView(self.config))
