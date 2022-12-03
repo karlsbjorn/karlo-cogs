@@ -213,12 +213,12 @@ class EventEmbed:
             msg = ""
             if len(signed_up.get("offspec_tank", [])) > 0:
                 msg += (
-                    f"{role_emojis['tank']} Offspec Tank ({len(signed_up['offspec_tank'])}): "
+                    f"{role_emojis['tank']} Tank Offspec ({len(signed_up['offspec_tank'])}): "
                     f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_tank']])}\n"
                 )
             if len(signed_up.get("offspec_healer", [])) > 0:
                 msg += (
-                    f"{role_emojis['heal']} Offspec Healer ({len(signed_up['offspec_healer'])}): "
+                    f"{role_emojis['heal']} Healer Offspec ({len(signed_up['offspec_healer'])}): "
                     f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_healer']])}"
                 )
             embed.add_field(
@@ -230,12 +230,12 @@ class EventEmbed:
             msg = ""
             if len(signed_up.get("offspec_dps", [])) > 0:
                 msg += (
-                    f"{role_emojis['dps']} Offspec DPS ({len(signed_up['offspec_dps'])}): "
+                    f"{role_emojis['dps']} DPS Offspec ({len(signed_up['offspec_dps'])}): "
                     f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_dps']])}\n"
                 )
             if len(signed_up.get("offspec_rdps", [])) > 0:
                 msg += (
-                    f"{role_emojis['rdps']} Offspec Ranged DPS ({len(signed_up['offspec_rdps'])}): "
+                    f"{role_emojis['rdps']} Ranged DPS Offspec ({len(signed_up['offspec_rdps'])}): "
                     f"{', '.join([event_guild.get_member(member).mention for member in signed_up['offspec_rdps']])}"
                 )
             embed.add_field(

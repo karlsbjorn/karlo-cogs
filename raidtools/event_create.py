@@ -162,6 +162,14 @@ class EventPreviewView(discord.ui.View):
             embed=embed, view=EventView(self.config)
         )
 
+        # Create a thread
+        try:
+            await msg.create_thread(name=f"Rasprava - {self.extras['event_name']}")
+        except discord.Forbidden:
+            log.debug(f"No permissions to create threads in {msg.channel.id} ({msg.guild})")
+        except discord.HTTPException:
+            log.error("Failed to create thread", exc_info=True)
+
         # Send a Discord scheduled event
         try:
             scheduled_event = RaidtoolsDiscordEvent(msg, interaction, self.extras)
@@ -272,6 +280,14 @@ class EventPreviewWithButtonsView(discord.ui.View):
         msg = await interaction.client.get_channel(channel_id).send(
             embed=embed, view=EventWithButtonsView(self.config)
         )
+
+        # Create a thread
+        try:
+            await msg.create_thread(name=f"Rasprava - {self.extras['event_name']}")
+        except discord.Forbidden:
+            log.debug(f"No permissions to create threads in {msg.channel.id} ({msg.guild})")
+        except discord.HTTPException:
+            log.error("Failed to create thread", exc_info=True)
 
         # Send a Discord scheduled event
         try:
@@ -393,6 +409,14 @@ class EventPreviewWithOffspecButtonsView(discord.ui.View):
         msg = await interaction.client.get_channel(channel_id).send(
             embed=embed, view=EventWithOffspecView(self.config)
         )
+
+        # Create a thread
+        try:
+            await msg.create_thread(name=f"Rasprava - {self.extras['event_name']}")
+        except discord.Forbidden:
+            log.debug(f"No permissions to create threads in {msg.channel.id} ({msg.guild})")
+        except discord.HTTPException:
+            log.error("Failed to create thread", exc_info=True)
 
         # Send a Discord scheduled event
         try:
