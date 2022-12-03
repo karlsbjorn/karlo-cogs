@@ -40,7 +40,7 @@ class RaidTools(SlashCommands, commands.Cog):
         # Background tasks
         self.check_events.start()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=15)
     async def check_events(self):
         """Check if any events have expired or started."""
         all_guilds = await self.config.all_guilds()
