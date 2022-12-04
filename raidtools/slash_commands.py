@@ -36,8 +36,6 @@ class SlashCommands:
             description="Upute za kreiranje eventa:",
             color=discord.Color.yellow(),
         )
-        embed.add_field(name="Naziv eventa", value="Unesi naziv", inline=False)
-        embed.add_field(name="Opis eventa", value="Unesi opis", inline=False)
         embed.add_field(
             name="Datum eventa",
             value="**PROČITAJ ME**\n"
