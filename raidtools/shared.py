@@ -130,7 +130,7 @@ class EventEmbed:
                         member = await config.member(user_obj).events()
                         member_spec = member[event_id]["participating_spec"]
                         spec_emoji = f'{player_class}_{member_spec.replace(" ", "_").lower()}'
-                        value_str += f"{spec_emojis[spec_emoji]} {user_obj.mention}\n"
+                        value_str += f"{spec_emojis[spec_emoji]} {user_obj.display_name}\n"
                     embed.add_field(
                         name=f"{class_emojis[player_class]} "
                         f"{player_class.replace('_', ' ').title()} "
