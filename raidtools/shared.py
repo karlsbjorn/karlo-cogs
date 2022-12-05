@@ -144,7 +144,7 @@ class EventEmbed:
                         f"({len(signed_up[player_class])})",
                         value="\n".join(
                             [
-                                event_guild.get_member(member).mention
+                                event_guild.get_member(member).display_name
                                 for member in signed_up[player_class]
                             ]
                         ),
