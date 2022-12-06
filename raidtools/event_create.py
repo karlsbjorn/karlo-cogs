@@ -660,6 +660,10 @@ class EventWithOffspecView(discord.ui.View):
         tank_offspec_members = current_events[event_id]["signed_up"]["offspec_tank"]
         if interaction.user.id in tank_offspec_members:
             await interaction.response.send_message("Već si Tank offspec.", ephemeral=True)
+        elif not user_this_event.get("participating_class", None):
+            await interaction.response.send_message(
+                "Prvo se moraš prijaviti za glavni spec.", ephemeral=True
+            )
         else:
             # Add user to the offspec role
             if user_participating_role:
@@ -696,6 +700,10 @@ class EventWithOffspecView(discord.ui.View):
         heal_offspec_members = current_events[event_id]["signed_up"]["offspec_healer"]
         if interaction.user.id in heal_offspec_members:
             await interaction.response.send_message("Već si Healer offspec.", ephemeral=True)
+        elif not user_this_event.get("participating_class", None):
+            await interaction.response.send_message(
+                "Prvo se moraš prijaviti za glavni spec.", ephemeral=True
+            )
         else:
             # Add user to the offspec role
             if user_participating_role:
@@ -732,6 +740,10 @@ class EventWithOffspecView(discord.ui.View):
         dps_offspec_members = current_events[event_id]["signed_up"]["offspec_dps"]
         if interaction.user.id in dps_offspec_members:
             await interaction.response.send_message("Već si DPS offspec.", ephemeral=True)
+        elif not user_this_event.get("participating_class", None):
+            await interaction.response.send_message(
+                "Prvo se moraš prijaviti za glavni spec.", ephemeral=True
+            )
         else:
             # Add user to the offspec role
             if user_participating_role:
@@ -768,6 +780,10 @@ class EventWithOffspecView(discord.ui.View):
         rdps_offspec_members = current_events[event_id]["signed_up"]["offspec_rdps"]
         if interaction.user.id in rdps_offspec_members:
             await interaction.response.send_message("Već si Ranged DPS offspec.", ephemeral=True)
+        elif not user_this_event.get("participating_class", None):
+            await interaction.response.send_message(
+                "Prvo se moraš prijaviti za glavni spec.", ephemeral=True
+            )
         else:
             # Add user to the offspec role
             if user_participating_role:
