@@ -642,6 +642,7 @@ class EventWithOffspecView(discord.ui.View):
         custom_id="raidtools:eventbutton:tank",
     )
     async def tank(self, interaction: discord.Interaction, button: discord.ui.Button):
+        log.debug(f"Tank button pressed by {interaction.user.name}")
         current_events = await self.config.guild(interaction.guild).events()
         event_id = str(interaction.message.id)
 
@@ -682,6 +683,7 @@ class EventWithOffspecView(discord.ui.View):
         custom_id="raidtools:eventbutton:healer",
     )
     async def healer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        log.debug(f"Healer button pressed by {interaction.user.name}")
         current_events = await self.config.guild(interaction.guild).events()
         event_id = str(interaction.message.id)
 
@@ -722,6 +724,7 @@ class EventWithOffspecView(discord.ui.View):
         custom_id="raidtools:eventbutton:dps",
     )
     async def dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        log.debug(f"DPS button pressed by {interaction.user.name}")
         current_events = await self.config.guild(interaction.guild).events()
         event_id = str(interaction.message.id)
 
@@ -762,6 +765,7 @@ class EventWithOffspecView(discord.ui.View):
         custom_id="raidtools:eventbutton:rdps",
     )
     async def ranged_dps(self, interaction: discord.Interaction, button: discord.ui.Button):
+        log.debug(f"Ranged DPS button pressed by {interaction.user.name}")
         current_events = await self.config.guild(interaction.guild).events()
         event_id = str(interaction.message.id)
 
@@ -796,6 +800,7 @@ class EventWithOffspecView(discord.ui.View):
         return
 
     async def update_event(self, current_events, event_id, interaction, user_events):
+        log.debug(f"Updating event {event_id} for {interaction.user.name}")
         await self.config.guild(interaction.guild).events.set(current_events)
         await self.config.member(interaction.user).events.set(user_events)
         embed = await EventEmbed.create_event_embed(
@@ -828,6 +833,7 @@ class EventClassDropdown(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        log.debug(f"Class dropdown callback for {interaction.user.name}, picked {self.values}")
         picked_class = self.values[0]
         event_id = str(interaction.message.id)
         await interaction.response.send_message(
@@ -864,6 +870,7 @@ class EventSpecDropdown(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        log.debug(f"Spec dropdown callback for {interaction.user.name}, picked {self.values}")
         picked_spec = self.values[0]
         # Get player's current participation status
         current_events = await self.config.guild(interaction.guild).events()
@@ -904,6 +911,7 @@ class EventSpecDropdown(discord.ui.Select):
         await self.update_event(current_events, self.event_id, interaction, user_events)
 
     async def update_event(self, current_events, event_id, interaction, user_events):
+        log.debug(f"Updating event {event_id} for {interaction.user.name}")
         await self.config.guild(interaction.guild).events.set(current_events)
         await self.config.member(interaction.user).events.set(user_events)
         embed = await EventEmbed.create_event_embed(
