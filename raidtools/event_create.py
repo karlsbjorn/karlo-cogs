@@ -837,7 +837,7 @@ class EventClassDropdown(discord.ui.Select):
         picked_class = self.values[0]
         event_id = str(interaction.message.id)
         await interaction.response.send_message(
-            "Sad odaberi spec",
+            f"{interaction.user.mention} Sad odaberi spec",
             ephemeral=True,
             view=EventSpecView(picked_class, self.config, event_id=event_id),
         )
