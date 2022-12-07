@@ -5,7 +5,6 @@ import discord.ui
 
 from raidtools.confirmation import DeleteConfirmationView
 from raidtools.discordevent import RaidtoolsDiscordEvent
-from raidtools.event_create import EventView
 from raidtools.shared import EventEmbed
 
 log = logging.getLogger("red.karlo-cogs.raidtools")
