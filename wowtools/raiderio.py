@@ -97,9 +97,9 @@ class Raiderio:
                     "segments"
                 ]["all"]
                 char_score_color = int("0x" + char_score["color"][1:], 0)
-                char_raid = profile_data["raid_progression"][
-                    "vault-of-the-incarnates"
-                ]["summary"]
+                char_raid = profile_data["raid_progression"]["vault-of-the-incarnates"][
+                    "summary"
+                ]
                 char_last_updated = self._parse_date(profile_data["last_crawled_at"])
                 char_ilvl = profile_data["gear"]["item_level_equipped"]
                 try:
@@ -247,21 +247,16 @@ class Raiderio:
                 guild_url: str = profile_data["profile_url"]
                 last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
+                current_raid = profile_data["raid_rankings"]["vault-of-the-incarnates"]
                 ranks = (
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "normal"
-                    ],
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "heroic"
-                    ],
-                    profile_data["raid_rankings"]["sepulcher-of-the-first-ones"][
-                        "mythic"
-                    ],
+                    current_raid["normal"],
+                    current_raid["heroic"],
+                    current_raid["mythic"],
                 )
                 difficulties = ("Normal", "Heroic", "Mythic")
 
                 raid_progression: str = profile_data["raid_progression"][
-                    "sepulcher-of-the-first-ones"
+                    "vault-of-the-incarnates"
                 ]["summary"]
 
                 embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
