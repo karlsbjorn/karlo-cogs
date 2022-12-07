@@ -663,7 +663,8 @@ class EventWithOffspecView(discord.ui.View):
             await interaction.response.send_message("Već si Tank offspec.", ephemeral=True)
         elif not user_this_event.get("participating_class", None):
             await interaction.response.send_message(
-                "Prvo se moraš prijaviti za glavni spec.", ephemeral=True
+                f"{interaction.user.mention} Prvo se moraš prijaviti za glavni spec.",
+                ephemeral=True,
             )
         else:
             # Add user to the offspec role
