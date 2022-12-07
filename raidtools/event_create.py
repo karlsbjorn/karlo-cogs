@@ -455,7 +455,6 @@ class EventWithButtonsView(discord.ui.View):
         super().__init__(timeout=None)
         self.add_item(EventClassDropdown(self.config))
 
-    # TODO: Assign custom_id to these after uncommenting
     @discord.ui.button(
         label="Bench",
         style=discord.ButtonStyle.grey,

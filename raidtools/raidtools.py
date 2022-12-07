@@ -33,8 +33,12 @@ class RaidTools(SlashCommands, commands.Cog):
         self.config.register_member(**default_member)
 
         # Persistent views
+        log.debug("Adding persistent views")
+        log.debug("Adding EventView")
         self.bot.add_view(EventView(self.config))
+        log.debug("Adding EventWithButtonsView")
         self.bot.add_view(EventWithButtonsView(self.config))
+        log.debug("Adding EventWithOffspecView")
         self.bot.add_view(EventWithOffspecView(self.config))
 
         # Background tasks
