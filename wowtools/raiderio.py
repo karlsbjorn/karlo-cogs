@@ -197,60 +197,6 @@ class Raiderio:
 
         await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
 
-    async def _make_gear_embed(
-        self, char_gear, char_image, char_last_updated, char_name, char_score_color
-    ):
-        item_list = []
-        item_list.append(
-            _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
-        )
-        items = char_gear["items"]
-        for item_slot, item in items.items():
-            item_str = ""
-
-            # Item rarity
-            quality = item["item_quality"]
-            if quality == 1:
-                item_str += "⬜"
-            elif quality == 2:
-                item_str += "🟩"
-            elif quality == 3:
-                item_str += "🟦"
-            elif quality == 4:
-                item_str += "🟪"
-            elif quality == 5:
-                item_str += "🟧"
-            else:
-                item_str += "⬛"
-
-            # Item level
-            item_str += f" `{item['item_level']}`"
-
-            # Item name
-            item_name = item["name"]
-            item_str += f" [{item_name}]"
-
-            # Item link
-            item_id = item["item_id"]
-            item_str += f"({self._wowhead_url(item_id)})"
-
-            item_list.append(item_str)
-
-        embed = discord.Embed(
-            title=char_name,
-            description="\n".join(item_list),
-            color=char_score_color,
-        )
-        embed.set_author(
-            name=_("Raider.io profile"),
-            icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
-        )
-        embed.set_thumbnail(url=char_image)
-        embed.set_footer(
-            text=_("Last updated: {char_last_updated}").format(char_last_updated=char_last_updated)
-        )
-        return embed
-
     @raiderio.command(name="guild")
     @commands.guild_only()
     async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
@@ -416,6 +362,70 @@ class Raiderio:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         formatted = parsed.strftime("%d/%m/%y - %H:%M:%S")
         return formatted
+
+    async def _make_gear_embed(
+        self, char_gear, char_image, char_last_updated, char_name, char_score_color
+    ):
+        item_list = []
+        item_list.append(
+            _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
+        )
+        items = char_gear["items"]
+        for item_slot, item in items.items():
+            item_str = ""
+
+            # Item rarity
+            item_str += await self._get_item_quality(item)
+
+            # Item level
+            item_str += f" `{item['item_level']}`"
+
+            # Item name
+            item_name = item["name"]
+            item_str += f" [{item_name}]"
+
+            # Item link
+            item_id = item["item_id"]
+            item_str += f"({self._wowhead_url(item_id)})"
+
+            item_list.append(item_str)
+
+        embed = discord.Embed(
+            title=char_name,
+            description="\n".join(item_list),
+            color=char_score_color,
+        )
+        embed.set_author(
+            name=_("Raider.io profile"),
+            icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+        )
+        embed.set_thumbnail(url=char_image)
+        embed.set_footer(
+            text=_("Last updated: {char_last_updated}").format(char_last_updated=char_last_updated)
+        )
+        return embed
+
+    @staticmethod
+    async def _get_item_quality(item) -> str:
+        """
+        Get the item quality emoji.
+
+        :param item: The item to get the quality emoji for.
+        :return: The item quality emoji.
+        """
+        quality = item["item_quality"]
+        if quality == 1:
+            return "⬜"
+        elif quality == 2:
+            return "🟩"
+        elif quality == 3:
+            return "🟦"
+        elif quality == 4:
+            return "🟪"
+        elif quality == 5:
+            return "🟧"
+        else:
+            return "⬛"
 
     @staticmethod
     def _wowhead_url(item_id):
