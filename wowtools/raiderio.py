@@ -95,7 +95,8 @@ class Raiderio:
         char_score_color = int("0x" + char_score["color"][1:], 0)
         char_raid = profile_data["raid_progression"]["vault-of-the-incarnates"]["summary"]
         char_last_updated = self._parse_date(profile_data["last_crawled_at"])
-        char_ilvl = profile_data["gear"]["item_level_equipped"]
+        char_gear = profile_data["gear"]
+        char_ilvl = char_gear["item_level_equipped"]
         try:
             char_covenant = profile_data["covenant"]["name"]
         except TypeError:
@@ -150,7 +151,7 @@ class Raiderio:
         )
         embeds.append(embed)
 
-        # Second page
+        # Dungeon specifics page
         dungeon_str = _("Dungeon")
         key_level_str = _("Level")
         runs = {
@@ -163,18 +164,81 @@ class Raiderio:
             key_level = run["mythic_level"]
             runs[dungeon_str] += [dungeon_short]
             runs[key_level_str] += [f"+{key_level}"]
-        if not runs[dungeon_str]:
-            # If no runs in current season, send basic profile embed
-            await ctx.send(embed=embed)
-            return
-        tabulated = tabulate(runs, headers="keys", tablefmt="simple", colalign=("left", "right"))
+        if runs[dungeon_str]:
+            tabulated = tabulate(
+                runs, headers="keys", tablefmt="simple", colalign=("left", "right")
+            )
+
+            embed = discord.Embed(
+                title=char_name,
+                description=box(
+                    tabulated,
+                ),
+                url=char_url,
+                color=char_score_color,
+            )
+            embed.set_author(
+                name=_("Raider.io profile"),
+                icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+            )
+            embed.set_thumbnail(url=char_image)
+            embed.set_footer(
+                text=_("Last updated: {char_last_updated}").format(
+                    char_last_updated=char_last_updated
+                )
+            )
+            embeds.append(embed)
+
+        # Gear page
+        embed = await self._make_gear_embed(
+            char_gear, char_image, char_last_updated, char_name, char_score_color
+        )
+        embeds.append(embed)
+
+        await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
+
+    async def _make_gear_embed(
+        self, char_gear, char_image, char_last_updated, char_name, char_score_color
+    ):
+        item_list = []
+        item_list.append(
+            _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
+        )
+        items = char_gear["items"]
+        for item_slot, item in items.items():
+            item_str = ""
+
+            # Item rarity
+            quality = item["item_quality"]
+            if quality == 1:
+                item_str += "⬜"
+            elif quality == 2:
+                item_str += "🟩"
+            elif quality == 3:
+                item_str += "🟦"
+            elif quality == 4:
+                item_str += "🟪"
+            elif quality == 5:
+                item_str += "🟧"
+            else:
+                item_str += "⬛"
+
+            # Item level
+            item_str += f" `{item['item_level']}`"
+
+            # Item name
+            item_name = item["name"]
+            item_str += f" [{item_name}]"
+
+            # Item link
+            item_id = item["item_id"]
+            item_str += f"({self._wowhead_url(item_id)})"
+
+            item_list.append(item_str)
 
         embed = discord.Embed(
             title=char_name,
-            description=box(
-                tabulated,
-            ),
-            url=char_url,
+            description="\n".join(item_list),
             color=char_score_color,
         )
         embed.set_author(
@@ -185,9 +249,7 @@ class Raiderio:
         embed.set_footer(
             text=_("Last updated: {char_last_updated}").format(char_last_updated=char_last_updated)
         )
-        embeds.append(embed)
-
-        await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
+        return embed
 
     @raiderio.command(name="guild")
     @commands.guild_only()
@@ -354,3 +416,13 @@ class Raiderio:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         formatted = parsed.strftime("%d/%m/%y - %H:%M:%S")
         return formatted
+
+    @staticmethod
+    def _wowhead_url(item_id):
+        """
+        Returns a Wowhead URL for the given item ID.
+
+        :param item_id: ID of the item
+        :return: Wowhead URL
+        """
+        return f"https://www.wowhead.com/item={item_id}"
