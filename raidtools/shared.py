@@ -47,11 +47,12 @@ class EventEmbed:
         event_date = event_date.replace(":R>", ":F>")  # long date w/ day of week and short time
         event_end_date = event_end_date.replace(":R>", ":t>")  # short time
 
+        # Check if all participants are still in the guild
+        signed_up = await EventEmbed._filter_participants(config, event_guild, event_id, signed_up)
+
         zws = "\N{ZERO WIDTH SPACE}"
         embed = discord.Embed(
-            description=f"ID: {event_id}\n"
-            f"**{event_name}**\n"
-            f"{event_description if event_description else None}\n",
+            description=f"ID: {event_id}\n" f"**{event_name}**\n" f"{event_description or None}\n",
             color=discord.Color.yellow(),
         )
 
@@ -99,21 +100,49 @@ class EventEmbed:
         return embed
 
     @staticmethod
+    async def _filter_participants(
+        config, event_guild, event_id, signed_up: Dict[str, List[int]]
+    ) -> Dict[str, List[int]]:
+        """
+        Check if all participants are still in the guild.
+
+        :param config: Red config to get member info from
+        :param event_guild: Guild the event is in
+        :param event_id: ID of the event
+        :param signed_up: A dictionary of classes and members who signed up for the event.
+        :return: A dictionary of classes and members who signed up for the event with members who
+         aren't in the guild anymore removed.
+        """
+        save_config = False
+        for class_name, members in signed_up.items():
+            for member_id in members:
+                if not event_guild.get_member(member_id):
+                    log.info(
+                        f"Member {member_id} not in guild {event_guild.id}."
+                        f"Wiping them from the event."
+                    )
+                    signed_up[class_name].remove(member_id)
+                    save_config = True
+        if save_config:
+            log.info("A member was not in the guild. Saving config.")
+            guild_events = await config.guild(event_guild).events()
+            guild_events[event_id]["signed_up"] = signed_up
+
+            await config.guild(event_guild).events.set(guild_events)
+            log.info("Config saved.")
+        return signed_up
+
+    @staticmethod
     async def _get_n_of_signups(signed_up):
         primary_members = set()
         secondary_members = set()
 
         for class_name, members in signed_up.items():
-            if class_name == "bench":
+            if class_name in ["bench", "tentative", "absent"]:
                 continue
             elif class_name == "late":
                 secondary_members.update(members)
                 continue
-            elif class_name == "tentative":
-                continue
-            elif class_name == "absent":
-                continue
-
             primary_members.update(members)
 
         return primary_members, secondary_members
