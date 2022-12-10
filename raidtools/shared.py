@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Union
 
 import discord
@@ -12,6 +13,9 @@ from raidtools.emojis import (
     spec_emojis,
 )
 from raidtools.playerclasses import player_classes
+
+
+log = logging.getLogger("red.karlo-cogs.raidtools")
 
 
 class EventEmbed:
@@ -127,6 +131,12 @@ class EventEmbed:
                 if not preview_mode:
                     for user in signed_up_users:
                         user_obj = event_guild.get_member(user)
+                        if not user_obj:
+                            log.debug(f"User {user} not found in guild {event_guild.id}")
+                            # TODO: Remove user from event config.
+                            #  Consider other cases where `user_obj` might be `None`.
+                            #  **Really** confirm that the user left the guild before removing
+                            continue
                         member = await config.member(user_obj).events()
                         member_spec = member[event_id]["participating_spec"]
                         spec_emoji = f'{player_class}_{member_spec.replace(" ", "_").lower()}'
