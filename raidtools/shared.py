@@ -14,7 +14,6 @@ from raidtools.emojis import (
 )
 from raidtools.playerclasses import player_classes
 
-
 log = logging.getLogger("red.karlo-cogs.raidtools")
 
 
@@ -266,6 +265,8 @@ class EventEmbed:
                 if user in counted_users:
                     continue
                 user_obj = event_guild.get_member(user)
+                if not user_obj:
+                    continue
 
                 signee_event_info = await config.member(user_obj).events()
                 if signee_event_info[event_id]["participating_role"] == "tank":
