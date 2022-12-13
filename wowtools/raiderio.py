@@ -46,23 +46,24 @@ class Raiderio:
             character = armory_dict["name"]
             realm = armory_dict["realm"]
             region = armory_dict["region"]
-        if not character and not realm:
-            region: str = await self.config.user(ctx.author).wow_character_region()
-            if not region:
-                region: str = await self.config.guild(ctx.guild).region()
+        if not character:
+            if not realm:
+                region: str = (
+                    await self.config.user(ctx.author).wow_character_region()
+                    or await self.config.guild(ctx.guild).region()
+                )
                 if not region:
                     await ctx.send_help()
                     return
-        if not character:
             character: str = await self.config.user(ctx.author).wow_character_name()
-            if not character:
-                await ctx.send_help()
-                return
+        if not character:
+            await ctx.send_help()
+            return
         if not realm:
             realm: str = await self.config.user(ctx.author).wow_character_realm()
-            if not realm:
-                await ctx.send_help()
-                return
+        if not realm:
+            await ctx.send_help()
+            return
         realm = "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
         if realm == "":
             await ctx.send(_("You didn't give me a realm."), ephemeral=True)
@@ -114,7 +115,6 @@ class Raiderio:
             f"https://www.raidbots.com/simbot/quick?region={region}&realm={realm}&name={char_name}"
         )
 
-        embeds = []
         # First page
         embed = discord.Embed(
             title=char_name,
@@ -149,8 +149,7 @@ class Raiderio:
         embed.set_footer(
             text=_("Last updated: {char_last_updated}").format(char_last_updated=char_last_updated)
         )
-        embeds.append(embed)
-
+        embeds = [embed]
         # Dungeon specifics page
         dungeon_str = _("Dungeon")
         key_level_str = _("Level")
@@ -300,9 +299,9 @@ class Raiderio:
 
         if not region:
             region: str = await self.config.guild(ctx.guild).region()
-            if not region:
-                await ctx.send_help()
-                return
+        if not region:
+            await ctx.send_help()
+            return
         regions = ("us", "eu", "kr", "cn")
         if region.lower() not in regions:
             await ctx.send(
@@ -319,9 +318,8 @@ class Raiderio:
 
         msg = ""
         if region == "eu":
-            reset_day = 2  # Wednesday
-            now = datetime.utcnow()
-            reset_date = now + timedelta(days=(reset_day - now.weekday()) % 7)
+            now = datetime.now(timezone.utc)
+            reset_date = now + timedelta(days=(2 - now.weekday()) % 7)
             if now.date() == reset_date.date() and now.hour > 7:
                 reset_date += timedelta(days=7)
             reset_date = reset_date.replace(
@@ -331,9 +329,8 @@ class Raiderio:
                 timestamp=f"<t:{int(reset_date.timestamp())}:R>"
             )
         elif region == "us":
-            reset_day = 1  # Tuesday
-            now = datetime.utcnow()
-            reset_date = now + timedelta(days=(reset_day - now.weekday()) % 7)
+            now = datetime.now(timezone.utc)
+            reset_date = now + timedelta(days=(1 - now.weekday()) % 7)
             if now.date() == reset_date.date() and now.hour > 15:
                 reset_date += timedelta(days=7)
             reset_date = reset_date.replace(
@@ -345,9 +342,10 @@ class Raiderio:
         # TODO: Find out when the reset is for KR and CN
         embed = discord.Embed(
             title=_("This week's Mythic+ affixes"),
-            description=msg if msg else None,
+            description=msg or None,
             color=await ctx.embed_color(),
         )
+
         embed.set_thumbnail(url="https://i.imgur.com/kczQ4Jt.jpg")
         for affix in affixes:
             embed.add_field(
@@ -360,16 +358,15 @@ class Raiderio:
     @staticmethod
     def _parse_date(tz_date) -> str:
         parsed = isoparse(tz_date) + timedelta(hours=2)
-        formatted = parsed.strftime("%d/%m/%y - %H:%M:%S")
-        return formatted
+        return parsed.strftime("%d/%m/%y - %H:%M:%S")
 
     async def _make_gear_embed(
         self, char_gear, char_image, char_last_updated, char_name, char_score_color
     ):
-        item_list = []
-        item_list.append(
+        item_list = [
             _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
-        )
+        ]
+
         items = char_gear["items"]
         for item_slot, item in items.items():
             item_str = ""
