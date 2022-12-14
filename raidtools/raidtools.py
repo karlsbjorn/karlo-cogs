@@ -83,7 +83,25 @@ class RaidTools(SlashCommands, commands.Cog):
                             f"Channel {event_data['event_channel']} in guild {guild.id} not found."
                         )
                         continue
-                    message = await channel.fetch_message(event_data["event_id"])
+                    try:
+                        message = await channel.fetch_message(event_data["event_id"])
+                    except discord.NotFound:
+                        # TODO: Remove event from config
+                        log.warning(
+                            f"Message {event_data['event_id']} in channel {channel.id} not found."
+                        )
+                        continue
+                    except discord.Forbidden:
+                        log.warning(
+                            f"No permission to fetch message {event_data['event_id']} in channel {channel.id}."
+                        )
+                        continue
+                    except discord.HTTPException:
+                        log.warning(
+                            f"Error fetching message {event_data['event_id']} in channel {channel.id}.",
+                            exc_info=True,
+                        )
+                        continue
                     if not message:
                         log.warning(
                             f"Message {event_data['event_id']} in channel {channel.id} not found."
@@ -91,8 +109,7 @@ class RaidTools(SlashCommands, commands.Cog):
                         continue
 
                     # Close and lock the thread
-                    thread = guild.get_thread(message.id)
-                    if thread:
+                    if thread := guild.get_thread(message.id):
                         await thread.edit(locked=True, archived=True)
 
                     # Remove signup ability
