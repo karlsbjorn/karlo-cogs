@@ -35,9 +35,7 @@ class BattleNetAuth(commands.Cog):
     @commands.dm_only()
     @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
     @battlenet.command(name="set")
-    async def battlenet_set(
-        self, ctx: commands.Context, serial: str = None, secret: str = None
-    ):
+    async def battlenet_set(self, ctx: commands.Context, serial: str = None, secret: str = None):
         """Set up the authenticator."""
         await ctx.send(
             _(
@@ -82,9 +80,7 @@ class BattleNetAuth(commands.Cog):
             )
 
             totp = TOTP(secret, digits=8)
-        await ctx.send(
-            _("Authenticator set.\nYour code is: **{code}**").format(code=totp.now())
-        )
+        await ctx.send(_("Authenticator set.\nYour code is: **{code}**").format(code=totp.now()))
 
     @battlenet.command(name="code")
     async def battlenet_code(self, ctx: commands.Context):

@@ -38,9 +38,7 @@ class Token:
             token_price = wow_token["price"]
 
             gold_emotes = await self.config.emotes()
-            message = _(
-                "Current price of the {region} WoW Token is: **{gold}**"
-            ).format(
+            message = _("Current price of the {region} WoW Token is: **{gold}**").format(
                 region=region.upper(), gold=format_to_gold(token_price, gold_emotes)
             )
 
@@ -50,9 +48,7 @@ class Token:
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""
         async with ctx.typing():
-            embed = discord.Embed(
-                title=_("WoW Token prices"), colour=await ctx.embed_colour()
-            )
+            embed = discord.Embed(title=_("WoW Token prices"), colour=await ctx.embed_colour())
 
             for region in BLIZZARD_VALID_REGIONS:
                 try:

@@ -56,19 +56,12 @@ class GuildManage:
                 return
 
             msg = ""
-            rank_roles: Dict[int, int] = await self.config.guild(
-                ctx.guild
-            ).guild_roles()
+            rank_roles: Dict[int, int] = await self.config.guild(ctx.guild).guild_roles()
             for discord_member, character_name in found_chars.items():
                 for rank, role in rank_roles.items():
                     role = ctx.guild.get_role(role)
-                    if (
-                        role not in discord_member.roles
-                        and int(rank) == roster[character_name]
-                    ):
-                        msg += _(
-                            "**{member}** should have the **{role}** role.\n"
-                        ).format(
+                    if role not in discord_member.roles and int(rank) == roster[character_name]:
+                        msg += _("**{member}** should have the **{role}** role.\n").format(
                             role=role.name,
                             member=discord_member.display_name,
                             rank=rank,
@@ -97,9 +90,7 @@ class GuildManage:
             await ctx.send(_("Role must be in this server."))
             return
         await self.config.guild(ctx.guild).guild_roles.set_raw(int(rank), value=role.id)
-        await ctx.send(
-            _("**{role}** bound to **Rank {rank}**.").format(role=role.name, rank=rank)
-        )
+        await ctx.send(_("**{role}** bound to **Rank {rank}**.").format(role=role.name, rank=rank))
 
     @gmset.command()
     @commands.admin()

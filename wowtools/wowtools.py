@@ -61,9 +61,7 @@ class WoWTools(
         self.config.register_guild(**default_guild)
         self.config.register_user(**default_user)
         self.limiter = AsyncLimiter(100, time_period=1)
-        self.session = aiohttp.ClientSession(
-            headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"}
-        )
+        self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
         self.update_dungeon_scoreboard.start()
 
     @commands.group()
@@ -80,9 +78,9 @@ class WoWTools(
             async with ctx.typing():
                 if region not in regions:
                     raise ValueError(
-                        _(
-                            "That region does not exist.\nValid regions are: {regions}."
-                        ).format(regions=humanize_list(regions))
+                        _("That region does not exist.\nValid regions are: {regions}.").format(
+                            regions=humanize_list(regions)
+                        )
                     )
                 await self.config.guild(ctx.guild).region.set(region)
             await ctx.send(_("Region set succesfully."))
@@ -166,9 +164,7 @@ class WoWTools(
         if ctx.message.attachments:
             for attachment in ctx.message.attachments:
                 if attachment.filename == "service_account.json":
-                    await attachment.save(
-                        str(cog_data_path(self)) + "/service_account.json"
-                    )
+                    await attachment.save(str(cog_data_path(self)) + "/service_account.json")
                     await ctx.send(_("Service account set."))
                 else:
                     await ctx.send(s_account_guide)
@@ -199,15 +195,11 @@ class WoWTools(
         if emoji:
             await self.config.emotes.set_raw(currency, value=str(emoji))
             await ctx.send(
-                _("{currency} emote set to {emoji}").format(
-                    currency=currency.title(), emoji=emoji
-                )
+                _("{currency} emote set to {emoji}").format(currency=currency.title(), emoji=emoji)
             )
         else:
             await self.config.emotes.set_raw(currency, value=None)
-            await ctx.send(
-                _("{currency} emote removed.").format(currency=currency.title())
-            )
+            await ctx.send(_("{currency} emote removed.").format(currency=currency.title()))
 
     @wowset.command(name="images")
     @commands.admin()

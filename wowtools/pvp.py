@@ -47,9 +47,7 @@ class PvP:
                 )
                 return
             if not character_name:
-                character_name: str = await self.config.user(
-                    ctx.author
-                ).wow_character_name()
+                character_name: str = await self.config.user(ctx.author).wow_character_name()
                 if not character_name:
                     await ctx.send_help()
                     return
@@ -86,10 +84,8 @@ class PvP:
                     return
 
                 await self.limiter.acquire()
-                achievements = (
-                    await wow_client.Profile.get_character_achievements_summary(
-                        character_name=character_name, realm_slug=realm
-                    )
+                achievements = await wow_client.Profile.get_character_achievements_summary(
+                    character_name=character_name, realm_slug=realm
                 )
 
                 await self.limiter.acquire()
@@ -99,34 +95,28 @@ class PvP:
 
                 try:
                     await self.limiter.acquire()
-                    rbg_statistics = (
-                        await wow_client.Profile.get_character_pvp_bracket_statistics(
-                            character_name=character_name,
-                            realm_slug=realm,
-                            pvp_bracket="rbg",
-                        )
+                    rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="rbg",
                     )
                 except ClientResponseError:
                     rbg_statistics = {}
                 try:
                     await self.limiter.acquire()
-                    duo_statistics = (
-                        await wow_client.Profile.get_character_pvp_bracket_statistics(
-                            character_name=character_name,
-                            realm_slug=realm,
-                            pvp_bracket="2v2",
-                        )
+                    duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="2v2",
                     )
                 except ClientResponseError:
                     duo_statistics = {}
                 try:
                     await self.limiter.acquire()
-                    tri_statistics = (
-                        await wow_client.Profile.get_character_pvp_bracket_statistics(
-                            character_name=character_name,
-                            realm_slug=realm,
-                            pvp_bracket="3v3",
-                        )
+                    tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
+                        character_name=character_name,
+                        realm_slug=realm,
+                        pvp_bracket="3v3",
                     )
                 except ClientResponseError:
                     tri_statistics = {}
@@ -198,9 +188,9 @@ class PvP:
                 for season in season_achievements.keys():
                     achi_id: int = char_achievement["id"]
                     if achi_id in season_achievements[season]:
-                        own_season_achievements[season][achi_id] = char_achievement[
-                            "achievement"
-                        ]["name"]
+                        own_season_achievements[season][achi_id] = char_achievement["achievement"][
+                            "name"
+                        ]
             achi_to_post = []
             for season in own_season_achievements.keys():
                 if own_season_achievements[season] != {}:
