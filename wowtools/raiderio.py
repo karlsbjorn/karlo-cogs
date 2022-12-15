@@ -78,7 +78,6 @@ class Raiderio:
                     "mythic_plus_scores_by_season:current",
                     "raid_progression",
                     "gear",
-                    "covenant",
                     "mythic_plus_best_runs",
                 ],
             )
@@ -98,10 +97,6 @@ class Raiderio:
         char_last_updated = self._parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
-        try:
-            char_covenant = profile_data["covenant"]["name"]
-        except TypeError:
-            char_covenant = "None"
         char_url = profile_data["profile_url"]
 
         banner = profile_data["profile_banner"]
@@ -134,7 +129,6 @@ class Raiderio:
         )
         embed.add_field(name=_("Raid progress"), value=char_raid, inline=True)
         embed.add_field(name=_("Item level"), value=char_ilvl, inline=True)
-        embed.add_field(name=_("Covenant"), value=char_covenant, inline=True)
         embed.add_field(
             name=_("__Other links__"),
             value=_(
