@@ -361,7 +361,7 @@ class WarcraftLogsRetail(commands.Cog):
             difficulty = 0
 
         if zone_id is None:
-            # return first raid that actually has parse info in shadowlands
+            # return first raid that actually has parse info in retail
             # as no specific zone was requested
             zone_ids = list(ZONES_BY_ID.keys())
             zone_ids.reverse()
