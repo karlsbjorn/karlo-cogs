@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
 
 import discord
@@ -123,7 +123,7 @@ class AuctionHouse:
                 if not prices:
                     # Item could be a commodity
                     await self.limiter.acquire(25)
-                    commodities_data: Dict = await wow_client.GameData.get_commodity_auctions()
+                    commodities_data: Dict = await wow_client.GameData.get_commodities()
                     auctions = commodities_data["auctions"]
                     for auction in auctions:
                         item_id = auction["item"]["id"]
@@ -150,7 +150,7 @@ class AuctionHouse:
                     title=embed_title,
                     url=embed_url,
                     colour=await ctx.embed_color(),
-                    timestamp=datetime.utcnow(),
+                    timestamp=datetime.now(timezone.utc),
                 )
                 embed.set_thumbnail(url=item_icon_url)
                 gold_emotes: Dict = await self.config.emotes()
