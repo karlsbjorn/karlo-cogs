@@ -10,7 +10,7 @@
         "tabulate",
         "aiolimiter",
         "Pillow",
-        "aiowowapi~=2.1.1",
+        "aiowowapi==2.1.4",
         "git+https://github.com/karlsbjorn/raiderio-async.git@v1.2.0"
     ],
     "min_bot_version": "3.4.0",
