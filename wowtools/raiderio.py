@@ -138,6 +138,7 @@ class Raiderio:
                 wcl_url=wcl_url,
                 raidbots_url=raidbots_url,
             ),
+            inline=False,
         )
         embed.set_image(url=banner_url)
         embed.set_footer(
