@@ -11,7 +11,7 @@
         "aiolimiter",
         "Pillow",
         "aiowowapi==2.1.4",
-        "git+https://github.com/karlsbjorn/raiderio-async.git@v1.2.0"
+        "git+https://github.com/karlsbjorn/raiderio-async.git@v1.2.1"
     ],
     "min_bot_version": "3.4.0",
     "max_bot_version": "3.4.99",
