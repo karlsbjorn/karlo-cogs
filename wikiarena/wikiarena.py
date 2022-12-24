@@ -45,6 +45,10 @@ class WikiArena(commands.Cog):
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
+        if ctx.interaction:
+            # No contextual locale for hybrid commands yet
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
         self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("-")[0]
         async with ctx.typing():
             (
@@ -79,6 +83,10 @@ class WikiArena(commands.Cog):
     @commands.hybrid_command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
         """Display the WikiArena scoreboard for this guild."""
+        if ctx.interaction:
+            # No contextual locale for hybrid commands yet
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
         max_users_per_page = 20
         user_data = await self.config.all_users()
         if not user_data:
