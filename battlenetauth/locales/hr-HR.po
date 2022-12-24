@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-09-23 06:51+0000\n"
-"PO-Revision-Date: 2022-11-28 07:33\n"
+"POT-Creation-Date: 2022-12-15 14:53+0000\n"
+"PO-Revision-Date: 2022-12-24 12:49\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "Battle.net authenticator commands."
 msgstr "Naredbe Battle.net autentifikatora."
 
-#: battlenetauth/battlenetauth.py:41
+#: battlenetauth/battlenetauth.py:39
 #, docstring
 msgid "Set up the authenticator."
 msgstr "Postavite autentifikator."
 
-#: battlenetauth/battlenetauth.py:43
+#: battlenetauth/battlenetauth.py:41
 msgid "The owner of this bot will have **full access** to your authenticator details.\n"
 "If you do not fully trust the owner of this bot with this information, do not use this command.\n"
 "If you are sure you want to continue, type `yes`. Otherwise, type `no`."
@@ -35,34 +35,34 @@ msgstr "Vlasnik ovog bota imat će **puni pristup** vašim podacima o autentifik
 "Ako vlasniku ovog bota ne vjerujete u potpunosti, nemojte koristiti ovu naredbu.\n"
 "Ako ste sigurni da želite nastaviti, upišite `yes`. U protivnom upišite `no`."
 
-#: battlenetauth/battlenetauth.py:53
+#: battlenetauth/battlenetauth.py:51
 msgid "Assuming `no`."
 msgstr "Pretpostavljam `no`."
 
-#: battlenetauth/battlenetauth.py:65
+#: battlenetauth/battlenetauth.py:63
 msgid "Invalid serial or secret."
 msgstr "Nevažeći serijski ili tajni broj."
 
-#: battlenetauth/battlenetauth.py:68
+#: battlenetauth/battlenetauth.py:66
 msgid "Could not connect: {error}"
 msgstr "Nije moguće povezati se: {error}"
 
-#: battlenetauth/battlenetauth.py:86
+#: battlenetauth/battlenetauth.py:83
 msgid "Authenticator set.\n"
 "Your code is: **{code}**"
 msgstr "Autentifikator postavljen.\n"
 "Vaš kod je: **{code}**"
 
-#: battlenetauth/battlenetauth.py:91
+#: battlenetauth/battlenetauth.py:87
 #, docstring
 msgid "Get your authenticator code."
 msgstr "Dobijte svoj autentifikacijski kod."
 
-#: battlenetauth/battlenetauth.py:94
+#: battlenetauth/battlenetauth.py:90
 msgid "You haven't set up the authenticator yet."
 msgstr "Još niste postavili autentifikator."
 
-#: battlenetauth/battlenetauth.py:102
+#: battlenetauth/battlenetauth.py:98
 msgid "Your code is: **{code}**\n"
 "It expires {time}"
 msgstr "Vaš kod je: **{code}**\n"
