@@ -159,12 +159,15 @@ class WikiArena(commands.Cog):
         else:
             await ctx.send(embed=embed)
 
+    @staticmethod
     async def game_setup(
         self, wiki_language: str
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(wiki_language)
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
-        embeds, page_view_counts, page_word_counts = await self.make_wiki_embeds(wiki_pages)
+        embeds, page_view_counts, page_word_counts = await WikiArena.make_wiki_embeds(
+            self, wiki_pages
+        )
         await wiki.close()
 
         blue_views = page_view_counts[0]
@@ -210,7 +213,15 @@ class WikiArena(commands.Cog):
         long_time_ago = (datetime.datetime.now() - datetime.timedelta(days=60)).strftime("%Y%m%d")
 
         page_title = page.title.replace(" ", "_")
-        request_url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{self.wiki_language}.wikipedia/all-access/user/{page_title}/daily/{long_time_ago}/{today}"
+        request_url = (
+            f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/"
+            f"{self.wiki_language}"
+            f".wikipedia/all-access/user/"
+            f"{page_title}"
+            f"/daily/"
+            f"{long_time_ago}"
+            f"/{today}"
+        )
         while True:
             async with self.session.request("GET", request_url) as resp:
                 if resp.status != 200:
