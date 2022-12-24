@@ -9,6 +9,7 @@ from redbot.core import Config, commands, i18n
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+from redbot.core.utils.views import SimpleMenu
 from tabulate import tabulate
 
 from .utils import get_timeout_timestamp
@@ -146,7 +147,7 @@ class WikiArena(commands.Cog):
             )
 
         if embeds:
-            await menu(ctx, embeds, DEFAULT_CONTROLS)
+            await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
         else:
             await ctx.send(embed=embed)
 
