@@ -56,7 +56,7 @@ class WikiArena(commands.Cog):
 
             timeout_timestamp = get_timeout_timestamp()
 
-            view = Buttons(
+            view = ButtonsView(
                 config=self.config,
                 wiki_language=self.wiki_language,
                 blue_views=blue_views,
@@ -93,10 +93,10 @@ class WikiArena(commands.Cog):
         if not scoreboard_dict:
             return await ctx.send(_("No users in this guild have played WikiArena yet."))
 
-        tabulate_friendly_list = []
-        for index, (member, score) in enumerate(scoreboard_dict.items()):
-            tabulate_friendly_list.append([f"{index + 1}.", member, score])
-
+        tabulate_friendly_list = [
+            [f"{index + 1}.", member, score]
+            for index, (member, score) in enumerate(scoreboard_dict.items())
+        ]
         embeds = []
         if len(tabulate_friendly_list) > max_users_per_page:
             page_count = len(tabulate_friendly_list) // max_users_per_page
@@ -155,6 +155,17 @@ class WikiArena(commands.Cog):
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
         wiki = aiowiki.Wiki.wikipedia(wiki_language)
         wiki_pages = await wiki.get_random_pages(num=2, namespace=0)
+        embeds, page_view_counts, page_word_counts = await self.make_wiki_embeds(wiki_pages)
+        await wiki.close()
+
+        blue_views = page_view_counts[0]
+        red_views = page_view_counts[1]
+        blue_word_count = page_word_counts[0]
+        red_word_count = page_word_counts[1]
+
+        return embeds, blue_views, blue_word_count, red_views, red_word_count
+
+    async def make_wiki_embeds(self, wiki_pages):
         embed_colours = discord.Colour.blue(), discord.Colour.red()
         page_view_counts = []
         page_word_counts = []
@@ -183,12 +194,7 @@ class WikiArena(commands.Cog):
             page_view_counts.append(page_views)
             page_word_counts.append(page_word_count)
             embeds.append(embed)
-        await wiki.close()
-        blue_views = page_view_counts[0]
-        red_views = page_view_counts[1]
-        blue_word_count = page_word_counts[0]
-        red_word_count = page_word_counts[1]
-        return embeds, blue_views, blue_word_count, red_views, red_word_count
+        return embeds, page_view_counts, page_word_counts
 
     async def get_page_views(self, page) -> int:
         today = datetime.datetime.now().strftime("%Y%m%d")
@@ -202,17 +208,13 @@ class WikiArena(commands.Cog):
                     return 0
 
                 data = await resp.json()
-                page_views = 0
-                for day in data["items"]:
-                    page_views += day["views"]
-
-                return page_views
+                return sum(day["views"] for day in data["items"])
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
 
 
-class Buttons(discord.ui.View):
+class ButtonsView(discord.ui.View):
     def __init__(
         self,
         config,
@@ -336,6 +338,13 @@ class Buttons(discord.ui.View):
             else self.red_words,
         )
 
+        end_msg = await self.update_user_data(end_msg)
+        await interaction.response.edit_message(
+            content=end_msg,
+            view=self,
+        )
+
+    async def update_user_data(self, end_msg):
         games_played = await self.config.user(self.author).games_played()
         await self.config.user(self.author).games_played.set(games_played + 1)
 
@@ -349,10 +358,8 @@ class Buttons(discord.ui.View):
             end_msg += _("\nYour high score is **{user_high_score}**").format(
                 user_high_score=user_high_score
             )
-        await interaction.response.edit_message(
-            content=end_msg,
-            view=self,
-        )
+
+        return end_msg
 
     async def on_timeout(self):
         if self.game_status == -1:
@@ -383,19 +390,7 @@ class Buttons(discord.ui.View):
             else self.red_words,
         )
 
-        games_played = await self.config.user(self.author).games_played()
-        await self.config.user(self.author).games_played.set(games_played + 1)
-
-        user_high_score = await self.config.user(self.author).high_score()
-        if self.score > user_high_score:
-            await self.config.user(self.author).high_score.set(self.score)
-            end_msg += _("\nYou've beaten your high score of **{user_high_score}**!").format(
-                user_high_score=user_high_score
-            )
-        else:
-            end_msg += _("\nYour high score is **{user_high_score}**.").format(
-                user_high_score=user_high_score
-            )
+        end_msg = await self.update_user_data(end_msg)
         await self.message.edit(
             content=end_msg,
             embeds=embeds,
