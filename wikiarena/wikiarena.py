@@ -159,7 +159,6 @@ class WikiArena(commands.Cog):
         else:
             await ctx.send(embed=embed)
 
-    @staticmethod
     async def game_setup(
         self, wiki_language: str
     ) -> Tuple[List[discord.Embed], int, int, int, int]:
