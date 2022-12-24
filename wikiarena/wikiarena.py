@@ -37,7 +37,7 @@ class WikiArena(commands.Cog):
         self.config.register_user(**default_user)
 
     @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
-    @commands.command()
+    @commands.hybrid_command()
     async def wikiarena(self, ctx):
         """
         Starts a game of WikiArena.
@@ -75,7 +75,7 @@ class WikiArena(commands.Cog):
                 view=view,
             )
 
-    @commands.command(aliases=["wikiarenascoreboard"])
+    @commands.hybrid_command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
         """Display the WikiArena scoreboard for this guild."""
         max_users_per_page = 20
