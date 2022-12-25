@@ -25,23 +25,23 @@ class PvP:
             character_name = armory_dict["name"]
             realm = armory_dict["realm"]
             region = armory_dict["region"]
-        if not character_name and not realm:
-            region: str = await self.config.user(ctx.author).wow_character_region()
-            if not region:
-                region: str = await self.config.guild(ctx.guild).region()
+        if not character_name:
+            if not realm:
+                region: str = await self.config.user(ctx.author).wow_character_region()
+                if not region:
+                    region: str = await self.config.guild(ctx.guild).region()
                 if not region:
                     await ctx.send_help()
                     return
-        if not character_name:
             character_name: str = await self.config.user(ctx.author).wow_character_name()
-            if not character_name:
-                await ctx.send_help()
-                return
+        if not character_name:
+            await ctx.send_help()
+            return
         if not realm:
             realm: str = await self.config.user(ctx.author).wow_character_realm()
-            if not realm:
-                await ctx.send_help()
-                return
+        if not realm:
+            await ctx.send_help()
+            return
 
         try:
             api_client = await get_api_client(self.bot, ctx, region)
@@ -173,19 +173,17 @@ class PvP:
             "Season 4": {},
         }
         for char_achievement in achievements["achievements"]:
-            for season in season_achievements.keys():
-                achi_id: int = char_achievement["id"]
-                if achi_id in season_achievements[season]:
+            achi_id: int = char_achievement["id"]
+            for season, value_ in season_achievements.items():
+                if achi_id in value_:
                     own_season_achievements[season][achi_id] = char_achievement["achievement"][
                         "name"
                     ]
-        achi_to_post = []
-        for season in own_season_achievements.keys():
-            if own_season_achievements[season] != {}:
-                achi_to_post.append(
-                    own_season_achievements[season][max(own_season_achievements[season].keys())]
-                )
-
+        achi_to_post = [
+            own_season_achievements[season][max(own_season_achievements[season].keys())]
+            for season, value__ in own_season_achievements.items()
+            if value__ != {}
+        ]
         if char_faction != "Horde":
             color = discord.Color.blue()
 

@@ -26,10 +26,9 @@ async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
                 "filling in `whoops` with your client's ID and secret."
-            ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+            ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
         )
-    api_client = WowApi(client_id=cid, client_secret=secret, client_region=region)
-    return api_client
+    return WowApi(client_id=cid, client_secret=secret, client_region=region)
 
 
 def format_to_gold(price: int, emotes: dict = None) -> str:
@@ -51,14 +50,14 @@ def format_to_gold(price: int, emotes: dict = None) -> str:
 
     gold = humanize_number(int(price[:-4])) if price[:-4] else "00"
     if gold != "00":
-        gold_text = gold + "g" if gold_emoji is None else gold + gold_emoji
+        gold_text = f"{gold}g" if gold_emoji is None else gold + gold_emoji
 
     silver = price[-4:-2]
     if silver != "00":
-        silver_text = silver + "s" if silver_emoji is None else silver + silver_emoji
+        silver_text = f"{silver}s" if silver_emoji is None else silver + silver_emoji
 
     copper = price[-2:]
     if copper != "00":
-        copper_text = copper + "c" if copper_emoji is None else copper + copper_emoji
+        copper_text = f"{copper}c" if copper_emoji is None else copper + copper_emoji
 
     return gold_text + silver_text + copper_text

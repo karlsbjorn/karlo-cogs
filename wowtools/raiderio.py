@@ -8,9 +8,7 @@ from dateutil.parser import isoparse
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
-from redbot.core.utils import menus
 from redbot.core.utils.chat_formatting import box, humanize_list
-from redbot.core.utils.menus import DEFAULT_CONTROLS
 from redbot.core.utils.views import SimpleMenu
 from tabulate import tabulate
 
@@ -213,14 +211,14 @@ class Raiderio:
             await ctx.send(
                 _(
                     "A server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix),
                 ephemeral=True,
             )
             return
         if not realm:
             await ctx.send(
                 _("A server admin needs to set a realm with `{prefix}wowset realm` first.").format(
-                    prefix=ctx.clean_prefix if not ctx.interaction else "",
+                    prefix="" if ctx.interaction else ctx.clean_prefix
                 ),
                 ephemeral=True,
             )

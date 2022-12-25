@@ -27,7 +27,7 @@ class Token:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
 
-        if region not in VALID_REGIONS and region != "all":
+        if region not in VALID_REGIONS:
             await ctx.send(
                 _("Invalid region. Valid regions are: `eu`, `us`, `kr`, 'cn' or `all`."),
                 ephemeral=True,

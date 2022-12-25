@@ -164,7 +164,7 @@ class WoWTools(
         if ctx.message.attachments:
             for attachment in ctx.message.attachments:
                 if attachment.filename == "service_account.json":
-                    await attachment.save(str(cog_data_path(self)) + "/service_account.json")
+                    await attachment.save(f"{str(cog_data_path(self))}/service_account.json")
                     await ctx.send(_("Service account set."))
                 else:
                     await ctx.send(s_account_guide)

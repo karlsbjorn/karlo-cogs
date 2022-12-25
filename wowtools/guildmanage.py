@@ -89,7 +89,7 @@ class GuildManage:
         if role not in ctx.guild.roles:
             await ctx.send(_("Role must be in this server."))
             return
-        await self.config.guild(ctx.guild).guild_roles.set_raw(int(rank), value=role.id)
+        await self.config.guild(ctx.guild).guild_roles.set_raw(rank, value=role.id)
         await ctx.send(_("**{role}** bound to **Rank {rank}**.").format(role=role.name, rank=rank))
 
     @gmset.command()
@@ -148,10 +148,10 @@ class GuildManage:
         ranks: List[int] = [int(rank) for rank in list(rank_roles.keys())]
         roster: Dict[str, int] = {}
         for member in guild_roster["members"]:
-            member_name = member["character"]["name"]
             member_rank = member["rank"] + 1  # rank is 0-based in the API
             # ignore every member with a rank that isn't in the config
             if member_rank in ranks:
+                member_name = member["character"]["name"]
                 roster[member_name] = member_rank
         return roster
 

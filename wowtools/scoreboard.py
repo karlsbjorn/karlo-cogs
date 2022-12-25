@@ -357,19 +357,19 @@ class Scoreboard:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
         if not realm:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
         if not guild_name:
             raise ValueError(
                 _(
                     "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
 
         embed = discord.Embed(
@@ -451,21 +451,21 @@ class Scoreboard:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
             return None
         if not realm:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a realm with `{prefix}wowset realm` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
             return None
         if not guild_name:
             await ctx.send(
                 _(
                     "\nA server admin needs to set a guild name with `{prefix}wowset guild` first."
-                ).format(prefix=ctx.clean_prefix if not ctx.interaction else "")
+                ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
             )
             return None
 
@@ -628,7 +628,7 @@ class Scoreboard:
                 [
                     f"{index + 1}.",
                     char_name.capitalize(),
-                    humanize_number(int(char_rating)),
+                    humanize_number(char_rating),
                 ]
             )
         for index, char_info in enumerate(zip(characters_2v2, ratings_2v2)):
@@ -638,7 +638,7 @@ class Scoreboard:
                 [
                     f"{index + 1}.",
                     char_name.capitalize(),
-                    humanize_number(int(char_rating)),
+                    humanize_number(char_rating),
                 ]
             )
         for index, char_info in enumerate(zip(characters_3v3, ratings_3v3)):
@@ -648,7 +648,7 @@ class Scoreboard:
                 [
                     f"{index + 1}.",
                     char_name.capitalize(),
-                    humanize_number(int(char_rating)),
+                    humanize_number(char_rating),
                 ]
             )
         return tabulate_lists
