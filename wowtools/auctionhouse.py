@@ -169,7 +169,7 @@ class AuctionHouse:
                 embed.add_field(
                     name="\N{ZERO WIDTH SPACE}",
                     value=_(
-                        "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
+                        "[Detailed info](https://oribos.exchange/#{region}-{realm}/{item_id})"
                     ).format(
                         region=config_region,
                         realm=config_realm,
