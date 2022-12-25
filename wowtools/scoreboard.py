@@ -237,7 +237,9 @@ class Scoreboard:
                     )
 
                     if image:
-                        img_file = await self._generate_scoreboard_image(tabulate_list)
+                        img_file = await self._generate_scoreboard_image(
+                            tabulate_list, dev_guild=guild.id == 362298824854863882
+                        )
                         embed.set_image(url=f"attachment://{img_file.filename}")
                         embed.set_footer(text=_("Updates every 5 minutes"))
                     else:
@@ -381,7 +383,9 @@ class Scoreboard:
         )
 
         if image:
-            img_file = await self._generate_scoreboard_image(tabulate_list)
+            img_file = await self._generate_scoreboard_image(
+                tabulate_list, dev_guild=ctx.guild.id == 362298824854863882
+            )
             embed.set_image(url=f"attachment://{img_file.filename}")
             return embed, img_file
         else:
@@ -396,14 +400,18 @@ class Scoreboard:
             )
             return embed
 
-    async def _generate_scoreboard_image(self, tabulate_list: list):
-        img_path = str(bundled_data_path(self) / "scoreboard-df-s1.png")
+    async def _generate_scoreboard_image(self, tabulate_list: list, dev_guild: bool = False):
+        img_path = str(
+            bundled_data_path(self) / "scoreboard-df-s1-jrk.png"
+            if dev_guild
+            else bundled_data_path(self) / "scoreboard-df-s1.png"
+        )
         img = Image.open(img_path)
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(str(bundled_data_path(self) / "Roboto-Bold.ttf"), 28)
 
         x = 150
-        y = 25
+        y = 100 if dev_guild else 25
 
         for character in tabulate_list[:10]:
             score_color = ImageColor.getcolor(character[3], "RGB")
@@ -412,7 +420,7 @@ class Scoreboard:
                 image = await resp.content.read()
                 image = Image.open(io.BytesIO(image))
                 image = image.resize((65, 65))
-                img.paste(image, (x - 78, y - 15))
+                img.paste(image, (x - 79, y - 15))
 
             draw.text((x, y), character[1], (255, 255, 255), font=font)
             draw.text((x + 300, y), character[2], score_color, font=font)
