@@ -241,7 +241,8 @@ class Scoreboard:
                             tabulate_list, dev_guild=guild.id == 362298824854863882
                         )
                         embed.set_image(url=f"attachment://{img_file.filename}")
-                        embed.set_footer(text=_("Updates every 5 minutes"))
+                        # TODO: Change language to english when 3.5 is out
+                        embed.set_footer(text="Ažurira se svakih 5 minuta")
                     else:
                         formatted_rankings = box(
                             tabulate(
