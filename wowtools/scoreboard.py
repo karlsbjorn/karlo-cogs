@@ -84,7 +84,7 @@ class Scoreboard:
     @commands.guild_only()
     async def sbset_channel(self, ctx: commands.Context, channel: discord.TextChannel = None):
         """Set the channel to send the scoreboard to."""
-        # image_enabled = await self.config.guild(ctx.guild).sb_image()
+        image_enabled = await self.config.guild(ctx.guild).sb_image()
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
         sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()
         if not channel:
@@ -106,17 +106,17 @@ class Scoreboard:
             )
         await self.config.guild(ctx.guild).scoreboard_channel.set(channel.id)
         try:
-            # if image_enabled:
-            #     embed, img_file = await self._generate_dungeon_scoreboard(ctx, image=True)
-            # else:
-            embed = await self._generate_dungeon_scoreboard(ctx)
+            if image_enabled:
+                embed, img_file = await self._generate_dungeon_scoreboard(ctx, image=True)
+            else:
+                embed = await self._generate_dungeon_scoreboard(ctx)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
-        # if image_enabled:
-        #     sb_msg = await channel.send(file=img_file, embed=embed)
-        # else:
-        sb_msg = await channel.send(embed=embed)
+        if image_enabled:
+            sb_msg = await channel.send(file=img_file, embed=embed)
+        else:
+            sb_msg = await channel.send(embed=embed)
         await self.config.guild(ctx.guild).scoreboard_message.set(sb_msg.id)
         await ctx.send(_("Scoreboard channel set."))
 
@@ -208,6 +208,7 @@ class Scoreboard:
                     sb_blacklist: List[str] = await self.config.guild(guild).scoreboard_blacklist()
                     if not region or not realm or not guild_name:
                         continue
+                    image: bool = await self.config.guild(guild).sb_image()
 
                     embed = discord.Embed(
                         title=_("Mythic+ Guild Scoreboard"),
@@ -221,7 +222,7 @@ class Scoreboard:
                             realm,
                             region,
                             sb_blacklist,
-                            image=False,
+                            image=image,
                         )
                     except ValueError as e:
                         log.error(
@@ -230,33 +231,40 @@ class Scoreboard:
                         )
                         continue
 
-                    formatted_rankings = box(
-                        tabulate(
-                            tabulate_list,
-                            headers=headers,
-                            tablefmt="plain",
-                            disable_numparse=True,
-                        ),
-                        lang="md",
-                    )
-
                     # TODO: When dpy2 is out, use discord.utils.format_dt()
                     desc = _("Last updated <t:{timestamp}:R>\n").format(
                         timestamp=int(datetime.now(timezone.utc).timestamp())
                     )
-                    desc += formatted_rankings
+
+                    if image:
+                        img_file = await self._generate_scoreboard_image(tabulate_list)
+                        embed.set_image(url=f"attachment://{img_file.filename}")
+                        embed.set_footer(text=_("Updates every 5 minutes"))
+                    else:
+                        formatted_rankings = box(
+                            tabulate(
+                                tabulate_list,
+                                headers=headers,
+                                tablefmt="plain",
+                                disable_numparse=True,
+                            ),
+                            lang="md",
+                        )
+                        desc += formatted_rankings
+
+                        # Don't edit if there wouldn't be a change
+                        old_rankings = sb_msg.embeds[0].description.splitlines()
+                        old_rankings = "\n".join(old_rankings[1:])
+                        if old_rankings == formatted_rankings:
+                            continue
+                        embed.set_footer(text=_("Updates only when there is a ranking change"))
                     embed.description = desc
 
-                    # Don't edit if there wouldn't be a change
-                    old_rankings = sb_msg.embeds[0].description.splitlines()
-                    old_rankings = "\n".join(old_rankings[1:])
-                    if old_rankings == formatted_rankings:
-                        continue
-
-                    embed.set_footer(text=_("Updates only when there is a ranking change"))
-
                     try:
-                        await sb_msg.edit(embed=embed)
+                        if image:
+                            await sb_msg.edit(embed=embed, attachments=[img_file])
+                        else:
+                            await sb_msg.edit(embed=embed, attachments=[])
                     except discord.Forbidden:
                         log.error(
                             f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}) "
@@ -318,9 +326,6 @@ class Scoreboard:
                     char_score = char_info[1][0]
                     char_score_color = char_info[1][1]
                     char_img = char_info[1][2]
-                else:
-                    char_score = char_info[1]
-                if image:
                     tabulate_list.append(
                         [
                             f"{index + 1}.",
@@ -331,6 +336,7 @@ class Scoreboard:
                         ]
                     )
                 else:
+                    char_score = char_info[1]
                     tabulate_list.append(
                         [
                             f"{index + 1}.",
