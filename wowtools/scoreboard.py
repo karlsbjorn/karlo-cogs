@@ -19,6 +19,8 @@ from .utils import get_api_client
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
+dev_guilds = [362298824854863882, 133049272517001216]
+
 
 class Scoreboard:
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
@@ -238,7 +240,7 @@ class Scoreboard:
 
                     if image:
                         img_file = await self._generate_scoreboard_image(
-                            tabulate_list, dev_guild=guild.id == 362298824854863882
+                            tabulate_list, dev_guild=guild.id in dev_guilds
                         )
                         embed.set_image(url=f"attachment://{img_file.filename}")
                         # TODO: Change language to english when 3.5 is out
@@ -385,7 +387,7 @@ class Scoreboard:
 
         if image:
             img_file = await self._generate_scoreboard_image(
-                tabulate_list, dev_guild=ctx.guild.id == 362298824854863882
+                tabulate_list, dev_guild=ctx.guild.id in dev_guilds
             )
             embed.set_image(url=f"attachment://{img_file.filename}")
             return embed, img_file
