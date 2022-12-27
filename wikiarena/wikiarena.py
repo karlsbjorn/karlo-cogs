@@ -85,18 +85,18 @@ class WikiArena(commands.Cog):
         user_data = dict(sorted(user_data.items(), key=lambda x: x[1]["high_score"], reverse=True))
         scoreboard_dict = {}
         for user_id, data in user_data.items():
-            member = ctx.guild.get_member(user_id)
-            if member is None:
+            user = ctx.bot.get_user(user_id)
+            if user is None:
                 continue
 
-            scoreboard_dict[member.display_name] = data["high_score"]
+            scoreboard_dict[user.name] = data["high_score"]
         if not scoreboard_dict:
-            return await ctx.send(_("No users in this guild have played WikiArena yet."))
+            return await ctx.send(_("No users in have played WikiArena yet."))
 
-        tabulate_friendly_list = []
-        for index, (member, score) in enumerate(scoreboard_dict.items()):
-            tabulate_friendly_list.append([f"{index + 1}.", member, score])
-
+        tabulate_friendly_list = [
+            [f"{index + 1}.", user, score]
+            for index, (user, score) in enumerate(scoreboard_dict.items())
+        ]
         embeds = []
         if len(tabulate_friendly_list) > max_users_per_page:
             page_count = len(tabulate_friendly_list) // max_users_per_page
