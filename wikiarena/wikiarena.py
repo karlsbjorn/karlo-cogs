@@ -8,7 +8,6 @@ import discord
 from redbot.core import Config, commands, i18n
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box
-from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.views import SimpleMenu
 from tabulate import tabulate
 
@@ -51,34 +50,35 @@ class WikiArena(commands.Cog):
 
         self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("-")[0]
         async with ctx.typing():
-            (
-                embeds,
-                blue_views,
-                blue_word_count,
-                red_views,
-                red_word_count,
-            ) = await self.game_setup(self.wiki_language)
+            await self.start_game(ctx)
 
-            timeout_timestamp = get_timeout_timestamp()
-
-            view = ButtonsView(
-                config=self.config,
-                wiki_language=self.wiki_language,
-                blue_views=blue_views,
-                red_views=red_views,
-                blue_words=blue_word_count,
-                red_words=red_word_count,
-                author=ctx.author,
-            )
-            view.message = await ctx.send(
-                _(
-                    "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
-                    "Score: **{score}**\n"
-                    "Time's up {in_time}!"
-                ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
-                embeds=embeds,
-                view=view,
-            )
+    async def start_game(self, ctx):
+        (
+            embeds,
+            blue_views,
+            blue_word_count,
+            red_views,
+            red_word_count,
+        ) = await self.game_setup(self.wiki_language)
+        timeout_timestamp = get_timeout_timestamp()
+        view = ButtonsView(
+            config=self.config,
+            wiki_language=self.wiki_language,
+            blue_views=blue_views,
+            red_views=red_views,
+            blue_words=blue_word_count,
+            red_words=red_word_count,
+            author=ctx.author,
+        )
+        view.message = await ctx.send(
+            _(
+                "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
+                "Score: **{score}**\n"
+                "Time's up {in_time}!"
+            ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
+            embeds=embeds,
+            view=view,
+        )
 
     @commands.hybrid_command(aliases=["wikiarenascoreboard"])
     async def wascoreboard(self, ctx):
@@ -87,7 +87,6 @@ class WikiArena(commands.Cog):
             # No contextual locale for hybrid commands yet
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        max_users_per_page = 20
         user_data = await self.config.all_users()
         if not user_data:
             return await ctx.send(_("No users have played WikiArena yet."))
@@ -100,64 +99,80 @@ class WikiArena(commands.Cog):
 
             scoreboard_dict[user.name] = data["high_score"]
         if not scoreboard_dict:
-            return await ctx.send(_("No users in have played WikiArena yet."))
+            return await ctx.send(_("No users have played WikiArena yet."))
 
-        tabulate_friendly_list = [
+        max_users_per_page = 20
+        await self._send_scoreboard(ctx, max_users_per_page, scoreboard_dict)
+
+    async def _send_scoreboard(self, ctx, max_users_per_page, scoreboard_dict):
+        tabulate_list = await self._make_tabulate_list(scoreboard_dict)
+        if len(tabulate_list) > max_users_per_page:
+            embeds = await self._make_scoreboard_pages(ctx, max_users_per_page, tabulate_list)
+            await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
+        else:
+            embed = await self._make_scoreboard_page(ctx, scoreboard_dict, tabulate_list)
+            await ctx.send(embed=embed)
+
+    @staticmethod
+    async def _make_tabulate_list(scoreboard_dict):
+        return [
             [f"{index + 1}.", user, score]
             for index, (user, score) in enumerate(scoreboard_dict.items())
         ]
+
+    @staticmethod
+    async def _make_scoreboard_pages(
+        ctx, max_users_per_page, tabulate_friendly_list
+    ) -> List[discord.Embed]:
+        page_count = len(tabulate_friendly_list) // max_users_per_page
         embeds = []
-        if len(tabulate_friendly_list) > max_users_per_page:
-            page_count = len(tabulate_friendly_list) // max_users_per_page
-            for page in range(page_count):
-                from_here = page
-                to_there = (page + 1) * max_users_per_page
-                scoreboard = box(
-                    tabulate(
-                        tabulate_friendly_list[from_here:to_there],
-                        headers=["#", _("Name"), _("Score")],
-                        tablefmt="plain",
-                        disable_numparse=True,
-                    ),
-                    lang="md",
-                )
-                embed = discord.Embed(
-                    title=_("WikiArena Scoreboard"),
-                    description=scoreboard,
-                    color=await ctx.embed_color(),
-                )
-                embed.set_footer(
-                    text=_("Page {page}/{page_count} | Total players: {num_players}").format(
-                        page=page + 1,
-                        page_count=page_count,
-                        num_players=len(tabulate_friendly_list),
-                    )
-                )
-                embeds.append(embed)
-        else:
+        for page in range(page_count):
+            from_here = page
+            to_there = (page + 1) * max_users_per_page
             scoreboard = box(
                 tabulate(
-                    tabulate_friendly_list,
+                    tabulate_friendly_list[from_here:to_there],
                     headers=["#", _("Name"), _("Score")],
                     tablefmt="plain",
                     disable_numparse=True,
                 ),
                 lang="md",
             )
-
             embed = discord.Embed(
                 title=_("WikiArena Scoreboard"),
                 description=scoreboard,
-                colour=await ctx.embed_colour(),
+                color=await ctx.embed_color(),
             )
             embed.set_footer(
-                text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
+                text=_("Page {page}/{page_count} | Total players: {num_players}").format(
+                    page=page + 1,
+                    page_count=page_count,
+                    num_players=len(tabulate_friendly_list),
+                )
             )
+            embeds.append(embed)
+        return embeds
 
-        if embeds:
-            await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
-        else:
-            await ctx.send(embed=embed)
+    @staticmethod
+    async def _make_scoreboard_page(ctx, scoreboard_dict, tabulate_friendly_list):
+        scoreboard = box(
+            tabulate(
+                tabulate_friendly_list,
+                headers=["#", _("Name"), _("Score")],
+                tablefmt="plain",
+                disable_numparse=True,
+            ),
+            lang="md",
+        )
+        embed = discord.Embed(
+            title=_("WikiArena Scoreboard"),
+            description=scoreboard,
+            colour=await ctx.embed_colour(),
+        )
+        embed.set_footer(
+            text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
+        )
+        return embed
 
     async def game_setup(
         self, wiki_language: str
