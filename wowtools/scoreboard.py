@@ -191,96 +191,97 @@ class Scoreboard:
 
             sb_channel_id: int = await self.config.guild(guild).scoreboard_channel()
             sb_msg_id: int = await self.config.guild(guild).scoreboard_message()
-            if sb_channel_id and sb_msg_id:
-                sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
-                try:
-                    sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
-                except discord.HTTPException:
-                    log.error(
-                        f"Failed to fetch scoreboard message in guild {guild.id} ({guild.name}).",
-                        exc_info=True,
-                    )
+            if not (sb_channel_id and sb_msg_id):
+                continue
+            sb_channel: discord.TextChannel = guild.get_channel(sb_channel_id)
+
+            try:
+                sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
+            except discord.HTTPException:
+                log.error(
+                    f"Failed to fetch scoreboard message in guild {guild.id} ({guild.name}).",
+                    exc_info=True,
+                )
+                continue
+            if not sb_msg:
+                continue
+
+            max_chars = 20
+            headers = ["#", _("Name"), _("Score")]
+            region: str = await self.config.guild(guild).region()
+            realm: str = await self.config.guild(guild).realm()
+            guild_name: str = await self.config.guild(guild).real_guild_name()
+            sb_blacklist: List[str] = await self.config.guild(guild).scoreboard_blacklist()
+            if not region or not realm or not guild_name:
+                continue
+            image: bool = await self.config.guild(guild).sb_image()
+
+            embed = discord.Embed(
+                title=_("Mythic+ Guild Scoreboard"),
+                color=await self.bot.get_embed_color(sb_msg),
+            )
+            embed.set_author(name=guild.name, icon_url=guild.icon.url)
+            try:
+                tabulate_list = await self._get_dungeon_scores(
+                    guild_name,
+                    max_chars,
+                    realm,
+                    region,
+                    sb_blacklist,
+                    image=image,
+                )
+            except ValueError as e:
+                log.error(f"Error getting dungeon scores for {guild.id}, skipping. Response: {e}")
+                continue
+
+            # TODO: When dpy2 is out, use discord.utils.format_dt()
+            desc = _("Last updated <t:{timestamp}:R>\n").format(
+                timestamp=int(datetime.now(timezone.utc).timestamp())
+            )
+
+            if image:
+                img_file = await self._generate_scoreboard_image(
+                    tabulate_list, dev_guild=guild.id in dev_guilds
+                )
+                embed.set_image(url=f"attachment://{img_file.filename}")
+                # TODO: Change language to english when 3.5 is out
+                embed.set_footer(text="Ažurira se svakih 5 minuta")
+            else:
+                formatted_rankings = box(
+                    tabulate(
+                        tabulate_list,
+                        headers=headers,
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                    lang="md",
+                )
+                desc += formatted_rankings
+
+                # Don't edit if there wouldn't be a change
+                old_rankings = sb_msg.embeds[0].description.splitlines()
+                old_rankings = "\n".join(old_rankings[1:])
+                if old_rankings == formatted_rankings:
                     continue
-                if sb_msg:
-                    max_chars = 20
-                    headers = ["#", _("Name"), _("Score")]
-                    region: str = await self.config.guild(guild).region()
-                    realm: str = await self.config.guild(guild).realm()
-                    guild_name: str = await self.config.guild(guild).real_guild_name()
-                    sb_blacklist: List[str] = await self.config.guild(guild).scoreboard_blacklist()
-                    if not region or not realm or not guild_name:
-                        continue
-                    image: bool = await self.config.guild(guild).sb_image()
+                embed.set_footer(text=_("Updates only when there is a ranking change"))
+            embed.description = desc
 
-                    embed = discord.Embed(
-                        title=_("Mythic+ Guild Scoreboard"),
-                        color=await self.bot.get_embed_color(sb_msg),
-                    )
-                    embed.set_author(name=guild.name, icon_url=guild.icon.url)
-                    try:
-                        tabulate_list = await self._get_dungeon_scores(
-                            guild_name,
-                            max_chars,
-                            realm,
-                            region,
-                            sb_blacklist,
-                            image=image,
-                        )
-                    except ValueError as e:
-                        log.error(
-                            f"Error getting dungeon scores for {guild.id}, skipping. "
-                            f"Response: {e}",
-                        )
-                        continue
-
-                    # TODO: When dpy2 is out, use discord.utils.format_dt()
-                    desc = _("Last updated <t:{timestamp}:R>\n").format(
-                        timestamp=int(datetime.now(timezone.utc).timestamp())
-                    )
-
-                    if image:
-                        img_file = await self._generate_scoreboard_image(
-                            tabulate_list, dev_guild=guild.id in dev_guilds
-                        )
-                        embed.set_image(url=f"attachment://{img_file.filename}")
-                        # TODO: Change language to english when 3.5 is out
-                        embed.set_footer(text="Ažurira se svakih 5 minuta")
-                    else:
-                        formatted_rankings = box(
-                            tabulate(
-                                tabulate_list,
-                                headers=headers,
-                                tablefmt="plain",
-                                disable_numparse=True,
-                            ),
-                            lang="md",
-                        )
-                        desc += formatted_rankings
-
-                        # Don't edit if there wouldn't be a change
-                        old_rankings = sb_msg.embeds[0].description.splitlines()
-                        old_rankings = "\n".join(old_rankings[1:])
-                        if old_rankings == formatted_rankings:
-                            continue
-                        embed.set_footer(text=_("Updates only when there is a ranking change"))
-                    embed.description = desc
-
-                    try:
-                        if image:
-                            await sb_msg.edit(embed=embed, attachments=[img_file])
-                        else:
-                            await sb_msg.edit(embed=embed, attachments=[])
-                    except discord.Forbidden:
-                        log.error(
-                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}) "
-                            f"due to missing permissions.",
-                            exc_info=True,
-                        )
-                    except discord.HTTPException:
-                        log.error(
-                            f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}).",
-                            exc_info=True,
-                        )
+            try:
+                if image:
+                    await sb_msg.edit(embed=embed, attachments=[img_file])
+                else:
+                    await sb_msg.edit(embed=embed, attachments=[])
+            except discord.Forbidden:
+                log.error(
+                    f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}) "
+                    f"due to missing permissions.",
+                    exc_info=True,
+                )
+            except discord.HTTPException:
+                log.error(
+                    f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}).",
+                    exc_info=True,
+                )
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
@@ -597,25 +598,24 @@ class Scoreboard:
                 except ClientResponseError:
                     continue
 
-                if "rating" in rbg_statistics:
-                    # Have to nest this because there won't be a season key if
-                    # the character never played the gamemode
-                    if rbg_statistics["season"]["id"] == current_season:
-                        roster["rbg"][character_name] = rbg_statistics["rating"]
-                        log.debug(f"{character_name} has RBG rating {rbg_statistics['rating']}")
-                if "rating" in duo_statistics:
-                    if duo_statistics["season"]["id"] == current_season:
-                        roster["2v2"][character_name] = duo_statistics["rating"]
-                        log.debug(f"{character_name} has 2v2 rating {duo_statistics['rating']}")
-                if "rating" in tri_statistics:
-                    if tri_statistics["season"]["id"] == current_season:
-                        roster["3v3"][character_name] = tri_statistics["rating"]
-                        log.debug(f"{character_name} has 3v3 rating {tri_statistics['rating']}")
+                if "rating" in rbg_statistics and rbg_statistics["season"]["id"] == current_season:
+                    roster["rbg"][character_name] = rbg_statistics["rating"]
+                    log.debug(f"{character_name} has RBG rating {rbg_statistics['rating']}")
+                if "rating" in duo_statistics and duo_statistics["season"]["id"] == current_season:
+                    roster["2v2"][character_name] = duo_statistics["rating"]
+                    log.debug(f"{character_name} has 2v2 rating {duo_statistics['rating']}")
+                if "rating" in tri_statistics and tri_statistics["season"]["id"] == current_season:
+                    roster["3v3"][character_name] = tri_statistics["rating"]
+                    log.debug(f"{character_name} has 3v3 rating {tri_statistics['rating']}")
 
         roster["rbg"] = dict(sorted(roster["rbg"].items(), key=lambda i: i[1], reverse=True))
         roster["2v2"] = dict(sorted(roster["2v2"].items(), key=lambda i: i[1], reverse=True))
         roster["3v3"] = dict(sorted(roster["3v3"].items(), key=lambda i: i[1], reverse=True))
 
+        return await self._make_tabulate_lists(max_chars, roster)
+
+    @staticmethod
+    async def _make_tabulate_lists(max_chars, roster):
         characters_rbg = list(roster["rbg"].keys())[:max_chars]
         characters_2v2 = list(roster["2v2"].keys())[:max_chars]
         characters_3v3 = list(roster["3v3"].keys())[:max_chars]
@@ -624,26 +624,13 @@ class Scoreboard:
         ratings_3v3 = list(roster["3v3"].values())[:max_chars]
 
         tabulate_lists = [[], [], []]  # [RBG, 2v2, 3v3]
-        for index, char_info in enumerate(zip(characters_rbg, ratings_rbg)):
-            char_name: str = char_info[0]
-            char_rating: int = char_info[1]
-            tabulate_lists[0].append(
-                [
-                    f"{index + 1}.",
-                    char_name.capitalize(),
-                    humanize_number(char_rating),
-                ]
-            )
-        for index, char_info in enumerate(zip(characters_2v2, ratings_2v2)):
-            char_name: str = char_info[0]
-            char_rating: int = char_info[1]
-            tabulate_lists[1].append(
-                [
-                    f"{index + 1}.",
-                    char_name.capitalize(),
-                    humanize_number(char_rating),
-                ]
-            )
+        await Scoreboard._make_rbg_tabulate_list(characters_rbg, ratings_rbg, tabulate_lists)
+        await Scoreboard._make_2v2_tabulate_list(characters_2v2, ratings_2v2, tabulate_lists)
+        await Scoreboard._make_3v3_tabulate_list(characters_3v3, ratings_3v3, tabulate_lists)
+        return tabulate_lists
+
+    @staticmethod
+    async def _make_3v3_tabulate_list(characters_3v3, ratings_3v3, tabulate_lists):
         for index, char_info in enumerate(zip(characters_3v3, ratings_3v3)):
             char_name: str = char_info[0]
             char_rating: int = char_info[1]
@@ -654,7 +641,32 @@ class Scoreboard:
                     humanize_number(char_rating),
                 ]
             )
-        return tabulate_lists
+
+    @staticmethod
+    async def _make_2v2_tabulate_list(characters_2v2, ratings_2v2, tabulate_lists):
+        for index, char_info in enumerate(zip(characters_2v2, ratings_2v2)):
+            char_name: str = char_info[0]
+            char_rating: int = char_info[1]
+            tabulate_lists[1].append(
+                [
+                    f"{index + 1}.",
+                    char_name.capitalize(),
+                    humanize_number(char_rating),
+                ]
+            )
+
+    @staticmethod
+    async def _make_rbg_tabulate_list(characters_rbg, ratings_rbg, tabulate_lists):
+        for index, char_info in enumerate(zip(characters_rbg, ratings_rbg)):
+            char_name: str = char_info[0]
+            char_rating: int = char_info[1]
+            tabulate_lists[0].append(
+                [
+                    f"{index + 1}.",
+                    char_name.capitalize(),
+                    humanize_number(char_rating),
+                ]
+            )
 
     async def _get_guild_config(self, ctx):
         region: str = await self.config.guild(ctx.guild).region()
