@@ -278,9 +278,6 @@ class DiscordStream:
         else:
             embed.set_thumbnail(url=member.default_avatar.url)
 
-        if member.banner:
-            embed.set_image(url=member.banner.url)
-
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
