@@ -273,17 +273,20 @@ class DiscordStream:
             color=discord.Color.blurple(),
             description=f"{voice_channel.mention}",
         )
-        if member.avatar:
-            embed.set_thumbnail(url=member.avatar.url)
+        if member.display_avatar:
+            embed.set_thumbnail(url=member.display_avatar.url)
         else:
             embed.set_thumbnail(url=member.default_avatar.url)
+
+        if member.banner:
+            embed.set_image(url=member.banner.url)
 
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
-                relative_timestamp=discord.utils.format_dt(discord.utils.utcnow(), style="R")
-                if not start_time
-                else discord.utils.format_dt(start_time, style="R")
+                relative_timestamp=discord.utils.format_dt(start_time, style="R")
+                if start_time
+                else discord.utils.format_dt(discord.utils.utcnow(), style="R")
             ),
             inline=False,
         )
