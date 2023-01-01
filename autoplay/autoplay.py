@@ -48,7 +48,7 @@ class AutoPlay(commands.Cog):
             f"{current_activity.track_id} - {current_activity.title}"
         )
 
-        player = await self.bot.lavalink.get_player(after.guild.id)
+        player = self.bot.lavalink.get_player(after.guild.id)
         if player is None:
             return
         await player.play(f"https://open.spotify.com/track/{current_activity.track_id}", after)
