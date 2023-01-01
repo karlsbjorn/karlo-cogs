@@ -44,6 +44,7 @@ class AutoPlay(commands.Cog):
             past_activity := self._get_spotify_activity(before)
         ) and past_activity.track_id == current_activity.track_id:
             return
+
         log.debug(
             f"Presence update detected.\n"
             f"{current_activity.track_id} - {current_activity.title}"
@@ -52,16 +53,17 @@ class AutoPlay(commands.Cog):
         player = self.bot.lavalink.get_player(after.guild.id)
         if player is None:
             return
+        if after.voice is None or player.channel_id != after.voice.channel.id:
+            return
 
-        query_url = f"https://open.spotify.com/track/{current_activity.track_id}"
-        query = await Query.from_string(query_url)
+        query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
             query, requester=after, player=player
         )
         if not successful:
             return
         await player.play(
-            query=query_url,
+            query=current_activity.track_url,
             track=successful[0],
             requester=after,
         )
@@ -80,6 +82,8 @@ class AutoPlay(commands.Cog):
                 activity
                 for activity in member.activities
                 if activity.type == discord.ActivityType.listening
+                and hasattr(activity, "track_id")
+                and hasattr(activity, "track_url")
             ),
             None,
         )
