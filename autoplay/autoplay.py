@@ -52,8 +52,10 @@ class AutoPlay(commands.Cog):
 
         player = self.bot.lavalink.get_player(after.guild.id)
         if player is None:
+            log.debug("No player found.")
             return
         if after.voice is None or player.channel_id != after.voice.channel.id:
+            log.debug("Member is not in the same voice channel as the bot.")
             return
 
         query = await Query.from_string(current_activity.track_url)
@@ -61,6 +63,7 @@ class AutoPlay(commands.Cog):
             query, requester=after, player=player
         )
         if not successful:
+            log.debug("No tracks found.")
             return
         await player.play(
             query=current_activity.track_url,
