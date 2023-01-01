@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 import discord
+from pylav.players.query.obj import Query
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
@@ -51,12 +52,17 @@ class AutoPlay(commands.Cog):
         player = self.bot.lavalink.get_player(after.guild.id)
         if player is None:
             return
-        track = await player.get_tracks(
-            f"https://open.spotify.com/track/{current_activity.track_id}"
+
+        query_url = f"https://open.spotify.com/track/{current_activity.track_id}"
+        query = await Query.from_string(query_url)
+        successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
+            query, requester=after, player=player
         )
+        if not successful:
+            return
         await player.play(
-            query=f"https://open.spotify.com/track/{current_activity.track_id}",
-            track=track,
+            query=query_url,
+            track=successful[0],
             requester=after,
         )
 
