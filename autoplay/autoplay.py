@@ -57,7 +57,7 @@ class AutoPlay(commands.Cog):
 
         query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
-            query, requester=after, player=player
+            query, requester=after, player=player, partial=False
         )
         if not successful:
             log.debug("No tracks found.")
