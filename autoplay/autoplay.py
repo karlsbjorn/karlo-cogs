@@ -28,6 +28,7 @@ class AutoPlay(commands.Cog):
         """Set the member to track for autoplay."""
         if not self.bot.get_cog("PyLavPlayer"):
             await ctx.send(_("PyLavPlayer is not loaded."))
+            return
 
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
