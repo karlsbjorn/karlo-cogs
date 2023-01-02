@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-12-18 13:22+0000\n"
-"PO-Revision-Date: 2022-12-18 13:22\n"
+"POT-Creation-Date: 2022-12-25 05:50+0000\n"
+"PO-Revision-Date: 2022-12-25 05:50\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -81,8 +81,8 @@ msgstr "Очекивана цена овог артикла може бити н
 "разлика у нивоу ставке или других фактора."
 
 #: wowtools/auctionhouse.py:171
-msgid "[Detailed info](https://theunderminejournal.com/#{region}/{realm}/item/{item_id})"
-msgstr "[Детаљне информације](хттпс://тхеундерминејоурнал.цом/#{region}/{realm}/итем/{item_id})"
+msgid "[Detailed info](https://oribos.exchange/#{region}-{realm}/{item_id})"
+msgstr ""
 
 #: wowtools/guildmanage.py:17
 #, docstring
