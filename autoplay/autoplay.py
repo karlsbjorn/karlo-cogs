@@ -26,6 +26,9 @@ class AutoPlay(commands.Cog):
     @commands.guild_only()
     async def autoplay(self, ctx, member: discord.Member = None):
         """Set the member to track for autoplay."""
+        if not self.bot.get_cog("PyLavPlayer"):
+            await ctx.send(_("PyLavPlayer is not loaded."))
+
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
             await ctx.send(_("No longer tracking any member."))
@@ -39,6 +42,8 @@ class AutoPlay(commands.Cog):
     async def _on_presence_update(
         self, member_before: discord.Member, member_after: discord.Member
     ):
+        if not self.bot.get_cog("PyLavPlayer"):
+            return
         if await self._member_checks(member_after):
             return
 

@@ -1,7 +1,7 @@
 {
     "author": ["Karlo"],
-    "description": "Automatically play music that a user is listening to on Spotify.",
-    "short": "Automatically play music.",
+    "description": "Automatically play music that a guild member is listening to on Spotify.\n\nThis cog REQUIRES a fully set up PyLav and will not work without it.",
+    "short": "Automatically play music that a guild member is listening to on Spotify.",
     "tags": ["music", "spotify"],
     "requirements": [],
     "min_bot_version": "3.5.0.dev0",
