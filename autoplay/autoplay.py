@@ -6,7 +6,7 @@ from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from redbot.core import Config, commands
 from redbot.core.bot import Red
-from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
+from redbot.core.i18n import Translator, cog_i18n
 
 log = logging.getLogger("red.karlo-cogs.autoplay")
 _ = Translator("AutoPlay", __file__)
