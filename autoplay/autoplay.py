@@ -78,7 +78,8 @@ class AutoPlay(commands.Cog):
         )
         await self.config.guild(member_after.guild).autoplaying.set(True)
 
-    async def _member_checks(self, member) -> bool:
+    async def _member_checks(self, member: discord.Member) -> bool:
+        """Check if the member is valid for autoplay."""
         return (
             member.id != tracked_member
             if (tracked_member := await self.config.guild(member.guild).tracked_member())
@@ -86,7 +87,8 @@ class AutoPlay(commands.Cog):
         )
 
     @staticmethod
-    def _get_spotify_activity(member) -> Optional[discord.Spotify]:
+    def _get_spotify_activity(member: discord.Member) -> Optional[discord.Spotify]:
+        """Get the Spotify activity of a member."""
         return next(
             (
                 activity
