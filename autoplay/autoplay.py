@@ -50,16 +50,14 @@ class AutoPlay(commands.Cog):
         current_activity = self._get_spotify_activity(member_after)
         past_activity = self._get_spotify_activity(member_before)
         if not current_activity:
+            autoplaying = await self.config.guild(member_after.guild).autoplaying()
+            if autoplaying:
+                await player.stop(member_after)
+                await self.config.guild(member_after.guild).autoplaying.set(False)
             return
         if past_activity and past_activity.track_id == current_activity.track_id:
             return
         log.debug(f"Presence update detected. {current_activity.track_url}")
-
-        autoplaying = await self.config.guild(member_after.guild).autoplaying()
-        if not current_activity and autoplaying:
-            await player.stop(member_after)
-            await self.config.guild(member_after.guild).autoplaying.set(False)
-            return
 
         query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
