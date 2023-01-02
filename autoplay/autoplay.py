@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 import discord
+from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from redbot.core import Config, commands
 from redbot.core.bot import Red
@@ -18,7 +19,7 @@ class AutoPlay(commands.Cog):
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
-        default_guild = {"tracked_member": None}
+        default_guild = {"tracked_member": None, "autoplaying": False}
         self.config.register_guild(**default_guild)
 
     @commands.command()
@@ -35,38 +36,44 @@ class AutoPlay(commands.Cog):
             )
 
     @commands.Cog.listener("on_presence_update")
-    async def _on_presence_update(self, before: discord.Member, after: discord.Member):
-        if await self._member_checks(after):
-            return
-        if not (current_activity := self._get_spotify_activity(after)):
-            return
-        if (
-            past_activity := self._get_spotify_activity(before)
-        ) and past_activity.track_id == current_activity.track_id:
+    async def _on_presence_update(
+        self, member_before: discord.Member, member_after: discord.Member
+    ):
+        if await self._member_checks(member_after):
             return
 
-        log.debug(
-            f"Presence update detected.\n"
-            f"{current_activity.track_id} - {current_activity.title}"
-        )
-
-        player = self.bot.lavalink.get_player(after.guild.id)
+        player: Player = self.bot.lavalink.get_player(member_after.guild.id)
         if player is None:
             log.debug("No player found.")
             return
 
+        current_activity = self._get_spotify_activity(member_after)
+        past_activity = self._get_spotify_activity(member_before)
+        if not current_activity:
+            return
+        if past_activity and past_activity.track_id == current_activity.track_id:
+            return
+        log.debug(f"Presence update detected. {current_activity.track_url}")
+
+        autoplaying = await self.config.guild(member_after.guild).autoplaying()
+        if not current_activity and autoplaying:
+            await player.stop(member_after)
+            await self.config.guild(member_after.guild).autoplaying.set(False)
+            return
+
         query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
-            query, requester=after, player=player, partial=False
+            query, requester=member_after, player=player, partial=False
         )
         if not successful:
             log.debug("No tracks found.")
             return
         await player.play(
-            query=current_activity.track_url,
+            query=query,
             track=successful[0],
-            requester=after,
+            requester=member_after,
         )
+        await self.config.guild(member_after.guild).autoplaying.set(True)
 
     async def _member_checks(self, member) -> bool:
         return (
