@@ -74,9 +74,8 @@ class DiscordStreams(commands.Cog):
 
             await self.update_message_embeds(guild, member, message)
 
-    @staticmethod
     async def update_message_embeds(
-        guild: discord.Guild, member: discord.Member, message: Dict
+        self, guild: discord.Guild, member: discord.Member, message: Dict
     ) -> None:
         """
         Update the stream alert embeds for a member.
@@ -110,7 +109,8 @@ class DiscordStreams(commands.Cog):
             current_embed = message.embeds[0]
             current_embed_dict = current_embed.to_dict()
 
-            stream = DiscordStream(member.voice.channel, member)
+            banner = (await self.bot.fetch_user(member.id)).banner
+            stream = DiscordStream(member.voice.channel, member, banner)
 
             new_embed = stream.make_embed(start_time=message.created_at)
             new_embed_dict = new_embed.to_dict()
@@ -211,7 +211,8 @@ class DiscordStreams(commands.Cog):
         member_guild: discord.Guild = member.guild
         channels_to_send_to = await self.config.guild(member_guild).alert_channels()
 
-        stream = DiscordStream(after.channel, member)
+        banner = (await self.bot.fetch_user(member.id)).banner
+        stream = DiscordStream(after.channel, member, banner)
         embed = stream.make_embed()
 
         active_messages = await self.config.guild(member_guild).active_messages()
@@ -245,7 +246,9 @@ class DiscordStreams(commands.Cog):
 
 
 class DiscordStream:
-    def __init__(self, voice_channel: discord.VoiceChannel, member: discord.Member):
+    def __init__(
+        self, voice_channel: discord.VoiceChannel, member: discord.Member, banner: discord.Asset
+    ):
         """
         A class to represent a Discord "Go Live" stream.
 
@@ -254,6 +257,7 @@ class DiscordStream:
         """
         self.voice_channel = voice_channel
         self.member = member
+        self.banner = banner
 
     def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
         """
@@ -298,6 +302,9 @@ class DiscordStream:
                 name=_("Details"),
                 value=details_msg,
             )
+
+        if self.banner:
+            embed.set_image(url=self.banner.url)
 
         embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
 
