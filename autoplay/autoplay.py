@@ -22,13 +22,15 @@ class AutoPlay(commands.Cog):
         default_guild = {"tracked_member": None, "autoplaying": False, "paused_track": None}
         self.config.register_guild(**default_guild)
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.guild_only()
     async def autoplay(self, ctx, member: discord.Member = None):
         """Toggle autoplay for a member."""
-        if not self.bot.get_cog("PyLavPlayer"):
-            await ctx.send(_("PyLavPlayer is not loaded."))
+        if not hasattr(self.bot, "pylav"):
+            await ctx.send(_("PyLav is not loaded."))
             return
+        if ctx.interaction:
+            await ctx.defer(ephemeral=True)
 
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
@@ -43,7 +45,7 @@ class AutoPlay(commands.Cog):
     async def _on_presence_update(
         self, member_before: discord.Member, member_after: discord.Member
     ):
-        if not self.bot.get_cog("PyLavPlayer"):
+        if not hasattr(self.bot, "pylav"):
             return
         if await self._member_checks(member_after):
             return
@@ -119,7 +121,7 @@ class AutoPlay(commands.Cog):
     @commands.Cog.listener("on_command")
     async def _on_command(self, ctx: commands.Context):
         """Stop autoplay when a player command is used."""
-        if not self.bot.get_cog("PyLavPlayer"):
+        if not hasattr(self.bot, "pylav"):
             return
         log.debug(f"Command {ctx.command.name}, {ctx.command.qualified_name} used.")
         player_commands = [
@@ -138,7 +140,7 @@ class AutoPlay(commands.Cog):
     @commands.Cog.listener("on_interaction")
     async def _on_interaction(self, interaction: discord.Interaction):
         """Stop autoplay when a player interaction is used."""
-        if not self.bot.get_cog("PyLavPlayer"):
+        if not hasattr(self.bot, "pylav"):
             return
         if interaction.type != discord.InteractionType.application_command:
             return
