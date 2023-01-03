@@ -55,7 +55,9 @@ class AutoPlay(commands.Cog):
 
         current_activity = self._get_spotify_activity(member_after)
         past_activity = self._get_spotify_activity(member_before)
+        log.debug(f"Presence update detected. {current_activity.track_url}")
         if not current_activity:
+            # Member is no longer listening to Spotify.
             autoplaying = await self.config.guild(member_after.guild).autoplaying()
             if autoplaying:
                 await player.set_pause(True, member_after)
@@ -65,11 +67,14 @@ class AutoPlay(commands.Cog):
                 )
             return
         if past_activity and past_activity.track_id == current_activity.track_id:
+            # Same track, no need to do anything.
             return
         if current_activity.track_id == await self.config.guild(member_after.guild).paused_track():
+            # If the track is the same as when the activity stopped, it was probably paused,
+            # so we'll resume it.
             await player.set_pause(False, member_after)
+            await self.config.guild(member_after.guild).autoplaying.set(True)
             return
-        log.debug(f"Presence update detected. {current_activity.track_url}")
 
         query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
@@ -83,6 +88,7 @@ class AutoPlay(commands.Cog):
             track=successful[0],
             requester=member_after,
         )
+        await self.config.guild(member_after.guild).paused_track.set(None)
         await self.config.guild(member_after.guild).autoplaying.set(True)
 
     async def _member_checks(self, member: discord.Member) -> bool:
