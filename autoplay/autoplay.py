@@ -55,7 +55,6 @@ class AutoPlay(commands.Cog):
 
         current_activity = self._get_spotify_activity(member_after)
         past_activity = self._get_spotify_activity(member_before)
-        log.debug(f"Presence update detected. {current_activity.track_url}")
         if not current_activity:
             # Member is no longer listening to Spotify.
             autoplaying = await self.config.guild(member_after.guild).autoplaying()
@@ -66,6 +65,7 @@ class AutoPlay(commands.Cog):
                     past_activity.track_id
                 )
             return
+        log.debug(f"Presence update detected. {current_activity.track_url}")
         if past_activity and past_activity.track_id == current_activity.track_id:
             # Same track, no need to do anything.
             return
