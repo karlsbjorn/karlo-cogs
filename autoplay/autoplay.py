@@ -127,10 +127,8 @@ class AutoPlay(commands.Cog):
             "skip",
             "stop",
             "playlist play",
-            "radio",
             "dc",
             "prev",
-            "search",
             "repeat",
             "shuffle",
         ]
@@ -147,15 +145,8 @@ class AutoPlay(commands.Cog):
         log.debug(f"Interaction {interaction.type}, {interaction.command.name} used.")
         player_commands = [
             "play",
-            "skip",
-            "stop",
-            "playlist play",
             "radio",
-            "dc",
-            "prev",
             "search",
-            "repeat",
-            "shuffle",
         ]
         if interaction.command.name in player_commands:
             await self._stop_autoplay(interaction.guild)
