@@ -130,7 +130,7 @@ class AutoPlay(commands.Cog):
             "repeat",
             "shuffle",
         ]
-        if ctx.command.qualified_name in player_commands:
+        if ctx.command.name in player_commands:
             await self._stop_autoplay(ctx)
 
     async def _stop_autoplay(self, ctx: commands.Context):
