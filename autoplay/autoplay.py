@@ -74,6 +74,7 @@ class AutoPlay(commands.Cog):
         if current_activity.track_id == await self.config.guild(member_after.guild).paused_track():
             # If the track is the same as when the activity stopped, it was probably paused,
             # so we'll resume it.
+            log.debug("Resuming track.")
             await player.set_pause(False, member_after)
             await self.config.guild(member_after.guild).autoplaying.set(True)
             return
