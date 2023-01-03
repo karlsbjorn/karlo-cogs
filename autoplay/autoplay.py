@@ -135,11 +135,34 @@ class AutoPlay(commands.Cog):
             "shuffle",
         ]
         if ctx.command.name in player_commands:
-            await self._stop_autoplay(ctx)
+            await self._stop_autoplay(ctx.guild)
 
-    async def _stop_autoplay(self, ctx: commands.Context):
-        await self.config.guild(ctx.guild).autoplaying.set(False)
-        await self.config.guild(ctx.guild).tracked_member.set(None)
+    @commands.Cog.listener("on_interaction")
+    async def _on_interaction(self, interaction: discord.Interaction):
+        """Stop autoplay when a player interaction is used."""
+        if not self.bot.get_cog("PyLavPlayer"):
+            return
+        if interaction.type != discord.InteractionType.application_command:
+            return
+        log.debug(f"Interaction {interaction.type}, {interaction.command.name} used.")
+        player_commands = [
+            "play",
+            "skip",
+            "stop",
+            "playlist play",
+            "radio",
+            "dc",
+            "prev",
+            "search",
+            "repeat",
+            "shuffle",
+        ]
+        if interaction.command.name in player_commands:
+            await self._stop_autoplay(interaction.guild)
+
+    async def _stop_autoplay(self, guild: discord.Guild):
+        await self.config.guild(guild).autoplaying.set(False)
+        await self.config.guild(guild).tracked_member.set(None)
 
     def cog_unload(self):
         ...
