@@ -101,5 +101,17 @@ class AutoPlay(commands.Cog):
             None,
         )
 
+    @commands.Cog.listener("on_command")
+    async def _on_command(self, ctx: commands.Context):
+        """Stop autoplay when a player command is used."""
+        if not self.bot.get_cog("PyLavPlayer"):
+            return
+        if ctx.command.qualified_name in ["play", "skip", "stop"]:
+            await self._stop_autoplay(ctx)
+
+    async def _stop_autoplay(self, ctx: commands.Context):
+        await self.config.guild(ctx.guild).autoplaying.set(False)
+        await self.config.guild(ctx.guild).tracked_member.set(None)
+
     def cog_unload(self):
         ...
