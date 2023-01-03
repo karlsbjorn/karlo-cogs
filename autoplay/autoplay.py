@@ -83,6 +83,9 @@ class AutoPlay(commands.Cog):
         if not successful:
             log.debug("No tracks found.")
             return
+
+        if player.queue.size():
+            player.queue.clear()
         await player.play(
             query=query,
             track=successful[0],
@@ -118,6 +121,7 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when a player command is used."""
         if not self.bot.get_cog("PyLavPlayer"):
             return
+        log.debug(f"Command {ctx.command.name}, {ctx.command.qualified_name} used.")
         player_commands = [
             "play",
             "skip",
