@@ -118,7 +118,19 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when a player command is used."""
         if not self.bot.get_cog("PyLavPlayer"):
             return
-        if ctx.command.qualified_name in ["play", "skip", "stop"]:
+        player_commands = [
+            "play",
+            "skip",
+            "stop",
+            "playlist play",
+            "radio",
+            "dc",
+            "prev",
+            "search",
+            "repeat",
+            "shuffle",
+        ]
+        if ctx.command.qualified_name in player_commands:
             await self._stop_autoplay(ctx)
 
     async def _stop_autoplay(self, ctx: commands.Context):
