@@ -19,13 +19,13 @@ class AutoPlay(commands.Cog):
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
-        default_guild = {"tracked_member": None, "autoplaying": False}
+        default_guild = {"tracked_member": None, "autoplaying": False, "paused_track": None}
         self.config.register_guild(**default_guild)
 
     @commands.command()
     @commands.guild_only()
     async def autoplay(self, ctx, member: discord.Member = None):
-        """Set the member to track for autoplay."""
+        """Toggle autoplay for a member."""
         if not self.bot.get_cog("PyLavPlayer"):
             await ctx.send(_("PyLavPlayer is not loaded."))
             return
@@ -58,10 +58,16 @@ class AutoPlay(commands.Cog):
         if not current_activity:
             autoplaying = await self.config.guild(member_after.guild).autoplaying()
             if autoplaying:
-                await player.stop(member_after)
+                await player.set_pause(True, member_after)
                 await self.config.guild(member_after.guild).autoplaying.set(False)
+                await self.config.guild(member_after.guild).paused_track.set(
+                    past_activity.track_id
+                )
             return
         if past_activity and past_activity.track_id == current_activity.track_id:
+            return
+        if current_activity.track_id == await self.config.guild(member_after.guild).paused_track():
+            await player.set_pause(False, member_after)
             return
         log.debug(f"Presence update detected. {current_activity.track_url}")
 
