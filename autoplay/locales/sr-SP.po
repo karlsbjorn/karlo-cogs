@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-01-02 11:25+0000\n"
-"PO-Revision-Date: 2023-01-02 11:26\n"
+"POT-Creation-Date: 2023-01-04 11:16+0000\n"
+"PO-Revision-Date: 2023-01-04 11:16\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -20,15 +20,6 @@ msgstr ""
 #: autoplay/autoplay.py:17
 #, docstring
 msgid "Automatically play music that a user is listening to on Spotify."
-msgstr ""
-
-#: autoplay/autoplay.py:28
-#, docstring
-msgid "Set the member to track for autoplay."
-msgstr ""
-
-#: autoplay/autoplay.py:30
-msgid "PyLavPlayer is not loaded."
 msgstr ""
 
 #: autoplay/autoplay.py:34
