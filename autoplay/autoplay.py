@@ -84,6 +84,9 @@ class AutoPlay(commands.Cog):
             return
         log.debug(f"Query successful: {successful}")
 
+        if player.paused:
+            # To prevent overlapping tracks, we'll stop the player first to clear the paused track.
+            await player.stop(member_after)
         if player.queue.size():
             log.debug("Queue is not empty, clearing.")
             player.queue.clear()
