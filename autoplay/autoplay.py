@@ -143,7 +143,9 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when a player interaction is used."""
         if interaction.type != discord.InteractionType.application_command:
             return
-        log.debug(f"Interaction {interaction.type}, {interaction.command.name if interaction.command else None} used.")
+        log.debug(
+            f"Interaction {interaction.type}, {interaction.command.name if interaction.command else None} used."
+        )
         player_commands = [
             "play",
             "radio",
