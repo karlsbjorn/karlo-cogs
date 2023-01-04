@@ -11,4 +11,3 @@ with open(Path(__file__).parent / "info.json") as fp:
 
 async def setup(bot):
     await pylav_auto_setup(bot, AutoPlay)
-    await bot.add_cog(AutoPlay(bot))
