@@ -4,6 +4,7 @@ from typing import Optional
 import discord
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
+from pylav.type_hints.bot import DISCORD_BOT_TYPE
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -16,7 +17,7 @@ _ = Translator("AutoPlay", __file__)
 class AutoPlay(commands.Cog):
     """Automatically play music that a user is listening to on Spotify."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DISCORD_BOT_TYPE):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
         default_guild = {"tracked_member": None, "autoplaying": False, "paused_track": None}
@@ -76,13 +77,12 @@ class AutoPlay(commands.Cog):
 
         log.debug(f"Querying {current_activity.track_url}")
         query = await Query.from_string(current_activity.track_url)
-        successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
-            query, requester=member_after, player=player, partial=False
-        )
-        if not successful:
+        response = await self.bot.lavalink.search_query(query=query)
+        if response is None or not response.tracks:
             log.debug("No tracks found.")
             return
-        log.debug(f"Query successful: {successful}")
+
+        log.debug(f"Query successful: {response.tracks[0]}")
 
         if player.paused:
             # To prevent overlapping tracks, we'll stop the player first to clear the paused track.
@@ -90,10 +90,10 @@ class AutoPlay(commands.Cog):
         if player.queue.size():
             log.debug("Queue is not empty, clearing.")
             player.queue.clear()
-        log.debug(f"Playing {await successful[0].title()}.")
+        log.debug(f"Playing {response.tracks[0].info.title}.")
         await player.play(
             query=query,
-            track=successful[0],
+            track=response.tracks[0],
             requester=member_after,
         )
         await self.config.guild(member_after.guild).paused_track.set(None)
@@ -143,7 +143,9 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when a player interaction is used."""
         if interaction.type != discord.InteractionType.application_command:
             return
-        log.debug(f"Interaction {interaction.type}, {interaction.command.name} used.")
+        log.debug(
+            f"Interaction {interaction.type}, {interaction.command.name if interaction.command else None} used."
+        )
         player_commands = [
             "play",
             "radio",

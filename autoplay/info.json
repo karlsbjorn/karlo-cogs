@@ -4,7 +4,7 @@
     "short": "Automatically play music that a guild member is listening to on Spotify.",
     "tags": ["music", "spotify"],
     "min_python_version": [3, 11, 0],
-    "requirements": ["Py-Lav>=1.0.12"],
+    "requirements": ["Py-Lav>=1.0.14"],
     "min_bot_version": "3.5.0.dev306",
     "max_bot_version": "3.5.99",
     "type": "COG",
