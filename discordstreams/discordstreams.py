@@ -211,6 +211,8 @@ class DiscordStreams(commands.Cog):
         member_guild: discord.Guild = member.guild
         channels_to_send_to = await self.config.guild(member_guild).alert_channels()
 
+        await set_contextual_locales_from_guild(self.bot, member_guild)
+
         banner = (await self.bot.fetch_user(member.id)).banner
         stream = DiscordStream(after.channel, member, banner)
         embed = stream.make_embed()
@@ -223,9 +225,19 @@ class DiscordStreams(commands.Cog):
                 await self.config.guild(member_guild).alert_channels.set(channels_to_send_to)
                 continue
 
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(
+                    label=_("Watch the stream"),
+                    style=discord.ButtonStyle.link,
+                    url=after.channel.jump_url,
+                )
+            )
+
             message = await channel.send(
                 content=_("{member} is live!").format(member=member.display_name),
                 embed=embed,
+                view=view,
             )
 
             member_id = str(member.id)
