@@ -77,7 +77,7 @@ class AutoPlay(commands.Cog):
         log.debug(f"Querying {current_activity.track_url}")
         query = await Query.from_string(current_activity.track_url)
         successful, count, failed = await self.bot.lavalink.get_all_tracks_for_queries(
-            query, requester=member_after, player=player
+            query, requester=member_after, player=player, partial=False
         )
         if not successful:
             log.debug("No tracks found.")
@@ -90,7 +90,7 @@ class AutoPlay(commands.Cog):
         if player.queue.size():
             log.debug("Queue is not empty, clearing.")
             player.queue.clear()
-        log.debug(f"Adding {await successful[0].title()} to queue.")
+        log.debug(f"Playing {await successful[0].title()}.")
         await player.play(
             query=query,
             track=successful[0],
