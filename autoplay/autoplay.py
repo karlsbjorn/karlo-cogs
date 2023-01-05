@@ -28,6 +28,7 @@ class AutoPlay(commands.Cog):
             callback=self._context_user_autoplay,
             type=AppCommandType.user,
         )
+        self.bot.tree.add_command(self.context_user_autoplay)
 
     @commands.hybrid_command()
     @commands.guild_only()
