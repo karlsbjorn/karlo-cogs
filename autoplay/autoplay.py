@@ -15,7 +15,7 @@ _ = Translator("AutoPlay", __file__)
 
 @cog_i18n(_)
 class AutoPlay(commands.Cog):
-    """Automatically play music that a user is listening to on Spotify."""
+    """Automatically play music that a guild member is listening to on Spotify."""
 
     def __init__(self, bot: DISCORD_BOT_TYPE):
         self.bot: Red = bot
@@ -26,7 +26,11 @@ class AutoPlay(commands.Cog):
     @commands.hybrid_command()
     @commands.guild_only()
     async def autoplay(self, ctx, member: discord.Member = None):
-        """Toggle autoplay for a member."""
+        """Toggle autoplay for a member.
+
+        This will cause the bot to automatically play music that the member is listening to on Spotify.
+        To stop it, use `[p]autoplay` without a member, or use a player command like `[p]stop` or `[p]play`.
+        """
         if ctx.interaction:
             await ctx.defer(ephemeral=True)
 
@@ -134,6 +138,8 @@ class AutoPlay(commands.Cog):
             "prev",
             "repeat",
             "shuffle",
+            "pause",
+            "resume",
         ]
         if ctx.command.name in player_commands:
             await self._stop_autoplay(ctx.guild)
