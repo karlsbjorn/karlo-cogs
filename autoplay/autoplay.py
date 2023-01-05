@@ -1,7 +1,7 @@
-import logging
 from typing import Optional
 
 import discord
+from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from pylav.type_hints.bot import DISCORD_BOT_TYPE
@@ -9,7 +9,7 @@ from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 
-log = logging.getLogger("red.karlo-cogs.autoplay")
+log = getLogger("red.karlo-cogs.autoplay")
 _ = Translator("AutoPlay", __file__)
 
 
@@ -48,7 +48,7 @@ class AutoPlay(commands.Cog):
 
         player: Player = self.bot.lavalink.get_player(member_after.guild.id)
         if player is None:
-            log.debug("No player found.")
+            log.verbose("No player found.")
             return
 
         current_activity = self._get_spotify_activity(member_after)
@@ -63,34 +63,34 @@ class AutoPlay(commands.Cog):
                     past_activity.track_id
                 )
             return
-        log.debug(f"Presence update detected. {current_activity.track_url}")
+        log.verbose(f"Presence update detected. {current_activity.track_url}")
         if past_activity and past_activity.track_id == current_activity.track_id:
             # Same track, no need to do anything.
             return
         if current_activity.track_id == await self.config.guild(member_after.guild).paused_track():
             # If the track is the same as when the activity stopped, it was probably paused,
             # so we'll resume it.
-            log.debug("Resuming track.")
+            log.verbose("Resuming track.")
             await player.set_pause(False, member_after)
             await self.config.guild(member_after.guild).autoplaying.set(True)
             return
 
-        log.debug(f"Querying {current_activity.track_url}")
+        log.verbose(f"Querying {current_activity.track_url}")
         query = await Query.from_string(current_activity.track_url)
         response = await self.bot.lavalink.search_query(query=query)
         if response is None or not response.tracks:
             log.debug("No tracks found.")
             return
 
-        log.debug(f"Query successful: {response.tracks[0]}")
+        log.verbose(f"Query successful: {response.tracks[0]}")
 
         if player.paused:
             # To prevent overlapping tracks, we'll stop the player first to clear the paused track.
             await player.stop(member_after)
         if player.queue.size():
-            log.debug("Queue is not empty, clearing.")
+            log.verbose("Queue is not empty, clearing.")
             player.queue.clear()
-        log.debug(f"Playing {response.tracks[0].info.title}.")
+        log.verbose(f"Playing {response.tracks[0].info.title}.")
         await player.play(
             query=query,
             track=response.tracks[0],
@@ -124,7 +124,7 @@ class AutoPlay(commands.Cog):
     @commands.Cog.listener("on_command")
     async def _on_command(self, ctx: commands.Context):
         """Stop autoplay when a player command is used."""
-        log.debug(f"Command {ctx.command.name}, {ctx.command.qualified_name} used.")
+        log.verbose(f"Command {ctx.command.name}, {ctx.command.qualified_name} used.")
         player_commands = [
             "play",
             "skip",
@@ -143,7 +143,7 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when a player interaction is used."""
         if interaction.type != discord.InteractionType.application_command:
             return
-        log.debug(
+        log.verbose(
             f"Interaction {interaction.type}, {interaction.command.name if interaction.command else None} used."
         )
         player_commands = [
