@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-01-04 11:16+0000\n"
-"PO-Revision-Date: 2023-01-04 11:16\n"
+"POT-Creation-Date: 2023-01-05 11:34+0000\n"
+"PO-Revision-Date: 2023-01-05 11:35\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,16 +17,29 @@ msgstr ""
 "X-Crowdin-File-ID: 37\n"
 "Language: sr_SP\n"
 
-#: autoplay/autoplay.py:17
+#: autoplay/autoplay.py:19
 #, docstring
-msgid "Automatically play music that a user is listening to on Spotify."
+msgid "Automatically play music that a guild member is listening to on Spotify."
 msgstr ""
 
-#: autoplay/autoplay.py:34
-msgid "No longer tracking any member."
+#: autoplay/autoplay.py:27
+msgid "Start AutoPlay"
 msgstr ""
 
-#: autoplay/autoplay.py:38
+#: autoplay/autoplay.py:47
+msgid "I'll no longer autoplay."
+msgstr ""
+
+#: autoplay/autoplay.py:54
 msgid "I'll now play whatever {member} is listening to."
+msgstr ""
+
+#: autoplay/autoplay.py:69
+msgid "This can only be used in a guild."
+msgstr ""
+
+#: autoplay/autoplay.py:77
+msgid "I'll now play whatever {member} is listening to.\n"
+"To stop autoplay, use a player command like `stop`"
 msgstr ""
 
