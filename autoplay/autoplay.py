@@ -1,10 +1,11 @@
 from typing import Optional
 
 import discord
+from discord import AppCommandType
 from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
-from pylav.type_hints.bot import DISCORD_BOT_TYPE
+from pylav.type_hints.bot import DISCORD_BOT_TYPE, DISCORD_INTERACTION_TYPE
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -22,6 +23,11 @@ class AutoPlay(commands.Cog):
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
         default_guild = {"tracked_member": None, "autoplaying": False, "paused_track": None}
         self.config.register_guild(**default_guild)
+        self.context_user_autoplay = discord.app_commands.ContextMenu(
+            name=_("Start AutoPlay"),
+            callback=self._context_user_autoplay,
+            type=AppCommandType.user,
+        )
 
     @commands.hybrid_command()
     @commands.guild_only()
@@ -36,12 +42,45 @@ class AutoPlay(commands.Cog):
 
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
-            await ctx.send(_("No longer tracking any member."))
+            await ctx.send(
+                embed=await self.pylav.construct_embed(
+                    description=_("I'll no longer autoplay."), messageable=ctx
+                )
+            )
         else:
             await self.config.guild(ctx.guild).tracked_member.set(member.id)
             await ctx.send(
-                _("I'll now play whatever {member} is listening to.").format(member=member.mention)
+                embed=await self.pylav.construct_embed(
+                    description=_("I'll now play whatever {member} is listening to.").format(
+                        member=member.mention
+                    ),
+                    messageable=ctx,
+                )
             )
+
+    async def _context_user_autoplay(
+        self, interaction: DISCORD_INTERACTION_TYPE, member: discord.Member
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        if not interaction.guild:
+            await interaction.followup.send(
+                embed=await self.pylav.construct_embed(
+                    description=_("This can only be used in a guild."), messageable=interaction
+                )
+            )
+            return
+
+        await self.config.guild(interaction.guild).tracked_member.set(member.id)
+        await interaction.followup.send(
+            embed=await self.pylav.construct_embed(
+                description=_(
+                    "I'll now play whatever {member} is listening to.\n"
+                    "To stop autoplay, use a player command like `stop`"
+                ).format(member=member.mention),
+                messageable=interaction,
+            )
+        )
 
     @commands.Cog.listener("on_presence_update")
     async def _on_presence_update(
