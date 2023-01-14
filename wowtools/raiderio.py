@@ -9,7 +9,7 @@ from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list
-from redbot.core.utils.views import SimpleMenu
+from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
@@ -67,6 +67,8 @@ class Raiderio:
             await ctx.send(_("You didn't give me a realm."), ephemeral=True)
             return
 
+        if ctx.interaction:
+            await ctx.defer()
         async with RaiderIO() as rio:
             profile_data = await rio.get_character_profile(
                 region,
@@ -77,6 +79,7 @@ class Raiderio:
                     "raid_progression",
                     "gear",
                     "mythic_plus_best_runs",
+                    "talents",
                 ],
             )
 
@@ -96,6 +99,7 @@ class Raiderio:
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
         char_url = profile_data["profile_url"]
+        char_talents = profile_data["talentLoadout"]["loadout_text"]
 
         banner = profile_data["profile_banner"]
 
@@ -187,7 +191,9 @@ class Raiderio:
         )
         embeds.append(embed)
 
-        await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
+        await ProfileMenu(pages=embeds, talents=char_talents, disable_after_timeout=True).start(
+            ctx
+        )
 
     @raiderio.command(name="guild")
     @commands.guild_only()
@@ -426,3 +432,39 @@ class Raiderio:
         :return: Wowhead URL
         """
         return f"https://www.wowhead.com/item={item_id}"
+
+
+class ProfileMenu(SimpleMenu):
+    def __init__(
+        self,
+        pages: List[_ACCEPTABLE_PAGE_TYPES],
+        talents: str,
+        timeout: float = 180.0,
+        page_start: int = 0,
+        delete_after_timeout: bool = False,
+        disable_after_timeout: bool = False,
+        use_select_menu: bool = False,
+        use_select_only: bool = False,
+    ) -> None:
+        super().__init__(
+            pages,
+            timeout=timeout,
+            page_start=page_start,
+            delete_after_timeout=delete_after_timeout,
+            disable_after_timeout=disable_after_timeout,
+            use_select_menu=use_select_menu,
+            use_select_only=use_select_only,
+        )
+        self.talents = talents
+        self.import_talents.label = _("Import talents")
+
+    @discord.ui.button(style=discord.ButtonStyle.green, row=1)
+    async def import_talents(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_message(
+            _(
+                "Here are the talents this character's using:\n"
+                "`{talents}`\n\n"
+                "Import this text using the in-game talent import feature."
+            ).format(talents=self.talents),
+            ephemeral=True,
+        )
