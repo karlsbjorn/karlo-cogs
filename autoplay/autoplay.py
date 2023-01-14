@@ -7,7 +7,6 @@ from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from pylav.type_hints.bot import DISCORD_BOT_TYPE, DISCORD_INTERACTION_TYPE
 from redbot.core import Config, commands
-from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 
 log = getLogger("red.karlo-cogs.autoplay")
@@ -220,6 +219,8 @@ class AutoPlay(commands.Cog):
             await self._stop_autoplay(interaction.guild)
 
     async def _stop_autoplay(self, guild: discord.Guild):
+        if not await self.config.guild(guild).autoplaying():
+            return
         await self.config.guild(guild).autoplaying.set(False)
         await self.config.guild(guild).tracked_member.set(None)
 
