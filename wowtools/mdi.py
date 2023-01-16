@@ -185,7 +185,7 @@ class MDI:
             embed.set_author(name=guild.name, icon_url=guild.icon.url)
 
             desc = f"Zadnji put ažurirano <t:{int(datetime.now(timezone.utc).timestamp())}:R>\n\n"
-            desc += "Ako se ne vidiš, DM-aj <@87446677010550784> ime svog lika.\n"
+            desc += "**Ako se ne vidiš, DM-aj <@87446677010550784> ime svog lika.**\n"
 
             img_file = await self._generate_mdi_image()
             embed.set_image(url=f"attachment://{img_file.filename}")
