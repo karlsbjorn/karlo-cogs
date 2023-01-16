@@ -86,7 +86,7 @@ class MDI:
     async def _generate_mdi_image(self):
         teams = [  # Tank, Healer, DPS, DPS, DPS
             ["Jabuka", "Helmoa", "Amburator", "Ljepotanko", "Pantelinho"],
-            ["Guzimir", "?", "Beargrylz", "Filecar", "Zudu"],
+            ["Guzimir", "Ludacha", "Beargrylz", "Filecar", "Zudu"],
             ["Voortas", "Milkan", "Grubi", "Spasic", "Mageisback"],
             ["Ventilator", "Tithrál", "Zugi", "Limma", "Nedostupan"],
         ]
@@ -185,7 +185,6 @@ class MDI:
             embed.set_author(name=guild.name, icon_url=guild.icon.url)
 
             desc = f"Zadnji put ažurirano <t:{int(datetime.now(timezone.utc).timestamp())}:R>\n\n"
-            desc += "**Ako se ne vidiš, DM-aj <@87446677010550784> ime svog lika.**\n"
 
             img_file = await self._generate_mdi_image()
             embed.set_image(url=f"attachment://{img_file.filename}")
