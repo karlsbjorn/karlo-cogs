@@ -85,7 +85,7 @@ class MDI:
 
     async def _generate_mdi_image(self):
         teams = [  # Tank, Healer, DPS, DPS, DPS
-            ["Jabuka", "?", "?", "?", "Pantelinho"],
+            ["Jabuka", "Helmoa", "?", "Ljepotanko", "Pantelinho"],
             ["Guzimir", "?", "Beargrylz", "Filecar", "Zudu"],
             ["Voortas", "Milkan", "Grubi", "Spasic", "Mageisback"],
             ["Ventilator", "Tithrál", "Zugi", "Limma", "Nedostupan"],
