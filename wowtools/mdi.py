@@ -87,8 +87,8 @@ class MDI:
         teams = [  # Tank, Healer, DPS, DPS, DPS
             ["Jabuka", "?", "?", "?", "Pantelinho"],
             ["Guzimir", "?", "Beargrylz", "Filecar", "Zudu"],
-            ["Voortas", "Milkan", "?", "Spasic", "Mageisback"],
-            ["Ventilator", "Tithrál", "Zugi", "Limma", "?"],
+            ["Voortas", "Milkan", "Grubi", "Spasic", "Mageisback"],
+            ["Ventilator", "Tithrál", "Zugi", "Limma", "Nedostupan"],
         ]
         team_data: list[list[Optional[ParticipantCharacter]]] = [[], [], [], []]
         for i, team in enumerate(teams):
