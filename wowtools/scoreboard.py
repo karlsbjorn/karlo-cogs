@@ -310,13 +310,12 @@ class Scoreboard:
 
                 if score > 250 and char_name.lower() not in sb_blacklist:
                     if image:
-                        score_color: str = char["keystoneScores"]["allScoreColor"]
                         char_img: str = (
                             "https://render.worldofwarcraft.com/{region}/character/{}".format(
                                 char["character"]["thumbnail"], region=region
                             )
                         )
-                        lb[char_name] = (score, score_color, char_img)
+                        lb[char_name] = score, char["keystoneScores"]["allScoreColor"], char_img
                     else:
                         lb[char_name] = score
 

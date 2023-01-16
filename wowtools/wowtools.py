@@ -12,6 +12,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
+from .mdi import MDI
 from .pvp import PvP
 from .raiderio import Raiderio
 from .scoreboard import Scoreboard
@@ -24,7 +25,7 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(
-    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, commands.Cog
+    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, MDI, commands.Cog
 ):
     """Interact with various World of Warcraft APIs"""
 
@@ -51,6 +52,8 @@ class WoWTools(
             "scoreboard_message": None,
             "scoreboard_blacklist": [],
             "sb_image": False,
+            "mdi_channel": None,
+            "mdi_message": None,
         }
         default_user = {
             "wow_character_name": None,
@@ -63,6 +66,7 @@ class WoWTools(
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
         self.update_dungeon_scoreboard.start()
+        self.update_mdi_scoreboard.start()
 
     @commands.group()
     async def wowset(self, ctx):
@@ -248,6 +252,7 @@ class WoWTools(
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
         self.update_dungeon_scoreboard.stop()
+        self.update_mdi_scoreboard.stop()
 
     async def red_delete_data_for_user(
         self,
