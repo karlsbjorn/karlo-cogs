@@ -179,7 +179,7 @@ class MDI:
                 continue
 
             embed = discord.Embed(
-                title="MDI ljestvica",
+                title="MDI timovi",
                 color=await self.bot.get_embed_color(mdi_msg),
             )
             embed.set_author(name=guild.name, icon_url=guild.icon.url)
