@@ -287,7 +287,7 @@ class DiscordStream:
 
         embed = discord.Embed(
             title=member.display_name,
-            color=self.get_embed_color(),
+            color=await self.get_embed_color(),
             description=f"{voice_channel.mention}",
         )
         embed.set_thumbnail(url=self.get_member_avatar().url)
@@ -330,7 +330,7 @@ class DiscordStream:
                 return activity
         return discord.Activity(type=discord.ActivityType.playing, name=_("Nothing"))
 
-    def get_embed_color(self) -> discord.Color:
+    async def get_embed_color(self) -> discord.Color:
         """
         Get the color the embed should use.
         This is the dominant color of the member's profile picture.
