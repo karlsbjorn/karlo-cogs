@@ -337,7 +337,7 @@ class DiscordStream:
 
         :return: The color the embed should use.
         """
-        img = self.get_member_avatar().read()
+        img = await self.get_member_avatar().read()
         color = colorgram.extract(img, 1)[0].rgb
         return discord.Color.from_rgb(color.r, color.g, color.b)
 
