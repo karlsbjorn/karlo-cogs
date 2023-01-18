@@ -3,7 +3,7 @@
     "description": "Display a stream alert in a channel when a member of a guild starts a Go Live stream.",
     "short": "Display a Go Live stream alert.",
     "tags": ["discord", "live", "go live", "screenshare", "stream", "livestream"],
-    "requirements": [],
+    "requirements": ["colorgram.py"],
     "min_bot_version": "3.5.0.dev0",
     "max_bot_version": "3.5.99",
     "type": "COG",

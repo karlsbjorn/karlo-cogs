@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from typing import Dict, List, Optional
 
+import colorgram
 import discord
 from discord.ext import tasks
 from redbot.core import Config, commands
@@ -286,14 +287,10 @@ class DiscordStream:
 
         embed = discord.Embed(
             title=member.display_name,
-            color=discord.Color.blurple(),
+            color=self.get_embed_color(),
             description=f"{voice_channel.mention}",
         )
-        if member.display_avatar:
-            embed.set_thumbnail(url=member.display_avatar.url)
-        else:
-            embed.set_thumbnail(url=member.default_avatar.url)
-
+        embed.set_thumbnail(url=self.get_member_avatar().url)
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
@@ -332,3 +329,22 @@ class DiscordStream:
             if activity.type == discord.ActivityType.playing:
                 return activity
         return discord.Activity(type=discord.ActivityType.playing, name=_("Nothing"))
+
+    def get_embed_color(self) -> discord.Color:
+        """
+        Get the color the embed should use.
+        This is the dominant color of the member's profile picture.
+
+        :return: The color the embed should use.
+        """
+        img = self.get_member_avatar().read()
+        color = colorgram.extract(img, 1)[0].rgb
+        return discord.Color.from_rgb(color.r, color.g, color.b)
+
+    def get_member_avatar(self) -> discord.Asset:
+        """
+        Get the member's avatar.
+
+        :return: The member's avatar.
+        """
+        return self.member.display_avatar or self.member.default_avatar
