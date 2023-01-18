@@ -113,7 +113,7 @@ class DiscordStreams(commands.Cog):
             banner = (await self.bot.fetch_user(member.id)).banner
             stream = DiscordStream(member.voice.channel, member, banner)
 
-            new_embed = stream.make_embed(start_time=message.created_at)
+            new_embed = await stream.make_embed(start_time=message.created_at)
             new_embed_dict = new_embed.to_dict()
 
             same_fields: bool = current_embed_dict["fields"] == new_embed_dict["fields"]
@@ -216,7 +216,7 @@ class DiscordStreams(commands.Cog):
 
         banner = (await self.bot.fetch_user(member.id)).banner
         stream = DiscordStream(after.channel, member, banner)
-        embed = stream.make_embed()
+        embed = await stream.make_embed()
 
         active_messages = await self.config.guild(member_guild).active_messages()
         for channel_id in channels_to_send_to:
@@ -272,7 +272,7 @@ class DiscordStream:
         self.member = member
         self.banner = banner
 
-    def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
+    async def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
         """
         Make an embed for the stream.
 
