@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from io import BytesIO
 from typing import Dict, List, Optional
 
 import colorgram
@@ -337,7 +338,8 @@ class DiscordStream:
 
         :return: The color the embed should use.
         """
-        img = await self.get_member_avatar().read()
+        img = BytesIO(await self.get_member_avatar().read())
+        img.seek(0)
         color = colorgram.extract(img, 1)[0].rgb
         return discord.Color.from_rgb(color.r, color.g, color.b)
 
