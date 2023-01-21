@@ -224,6 +224,8 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when the player is disconnected."""
         log.verbose(f"Player in {event.player.channel.guild} disconnected.")
         guild = event.player.channel.guild
+        if event.player.is_playing or event.player.paused:
+            await event.player.stop(event.requester)
         await self._stop_autoplay(guild)
 
     async def _stop_autoplay(self, guild: discord.Guild):
