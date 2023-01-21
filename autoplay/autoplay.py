@@ -101,8 +101,8 @@ class AutoPlay(commands.Cog):
         if player.queue.size:
             player.queue.clear()
 
-    @commands.Cog.listener("on_presence_update")
-    async def _on_presence_update(
+    @commands.Cog.listener()
+    async def on_presence_update(
         self, member_before: discord.Member, member_after: discord.Member
     ):
         if await self._member_checks(member_after):
@@ -183,8 +183,8 @@ class AutoPlay(commands.Cog):
             None,
         )
 
-    @commands.Cog.listener("on_command")
-    async def _on_command(self, ctx: commands.Context):
+    @commands.Cog.listener()
+    async def on_command(self, ctx: commands.Context):
         """Stop autoplay when a player command is used."""
         log.verbose(f"Command {ctx.command.name}, {ctx.command.qualified_name} used.")
         player_commands = [
@@ -202,8 +202,8 @@ class AutoPlay(commands.Cog):
         if ctx.command.name in player_commands:
             await self._stop_autoplay(ctx.guild)
 
-    @commands.Cog.listener("on_interaction")
-    async def _on_interaction(self, interaction: discord.Interaction):
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction: discord.Interaction):
         """Stop autoplay when a player interaction is used."""
         if interaction.type != discord.InteractionType.application_command:
             return
@@ -219,13 +219,12 @@ class AutoPlay(commands.Cog):
         if interaction.command.name in player_commands:
             await self._stop_autoplay(interaction.guild)
 
-    @commands.Cog.listener("on_pylav_player_disconnected_event")
-    async def _on_pylav_player_disconnected_event(self, event: PlayerDisconnectedEvent):
+    @commands.Cog.listener()
+    async def on_pylav_player_disconnected_event(self, event: PlayerDisconnectedEvent):
         """Stop autoplay when the player is disconnected."""
-        log.verbose(f"Player in {event.player.channel.guild} disconnected.")
         guild = event.player.channel.guild
-        if event.player.is_playing or event.player.paused:
-            await event.player.stop(event.requester)
+        log.verbose(f"Player in {guild} disconnected.")
+        await self.pylav.player_state_db_manager.delete_player(guild.id)
         await self._stop_autoplay(guild)
 
     async def _stop_autoplay(self, guild: discord.Guild):
