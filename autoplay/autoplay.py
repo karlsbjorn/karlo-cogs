@@ -2,6 +2,7 @@ from typing import Optional
 
 import discord
 from discord import AppCommandType
+from pylav.events.player import PlayerDisconnectedEvent
 from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
@@ -218,9 +219,17 @@ class AutoPlay(commands.Cog):
         if interaction.command.name in player_commands:
             await self._stop_autoplay(interaction.guild)
 
+    @commands.Cog.listener("on_pylav_player_disconnected_event")
+    async def _on_pylav_player_disconnected_event(self, event: PlayerDisconnectedEvent):
+        """Stop autoplay when the player is disconnected."""
+        log.verbose(f"Player in {event.player.channel.guild} disconnected.")
+        guild = event.player.channel.guild
+        await self._stop_autoplay(guild)
+
     async def _stop_autoplay(self, guild: discord.Guild):
         if not await self.config.guild(guild).autoplaying():
             return
+        log.verbose("Stopping autoplay.")
         await self.config.guild(guild).autoplaying.set(False)
         await self.config.guild(guild).tracked_member.set(None)
 
