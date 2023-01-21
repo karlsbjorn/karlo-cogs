@@ -1,20 +1,15 @@
 import io
 import logging
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import Optional
 
 import discord
-from aiohttp import ClientResponseError
 from discord.ext import tasks
-from PIL import Image, ImageColor, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
-from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
-from tabulate import tabulate
-
-from .utils import get_api_client
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -68,14 +63,14 @@ class MDI:
             sb_channel: discord.TextChannel = ctx.guild.get_channel(sb_channel_id)
             sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
         except discord.NotFound:
-            sb_msg = None
             log.info(f"Scoreboard message in {ctx.guild} ({ctx.guild.id}) not found.")
+            return
         if sb_msg:
             await sb_msg.delete()
 
     async def _generate_mdi_scoreboard(self, ctx: commands.Context):
         embed = discord.Embed(
-            title="MDI ljestvica",
+            title="MDI timovi",
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
@@ -105,29 +100,28 @@ class MDI:
 
         x = 194
         y = 275
-        offset = 7
 
         # Team 1
         team1 = team_data[0]
-        await self.draw_team(draw, font, img, offset, team1, x, y)
+        await self.draw_team(draw, font, img, team1, x, y)
 
         # Team 2
         team2 = team_data[1]
         x = 1235
         y = 275
-        await self.draw_team(draw, font, img, offset, team2, x, y)
+        await self.draw_team(draw, font, img, team2, x, y)
 
         # Team 3
         team3 = team_data[2]
         x = 194
         y = 953
-        await self.draw_team(draw, font, img, offset, team3, x, y)
+        await self.draw_team(draw, font, img, team3, x, y)
 
         # Team 4
         team4 = team_data[3]
         x = 1235
         y = 953
-        await self.draw_team(draw, font, img, offset, team4, x, y)
+        await self.draw_team(draw, font, img, team4, x, y)
 
         img_obj = io.BytesIO()
         img.save(img_obj, format="PNG")
@@ -135,7 +129,8 @@ class MDI:
 
         return discord.File(fp=img_obj, filename="scoreboard.png")
 
-    async def draw_team(self, draw, font, img, offset, team1, x, y):
+    async def draw_team(self, draw, font, img, team1, x, y):
+        offset = 7
         for character in team1:
             if character is None:
                 y += 113
