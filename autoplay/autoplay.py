@@ -224,7 +224,8 @@ class AutoPlay(commands.Cog):
         """Stop autoplay when the player is disconnected."""
         guild = event.player.channel.guild
         log.verbose(f"Player in {guild} disconnected.")
-        await self.pylav.player_state_db_manager.delete_player(guild.id)
+        if await self.config.guild(guild).autoplaying():
+            await self.pylav.player_state_db_manager.delete_player(guild.id)
         await self._stop_autoplay(guild)
 
     async def _stop_autoplay(self, guild: discord.Guild):
