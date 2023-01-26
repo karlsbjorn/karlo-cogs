@@ -166,19 +166,21 @@ class AuctionHouse:
                         ),
                         inline=False,
                     )
-                embed.add_field(
-                    name="\N{ZERO WIDTH SPACE}",
-                    value=_(
-                        "[Detailed info](https://oribos.exchange/#{region}-{realm}/{item_id})"
-                    ).format(
-                        region=config_region,
-                        realm=config_realm,
-                        item_id=found_item_id,
-                    ),
-                    inline=False,
+
+                details_url = (
+                    f"https://oribos.exchange/#"
+                    f"{config_region}-"
+                    f"{config_realm}/"
+                    f"{found_item_id}"
+                )
+                view = discord.ui.View()
+                view.add_item(
+                    discord.ui.Button(
+                        label=_("More details"), style=discord.ButtonStyle.link, url=details_url
+                    )
                 )
 
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, view=view)
 
 
 # TODO: [p]stackprice [item]
