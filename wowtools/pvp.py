@@ -212,7 +212,12 @@ class PvP:
         ):
             embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
 
-        details_url = f"https://check-pvp.fr/{region}/{realm.upper()}/{character_name.upper()}"
+        details_url = (
+            f"https://check-pvp.fr/"
+            f"{region}/"
+            f"{realm.capitalize()}/"
+            f"{character_name.capitalize()}"
+        )
         view = discord.ui.View()
         view.add_item(
             discord.ui.Button(
