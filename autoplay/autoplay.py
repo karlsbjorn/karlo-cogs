@@ -213,8 +213,15 @@ class AutoPlay(commands.Cog):
         )
         player_commands = [
             "play",
-            "radio",
-            "search",
+            "skip",
+            "stop",
+            "playlist play",
+            "dc",
+            "prev",
+            "repeat",
+            "shuffle",
+            "pause",
+            "resume",
         ]
         if interaction.command.name in player_commands:
             await self._stop_autoplay(interaction.guild)
@@ -234,6 +241,4 @@ class AutoPlay(commands.Cog):
         log.verbose("Stopping autoplay.")
         await self.config.guild(guild).autoplaying.set(False)
         await self.config.guild(guild).tracked_member.set(None)
-
-    def cog_unload(self):
-        ...
+        await self.config.guild(guild).paused_track.set(None)
