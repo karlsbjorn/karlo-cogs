@@ -143,6 +143,21 @@ class MDI:
                 img.paste(image, (x - 100, y - 30))
 
             draw.text((x + 15, y - offset), character.name, character.get_class_color(), font=font)
+
+            key = character.get_highest_recent_key()
+            if key > 13:
+                key_color = (0, 255, 0)
+            elif key == 13:
+                key_color = (255, 255, 0)
+            else:
+                key_color = (255, 0, 0)
+            draw.text(
+                (x + 350, y - offset),
+                f"+{key}",
+                key_color,
+                font=font,
+                anchor="ra",
+            )
             draw.text(
                 (x + 375, y - offset),
                 f"ilvl {str(character.item_level)}",
@@ -201,6 +216,7 @@ class ParticipantCharacter:
         self.score: float = 0
         self.color: str = ""
         self.player_class: str = ""
+        self.recent_runs: list[dict] = []
 
     @classmethod
     async def create(cls, name: str):
@@ -209,13 +225,14 @@ class ParticipantCharacter:
 
         async with RaiderIO() as rio:
             player_data = await rio.get_character_profile(
-                "eu", "ragnaros", name, ["gear", "mythic_plus_scores_by_season:current"]
+                "eu", "ragnaros", name, ["gear", "mythic_plus_scores_by_season:current", "mythic_plus_recent_runs"]
             )
         self.thumbnail_url = player_data["thumbnail_url"]
         self.item_level = player_data["gear"]["item_level_equipped"]
         self.score = player_data["mythic_plus_scores_by_season"][0]["segments"]["all"]["score"]
         self.color = player_data["mythic_plus_scores_by_season"][0]["segments"]["all"]["color"]
         self.player_class = player_data["class"]
+        self.recent_runs = player_data["mythic_plus_recent_runs"]
 
         return self
 
@@ -235,3 +252,13 @@ class ParticipantCharacter:
             "WARRIOR": "#C79C6E",
             "EVOKER": "#1F594D",
         }[self.player_class.upper()]
+
+    def get_highest_recent_key(self) -> int:
+        """Returns the highest key level from recent runs that has Quaking and Spiteful affixes."""
+        highest_key = 0
+        for run in self.recent_runs:
+            if run["affixes"][2]["name"] != "Quaking" or run["affixes"][1]["name"] != "Spiteful":
+                continue
+            if run["mythic_level"] > highest_key:
+                highest_key = run["mythic_level"]
+        return highest_key
