@@ -97,6 +97,7 @@ class DiscordStreams(commands.Cog):
                 message: discord.Message = await channel.fetch_message(message_id)
             except discord.NotFound:
                 log.error(f"Message {message_id} not found in channel {channel_id}, skipping.")
+                await self.config.guild(guild).active_messages.clear_raw(member.id)
                 continue
             except discord.HTTPException:
                 log.error(
