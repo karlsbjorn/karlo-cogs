@@ -302,12 +302,15 @@ class DiscordStream:
             inline=False,
         )
 
-        details_msg = (
-            ""
-            + (f"**{activity.name}**\n" if activity.details else "")
-            + (f"{activity.details}\n" if activity.details else "")
-            + (f"{activity.state}" if activity.state else "")
-        )
+        try:
+            details_msg = (
+                ""
+                + (f"**{activity.name}**\n" if activity.details else "")
+                + (f"{activity.details}\n" if activity.details else "")
+                + (f"{activity.state}" if activity.state else "")
+            )
+        except AttributeError:
+            details_msg = ""
         if details_msg:
             embed.add_field(
                 name=zws,
