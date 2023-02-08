@@ -310,7 +310,7 @@ class DiscordStream:
         )
         if details_msg:
             embed.add_field(
-                name=_("Details"),
+                name=zws,
                 value=details_msg,
             )
 
