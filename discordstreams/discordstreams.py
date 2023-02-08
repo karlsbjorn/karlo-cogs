@@ -304,6 +304,7 @@ class DiscordStream:
 
         details_msg = (
             ""
+            + (f"**{activity.name}**\n" if activity.details else "")
             + (f"{activity.details}\n" if activity.details else "")
             + (f"{activity.state}" if activity.state else "")
         )
