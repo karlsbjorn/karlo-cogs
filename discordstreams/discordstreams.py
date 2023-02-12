@@ -21,6 +21,7 @@ class DiscordStreams(commands.Cog):
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
         default_guild = {
             "alert_channels": [],
+            "ignored_channels": [],
             "active_messages": {},
         }
         self.config.register_guild(**default_guild)
@@ -48,6 +49,53 @@ class DiscordStreams(commands.Cog):
             await ctx.send(
                 _("Go Live alerts will be sent to {channel}").format(channel=channel.mention)
             )
+
+    @commands.group()
+    @commands.guild_only()
+    async def discordstreamsset(self, ctx: commands.Context):
+        """Change settings for the live alerts."""
+        pass
+
+    @discordstreamsset.command(name="ignore")
+    async def discordstreamsset_ignore(self, ctx: commands.Context, channel: discord.VoiceChannel):
+        """Ignore a voice channel."""
+        ignored_channels: List[int] = await self.config.guild(ctx.guild).ignored_channels()
+        if channel.id in ignored_channels:
+            ignored_channels.remove(channel.id)
+            await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
+            await ctx.send(
+                _("Streams happening in {channel} will no longer be ignored.").format(
+                    channel=channel.mention
+                )
+            )
+        else:
+            ignored_channels.append(channel.id)
+            await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
+            await ctx.send(
+                _("Streams happening in {channel} will now be ignored.").format(
+                    channel=channel.mention
+                )
+            )
+
+    @discordstreamsset.command(name="ignored")
+    async def discordstreamsset_ignored(self, ctx: commands.Context):
+        """List ignored voice channels."""
+        ignored_channels: List[int] = await self.config.guild(ctx.guild).ignored_channels()
+        if not ignored_channels:
+            await ctx.send(_("No channels are currently ignored."))
+            return
+
+        mentions = [
+            channel.mention
+            for channel in ctx.guild.voice_channels
+            if channel.id in ignored_channels
+        ]
+        embed = discord.Embed(
+            title=_("Ignored Channels"),
+            description="\n".join(mentions),
+            color=await ctx.embed_color(),
+        )
+        await ctx.send(embed=embed)
 
     @tasks.loop(seconds=10)
     async def update_stream_messages(self):
@@ -141,11 +189,10 @@ class DiscordStreams(commands.Cog):
         :param after: The member's voice state after the change.
         :return: None
         """
-        member_guild: discord.Guild = member.guild
-        guild_config: Dict = await self.config.guild(member_guild).all()
+        guild_config: Dict = await self.config.guild(member.guild).all()
         enabled = bool(guild_config["alert_channels"])
 
-        if not enabled or await self.bot.cog_disabled_in_guild(self, member_guild) or member.bot:
+        if not enabled or await self.bot.cog_disabled_in_guild(self, member.guild) or member.bot:
             return
 
         # Stream ended
@@ -156,12 +203,16 @@ class DiscordStreams(commands.Cog):
                 return
 
             await self._remove_stream_alerts(
-                active_messages, guild_config, member_guild, member_id
+                active_messages, guild_config, member.guild, member_id
             )
             return
 
         # Stream started
         if not (before.channel and before.self_stream) and after.self_stream:
+            ignored = await self.config.guild(member.guild).ignored_channels()
+            if after.channel.id in ignored:
+                return
+
             await self._send_stream_alerts(member, after)
             return
 
