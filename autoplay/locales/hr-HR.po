@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-01-05 11:34+0000\n"
-"PO-Revision-Date: 2023-01-05 11:37\n"
+"POT-Creation-Date: 2023-01-21 20:15+0000\n"
+"PO-Revision-Date: 2023-02-13 08:52\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -26,19 +26,19 @@ msgstr "Automatski reproduciraj glazbu koju neki član guilde sluša na Spotifyu
 msgid "Start AutoPlay"
 msgstr "Pokreni AutoPlay"
 
-#: autoplay/autoplay.py:47
+#: autoplay/autoplay.py:48
 msgid "I'll no longer autoplay."
 msgstr "Više neću automatski reproducirati."
 
-#: autoplay/autoplay.py:54
+#: autoplay/autoplay.py:56
 msgid "I'll now play whatever {member} is listening to."
 msgstr "Sada ću puštat što god {member} sluša."
 
-#: autoplay/autoplay.py:69
+#: autoplay/autoplay.py:73
 msgid "This can only be used in a guild."
 msgstr "Ovo se može koristiti samo u guildu."
 
-#: autoplay/autoplay.py:77
+#: autoplay/autoplay.py:81
 msgid "I'll now play whatever {member} is listening to.\n"
 "To stop autoplay, use a player command like `stop`"
 msgstr "Sada ću pustiti što god {member} sluša.\n"
