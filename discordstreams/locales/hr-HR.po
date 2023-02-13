@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-01-04 14:04+0000\n"
-"PO-Revision-Date: 2023-01-05 11:37\n"
+"POT-Creation-Date: 2023-02-12 22:31+0000\n"
+"PO-Revision-Date: 2023-02-13 08:52\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,40 +17,67 @@ msgstr ""
 "X-Crowdin-File-ID: 26\n"
 "Language: hr_HR\n"
 
-#: discordstreams/discordstreams.py:30
+#: discordstreams/discordstreams.py:33
 #, docstring
 msgid "Set the channel for live alerts."
 msgstr "Postavi kanal za obavijesti."
 
-#: discordstreams/discordstreams.py:39
+#: discordstreams/discordstreams.py:42
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr "Obavijesti više neće biti slane u {channel}."
 
-#: discordstreams/discordstreams.py:47
+#: discordstreams/discordstreams.py:50
 msgid "Go Live alerts will be sent to {channel}"
 msgstr "Go Live obavijesti će se sada slati u {channel}"
 
-#: discordstreams/discordstreams.py:231
+#: discordstreams/discordstreams.py:56
+#, docstring
+msgid "Change settings for the live alerts."
+msgstr "Promijenite postavke za obavijesti."
+
+#: discordstreams/discordstreams.py:61
+#, docstring
+msgid "Ignore a voice channel."
+msgstr "Ignoriraj glasovni kanal."
+
+#: discordstreams/discordstreams.py:67
+msgid "Streams happening in {channel} will no longer be ignored."
+msgstr "Streamovi koji se odvijaju u {channel} više se neće ignorirati."
+
+#: discordstreams/discordstreams.py:75
+msgid "Streams happening in {channel} will now be ignored."
+msgstr "Streamovi koji se odvijaju u {channel} će se ignorirati."
+
+#: discordstreams/discordstreams.py:82
+#, docstring
+msgid "List ignored voice channels."
+msgstr "Popis ignoriranih glasovnih kanala."
+
+#: discordstreams/discordstreams.py:85
+msgid "No channels are currently ignored."
+msgstr "Nijedan kanal trenutno nije ignoriran."
+
+#: discordstreams/discordstreams.py:94
+msgid "Ignored Channels"
+msgstr "Ignorirani kanali"
+
+#: discordstreams/discordstreams.py:285
 msgid "Watch the stream"
 msgstr "Gledaj stream"
 
-#: discordstreams/discordstreams.py:238
+#: discordstreams/discordstreams.py:292
 msgid "{member} is live!"
 msgstr "{member} prenosi uživo!"
 
-#: discordstreams/discordstreams.py:299
+#: discordstreams/discordstreams.py:349
 msgid "Stream started {relative_timestamp}"
 msgstr "Prijenos je započeo {relative_timestamp}"
 
-#: discordstreams/discordstreams.py:314
-msgid "Details"
-msgstr "Detalji"
-
-#: discordstreams/discordstreams.py:321
+#: discordstreams/discordstreams.py:375
 msgid "Playing: {activity}"
 msgstr "Igra: {activity}"
 
-#: discordstreams/discordstreams.py:334
+#: discordstreams/discordstreams.py:388
 msgid "Nothing"
 msgstr "Ništa"
 
