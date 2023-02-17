@@ -1,6 +1,5 @@
 import discord
 from aiohttp import ClientResponseError
-from aiowowapi import WowApi
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
@@ -12,37 +11,14 @@ _ = Translator("WoWTools", __file__)
 class PvP:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.hybrid_command()
-    async def rating(self, ctx, character_name: str = None, *, realm: str = None):
+    async def rating(self, ctx, character: str, *, realm: str, region: str):
         """Check a character's PVP ratings."""
         if ctx.interaction:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        region: str = await self.config.guild(ctx.guild).region()
-        armory_dict = await WowApi.parse_armory_link(character_name)
-        if armory_dict:
-            character_name = armory_dict["name"]
-            realm = armory_dict["realm"]
-            region = armory_dict["region"]
-        if not character_name:
-            if not realm:
-                region: str = await self.config.user(ctx.author).wow_character_region()
-                if not region:
-                    region: str = await self.config.guild(ctx.guild).region()
-                if not region:
-                    await ctx.send_help()
-                    return
-            character_name: str = await self.config.user(ctx.author).wow_character_name()
-        if not character_name:
-            await ctx.send_help()
-            return
-        if not realm:
-            realm: str = await self.config.user(ctx.author).wow_character_realm()
-        if not realm:
-            await ctx.send_help()
-            return
-
+        region = region.lower()
         try:
             api_client = await get_api_client(self.bot, ctx, region)
         except Exception as e:
@@ -61,30 +37,28 @@ class PvP:
             try:
                 await self.limiter.acquire()
                 profile = await wow_client.Profile.get_character_profile_summary(
-                    character_name=character_name, realm_slug=realm
+                    character_name=character, realm_slug=realm
                 )
             except ClientResponseError:
                 await ctx.send(
-                    _('Character "{character_name}" not found.').format(
-                        character_name=character_name
-                    )
+                    _('Character "{character_name}" not found.').format(character_name=character)
                 )
                 return
 
             await self.limiter.acquire()
             achievements = await wow_client.Profile.get_character_achievements_summary(
-                character_name=character_name, realm_slug=realm
+                character_name=character, realm_slug=realm
             )
 
             await self.limiter.acquire()
             media = await wow_client.Profile.get_character_media_summary(
-                character_name=character_name, realm_slug=realm
+                character_name=character, realm_slug=realm
             )
 
             try:
                 await self.limiter.acquire()
                 rbg_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name,
+                    character_name=character,
                     realm_slug=realm,
                     pvp_bracket="rbg",
                 )
@@ -93,7 +67,7 @@ class PvP:
             try:
                 await self.limiter.acquire()
                 duo_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name,
+                    character_name=character,
                     realm_slug=realm,
                     pvp_bracket="2v2",
                 )
@@ -102,7 +76,7 @@ class PvP:
             try:
                 await self.limiter.acquire()
                 tri_statistics = await wow_client.Profile.get_character_pvp_bracket_statistics(
-                    character_name=character_name,
+                    character_name=character,
                     realm_slug=realm,
                     pvp_bracket="3v3",
                 )
@@ -216,7 +190,7 @@ class PvP:
             f"https://check-pvp.fr/"
             f"{region}/"
             f"{realm.capitalize()}/"
-            f"{character_name.capitalize()}"
+            f"{character.capitalize()}"
         )
         view = discord.ui.View()
         view.add_item(

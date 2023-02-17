@@ -3,7 +3,6 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 
 import discord
-from aiowowapi import WowApi
 from dateutil.parser import isoparse
 from raiderio_async import RaiderIO
 from redbot.core import commands
@@ -27,7 +26,7 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
-    async def raiderio_profile(self, ctx, character: str = None, *, realm: str = None) -> None:
+    async def raiderio_profile(self, ctx, character: str, *, realm: str, region: str) -> None:
         """Display the raider.io profile of a character.
 
         **Example:**
@@ -38,35 +37,8 @@ class Raiderio:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        region: str = await self.config.guild(ctx.guild).region()
-        armory_dict = await WowApi.parse_armory_link(character)
-        if armory_dict:
-            character = armory_dict["name"]
-            realm = armory_dict["realm"]
-            region = armory_dict["region"]
-        if not character:
-            if not realm:
-                region: str = (
-                    await self.config.user(ctx.author).wow_character_region()
-                    or await self.config.guild(ctx.guild).region()
-                )
-                if not region:
-                    await ctx.send_help()
-                    return
-            character: str = await self.config.user(ctx.author).wow_character_name()
-        if not character:
-            await ctx.send_help()
-            return
-        if not realm:
-            realm: str = await self.config.user(ctx.author).wow_character_realm()
-        if not realm:
-            await ctx.send_help()
-            return
         realm = "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
-        if realm == "":
-            await ctx.send(_("You didn't give me a realm."), ephemeral=True)
-            return
-
+        region = region.lower()
         if ctx.interaction:
             await ctx.defer()
         async with RaiderIO() as rio:

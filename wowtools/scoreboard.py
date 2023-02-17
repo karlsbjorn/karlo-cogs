@@ -576,7 +576,11 @@ class Scoreboard:
 
                 log.debug(f"Getting PvP data for {character_name}")
                 try:
-                    (rbg_statistics, duo_statistics, tri_statistics,) = await client.multi_request(
+                    (
+                        rbg_statistics,
+                        duo_statistics,
+                        tri_statistics,
+                    ) = await client.multi_request(
                         [
                             wow_client.Profile.get_character_pvp_bracket_statistics(
                                 character_name=character_name,
