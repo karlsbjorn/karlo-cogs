@@ -37,7 +37,11 @@ class Raiderio:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        realm = "-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()
+        realm = (
+            "-".join(realm).lower()
+            if isinstance(realm, tuple) or (" " in realm)
+            else realm.lower()
+        )
         region = region.lower()
         if ctx.interaction:
             await ctx.defer()

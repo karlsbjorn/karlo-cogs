@@ -3,7 +3,6 @@
 
 
 class Queries:
-
     get_last_encounter = """
     query ($char_realm: String!, $char_name: String!, $char_server: String!) {
   rateLimitData {
