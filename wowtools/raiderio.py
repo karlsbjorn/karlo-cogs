@@ -4,12 +4,15 @@ from typing import Dict, List
 
 import discord
 from dateutil.parser import isoparse
+from discord import app_commands
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
+
+from wowtools import autocomplete
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -168,6 +171,16 @@ class Raiderio:
         await ProfileMenu(pages=embeds, talents=char_talents, disable_after_timeout=True).start(
             ctx
         )
+
+    @raiderio_profile.autocomplete("realm")
+    async def realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=realm, value=realm)
+            for realm in autocomplete.REALMS
+            if current.lower() in realm.lower()
+        ][:25]
 
     @raiderio.command(name="guild")
     @commands.guild_only()
