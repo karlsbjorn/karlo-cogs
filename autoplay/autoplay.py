@@ -35,8 +35,11 @@ class AutoPlay(commands.Cog):
     async def autoplay(self, ctx, member: discord.Member = None):
         """Toggle autoplay for a member.
 
-        This will cause the bot to automatically play music that the member is listening to on Spotify.
-        To stop it, use `[p]autoplay` without a member, or use a player command like `[p]stop` or `[p]play`.
+        This will cause the bot to automatically play music that
+        the member is listening to on Spotify.
+
+        To stop it, use `[p]autoplay` without a member, or
+        use a player command like `[p]stop` or `[p]play`.
         """
         if ctx.interaction:
             await ctx.defer(ephemeral=True)
@@ -120,7 +123,6 @@ class AutoPlay(commands.Cog):
             autoplaying = await self.config.guild(member_after.guild).autoplaying()
             if autoplaying:
                 await player.set_pause(True, member_after)
-                await self.config.guild(member_after.guild).autoplaying.set(False)
                 await self.config.guild(member_after.guild).paused_track.set(
                     past_activity.track_id
                 )
@@ -134,7 +136,6 @@ class AutoPlay(commands.Cog):
             # so we'll resume it.
             log.verbose("Resuming track.")
             await player.set_pause(False, member_after)
-            await self.config.guild(member_after.guild).autoplaying.set(True)
             return
 
         log.verbose(f"Querying {current_activity.track_url}")
