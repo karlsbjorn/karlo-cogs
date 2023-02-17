@@ -1,8 +1,12 @@
+from typing import List
+
 import discord
 from aiohttp import ClientResponseError
+from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
+from . import autocomplete
 from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
@@ -200,3 +204,23 @@ class PvP:
         )
 
         await ctx.send(embed=embed, view=view)
+
+    @rating.autocomplete("realm")
+    async def rating_realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=realm, value=realm)
+            for realm in autocomplete.REALMS
+            if current.lower() in realm.lower()
+        ][:25]
+
+    @rating.autocomplete("region")
+    async def rating_region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=region, value=region)
+            for region in autocomplete.REGIONS
+            if current.lower() in region.lower()
+        ][:25]

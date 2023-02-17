@@ -377,3 +377,11 @@ REALMS = [
     "Zul'jin",
     "Zuluhed",
 ]
+
+REGIONS = [
+    "EU",
+    "US",
+    "KR",
+    "TW",
+    # "CN", # RIP
+]

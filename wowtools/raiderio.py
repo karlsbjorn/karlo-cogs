@@ -8,7 +8,7 @@ from discord import app_commands
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
-from redbot.core.utils.chat_formatting import box, humanize_list
+from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
 
@@ -173,7 +173,7 @@ class Raiderio:
         )
 
     @raiderio_profile.autocomplete("realm")
-    async def realm_autocomplete(
+    async def raiderio_profile_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
         return [
@@ -182,9 +182,21 @@ class Raiderio:
             if current.lower() in realm.lower()
         ][:25]
 
+    @raiderio_profile.autocomplete("region")
+    async def raiderio_profile_region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=region, value=region)
+            for region in autocomplete.REGIONS
+            if current.lower() in region.lower()
+        ][:25]
+
     @raiderio.command(name="guild")
     @commands.guild_only()
-    async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
+    async def raiderio_guild(
+        self, ctx: commands.Context, guild: str, *, realm: str, region: str
+    ) -> None:
         """Display the raider.io profile of a guild.
 
         If the guild or realm name have spaces in them, they need to be enclosed in quotes.
@@ -196,26 +208,6 @@ class Raiderio:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
-
-        region: str = await self.config.guild(ctx.guild).region()
-        if not realm:
-            realm: str = await self.config.guild(ctx.guild).realm()
-        if not region:
-            await ctx.send(
-                _(
-                    "A server admin needs to set a region with `{prefix}wowset region` first."
-                ).format(prefix="" if ctx.interaction else ctx.clean_prefix),
-                ephemeral=True,
-            )
-            return
-        if not realm:
-            await ctx.send(
-                _("A server admin needs to set a realm with `{prefix}wowset realm` first.").format(
-                    prefix="" if ctx.interaction else ctx.clean_prefix
-                ),
-                ephemeral=True,
-            )
-            return
 
         await ctx.defer()
         async with RaiderIO() as rio:
@@ -274,28 +266,34 @@ class Raiderio:
 
         await ctx.send(embed=embed)
 
+    @raiderio_guild.autocomplete("realm")
+    async def raiderio_guild_realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=realm, value=realm)
+            for realm in autocomplete.REALMS
+            if current.lower() in realm.lower()
+        ][:25]
+
+    @raiderio_guild.autocomplete("region")
+    async def raiderio_guild_region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=region, value=region)
+            for region in autocomplete.REGIONS
+            if current.lower() in region.lower()
+        ][:25]
+
     @raiderio.command(name="affixes")
     @commands.guild_only()
-    async def raiderio_affixes(self, ctx: commands.Context, region: str = None) -> None:
+    async def raiderio_affixes(self, ctx: commands.Context, region: str) -> None:
         """Display this week's affixes."""
         if ctx.interaction:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
-
-        if not region:
-            region: str = await self.config.guild(ctx.guild).region()
-        if not region:
-            await ctx.send_help()
-            return
-        regions = ("us", "eu", "kr", "cn")
-        if region.lower() not in regions:
-            await ctx.send(
-                _("Region must be one of the following: {regions}").format(
-                    regions=humanize_list(regions, style="or"), ephemeral=True
-                )
-            )
-            return
 
         await ctx.defer()
         async with RaiderIO() as rio:
@@ -340,6 +338,16 @@ class Raiderio:
                 inline=False,
             )
         await ctx.send(embed=embed)
+
+    @raiderio_affixes.autocomplete("region")
+    async def raiderio_affixes_region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=region, value=region)
+            for region in ["EU", "US"]
+            if current.lower() in region.lower()
+        ][:25]
 
     @staticmethod
     def _parse_date(tz_date) -> str:
