@@ -1,8 +1,11 @@
 from aiowowapi import WowApi
+from discord import app_commands
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_number
+
+from .autocomplete import REALMS
 
 _ = Translator("WoWTools", __file__)
 
@@ -61,3 +64,18 @@ def format_to_gold(price: int, emotes: dict = None) -> str:
         copper_text = f"{copper}c" if copper_emoji is None else copper + copper_emoji
 
     return gold_text + silver_text + copper_text
+
+
+async def get_realms(current):
+    realms = []
+    for realm in REALMS.keys():
+        if current.lower() not in realm.lower():
+            continue
+        if len(REALMS[realm]) == 1:
+            realms.append(app_commands.Choice(name=realm, value=f"{realm}:{REALMS[realm][0]}"))
+        else:
+            realms.extend(
+                app_commands.Choice(name=f"{realm} ({region})", value=f"{realm}:{region}")
+                for region in REALMS[realm]
+            )
+    return realms

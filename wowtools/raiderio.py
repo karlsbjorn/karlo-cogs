@@ -11,8 +11,7 @@ from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
-
-from .autocomplete import REALMS, REGIONS
+from utils import get_realms
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -177,30 +176,12 @@ class Raiderio:
     async def raiderio_profile_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
-        realms = []
-        for realm in REALMS.keys():
-            if current.lower() not in realm.lower():
-                continue
-            if len(REALMS[realm]) == 1:
-                realms.append(app_commands.Choice(name=realm, value=f"{realm}:{REALMS[realm][0]}"))
-            else:
-                realms.extend(
-                    app_commands.Choice(name=f"{realm} ({region})", value=f"{realm}:{region}")
-                    for region in REALMS[realm]
-                )
+        realms = await get_realms(current)
         return realms[:25]
-
-        # return [
-        #     app_commands.Choice(name=realm, value=realm)
-        #     for realm in autocomplete.REALMS
-        #     if current.lower() in realm.lower()
-        # ][:25]
 
     @raiderio.command(name="guild")
     @commands.guild_only()
-    async def raiderio_guild(
-        self, ctx: commands.Context, guild: str, *, realm: str, region: str
-    ) -> None:
+    async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
         """Display the raider.io profile of a guild.
 
         If the guild or realm name have spaces in them, they need to be enclosed in quotes.
@@ -212,6 +193,13 @@ class Raiderio:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
+
+        realm, region = realm.split(sep=":")
+        realm = ("-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()).replace(
+            " ", "-"
+        )
+        region = region.lower()
+        guild = guild.title()
 
         await ctx.defer()
         async with RaiderIO() as rio:
@@ -274,21 +262,8 @@ class Raiderio:
     async def raiderio_guild_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=realm, value=realm)
-            for realm in REALMS
-            if current.lower() in realm.lower()
-        ][:25]
-
-    @raiderio_guild.autocomplete("region")
-    async def raiderio_guild_region_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=region, value=region)
-            for region in REGIONS
-            if current.lower() in region.lower()
-        ][:25]
+        realms = await get_realms(current)
+        return realms[:25]
 
     @raiderio.command(name="affixes")
     @commands.guild_only()

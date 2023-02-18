@@ -6,8 +6,7 @@ from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
-from .autocomplete import REALMS, REGIONS
-from .utils import get_api_client
+from .utils import get_api_client, get_realms
 
 _ = Translator("WoWTools", __file__)
 
@@ -15,13 +14,14 @@ _ = Translator("WoWTools", __file__)
 class PvP:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.hybrid_command()
-    async def rating(self, ctx, character: str, *, realm: str, region: str):
+    async def rating(self, ctx, character: str, *, realm: str):
         """Check a character's PVP ratings."""
         if ctx.interaction:
             # There is no contextual locale for interactions, so we need to set it manually
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
+        realm, region = realm.split(sep=":")
         region = region.lower()
         try:
             api_client = await get_api_client(self.bot, ctx, region)
@@ -209,18 +209,5 @@ class PvP:
     async def rating_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=realm, value=realm)
-            for realm in REALMS
-            if current.lower() in realm.lower()
-        ][:25]
-
-    @rating.autocomplete("region")
-    async def rating_region_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=region, value=region)
-            for region in REGIONS
-            if current.lower() in region.lower()
-        ][:25]
+        realms = await get_realms(current)
+        return realms[:25]
