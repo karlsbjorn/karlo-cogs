@@ -182,12 +182,14 @@ class Raiderio:
             if current.lower() not in realm.lower():
                 continue
             if len(autocomplete.REALMS[realm]) == 1:
-                realms.append(app_commands.Choice(name=realm, value=f"{realm}:{autocomplete.REALMS[realm][0]}"))
+                realms.append(
+                    app_commands.Choice(
+                        name=realm, value=f"{realm}:{autocomplete.REALMS[realm][0]}"
+                    )
+                )
             else:
                 realms.extend(
-                    app_commands.Choice(
-                        name=f"{realm} ({region})", value=f"{realm}:{region}"
-                    )
+                    app_commands.Choice(name=f"{realm} ({region})", value=f"{realm}:{region}")
                     for region in autocomplete.REALMS[realm]
                 )
         return realms[:25]
@@ -197,16 +199,6 @@ class Raiderio:
         #     for realm in autocomplete.REALMS
         #     if current.lower() in realm.lower()
         # ][:25]
-
-    @raiderio_profile.autocomplete("region")
-    async def raiderio_profile_region_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=region, value=region)
-            for region in autocomplete.REGIONS
-            if current.lower() in region.lower()
-        ][:25]
 
     @raiderio.command(name="guild")
     @commands.guild_only()
