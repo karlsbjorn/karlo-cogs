@@ -1,11 +1,12 @@
 from typing import List
 
-import autocomplete
 import discord
 from aiohttp import ClientResponseError
 from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
+
+from wowtools import autocomplete
 
 from .utils import get_api_client
 
