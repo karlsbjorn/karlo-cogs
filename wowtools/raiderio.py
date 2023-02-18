@@ -12,7 +12,7 @@ from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
 
-from wowtools import autocomplete
+from .autocomplete import REALMS, REGIONS
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -178,19 +178,15 @@ class Raiderio:
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
         realms = []
-        for realm in autocomplete.REALMS.keys():
+        for realm in REALMS.keys():
             if current.lower() not in realm.lower():
                 continue
-            if len(autocomplete.REALMS[realm]) == 1:
-                realms.append(
-                    app_commands.Choice(
-                        name=realm, value=f"{realm}:{autocomplete.REALMS[realm][0]}"
-                    )
-                )
+            if len(REALMS[realm]) == 1:
+                realms.append(app_commands.Choice(name=realm, value=f"{realm}:{REALMS[realm][0]}"))
             else:
                 realms.extend(
                     app_commands.Choice(name=f"{realm} ({region})", value=f"{realm}:{region}")
-                    for region in autocomplete.REALMS[realm]
+                    for region in REALMS[realm]
                 )
         return realms[:25]
 
@@ -280,7 +276,7 @@ class Raiderio:
     ) -> List[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=realm, value=realm)
-            for realm in autocomplete.REALMS
+            for realm in REALMS
             if current.lower() in realm.lower()
         ][:25]
 
@@ -290,7 +286,7 @@ class Raiderio:
     ) -> List[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=region, value=region)
-            for region in autocomplete.REGIONS
+            for region in REGIONS
             if current.lower() in region.lower()
         ][:25]
 

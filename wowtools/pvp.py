@@ -6,8 +6,7 @@ from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
-from wowtools import autocomplete
-
+from .autocomplete import REALMS, REGIONS
 from .utils import get_api_client
 
 _ = Translator("WoWTools", __file__)
@@ -212,7 +211,7 @@ class PvP:
     ) -> List[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=realm, value=realm)
-            for realm in autocomplete.REALMS
+            for realm in REALMS
             if current.lower() in realm.lower()
         ][:25]
 
@@ -222,6 +221,6 @@ class PvP:
     ) -> List[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=region, value=region)
-            for region in autocomplete.REGIONS
+            for region in REGIONS
             if current.lower() in region.lower()
         ][:25]
