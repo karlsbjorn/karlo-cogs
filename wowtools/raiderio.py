@@ -29,7 +29,7 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
-    async def raiderio_profile(self, ctx, character: str, *, realm: str, region: str) -> None:
+    async def raiderio_profile(self, ctx, character: str, *, realm: str) -> None:
         """Display the raider.io profile of a character.
 
         **Example:**
@@ -40,6 +40,7 @@ class Raiderio:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
+        realm, region = realm.split(sep=":")
         realm = ("-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()).replace(
             " ", "-"
         )
@@ -176,11 +177,26 @@ class Raiderio:
     async def raiderio_profile_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=realm, value=realm)
-            for realm in autocomplete.REALMS
-            if current.lower() in realm.lower()
-        ][:25]
+        realms = []
+        for realm in autocomplete.REALMS.keys():
+            if current.lower() not in realm.lower():
+                continue
+            if len(autocomplete.REALMS[realm]) == 1:
+                realms.append(app_commands.Choice(name=realm, value=f"{realm}:{autocomplete.REALMS[realm][0]}"))
+            else:
+                realms.extend(
+                    app_commands.Choice(
+                        name=f"{realm} ({region})", value=f"{realm}:{region}"
+                    )
+                    for region in autocomplete.REALMS[realm]
+                )
+        return realms[:25]
+
+        # return [
+        #     app_commands.Choice(name=realm, value=realm)
+        #     for realm in autocomplete.REALMS
+        #     if current.lower() in realm.lower()
+        # ][:25]
 
     @raiderio_profile.autocomplete("region")
     async def raiderio_profile_region_autocomplete(
