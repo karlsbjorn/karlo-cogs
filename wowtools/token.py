@@ -1,4 +1,7 @@
+from typing import List
+
 import discord
+from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
@@ -6,7 +9,7 @@ from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
 
-VALID_REGIONS = ("eu", "us", "kr", "cn")
+VALID_REGIONS = ["eu", "us", "kr", "cn"]
 
 
 class Token:
@@ -18,6 +21,7 @@ class Token:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
+        region = region.lower()
         if region == "all":
             await self.priceall(ctx)
             return
@@ -29,7 +33,7 @@ class Token:
 
         if region not in VALID_REGIONS:
             await ctx.send(
-                _("Invalid region. Valid regions are: `eu`, `us`, `kr`, 'cn' or `all`."),
+                _("Invalid region. Valid regions are: `eu`, `us`, `kr` or `all`."),
                 ephemeral=True,
             )
             return
@@ -48,6 +52,16 @@ class Token:
 
         embed = discord.Embed(description=message, colour=await ctx.embed_colour())
         await ctx.send(embed=embed)
+
+    @wowtoken.autocomplete("region")
+    async def wowtoken_region_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=region, value=region)
+            for region in ["All"] + VALID_REGIONS
+            if current.lower() in region.lower()
+        ]
 
     async def priceall(self, ctx):
         """Check price of the WoW token in all supported regions"""
