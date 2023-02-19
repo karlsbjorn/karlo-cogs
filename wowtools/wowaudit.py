@@ -42,7 +42,7 @@ class Wowaudit:
         weekly_world_quests_done = (await ws.acell("Y5")).value
 
         embed = discord.Embed(title=_("Weekly summary"), colour=await ctx.embed_color())
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Missing Enchants/Gems"), value=missing_enchants)
         embed.add_field(name=_("Weekly Dungeons Completed"), value=weekly_dungeons_completed)
         embed.add_field(name=_("Weekly World Quests Done"), value=weekly_world_quests_done)
@@ -60,7 +60,7 @@ class Wowaudit:
             for member in value:
                 member_rank = member[0]
                 member_name = member[1]
-                member_stat = member[-1] if not key == _("Tier Pieces Obtained") else member[2]
+                member_stat = member[-1] if key != _("Tier Pieces Obtained") else member[2]
 
                 output += "{member_rank}. **{member_name}**: {member_stat}\n".format(
                     member_rank=member_rank,
@@ -86,7 +86,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("C9:F" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"C9:F{str(9 + (member_count - 1))}")
 
         avg_ilvl_output = ""
         embeds = []
@@ -123,7 +123,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Average Item Level"), value=avg_ilvl_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -143,7 +143,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("H9:O" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"H9:O{str(9 + (member_count - 1))}")
 
         member_tier_output = ""
         embeds = []
@@ -190,7 +190,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Tier Pieces Obtained"), value=member_tier_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -210,7 +210,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("Q9:S" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"Q9:S{str(9 + (member_count - 1))}")
 
         mplus_output = ""
         embeds = []
@@ -244,7 +244,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Weekly Mythic Dungeons Done"), value=mplus_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -264,7 +264,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("U9:W" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"U9:W{str(9 + (member_count - 1))}")
 
         vault_output = ""
         embeds = []
@@ -298,7 +298,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Great Vault Score"), value=vault_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -318,7 +318,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("Y9:AA" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"Y9:AA{str(9 + (member_count - 1))}")
 
         wq_output = ""
         embeds = []
@@ -352,7 +352,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("World Quests Done"), value=wq_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -372,7 +372,7 @@ class Wowaudit:
 
         sheet_title = await ss.get_title()
         member_count = int((await ws.acell("H5")).value)
-        members = await ws.get_values("AC9:AE" + str(9 + (member_count - 1)))
+        members = await ws.get_values(f"AC9:AE{str(9 + (member_count - 1))}")
 
         raidkills_output = ""
         embeds = []
@@ -408,7 +408,7 @@ class Wowaudit:
         embed = discord.Embed(
             colour=colour,
         )
-        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon_url)
+        embed.set_author(name=sheet_title, icon_url=ctx.guild.icon)
         embed.add_field(name=_("Raid Kills (current week)"), value=wq_output)
         embed.set_footer(text=_("Page {page_number}").format(page_number=page_n))
         return embed
@@ -435,15 +435,14 @@ class Wowaudit:
         return ss, ws
 
     def get_creds(self):
-        creds_path = str(data_manager.cog_data_path(self)) + "/service_account.json"
+        creds_path = f"{str(data_manager.cog_data_path(self))}/service_account.json"
         if not os.path.exists(creds_path):
             raise commands.CommandError(_("\nNo service account credentials found."))
         creds = Credentials.from_service_account_file(creds_path)
-        scoped = creds.with_scopes(
+        return creds.with_scopes(
             [
                 "https://spreadsheets.google.com/feeds",
                 "https://www.googleapis.com/auth/spreadsheets",
                 "https://www.googleapis.com/auth/drive",
             ]
         )
-        return scoped

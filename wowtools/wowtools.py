@@ -45,7 +45,9 @@ class WoWTools(
             "real_guild_name": None,
             "gmanage_guild": None,
             "gmanage_realm": None,
-            "guild_roles": {},
+            "guild_rankstrings": {},
+            "guild_log_channel": None,
+            "guild_roster": {},
             "old_sb": None,
             "scoreboard_channel": None,
             "scoreboard_message": None,
@@ -63,6 +65,7 @@ class WoWTools(
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
         self.update_dungeon_scoreboard.start()
+        self.guild_log.start()
 
     @commands.group()
     async def wowset(self, ctx):
@@ -73,7 +76,7 @@ class WoWTools(
     @commands.admin()
     async def wowset_region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
-        regions = ("us", "eu", "kr", "cn", "tw")
+        regions = ("us", "eu", "kr", "cn")
         try:
             async with ctx.typing():
                 if region not in regions:
@@ -164,7 +167,7 @@ class WoWTools(
         if ctx.message.attachments:
             for attachment in ctx.message.attachments:
                 if attachment.filename == "service_account.json":
-                    await attachment.save(str(cog_data_path(self)) + "/service_account.json")
+                    await attachment.save(f"{str(cog_data_path(self))}/service_account.json")
                     await ctx.send(_("Service account set."))
                 else:
                     await ctx.send(s_account_guide)
@@ -234,7 +237,7 @@ class WoWTools(
     @wowset_character.command(name="region")
     async def wowset_character_region(self, ctx, region: str):
         """Set your character's region."""
-        regions = ("us", "eu", "kr", "cn", "tw")
+        regions = ("us", "eu", "kr", "cn")
         if region.lower() not in regions:
             await ctx.send(
                 _("That region does not exist.\nValid regions are: {regions}.").format(
@@ -248,6 +251,7 @@ class WoWTools(
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
         self.update_dungeon_scoreboard.stop()
+        self.guild_log.stop()
 
     async def red_delete_data_for_user(
         self,

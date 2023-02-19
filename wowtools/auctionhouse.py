@@ -3,59 +3,59 @@ from typing import Dict
 
 import discord
 from redbot.core import commands
-from redbot.core.i18n import Translator
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
 from .utils import format_to_gold, get_api_client
 
 _ = Translator("WoWTools", __file__)
 
-VALID_AUCTION_REGIONS = ("eu", "us", "kr")
-
 
 class AuctionHouse:
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-    @commands.command()
+    @commands.hybrid_command()
     async def price(self, ctx: commands.Context, *, item: str):
-        """Get the current market price of an item."""
+        """Get the current auction price of an item."""
+        if ctx.interaction:
+            # There is no contextual locale for interactions, so we need to set it manually
+            # (This is probably a bug in Red, remove this when it's fixed)
+            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+        config_region: str = await self.config.guild(ctx.guild).region()
+        if not config_region:
+            await ctx.send(
+                _(
+                    "Please set a region with `{prefix}wowset region` before using this command."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
+        if config_region == "cn":
+            await ctx.send(
+                _(
+                    "The Auction House is not available in China.\n"
+                    "Please set a different region with `{prefix}wowset region`."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
+
+        try:
+            api_client = await get_api_client(self.bot, config_region)
+        except Exception as e:
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
+            return
+
+        config_realm: str = await self.config.guild(ctx.guild).realm()
+        if not config_realm:
+            await ctx.send(
+                _(
+                    "Please set a realm with `{prefix}wowset realm` before using this command."
+                ).format(prefix=ctx.clean_prefix if not ctx.interaction else ""),
+                ephemeral=True,
+            )
+            return
+        boe_disclaimer = False
+
         async with ctx.typing():
-            config_region: str = await self.config.guild(ctx.guild).region()
-            if not config_region:
-                await ctx.send(
-                    _(
-                        "Please set a region with `{prefix}wowset region` before using this command."
-                    ).format(prefix=ctx.clean_prefix)
-                )
-                return
-            if config_region not in VALID_AUCTION_REGIONS:
-                await ctx.send(
-                    _(
-                        "The Auction House is not available in China or Taiwan.\n"
-                        "Please set a supported region with `{prefix}wowset region` before using this command.\n"
-                        "Supported regions: {regions}"
-                    ).format(
-                        prefix=ctx.clean_prefix,
-                        regions=humanize_list(VALID_AUCTION_REGIONS),
-                    )
-                )
-                return
-
-            try:
-                api_client = await get_api_client(self.bot, ctx, config_region)
-            except Exception as e:
-                await ctx.send(_("Command failed successfully. {e}").format(e=e))
-                return
-
-            config_realm: str = await self.config.guild(ctx.guild).realm()
-            if not config_realm:
-                await ctx.send(
-                    _(
-                        "Please set a realm with `{prefix}wowset realm` before using this command."
-                    ).format(prefix=ctx.clean_prefix)
-                )
-                return
-            boe_disclaimer = False
-
             async with api_client as wow_client:
                 wow_client = wow_client.Retail
                 # Search for the item
@@ -166,19 +166,21 @@ class AuctionHouse:
                         ),
                         inline=False,
                     )
-                embed.add_field(
-                    name="\N{ZERO WIDTH SPACE}",
-                    value=_(
-                        "[Detailed info](https://oribos.exchange/#{region}-{realm}/{item_id})"
-                    ).format(
-                        region=config_region,
-                        realm=config_realm,
-                        item_id=found_item_id,
-                    ),
-                    inline=False,
+
+                details_url = (
+                    f"https://oribos.exchange/#"
+                    f"{config_region}-"
+                    f"{config_realm}/"
+                    f"{found_item_id}"
+                )
+                view = discord.ui.View()
+                view.add_item(
+                    discord.ui.Button(
+                        label=_("More details"), style=discord.ButtonStyle.link, url=details_url
+                    )
                 )
 
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, view=view)
 
 
 # TODO: [p]stackprice [item]
