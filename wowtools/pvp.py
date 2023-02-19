@@ -89,8 +89,11 @@ class PvP:
             try:
                 await self.limiter.acquire()
                 shuffle_rating = await self.get_shuffle_rating(wow_client, profile)
+                await self.limiter.acquire()
+                shuffle_rank = await self.get_shuffle_rank(wow_client, profile)
             except ClientResponseError:
                 shuffle_rating = None
+                shuffle_rank = None
 
         if "name" not in profile:
             await ctx.send(_("That character or realm does not exist."))
@@ -195,17 +198,18 @@ class PvP:
         embed.add_field(name=_("2v2 Rating"), value=duo_rating)
         embed.add_field(name=_("3v3 Rating"), value=tri_rating)
         embed.add_field(
-            name=_("Solo Shuffle Rating"),
+            name=_("Shuffle Rating"),
             value=shuffle_rating or _("Character not on the leaderboard"),
-            inline=False,
         )
+        if shuffle_rank:
+            embed.add_field(name=_("Shuffle Rank"), value=shuffle_rank)
         if (
             own_season_achievements["Season 1"] != {}
             or own_season_achievements["Season 2"] != {}
             or own_season_achievements["Season 3"] != {}
             or own_season_achievements["Season 4"] != {}
         ):
-            embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post))
+            embed.add_field(name=_("Achievements"), value="\n".join(achi_to_post), inline=False)
 
         details_url = (
             f"https://check-pvp.fr/"
@@ -230,18 +234,8 @@ class PvP:
         return realms[:25]
 
     @staticmethod
-    async def get_shuffle_rating(wow_client: RetailApi, profile) -> Optional[int]:
-        char_class: str = profile["character_class"]["name"]
-        char_class = char_class.lower().replace(" ", "")
-
-        char_spec: str = profile["active_spec"]["name"]
-        char_spec = char_spec.lower().replace(" ", "")
-
-        pvp_bracket = f"shuffle-{char_class}-{char_spec}"
-        leaderboard = await wow_client.GameData.get_pvp_leaderboard(
-            pvp_season_id=34,
-            pvp_bracket=pvp_bracket,
-        )
+    async def get_shuffle_rating(wow_client: RetailApi, profile: dict) -> Optional[int]:
+        leaderboard = await PvP.get_shuffle_leaderboard(wow_client, profile)
         return next(
             (
                 entry["rating"]
@@ -249,4 +243,38 @@ class PvP:
                 if entry["character"]["name"] == profile["name"]
             ),
             None,
+        )
+
+    @staticmethod
+    async def get_shuffle_rank(wow_client: RetailApi, profile: dict) -> str | None:
+        leaderboard = await PvP.get_shuffle_leaderboard(wow_client, profile)
+        rank: int | None = next(
+            (
+                entry["rank"]
+                for entry in leaderboard["entries"]
+                if entry["character"]["name"] == profile["name"]
+            ),
+            None,
+        )
+        if not rank:
+            return None
+
+        if 11 <= (rank % 100) <= 13:
+            suffix = "th"
+        else:
+            suffix = ["th", "st", "nd", "rd", "th"][min(rank % 10, 4)]
+        return str(rank) + suffix
+
+    @staticmethod
+    async def get_shuffle_leaderboard(wow_client: RetailApi, profile: dict):
+        char_class: str = profile["character_class"]["name"]
+        char_class = char_class.lower().replace(" ", "")
+
+        char_spec: str = profile["active_spec"]["name"]
+        char_spec = char_spec.lower().replace(" ", "")
+
+        pvp_bracket = f"shuffle-{char_class}-{char_spec}"
+        return await wow_client.GameData.get_pvp_leaderboard(
+            pvp_season_id=34,
+            pvp_bracket=pvp_bracket,
         )
