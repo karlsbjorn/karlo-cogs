@@ -100,7 +100,7 @@ class GuildManage:
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
 
-    @tasks.loop(hours=1)
+    @tasks.loop(minutes=30)
     async def guild_log(self):
         for guild in self.bot.guilds:
             guild_log_channel: int = await self.config.guild(guild).guild_log_channel()
