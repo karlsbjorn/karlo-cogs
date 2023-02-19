@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-01-21 20:15+0000\n"
-"PO-Revision-Date: 2023-01-21 20:15\n"
+"POT-Creation-Date: 2023-02-17 14:49+0000\n"
+"PO-Revision-Date: 2023-02-17 14:50\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -26,19 +26,19 @@ msgstr ""
 msgid "Start AutoPlay"
 msgstr ""
 
-#: autoplay/autoplay.py:48
+#: autoplay/autoplay.py:51
 msgid "I'll no longer autoplay."
 msgstr ""
 
-#: autoplay/autoplay.py:56
+#: autoplay/autoplay.py:59
 msgid "I'll now play whatever {member} is listening to."
 msgstr ""
 
-#: autoplay/autoplay.py:73
+#: autoplay/autoplay.py:76
 msgid "This can only be used in a guild."
 msgstr ""
 
-#: autoplay/autoplay.py:81
+#: autoplay/autoplay.py:84
 msgid "I'll now play whatever {member} is listening to.\n"
 "To stop autoplay, use a player command like `stop`"
 msgstr ""
