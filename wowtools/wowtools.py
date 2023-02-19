@@ -45,7 +45,9 @@ class WoWTools(
             "real_guild_name": None,
             "gmanage_guild": None,
             "gmanage_realm": None,
-            "guild_roles": {},
+            "guild_rankstrings": {},
+            "guild_log_channel": None,
+            "guild_roster": {},
             "old_sb": None,
             "scoreboard_channel": None,
             "scoreboard_message": None,
@@ -63,6 +65,7 @@ class WoWTools(
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
         self.update_dungeon_scoreboard.start()
+        self.guild_log.start()
 
     @commands.group()
     async def wowset(self, ctx):
@@ -248,6 +251,7 @@ class WoWTools(
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
         self.update_dungeon_scoreboard.stop()
+        self.guild_log.stop()
 
     async def red_delete_data_for_user(
         self,

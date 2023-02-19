@@ -39,7 +39,7 @@ class AuctionHouse:
             return
 
         try:
-            api_client = await get_api_client(self.bot, ctx, config_region)
+            api_client = await get_api_client(self.bot, config_region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
             return

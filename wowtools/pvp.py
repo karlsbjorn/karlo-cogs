@@ -25,7 +25,7 @@ class PvP:
         realm, region = realm.split(sep=":")
         region = region.lower()
         try:
-            api_client = await get_api_client(self.bot, ctx, region)
+            api_client = await get_api_client(self.bot, region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return

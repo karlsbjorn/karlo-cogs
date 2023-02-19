@@ -1,6 +1,5 @@
 from aiowowapi import WowApi
 from discord import app_commands
-from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_number
@@ -10,12 +9,11 @@ from .autocomplete import REALMS
 _ = Translator("WoWTools", __file__)
 
 
-async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi:
+async def get_api_client(bot: Red, region: str) -> WowApi:
     """
     Get Blizzard API client.
 
     :param bot:
-    :param ctx:
     :param region:
     :return: WoW API client
     """
@@ -29,7 +27,7 @@ async def get_api_client(bot: Red, ctx: commands.Context, region: str) -> WowApi
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
                 "filling in `whoops` with your client's ID and secret."
-            ).format(prefix="" if ctx.interaction else ctx.clean_prefix)
+            )
         )
     return WowApi(client_id=cid, client_secret=secret, client_region=region)
 
