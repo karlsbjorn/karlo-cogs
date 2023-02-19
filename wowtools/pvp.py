@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Optional
 
 import discord
 from aiohttp import ClientResponseError
+from aiowowapi import RetailApi
 from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
@@ -85,6 +86,11 @@ class PvP:
                 )
             except ClientResponseError:
                 tri_statistics = {}
+            try:
+                await self.limiter.acquire()
+                shuffle_rating = await self.get_shuffle_rating(wow_client, profile)
+            except ClientResponseError:
+                shuffle_rating = None
 
         if "name" not in profile:
             await ctx.send(_("That character or realm does not exist."))
@@ -188,6 +194,11 @@ class PvP:
         embed.add_field(name=_("RBG Rating"), value=rbg_rating)
         embed.add_field(name=_("2v2 Rating"), value=duo_rating)
         embed.add_field(name=_("3v3 Rating"), value=tri_rating)
+        embed.add_field(
+            name=_("Solo Shuffle Rating"),
+            value=shuffle_rating or _("Character not on the leaderboard"),
+            inline=False,
+        )
         if (
             own_season_achievements["Season 1"] != {}
             or own_season_achievements["Season 2"] != {}
@@ -217,3 +228,25 @@ class PvP:
     ) -> List[app_commands.Choice[str]]:
         realms = await get_realms(current)
         return realms[:25]
+
+    @staticmethod
+    async def get_shuffle_rating(wow_client: RetailApi, profile) -> Optional[int]:
+        char_class: str = profile["character_class"]["name"]
+        char_class = char_class.lower().replace(" ", "")
+
+        char_spec: str = profile["active_spec"]["name"]
+        char_spec = char_spec.lower().replace(" ", "")
+
+        pvp_bracket = f"shuffle-{char_class}-{char_spec}"
+        leaderboard = await wow_client.GameData.get_pvp_leaderboard(
+            pvp_season_id=34,
+            pvp_bracket=pvp_bracket,
+        )
+        return next(
+            (
+                entry["rating"]
+                for entry in leaderboard["entries"]
+                if entry["character"]["name"] == profile["name"]
+            ),
+            None,
+        )
