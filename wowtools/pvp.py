@@ -33,7 +33,6 @@ class PvP:
         rbg_rating = "0"
         duo_rating = "0"
         tri_rating = "0"
-        color = discord.Color.red()
 
         await ctx.defer()
         async with api_client:
@@ -100,16 +99,7 @@ class PvP:
         # TODO: Fetch current expansion seasons programmatically
         season_achievements = {
             # Hero of the Horde, Hero of the Alliance, Gladiator, Elite, Duelist, Rival, Challenger, Combatant
-            "Season 1": (
-                14693,
-                14692,
-                14689,
-                14691,
-                14688,
-                14687,
-                14686,
-                14685,
-            ),
+            # Shadowlands
             "Season 2": (
                 14976,
                 14975,
@@ -143,12 +133,26 @@ class PvP:
                 15610,
                 15609,
             ),
+            # Dragonflight
+            "Season 1": (
+                15958,
+                15959,
+                15951,
+                15984,
+                15954,
+                15952,
+                15953,
+                15955,
+                15956,
+                15960,
+                15961,
+            ),
         }
         own_season_achievements = {
-            "Season 1": {},
             "Season 2": {},
             "Season 3": {},
             "Season 4": {},
+            "Season 1": {},
         }
         for char_achievement in achievements["achievements"]:
             achi_id: int = char_achievement["id"]
@@ -164,6 +168,8 @@ class PvP:
         ]
         if char_faction != "Horde":
             color = discord.Color.blue()
+        else:
+            color = discord.Color.red()
 
         if "rating" in rbg_statistics:
             rbg_rating: str = rbg_statistics["rating"]
