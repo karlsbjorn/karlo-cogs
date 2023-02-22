@@ -162,7 +162,7 @@ class GuildManage:
                 member=member_name,
                 old_rank=member_rank_old,
                 new_rank=member_rank_new,
-                changed=_("promoted") if diff[2][0] < diff[2][1] else _("demoted"),
+                changed=_("promoted") if diff[2][0] > diff[2][1] else _("demoted"),
             ),
             color=discord.Colour.blurple(),
         )
