@@ -136,20 +136,26 @@ class GuildManage:
             if diff[0] == "add":
                 for member in diff[2]:
                     member_name = member[0]
-                    member_rank = await self.get_rank_string(guild, member[1])
+                    member_rank_new = await self.get_rank_string(guild, member[1])
                     embed = discord.Embed(
-                        title=_("**{member}** joined the guild as **{rank}**.").format(
-                            member=member_name, rank=member_rank
+                        title=_("**{member}** joined the guild as **{rank}**").format(
+                            member=member_name, rank=member_rank_new
                         ),
                         color=discord.Colour.green(),
                     )
                     embeds.append(embed)
             elif diff[0] == "change":
                 member_name = diff[1]
-                member_rank = await self.get_rank_string(guild, diff[2][1])
+                member_rank_old = await self.get_rank_string(guild, diff[2][0])
+                member_rank_new = await self.get_rank_string(guild, diff[2][1])
                 embed = discord.Embed(
-                    title=_("**{member}** was promoted to **{rank}**.").format(
-                        member=member_name, rank=member_rank
+                    title=_(
+                        "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
+                    ).format(
+                        member=member_name,
+                        old_rank=member_rank_old,
+                        new_rank=member_rank_new,
+                        changed=_("promoted") if diff[2][0] < diff[2][1] else _("demoted"),
                     ),
                     color=discord.Colour.blurple(),
                 )
@@ -157,10 +163,10 @@ class GuildManage:
             elif diff[0] == "remove":
                 for member in diff[2]:
                     member_name = member[0]
-                    member_rank = await self.get_rank_string(guild, member[1])
+                    member_rank_new = await self.get_rank_string(guild, member[1])
                     embed = discord.Embed(
-                        title=_("**{member} ({rank})** left the guild.").format(
-                            member=member_name, rank=member_rank
+                        title=_("**{member} ({rank})** left the guild").format(
+                            member=member_name, rank=member_rank_new
                         ),
                         color=discord.Colour.red(),
                     )
