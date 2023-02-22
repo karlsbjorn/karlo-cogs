@@ -5,7 +5,7 @@ import dictdiffer
 import discord
 from discord.ext import tasks
 from redbot.core import commands
-from redbot.core.i18n import Translator
+from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
 from .utils import get_api_client
 
@@ -103,6 +103,10 @@ class GuildManage:
     @tasks.loop(minutes=30)
     async def guild_log(self):
         for guild in self.bot.guilds:
+            if await self.bot.cog_disabled_in_guild(self, guild):
+                continue
+            await set_contextual_locales_from_guild(self.bot, guild)
+
             guild_log_channel: int = await self.config.guild(guild).guild_log_channel()
             if guild_log_channel is None:
                 continue
