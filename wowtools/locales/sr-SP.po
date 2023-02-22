@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-02-19 19:54+0000\n"
-"PO-Revision-Date: 2023-02-19 19:54\n"
+"POT-Creation-Date: 2023-02-22 02:38+0000\n"
+"PO-Revision-Date: 2023-02-22 02:39\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -131,16 +131,24 @@ msgstr ""
 msgid "Guild log channel set to {channel}."
 msgstr ""
 
-#: wowtools/guildmanage.py:137
-msgid "**{member}** joined the guild as **{rank}**."
+#: wowtools/guildmanage.py:149
+msgid "**{member}** joined the guild as **{rank}**"
 msgstr ""
 
-#: wowtools/guildmanage.py:147
-msgid "**{member}** was promoted to **{rank}**."
+#: wowtools/guildmanage.py:161
+msgid "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
 msgstr ""
 
-#: wowtools/guildmanage.py:158
-msgid "**{member} ({rank})** left the guild."
+#: wowtools/guildmanage.py:165
+msgid "promoted"
+msgstr ""
+
+#: wowtools/guildmanage.py:165
+msgid "demoted"
+msgstr ""
+
+#: wowtools/guildmanage.py:176
+msgid "**{member} ({rank})** left the guild"
 msgstr ""
 
 #: wowtools/pvp.py:48
