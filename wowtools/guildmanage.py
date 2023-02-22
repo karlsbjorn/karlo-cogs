@@ -100,7 +100,7 @@ class GuildManage:
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
 
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=5)
     async def guild_log(self):
         for guild in self.bot.guilds:
             if await self.bot.cog_disabled_in_guild(self, guild):
@@ -134,44 +134,51 @@ class GuildManage:
         embeds = []
         for diff in difference:
             if diff[0] == "add":
-                for member in diff[2]:
-                    member_name = member[0]
-                    member_rank_new = await self.get_rank_string(guild, member[1])
-                    embed = discord.Embed(
-                        title=_("**{member}** joined the guild as **{rank}**").format(
-                            member=member_name, rank=member_rank_new
-                        ),
-                        color=discord.Colour.green(),
-                    )
-                    embeds.append(embed)
+                await self.add_new_members(diff, embeds, guild)
             elif diff[0] == "change":
-                member_name = diff[1]
-                member_rank_old = await self.get_rank_string(guild, diff[2][0])
-                member_rank_new = await self.get_rank_string(guild, diff[2][1])
-                embed = discord.Embed(
-                    title=_(
-                        "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
-                    ).format(
-                        member=member_name,
-                        old_rank=member_rank_old,
-                        new_rank=member_rank_new,
-                        changed=_("promoted") if diff[2][0] < diff[2][1] else _("demoted"),
-                    ),
-                    color=discord.Colour.blurple(),
-                )
-                embeds.append(embed)
+                await self.add_changed_members(diff, embeds, guild)
             elif diff[0] == "remove":
-                for member in diff[2]:
-                    member_name = member[0]
-                    member_rank_new = await self.get_rank_string(guild, member[1])
-                    embed = discord.Embed(
-                        title=_("**{member} ({rank})** left the guild").format(
-                            member=member_name, rank=member_rank_new
-                        ),
-                        color=discord.Colour.red(),
-                    )
-                    embeds.append(embed)
+                await self.add_removed_members(diff, embeds, guild)
         return embeds
+
+    async def add_new_members(self, diff, embeds: list, guild: discord.Guild) -> None:
+        for member in diff[2]:
+            member_name = member[0]
+            member_rank_new = await self.get_rank_string(guild, member[1])
+            embed = discord.Embed(
+                title=_("**{member}** joined the guild as **{rank}**").format(
+                    member=member_name, rank=member_rank_new
+                ),
+                color=discord.Colour.green(),
+            )
+            embeds.append(embed)
+
+    async def add_changed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
+        member_name = diff[1]
+        member_rank_old = await self.get_rank_string(guild, diff[2][0])
+        member_rank_new = await self.get_rank_string(guild, diff[2][1])
+        embed = discord.Embed(
+            title=_("**{member}** was {changed} from **{old_rank}** to **{new_rank}**").format(
+                member=member_name,
+                old_rank=member_rank_old,
+                new_rank=member_rank_new,
+                changed=_("promoted") if diff[2][0] < diff[2][1] else _("demoted"),
+            ),
+            color=discord.Colour.blurple(),
+        )
+        embeds.append(embed)
+
+    async def add_removed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
+        for member in diff[2]:
+            member_name = member[0]
+            member_rank_new = await self.get_rank_string(guild, member[1])
+            embed = discord.Embed(
+                title=_("**{member} ({rank})** left the guild").format(
+                    member=member_name, rank=member_rank_new
+                ),
+                color=discord.Colour.red(),
+            )
+            embeds.append(embed)
 
     @guild_log.error
     async def guild_log_error(self, error):
