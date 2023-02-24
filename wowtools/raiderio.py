@@ -431,15 +431,23 @@ class ProfileMenu(SimpleMenu):
             use_select_only=use_select_only,
         )
         self.talents = talents
-        self.import_talents.label = _("Import talents")
 
-    @discord.ui.button(style=discord.ButtonStyle.green, row=1)
-    async def import_talents(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_message(
-            _(
-                "Here are the talents this character's using:\n"
-                "`{talents}`\n\n"
-                "Import this text using the in-game talent import feature."
-            ).format(talents=self.talents),
-            ephemeral=True,
+        talents_button = discord.ui.Button(
+            label="Talents", style=discord.ButtonStyle.link, row=1, url=self.get_talent_calc_url()
         )
+        self.add_item(talents_button)
+
+    def get_talent_calc_url(self):
+        return f"https://www.wowhead.com/talent-calc/blizzard/{self.talents}"
+
+    async def on_timeout(self):
+        if self.delete_after_timeout and not self.message.flags.ephemeral:
+            await self.message.delete()
+        elif self.disable_after_timeout:
+            for child in self.children:
+                if child.row == 1:  # Don't disable the talents button
+                    continue
+                child.disabled = True
+            await self.message.edit(view=self)
+        else:
+            await self.message.edit(view=None)
