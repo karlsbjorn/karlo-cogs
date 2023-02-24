@@ -58,6 +58,7 @@ class Raiderio:
                     "gear",
                     "mythic_plus_best_runs",
                     "talents",
+                    "guild",
                 ],
             )
 
@@ -69,6 +70,7 @@ class Raiderio:
         char_race = profile_data["race"]
         char_spec = profile_data["active_spec_name"]
         char_class = profile_data["class"]
+        char_guild = profile_data["guild"]["name"]
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
@@ -94,7 +96,7 @@ class Raiderio:
         embed = discord.Embed(
             title=char_name,
             url=char_url,
-            description=f"{char_race} {char_spec} {char_class}",
+            description=f"{char_race} {char_spec} {char_class}\n<{char_guild}>",
             color=char_score_color,
         )
         embed.set_author(
@@ -165,7 +167,7 @@ class Raiderio:
 
         # Gear page
         embed = await self._make_gear_embed(
-            char_gear, char_image, char_last_updated, char_name, char_score_color
+            char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
         )
         embeds.append(embed)
 
@@ -334,8 +336,8 @@ class Raiderio:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         return parsed.strftime("%d/%m/%y - %H:%M:%S")
 
-    async def _make_gear_embed(
-        self, char_gear, char_image, char_last_updated, char_name, char_score_color
+    async def _make_gear_embed(  # TODO: Holy shit just use a class instead of all these args
+        self, char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
     ):
         item_list = [
             _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
@@ -363,6 +365,7 @@ class Raiderio:
 
         embed = discord.Embed(
             title=char_name,
+            url=char_url,
             description="\n".join(item_list),
             color=char_score_color,
         )
@@ -433,7 +436,10 @@ class ProfileMenu(SimpleMenu):
         self.talents = talents
 
         talents_button = discord.ui.Button(
-            label="Talents", style=discord.ButtonStyle.link, row=1, url=self.get_talent_calc_url()
+            label=_("Talents"),
+            style=discord.ButtonStyle.link,
+            row=1,
+            url=self.get_talent_calc_url(),
         )
         self.add_item(talents_button)
 
