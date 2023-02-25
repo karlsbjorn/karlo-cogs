@@ -513,11 +513,25 @@ class WarcraftLogsRetail(commands.Cog):
         await ctx.send(file=image_file, embed=embed)
 
     @rank.autocomplete("realm")
-    async def rank_realm_autocomplete(
+    async def warcraftlogs_rank_realm_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
         realms = await self.get_realms(current)
         return realms[:25]
+
+    @rank.autocomplete("zone")
+    async def warcraftlogs_rank_zone_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        zones = await self.get_zones(current)
+        return zones[:25]
+
+    @rank.autocomplete("difficulty")
+    async def warcraftlogs_rank_difficulty_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        difficulties = await self.get_difficulties(current)
+        return difficulties[:25]
 
     @commands.group()
     async def wclset(self, ctx: commands.Context):
@@ -762,3 +776,23 @@ class WarcraftLogsRetail(commands.Cog):
                     for region in REALMS[realm]
                 )
         return realms
+
+    @staticmethod
+    async def get_zones(current):
+        zones = []
+        for short_name, zone in ZONES_BY_SHORT_NAME.items():
+            if current.lower() not in zone[0].lower():
+                continue
+            zones.append(app_commands.Choice(name=zone[0], value=short_name))
+        return zones
+
+    @staticmethod
+    async def get_difficulties(current):
+        difficulties = []
+        for difficulty_name in DIFFICULTIES.values():
+            if current.lower() not in difficulty_name.lower():
+                continue
+            difficulties.append(
+                app_commands.Choice(name=difficulty_name.title(), value=difficulty_name)
+            )
+        return difficulties
