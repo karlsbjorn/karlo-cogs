@@ -292,6 +292,7 @@ class WarcraftLogsRetail(commands.Cog):
         name="Character name",
         realm="Name of the realm",
         zone="The raid zone",
+        difficulty="Raid difficulty",
     )
     async def rank(
         self,
