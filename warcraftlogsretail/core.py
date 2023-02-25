@@ -4,7 +4,7 @@
 import io
 import logging
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Literal, Mapping, Optional
 
 import discord
@@ -64,7 +64,7 @@ class WarcraftLogsRetail(commands.Cog):
         bearer = api_tokens.get("bearer", "")
 
         bearer_timestamp = await self.config.bearer_timestamp()
-        timestamp_now = int(datetime.utcnow().timestamp())
+        timestamp_now = int(datetime.now(timezone.utc).timestamp())
 
         if timestamp_now > bearer_timestamp:
             log.info("Bearer token has expired. Generating one")
@@ -309,12 +309,10 @@ class WarcraftLogsRetail(commands.Cog):
 
         # someone has their data saved, so they are just trying
         # to look up a zone for themselves
-        if name:
-            if name.upper() in ZONES_BY_SHORT_NAME:
-                zone = name
-                name = None
-                realm = None
-                region = None
+        if name and name.upper() in ZONES_BY_SHORT_NAME:
+            zone = name
+            name = None
+            realm = None
 
         # look up any saved info
         userdata = await self.config.user(ctx.author).all()
@@ -327,12 +325,12 @@ class WarcraftLogsRetail(commands.Cog):
 
         if not name:
             name = userdata["charname"]
-            if not name:
-                return await ctx.send(_("Please specify a character name with this command."))
+        if not name:
+            return await ctx.send(_("Please specify a character name with this command."))
         if not realm:
             realm = userdata["realm"]
-            if not realm:
-                return await ctx.send(_("Please specify a realm name with this command."))
+        if not realm:
+            return await ctx.send(_("Please specify a realm name with this command."))
 
         await ctx.defer()
 
@@ -340,10 +338,9 @@ class WarcraftLogsRetail(commands.Cog):
 
         # fetch zone name and zone id from user input
         zone_id = None
-        if zone:
-            if zone.upper() in ZONES_BY_SHORT_NAME:
-                zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
-                zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
+        if zone and zone.upper() in ZONES_BY_SHORT_NAME:
+            zone_id = ZONES_BY_SHORT_NAME[zone.upper()][1]
+            zone_id_to_name = ZONES_BY_SHORT_NAME[zone.upper()][0]
         if difficulty and difficulty.upper() in DIFFICULTIES.values():
             difficulty_ids = list(DIFFICULTIES.keys())
             for difficulty_id in difficulty_ids:
@@ -360,8 +357,7 @@ class WarcraftLogsRetail(commands.Cog):
             zone_ids.reverse()
             for zone_number in zone_ids:
                 data = await self.http.get_overview(name, realm, region, zone_number, difficulty)
-                error = data.get("error", None)
-                if error:
+                if error := data.get("error", None):
                     return await ctx.send(f"WCL API Error: {error}")
                 if (data is False) or (not data["data"]["characterData"]["character"]):
                     return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
@@ -372,8 +368,7 @@ class WarcraftLogsRetail(commands.Cog):
         else:
             # try getting a specific zone's worth of info for this character
             data = await self.http.get_overview(name, realm, region, zone_id, difficulty)
-            error = data.get("error", None)
-            if error:
+            if error := data.get("error", None):
                 return await ctx.send(f"WCL API Error: {error}")
             if (data is False) or (not data["data"]["characterData"]["character"]):
                 return await ctx.send(_("{name} wasn't found on the API.").format(name=name))
@@ -407,21 +402,19 @@ class WarcraftLogsRetail(commands.Cog):
         # perf averages
         embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)
 
-        perf_avg = char_data.get("bestPerformanceAverage", None)
-        if perf_avg:
-            pf_avg = "{:.1f}".format(char_data["bestPerformanceAverage"])
-            pf_avg = self._get_color(float(pf_avg))
-            embed.add_field(name=_("Best Perf. Avg"), value=pf_avg, inline=True)
-        else:
-            if zone_id:
-                return await ctx.send(
+        if not (perf_avg := char_data.get("bestPerformanceAverage", None)):
+            return (
+                await ctx.send(
                     _("Nothing found for {zone_name} for this player.").format(
                         zone_name=zone_id_to_name.title()
                     )
                 )
-            else:
-                return await ctx.send(_("Nothing at all found for this player."))
-
+                if zone_id
+                else await ctx.send(_("Nothing at all found for this player."))
+            )
+        pf_avg = "{:.1f}".format(char_data["bestPerformanceAverage"])
+        pf_avg = self._get_color(float(pf_avg))
+        embed.add_field(name=_("Best Perf. Avg"), value=pf_avg, inline=True)
         md_avg = "{:.1f}".format(char_data["medianPerformanceAverage"])
         md_avg = self._get_color(float(md_avg))
         embed.add_field(name=_("Median Perf. Avg"), value=md_avg, inline=True)
@@ -496,10 +489,9 @@ class WarcraftLogsRetail(commands.Cog):
             embed.add_field(name=zws, value=msg, inline=True)
 
         # all stars filler space
-        if not len(all_stars) % 3 == 0:
-            nearest_multiple = 3 * math.ceil(len(all_stars) / 3)
-        else:
-            nearest_multiple = len(all_stars)
+        nearest_multiple = (
+            len(all_stars) if len(all_stars) % 3 == 0 else 3 * math.ceil(len(all_stars) / 3)
+        )
         bonus_empty_fields = nearest_multiple - len(all_stars)
         if bonus_empty_fields > 0:
             for _1 in range(bonus_empty_fields):
@@ -667,9 +659,8 @@ class WarcraftLogsRetail(commands.Cog):
 
     @staticmethod
     def _time_convert(time):
-        time = str(time)[0:10]
-        value = datetime.fromtimestamp(int(time)).strftime("%Y-%m-%d %H:%M:%S")
-        return value
+        time = str(time)[:10]
+        return datetime.fromtimestamp(int(time)).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     async def _zone_name_from_id(zoneid: int) -> str:
@@ -686,58 +677,52 @@ class WarcraftLogsRetail(commands.Cog):
     def _get_color(self, number: float, bonus=""):
         if number >= 95:
             # legendary
-            out = self._orange(number, bonus)
+            return self._orange(number, bonus)
         elif 94 >= number > 75:
             # epic
-            out = self._red(number, bonus)
+            return self._red(number, bonus)
         elif 75 >= number > 50:
             # rare
-            out = self._blue(number, bonus)
+            return self._blue(number, bonus)
         elif 50 >= number > 25:
             # common
-            out = self._green(number, bonus)
+            return self._green(number, bonus)
         elif 25 >= number >= 0:
             # trash
-            out = self._grey(number, bonus)
+            return self._grey(number, bonus)
         else:
             # someone fucked up somewhere
-            out = box(str(number))
-        return out
+            return box(str(number))
 
     @staticmethod
     def _red(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
         text = f"[  {output_center}  ]"
-        new_number = f"{box(text, lang='css')}"
-        return new_number
+        return f"{box(text, lang='css')}"
 
     @staticmethod
     def _orange(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
         text = f"[  {output_center}  ]"
-        new_number = f"{box(text, lang='fix')}"
-        return new_number
+        return f"{box(text, lang='fix')}"
 
     @staticmethod
     def _green(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
         text = f"[  {output_center}  ]"
-        new_number = f"{box(text, lang='py')}"
-        return new_number
+        return f"{box(text, lang='py')}"
 
     @staticmethod
     def _blue(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
         text = f"[  {output_center}  ]"
-        new_number = f"{box(text, lang='ini')}"
-        return new_number
+        return f"{box(text, lang='ini')}"
 
     @staticmethod
     def _grey(number, bonus):
         output_center = f"{str(number)}{bonus}".center(8, " ")
         text = f"[  {output_center}  ]"
-        new_number = f"{box(text, lang='bf')}"
-        return new_number
+        return f"{box(text, lang='bf')}"
 
     @commands.Cog.listener()
     async def on_red_api_tokens_update(self, service_name: str, api_tokens: Mapping[str, str]):
@@ -779,20 +764,16 @@ class WarcraftLogsRetail(commands.Cog):
 
     @staticmethod
     async def get_zones(current):
-        zones = []
-        for short_name, zone in ZONES_BY_SHORT_NAME.items():
-            if current.lower() not in zone[0].lower():
-                continue
-            zones.append(app_commands.Choice(name=zone[0], value=short_name))
-        return zones
+        return [
+            app_commands.Choice(name=zone[0], value=short_name)
+            for short_name, zone in ZONES_BY_SHORT_NAME.items()
+            if current.lower() in zone[0].lower()
+        ]
 
     @staticmethod
     async def get_difficulties(current):
-        difficulties = []
-        for difficulty_name in DIFFICULTIES.values():
-            if current.lower() not in difficulty_name.lower():
-                continue
-            difficulties.append(
-                app_commands.Choice(name=difficulty_name.title(), value=difficulty_name)
-            )
-        return difficulties
+        return [
+            app_commands.Choice(name=difficulty.title(), value=difficulty)
+            for difficulty in DIFFICULTIES.values()
+            if current.lower() in difficulty.lower()
+        ]
