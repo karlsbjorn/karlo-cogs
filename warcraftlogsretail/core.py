@@ -5,10 +5,11 @@ import io
 import logging
 import math
 from datetime import datetime
-from typing import Literal, Mapping, Optional
+from typing import List, Literal, Mapping, Optional
 
 import discord
 from beautifultable import ALIGN_LEFT, BeautifulTable
+from discord import app_commands
 from PIL import Image, ImageDraw, ImageFont
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
@@ -16,6 +17,7 @@ from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list
 
+from .autocomplete import REALMS
 from .enchantid import ENCHANT_ID
 from .encounterid import DIFFICULTIES, ZONES_BY_ID, ZONES_BY_SHORT_NAME
 from .http import WoWLogsClient, generate_bearer
@@ -96,7 +98,7 @@ class WarcraftLogsRetail(commands.Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @warcraftlogs.command()
-    async def gear(self, ctx, name: str = None, realm: str = None, *, region: str = None):
+    async def gear(self, ctx, name: str = None, *, realm: str = None):
         """
         Fetch a character's gear.
 
@@ -114,6 +116,14 @@ class WarcraftLogsRetail(commands.Cog):
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
         userdata = await self.config.user(ctx.author).all()
+
+        name = name.title()
+        realm, region = realm.split(sep=":")
+        realm = ("-".join(realm).title() if isinstance(realm, tuple) else realm.title()).replace(
+            " ", "-"
+        )
+        region = region.upper()
+
         if not name:
             name = userdata["charname"]
             if not name:
@@ -126,23 +136,7 @@ class WarcraftLogsRetail(commands.Cog):
                 return await ctx.send(
                     _("Please specify a realm name with this command."), ephemeral=True
                 )
-        if not region:
-            region = userdata["region"]
-            if not region:
-                return await ctx.send(
-                    _("Please specify a region name with this command."), ephemeral=True
-                )
-
         await ctx.defer()
-
-        if len(region.split(" ")) > 1:
-            presplit = region.split(" ")
-            realm = f"{realm}-{presplit[0]}"
-            region = presplit[1]
-
-        name = name.title()
-        realm = realm.title()
-        region = region.upper()
 
         # Get the user's last raid encounters
         encounters = await self.http.get_last_encounter(name, realm, region)
@@ -275,6 +269,13 @@ class WarcraftLogsRetail(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @gear.autocomplete("realm")
+    async def warcraftlogs_gear_realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        realms = await self.get_realms(current)
+        return realms[:25]
+
     @commands.bot_has_permissions(embed_links=True)
     @warcraftlogs.command()
     async def rank(
@@ -282,7 +283,6 @@ class WarcraftLogsRetail(commands.Cog):
         ctx,
         name: str = None,
         realm: str = None,
-        region: str = None,
         zone: str = None,
         difficulty: str = None,
     ):
@@ -318,6 +318,13 @@ class WarcraftLogsRetail(commands.Cog):
 
         # look up any saved info
         userdata = await self.config.user(ctx.author).all()
+
+        realm, region = realm.split(sep=":")
+        realm = ("-".join(realm).title() if isinstance(realm, tuple) else realm.title()).replace(
+            " ", "-"
+        )
+        region = region.upper()
+
         if not name:
             name = userdata["charname"]
             if not name:
@@ -326,24 +333,10 @@ class WarcraftLogsRetail(commands.Cog):
             realm = userdata["realm"]
             if not realm:
                 return await ctx.send(_("Please specify a realm name with this command."))
-        if not region:
-            region = userdata["region"]
-            if not region:
-                return await ctx.send(_("Please specify a region name with this command."))
-
-        region = region.upper()
-        if region not in ["US", "EU"]:
-            msg = _(
-                "Realm names that have a space (like 'Nethergarde Keep') must "
-                "be written with a hyphen, "
-            )
-            msg += _("upper or lower case: `nethergarde-keep` or `Nethergarde-Keep`.")
-            return await ctx.send(msg)
 
         await ctx.defer()
 
         name = name.title()
-        realm = realm.title()
 
         # fetch zone name and zone id from user input
         zone_id = None
@@ -518,6 +511,13 @@ class WarcraftLogsRetail(commands.Cog):
         embed.set_image(url=f"attachment://{image_file.filename}")
 
         await ctx.send(file=image_file, embed=embed)
+
+    @rank.autocomplete("realm")
+    async def rank_realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        realms = await self.get_realms(current)
+        return realms[:25]
 
     @commands.group()
     async def wclset(self, ctx: commands.Context):
@@ -747,3 +747,18 @@ class WarcraftLogsRetail(commands.Cog):
             return await self._get_bearer()
         else:
             return bearer
+
+    @staticmethod
+    async def get_realms(current):
+        realms = []
+        for realm in REALMS.keys():
+            if current.lower() not in realm.lower():
+                continue
+            if len(REALMS[realm]) == 1:
+                realms.append(app_commands.Choice(name=realm, value=f"{realm}:{REALMS[realm][0]}"))
+            else:
+                realms.extend(
+                    app_commands.Choice(name=f"{realm} ({region})", value=f"{realm}:{region}")
+                    for region in REALMS[realm]
+                )
+        return realms
