@@ -29,6 +29,10 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
+    @app_commands.describe(
+        character="Name of the character to look up",
+        realm="The character's realm",
+    )
     async def raiderio_profile(self, ctx, character: str, *, realm: str) -> None:
         """Display the raider.io profile of a character.
 
@@ -184,6 +188,7 @@ class Raiderio:
 
     @raiderio.command(name="guild")
     @commands.guild_only()
+    @app_commands.describe(guild="The name of the guild", realm="The guild's realm")
     async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
         """Display the raider.io profile of a guild.
 
