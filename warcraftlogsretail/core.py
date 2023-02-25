@@ -278,6 +278,21 @@ class WarcraftLogsRetail(commands.Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @warcraftlogs.command()
+    @app_commands.choices(
+        zone=[
+            app_commands.Choice(name=zone[0], value=short_name)
+            for short_name, zone in ZONES_BY_SHORT_NAME.items()
+        ],
+        difficulty=[
+            app_commands.Choice(name=difficulty.title(), value=difficulty)
+            for difficulty in DIFFICULTIES.values()
+        ],
+    )
+    @app_commands.describe(
+        name="Character name",
+        realm="Name of the realm",
+        zone="The raid zone",
+    )
     async def rank(
         self,
         ctx,
@@ -510,20 +525,6 @@ class WarcraftLogsRetail(commands.Cog):
     ) -> List[app_commands.Choice[str]]:
         realms = await self.get_realms(current)
         return realms[:25]
-
-    @rank.autocomplete("zone")
-    async def warcraftlogs_rank_zone_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        zones = await self.get_zones(current)
-        return zones[:25]
-
-    @rank.autocomplete("difficulty")
-    async def warcraftlogs_rank_difficulty_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        difficulties = await self.get_difficulties(current)
-        return difficulties[:25]
 
     @commands.group()
     async def wclset(self, ctx: commands.Context):
@@ -761,19 +762,3 @@ class WarcraftLogsRetail(commands.Cog):
                     for region in REALMS[realm]
                 )
         return realms
-
-    @staticmethod
-    async def get_zones(current):
-        return [
-            app_commands.Choice(name=zone[0], value=short_name)
-            for short_name, zone in ZONES_BY_SHORT_NAME.items()
-            if current.lower() in zone[0].lower()
-        ]
-
-    @staticmethod
-    async def get_difficulties(current):
-        return [
-            app_commands.Choice(name=difficulty.title(), value=difficulty)
-            for difficulty in DIFFICULTIES.values()
-            if current.lower() in difficulty.lower()
-        ]
