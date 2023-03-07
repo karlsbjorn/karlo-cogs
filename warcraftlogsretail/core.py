@@ -418,7 +418,7 @@ class WarcraftLogsRetail(commands.Cog):
         # perf averages
         embed.add_field(name=zws, value=box(zone_name, lang="fix"), inline=False)
 
-        if not (perf_avg := char_data.get("bestPerformanceAverage", None)):
+        if not char_data.get("bestPerformanceAverage", None):
             return (
                 await ctx.send(
                     _("Nothing found for {zone_name} for this player.").format(
