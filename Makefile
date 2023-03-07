@@ -10,6 +10,6 @@ stylecheck:
 	$(PYTHON) -m isort --check . --profile black
 	$(PYTHON) -m black --check . --line-length 99
 stylediff:
-    $(PYTHON) -m ruff check . --line-length 99 --ignore E501 --diff
+	$(PYTHON) -m ruff check . --line-length 99 --ignore E501 --diff
 	$(PYTHON) -m isort --check --diff . --profile black
 	$(PYTHON) -m black --check --diff . --line-length 99
