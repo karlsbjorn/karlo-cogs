@@ -121,7 +121,7 @@ class AutoPlay(commands.Cog):
         if not current_activity:
             # Member is no longer listening to Spotify.
             autoplaying = await self.config.guild(member_after.guild).autoplaying()
-            if autoplaying:
+            if autoplaying and player.is_playing:
                 await player.set_pause(True, member_after)
                 await self.config.guild(member_after.guild).paused_track.set(
                     past_activity.track_id
