@@ -172,7 +172,10 @@ class DiscordStreams(commands.Cog):
                 # Don't edit if there's no change
                 continue
 
-            await message.edit(embed=new_embed)
+            try:
+                await message.edit(embed=new_embed)
+            except discord.NotFound:
+                log.warning(f"Message {message_id} not found in channel {channel_id}, skipping.")
 
     @commands.Cog.listener("on_voice_state_update")
     async def on_voice_state_update(
