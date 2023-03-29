@@ -1,0 +1,11 @@
+{
+    "author": ["Karlo"],
+    "description": "Have the bot silently respond to messages which have been prefixed with @silent",
+    "short": "Have the bot silently respond to messages which have been prefixed with @silent",
+    "install_msg": "This cog has no commands. It will silently respond to messages which have been prefixed with @silent",
+    "tags": ["utility"],
+    "min_bot_version": "3.5.0.dev329",
+    "max_bot_version": "3.6.0.dev0",
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store any data or metadata about users."
+}
