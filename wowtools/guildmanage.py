@@ -4,8 +4,10 @@ from typing import Dict
 import dictdiffer
 import discord
 from discord.ext import tasks
+from rapidfuzz import fuzz, process
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .utils import get_api_client
 
@@ -145,10 +147,12 @@ class GuildManage:
         for member in diff[2]:
             member_name = member[0]
             member_rank_new = await self.get_rank_string(guild, member[1])
+
             embed = discord.Embed(
                 title=_("**{member}** joined the guild as **{rank}**").format(
                     member=member_name, rank=member_rank_new
                 ),
+                description=await self.guess_member(guild, member_name),
                 color=discord.Colour.green(),
             )
             embeds.append(embed)
@@ -157,6 +161,7 @@ class GuildManage:
         member_name = diff[1]
         member_rank_old = await self.get_rank_string(guild, diff[2][0])
         member_rank_new = await self.get_rank_string(guild, diff[2][1])
+
         embed = discord.Embed(
             title=_("**{member}** was {changed} from **{old_rank}** to **{new_rank}**").format(
                 member=member_name,
@@ -164,6 +169,7 @@ class GuildManage:
                 new_rank=member_rank_new,
                 changed=_("promoted") if diff[2][0] > diff[2][1] else _("demoted"),
             ),
+            description=await self.guess_member(guild, member_name),
             color=discord.Colour.blurple(),
         )
         embeds.append(embed)
@@ -172,13 +178,32 @@ class GuildManage:
         for member in diff[2]:
             member_name = member[0]
             member_rank_new = await self.get_rank_string(guild, member[1])
+
             embed = discord.Embed(
                 title=_("**{member} ({rank})** left the guild").format(
                     member=member_name, rank=member_rank_new
                 ),
+                description=await self.guess_member(guild, member_name),
                 color=discord.Colour.red(),
             )
             embeds.append(embed)
+
+    async def guess_member(self, guild: discord.Guild, member_name: str) -> str | None:
+        choices = [member.display_name for member in guild.members]
+        extract = process.extract(
+            member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
+        )
+
+        mentions = []
+        for member in extract:
+            mentions.append(guild.members[member[2]].mention)
+        return (
+            _("Discord: {member} ({percent}%).").format(
+                member=humanize_list(list(mentions), style="or"), percent=str(extract[0][1])
+            )
+            if mentions
+            else None
+        )
 
     @guild_log.error
     async def guild_log_error(self, error):
