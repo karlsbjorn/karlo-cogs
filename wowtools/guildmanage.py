@@ -198,7 +198,7 @@ class GuildManage:
         for member in extract:
             mentions.append(guild.members[member[2]].mention)
         return (
-            _("Discord: {member} ({percent}%).").format(
+            _("Discord: {member} ({percent}%)").format(
                 member=humanize_list(list(mentions), style="or"), percent=str(extract[0][1])
             )
             if mentions
