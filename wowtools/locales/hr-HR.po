@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-02-22 02:38+0000\n"
-"PO-Revision-Date: 2023-02-22 02:39\n"
+"POT-Creation-Date: 2023-04-06 15:26+0000\n"
+"PO-Revision-Date: 2023-04-06 16:21\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -27,8 +27,8 @@ msgid "The Auction House is not available in China.\n"
 msgstr "Aukcijska kuća nije dostupna u Kini.\n"
 "Molim da postavite drugu regiju s `{prefix}wowset region`."
 
-#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:51
-#: wowtools/guildmanage.py:67 wowtools/pvp.py:30 wowtools/scoreboard.py:50
+#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:53
+#: wowtools/guildmanage.py:69 wowtools/pvp.py:30 wowtools/scoreboard.py:50
 #: wowtools/scoreboard.py:116 wowtools/scoreboard.py:547 wowtools/token.py:31
 #: wowtools/token.py:75 wowtools/wowaudit.py:32 wowtools/wowaudit.py:82
 #: wowtools/wowaudit.py:139 wowtools/wowaudit.py:206 wowtools/wowaudit.py:260
@@ -79,78 +79,82 @@ msgstr "Cijena ovog artikla može biti netočna zbog\n"
 msgid "More details"
 msgstr "Više detalja"
 
-#: wowtools/guildmanage.py:20
+#: wowtools/guildmanage.py:22
 #, docstring
 msgid "Configure guild management."
 msgstr "Konfiguriraj upravljanje guildom."
 
-#: wowtools/guildmanage.py:26
+#: wowtools/guildmanage.py:28
 #, docstring
 msgid "Bind a rank to a string."
 msgstr "Poveži rang s tekstom."
 
-#: wowtools/guildmanage.py:28
+#: wowtools/guildmanage.py:30
 msgid "Rank must be between 1 and 10."
 msgstr "Rank mora biti između 1 i 10."
 
-#: wowtools/guildmanage.py:32
+#: wowtools/guildmanage.py:34
 msgid "**{rank_string}** bound to **Rank {rank}**."
 msgstr "**{rank_string}** vezan za **Rank {rank}**."
 
-#: wowtools/guildmanage.py:40
+#: wowtools/guildmanage.py:42
 #, docstring
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Postavi naziv guilda koji će se koristiti u naredbama za upravljanje guildom."
 
-#: wowtools/guildmanage.py:45 wowtools/wowtools.py:117
+#: wowtools/guildmanage.py:47 wowtools/wowtools.py:117
 msgid "Guild name cleared."
 msgstr "Ime guilda izbrisano."
 
-#: wowtools/guildmanage.py:49 wowtools/wowtools.py:120
+#: wowtools/guildmanage.py:51 wowtools/wowtools.py:120
 msgid "Guild name set."
 msgstr "Ime guilda postavljeno."
 
-#: wowtools/guildmanage.py:56
+#: wowtools/guildmanage.py:58
 #, docstring
 msgid "Set the realm of the guild."
 msgstr "Postavi realm guilda."
 
-#: wowtools/guildmanage.py:61
+#: wowtools/guildmanage.py:63
 msgid "Guild realm cleared."
 msgstr "Realm guilda izbrisan."
 
-#: wowtools/guildmanage.py:65
+#: wowtools/guildmanage.py:67
 msgid "Guild realm set."
 msgstr "Realm guilda postavljen."
 
-#: wowtools/guildmanage.py:97
+#: wowtools/guildmanage.py:99
 #, docstring
 msgid "Set the channel for guild logs."
 msgstr "Postavi kanal za guild obavijesti."
 
-#: wowtools/guildmanage.py:101
+#: wowtools/guildmanage.py:103
 msgid "Guild log channel set to {channel}."
 msgstr "Kanal za guild logove je postavljen na {channel}"
 
-#: wowtools/guildmanage.py:149
+#: wowtools/guildmanage.py:152
 msgid "**{member}** joined the guild as **{rank}**"
 msgstr "**{member}** se pridružio guildu kao **{rank}**"
 
-#: wowtools/guildmanage.py:161
+#: wowtools/guildmanage.py:166
 msgid "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
 msgstr "**{member}** je {changed} sa **{old_rank}** na **{new_rank}**"
 
-#: wowtools/guildmanage.py:165
+#: wowtools/guildmanage.py:170
 msgid "promoted"
 msgstr "promotean"
 
-#: wowtools/guildmanage.py:165
+#: wowtools/guildmanage.py:170
 msgid "demoted"
 msgstr "demotean"
 
-#: wowtools/guildmanage.py:176
+#: wowtools/guildmanage.py:183
 msgid "**{member} ({rank})** left the guild"
 msgstr "**{member} ({rank})** je napustio guild"
+
+#: wowtools/guildmanage.py:201
+msgid "Discord: {member} ({percent}%)"
+msgstr "Discord: {member} ({percent}%)"
 
 #: wowtools/pvp.py:48
 msgid "Character \"{character_name}\" not found."
@@ -188,7 +192,7 @@ msgstr "Shuffle Rang"
 msgid "Achievements"
 msgstr "Achiementi"
 
-#: wowtools/raiderio.py:33
+#: wowtools/raiderio.py:37
 #, docstring
 msgid "Display the raider.io profile of a character.\n\n"
 "        **Example:**\n"
@@ -199,47 +203,47 @@ msgstr "Prikaži Raider.IO profil nekog lika.\n\n"
 "        [p]raiderio profile Karlo Ragnaros\n"
 "        "
 
-#: wowtools/raiderio.py:67
+#: wowtools/raiderio.py:72
 msgid "Character not found."
 msgstr "Character nije pronađen."
 
-#: wowtools/raiderio.py:101 wowtools/raiderio.py:155 wowtools/raiderio.py:370
+#: wowtools/raiderio.py:107 wowtools/raiderio.py:161 wowtools/raiderio.py:378
 msgid "Raider.io profile"
 msgstr "Raider.io profil"
 
-#: wowtools/raiderio.py:106
+#: wowtools/raiderio.py:112
 msgid "__**Mythic+ Score**__"
 msgstr "__**Mythic+ Score**__"
 
-#: wowtools/raiderio.py:110
+#: wowtools/raiderio.py:116
 msgid "Raid progress"
 msgstr "Raid progres"
 
-#: wowtools/raiderio.py:111
+#: wowtools/raiderio.py:117
 msgid "Item level"
 msgstr "Item level"
 
-#: wowtools/raiderio.py:113
+#: wowtools/raiderio.py:119
 msgid "__Other links__"
 msgstr "__Ostali linkovi__"
 
-#: wowtools/raiderio.py:114
+#: wowtools/raiderio.py:120
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:125 wowtools/raiderio.py:160 wowtools/raiderio.py:375
+#: wowtools/raiderio.py:131 wowtools/raiderio.py:166 wowtools/raiderio.py:383
 msgid "Last updated: {char_last_updated}"
 msgstr "Zadnje ažuriranje: {char_last_updated}"
 
-#: wowtools/raiderio.py:129
+#: wowtools/raiderio.py:135
 msgid "Dungeon"
 msgstr "Dungeon"
 
-#: wowtools/raiderio.py:130
+#: wowtools/raiderio.py:136
 msgid "Level"
 msgstr "Level"
 
-#: wowtools/raiderio.py:186
+#: wowtools/raiderio.py:193
 #, docstring
 msgid "Display the raider.io profile of a guild.\n\n"
 "        If the guild or realm name have spaces in them, they need to be enclosed in quotes.\n\n"
@@ -252,23 +256,23 @@ msgstr "Prikaži Raider.IO profil guilda.\n\n"
 "        [p]raiderio guild \"Jahaci Rumene Kadulje\" Ragnaros\n"
 "        "
 
-#: wowtools/raiderio.py:218
+#: wowtools/raiderio.py:225
 msgid "The guild {guild} does not exist on {realm}."
 msgstr "Guild {guild} ne postoji na {realm} realmu."
 
-#: wowtools/raiderio.py:239
+#: wowtools/raiderio.py:246
 msgid "Guild profile"
 msgstr "Profil guilda"
 
-#: wowtools/raiderio.py:242
+#: wowtools/raiderio.py:249
 msgid "__**Progress**__"
 msgstr "__**Progres**__"
 
-#: wowtools/raiderio.py:250
+#: wowtools/raiderio.py:257
 msgid "{difficulty} rank"
 msgstr "{difficulty} rank"
 
-#: wowtools/raiderio.py:251
+#: wowtools/raiderio.py:258
 msgid "World: {world}\n"
 "Region: {region}\n"
 "Realm: {realm}"
@@ -276,40 +280,32 @@ msgstr "Svijet: {world}\n"
 "Regija: {region}\n"
 "Realm: {realm}"
 
-#: wowtools/raiderio.py:257
+#: wowtools/raiderio.py:264
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/raiderio.py:272
+#: wowtools/raiderio.py:279
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Prikaži ovotjedne afikse."
 
-#: wowtools/raiderio.py:292 wowtools/raiderio.py:303
+#: wowtools/raiderio.py:299 wowtools/raiderio.py:310
 msgid "\n"
 "The weekly reset is {timestamp}."
 msgstr "\n"
 "Sljedeći tjedni reset je {timestamp}."
 
-#: wowtools/raiderio.py:308
+#: wowtools/raiderio.py:315
 msgid "This week's Mythic+ affixes"
 msgstr "Mythic+ afiksi ovaj za ovaj tjedan"
 
-#: wowtools/raiderio.py:341
+#: wowtools/raiderio.py:348
 msgid "**Average ilvl:** {avg_ilvl}\n"
 msgstr "**Prosječni ilvl:** {avg_ilvl}\n"
 
-#: wowtools/raiderio.py:434
-msgid "Import talents"
-msgstr "Importaj talente"
-
-#: wowtools/raiderio.py:439
-msgid "Here are the talents this character's using:\n"
-"`{talents}`\n\n"
-"Import this text using the in-game talent import feature."
-msgstr "Ovo su talenti koje ovaj character koristi:\n"
-"`{talents}`\n\n"
-"Importaj ovaj tekst kod talenata u igri."
+#: wowtools/raiderio.py:444
+msgid "Talents"
+msgstr "Talenti"
 
 #: wowtools/scoreboard.py:36
 #, docstring

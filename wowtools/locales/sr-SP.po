@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-02-22 02:38+0000\n"
-"PO-Revision-Date: 2023-02-22 02:39\n"
+"POT-Creation-Date: 2023-04-06 15:26+0000\n"
+"PO-Revision-Date: 2023-04-06 15:26\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -26,8 +26,8 @@ msgid "The Auction House is not available in China.\n"
 "Please set a different region with `{prefix}wowset region`."
 msgstr ""
 
-#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:51
-#: wowtools/guildmanage.py:67 wowtools/pvp.py:30 wowtools/scoreboard.py:50
+#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:53
+#: wowtools/guildmanage.py:69 wowtools/pvp.py:30 wowtools/scoreboard.py:50
 #: wowtools/scoreboard.py:116 wowtools/scoreboard.py:547 wowtools/token.py:31
 #: wowtools/token.py:75 wowtools/wowaudit.py:32 wowtools/wowaudit.py:82
 #: wowtools/wowaudit.py:139 wowtools/wowaudit.py:206 wowtools/wowaudit.py:260
@@ -78,77 +78,81 @@ msgstr "Очекивана цена овог артикла може бити н
 msgid "More details"
 msgstr ""
 
-#: wowtools/guildmanage.py:20
+#: wowtools/guildmanage.py:22
 #, docstring
 msgid "Configure guild management."
 msgstr "Конфигуришите управљање савезом."
 
-#: wowtools/guildmanage.py:26
+#: wowtools/guildmanage.py:28
 #, docstring
 msgid "Bind a rank to a string."
 msgstr ""
 
-#: wowtools/guildmanage.py:28
+#: wowtools/guildmanage.py:30
 msgid "Rank must be between 1 and 10."
 msgstr "Ранг мора бити између 1 и 10."
 
-#: wowtools/guildmanage.py:32
+#: wowtools/guildmanage.py:34
 msgid "**{rank_string}** bound to **Rank {rank}**."
 msgstr ""
 
-#: wowtools/guildmanage.py:40
+#: wowtools/guildmanage.py:42
 #, docstring
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Подесите име савеза који ће се користити у командама за управљање савезом."
 
-#: wowtools/guildmanage.py:45 wowtools/wowtools.py:117
+#: wowtools/guildmanage.py:47 wowtools/wowtools.py:117
 msgid "Guild name cleared."
 msgstr "Име цеха је избрисано."
 
-#: wowtools/guildmanage.py:49 wowtools/wowtools.py:120
+#: wowtools/guildmanage.py:51 wowtools/wowtools.py:120
 msgid "Guild name set."
 msgstr "Име цеха је постављено."
 
-#: wowtools/guildmanage.py:56
+#: wowtools/guildmanage.py:58
 #, docstring
 msgid "Set the realm of the guild."
 msgstr "Поставите царство цеха."
 
-#: wowtools/guildmanage.py:61
+#: wowtools/guildmanage.py:63
 msgid "Guild realm cleared."
 msgstr "Царство савеза је очишћено."
 
-#: wowtools/guildmanage.py:65
+#: wowtools/guildmanage.py:67
 msgid "Guild realm set."
 msgstr "Постављено царство савеза."
 
-#: wowtools/guildmanage.py:97
+#: wowtools/guildmanage.py:99
 #, docstring
 msgid "Set the channel for guild logs."
 msgstr ""
 
-#: wowtools/guildmanage.py:101
+#: wowtools/guildmanage.py:103
 msgid "Guild log channel set to {channel}."
 msgstr ""
 
-#: wowtools/guildmanage.py:149
+#: wowtools/guildmanage.py:152
 msgid "**{member}** joined the guild as **{rank}**"
 msgstr ""
 
-#: wowtools/guildmanage.py:161
+#: wowtools/guildmanage.py:166
 msgid "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
 msgstr ""
 
-#: wowtools/guildmanage.py:165
+#: wowtools/guildmanage.py:170
 msgid "promoted"
 msgstr ""
 
-#: wowtools/guildmanage.py:165
+#: wowtools/guildmanage.py:170
 msgid "demoted"
 msgstr ""
 
-#: wowtools/guildmanage.py:176
+#: wowtools/guildmanage.py:183
 msgid "**{member} ({rank})** left the guild"
+msgstr ""
+
+#: wowtools/guildmanage.py:201
+msgid "Discord: {member} ({percent}%)"
 msgstr ""
 
 #: wowtools/pvp.py:48
@@ -187,7 +191,7 @@ msgstr ""
 msgid "Achievements"
 msgstr "Достигнућа"
 
-#: wowtools/raiderio.py:33
+#: wowtools/raiderio.py:37
 #, docstring
 msgid "Display the raider.io profile of a character.\n\n"
 "        **Example:**\n"
@@ -195,47 +199,47 @@ msgid "Display the raider.io profile of a character.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/raiderio.py:67
+#: wowtools/raiderio.py:72
 msgid "Character not found."
 msgstr ""
 
-#: wowtools/raiderio.py:101 wowtools/raiderio.py:155 wowtools/raiderio.py:370
+#: wowtools/raiderio.py:107 wowtools/raiderio.py:161 wowtools/raiderio.py:378
 msgid "Raider.io profile"
 msgstr "Раидер.ио профил"
 
-#: wowtools/raiderio.py:106
+#: wowtools/raiderio.py:112
 msgid "__**Mythic+ Score**__"
 msgstr "__**Митхиц+ Сцоре**__"
 
-#: wowtools/raiderio.py:110
+#: wowtools/raiderio.py:116
 msgid "Raid progress"
 msgstr "Раид напредак"
 
-#: wowtools/raiderio.py:111
+#: wowtools/raiderio.py:117
 msgid "Item level"
 msgstr "Ниво ставке"
 
-#: wowtools/raiderio.py:113
+#: wowtools/raiderio.py:119
 msgid "__Other links__"
 msgstr "__Друге везе__"
 
-#: wowtools/raiderio.py:114
+#: wowtools/raiderio.py:120
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:125 wowtools/raiderio.py:160 wowtools/raiderio.py:375
+#: wowtools/raiderio.py:131 wowtools/raiderio.py:166 wowtools/raiderio.py:383
 msgid "Last updated: {char_last_updated}"
 msgstr "Последње ажурирано: {char_last_updated}"
 
-#: wowtools/raiderio.py:129
+#: wowtools/raiderio.py:135
 msgid "Dungeon"
 msgstr ""
 
-#: wowtools/raiderio.py:130
+#: wowtools/raiderio.py:136
 msgid "Level"
 msgstr ""
 
-#: wowtools/raiderio.py:186
+#: wowtools/raiderio.py:193
 #, docstring
 msgid "Display the raider.io profile of a guild.\n\n"
 "        If the guild or realm name have spaces in them, they need to be enclosed in quotes.\n\n"
@@ -248,23 +252,23 @@ msgstr "Прикажи раидер.ио профил цеха.\n\n"
 "        [p]Раидерио цех \"Јахаци Румене Кадуље\" Рагнарос\n"
 "        "
 
-#: wowtools/raiderio.py:218
+#: wowtools/raiderio.py:225
 msgid "The guild {guild} does not exist on {realm}."
 msgstr ""
 
-#: wowtools/raiderio.py:239
+#: wowtools/raiderio.py:246
 msgid "Guild profile"
 msgstr "Гуилд профиле"
 
-#: wowtools/raiderio.py:242
+#: wowtools/raiderio.py:249
 msgid "__**Progress**__"
 msgstr "__**Напредак**__"
 
-#: wowtools/raiderio.py:250
+#: wowtools/raiderio.py:257
 msgid "{difficulty} rank"
 msgstr "{difficulty} ранг"
 
-#: wowtools/raiderio.py:251
+#: wowtools/raiderio.py:258
 msgid "World: {world}\n"
 "Region: {region}\n"
 "Realm: {realm}"
@@ -272,36 +276,30 @@ msgstr "Свет: {world}\n"
 "Регион: {region}\n"
 "Краљевство: {realm}"
 
-#: wowtools/raiderio.py:257
+#: wowtools/raiderio.py:264
 msgid "Last updated: {last_updated}"
 msgstr "Последње ажурирано: {last_updated}"
 
-#: wowtools/raiderio.py:272
+#: wowtools/raiderio.py:279
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Прикажи овонедељне афиксе."
 
-#: wowtools/raiderio.py:292 wowtools/raiderio.py:303
+#: wowtools/raiderio.py:299 wowtools/raiderio.py:310
 msgid "\n"
 "The weekly reset is {timestamp}."
 msgstr ""
 
-#: wowtools/raiderio.py:308
+#: wowtools/raiderio.py:315
 msgid "This week's Mythic+ affixes"
 msgstr ""
 
-#: wowtools/raiderio.py:341
+#: wowtools/raiderio.py:348
 msgid "**Average ilvl:** {avg_ilvl}\n"
 msgstr ""
 
-#: wowtools/raiderio.py:434
-msgid "Import talents"
-msgstr ""
-
-#: wowtools/raiderio.py:439
-msgid "Here are the talents this character's using:\n"
-"`{talents}`\n\n"
-"Import this text using the in-game talent import feature."
+#: wowtools/raiderio.py:444
+msgid "Talents"
 msgstr ""
 
 #: wowtools/scoreboard.py:36
