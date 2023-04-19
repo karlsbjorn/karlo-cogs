@@ -79,8 +79,25 @@ class EventEditView(discord.ui.View):
 
         all_signups: Dict[str, str] = {}
         for player_class, signups in event["signed_up"].items():
+            player_class = player_class.replace("_", " ").title()
+            if player_class not in [
+                "Warrior",
+                "Rogue",
+                "Mage",
+                "Priest",
+                "Druid",
+                "Hunter",
+                "Shaman",
+                "Warlock",
+                "Paladin",
+                "Monk",
+                "Death Knight",
+                "Demon Hunter",
+                "Evoker",
+            ]:
+                continue
             for signup in signups:
-                all_signups[str(signup)] = player_class.replace("_", " ").title()
+                all_signups[str(signup)] = player_class
 
         wb = Workbook()
         ws = wb.active
