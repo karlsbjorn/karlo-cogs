@@ -4,7 +4,7 @@
     "short": "Create and manage WoW raid events for your guild.",
     "tags": ["warcraft", "world of warcraft"],
     "requirements": [
-        "openpyxl",
+        "openpyxl"
     ],
     "min_bot_version": "3.4.0",
     "max_bot_version": "3.6.0.dev0",
