@@ -1,7 +1,10 @@
 import logging
+from io import BytesIO
 from typing import Dict
 
 import discord.ui
+from openpyxl.styles import PatternFill
+from openpyxl.workbook import Workbook
 
 from raidtools.confirmation import DeleteConfirmationView
 from raidtools.discordevent import RaidtoolsDiscordEvent
@@ -66,6 +69,72 @@ class EventEditView(discord.ui.View):
             ephemeral=True,
             view=DeleteConfirmationView(self.config, self.event_id),
         )
+
+    @discord.ui.button(label="Export eventa", style=discord.ButtonStyle.success, row=1)
+    async def export_event(
+        self, interaction: discord.Interaction, button: discord.ui.Button, /
+    ) -> None:
+        events: Dict = await self.config.guild(interaction.guild).events()
+        event = events[self.event_id]
+
+        all_signups: Dict[str, str] = {}
+        for player_class, signups in event["signed_up"].items():
+            for signup in signups:
+                all_signups[str(signup)] = player_class.replace("_", " ").title()
+
+        wb = Workbook()
+        ws = wb.active
+
+        ws["A4"] = "Grupa 1"
+        ws["B4"] = "Grupa 2"
+        ws["E4"] = "Prijave"
+        for i, (signup_id, player_class) in enumerate(all_signups.items(), start=5):
+            display_name = interaction.guild.get_member(int(signup_id)).display_name
+            color = self.get_class_color(player_class)
+            ws.cell(row=i, column=5, value=display_name).fill = PatternFill(
+                start_color=color, fill_type="solid"
+            )
+
+        wb_bytesio = BytesIO()
+        wb.save(wb_bytesio)
+        wb_bytesio.seek(0)
+
+        file = discord.File(wb_bytesio, filename=f"{event['event_name']}.xlsx")
+        await interaction.response.send_message(
+            ephemeral=True,
+            file=file,
+        )
+
+    @staticmethod
+    def get_class_color(player_class: str) -> str:
+        if player_class == "Warrior":
+            return "C69B6D"
+        elif player_class == "Rogue":
+            return "FFF468"
+        elif player_class == "Mage":
+            return "69CCF0"
+        elif player_class == "Priest":
+            return "FFFFFF"
+        elif player_class == "Druid":
+            return "FF7D0A"
+        elif player_class == "Hunter":
+            return "ABD473"
+        elif player_class == "Shaman":
+            return "0070DD"
+        elif player_class == "Warlock":
+            return "8788EE"
+        elif player_class == "Paladin":
+            return "F48CBA"
+        elif player_class == "Monk":
+            return "00FF98"
+        elif player_class == "Death Knight":
+            return "C41E3A"
+        elif player_class == "Demon Hunter":
+            return "A330C9"
+        elif player_class == "Evoker":
+            return "33937F"
+        else:
+            return "FFFFFF"
 
 
 class EventEditDropdown(discord.ui.Select):
