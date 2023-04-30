@@ -42,7 +42,6 @@ class BattleNetAuth(commands.Cog):
         secret: str
             The secret of the authenticator.
         """
-        await interaction.response.defer(ephemeral=True)
         try:
             if not serial and not secret:
                 serial, secret = bna.request_new_serial("EU")
@@ -76,7 +75,6 @@ class BattleNetAuth(commands.Cog):
     @slash_battlenet.command(name="code")
     async def battlenet_code(self, interaction: discord.Interaction):
         """Get your authenticator code."""
-        await interaction.response.defer(ephemeral=True)
         secret = await self.config.user(interaction.user).auth_secret()
         if not secret:
             await interaction.response.send_message(
