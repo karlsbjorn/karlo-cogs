@@ -4,7 +4,7 @@ from typing import Literal
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
-from redbot.core import Config, commands
+from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
@@ -12,6 +12,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
+from .on_message import OnMessage
 from .pvp import PvP
 from .raiderio import Raiderio
 from .scoreboard import Scoreboard
@@ -24,7 +25,7 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(
-    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, commands.Cog
+    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, OnMessage, commands.Cog
 ):
     """Interact with various World of Warcraft APIs"""
 
@@ -53,6 +54,7 @@ class WoWTools(
             "scoreboard_message": None,
             "scoreboard_blacklist": [],
             "sb_image": False,
+            "on_message": False,
         }
         default_user = {
             "wow_character_name": None,
@@ -247,6 +249,19 @@ class WoWTools(
             return
         await self.config.user(ctx.author).wow_character_region.set(region)
         await ctx.send(_("Character region set."))
+
+    @wowset.command(name="onmessage")
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True)
+    async def wowset_on_message(self, ctx: commands.Context):
+        """Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned."""
+        enabled = await self.config.guild(ctx.guild).on_message()
+        if enabled:
+            await self.config.guild(ctx.guild).on_message.set(False)
+            await ctx.send(_("On message disabled."))
+        else:
+            await self.config.guild(ctx.guild).on_message.set(True)
+            await ctx.send(_("On message enabled."))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
