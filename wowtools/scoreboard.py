@@ -182,6 +182,34 @@ class Scoreboard:
         await self.config.guild(ctx.guild).scoreboard_blacklist.clear()
         await ctx.send(_("Blacklisted characters cleared."))
 
+    @sbset.command(name="lock")
+    @commands.admin()
+    @commands.guild_only()
+    async def sbset_lock(self, ctx: commands.Context):
+        """Lock the current scoreboard and does not update it anymore."""
+        sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
+        sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()
+        if not (sb_channel_id and sb_msg_id):
+            await ctx.send(_("No scoreboard is set."))
+            return
+
+        sb_channel = ctx.guild.get_channel(sb_channel_id)
+        try:
+            sb_msg = await sb_channel.fetch_message(sb_msg_id)
+        except discord.HTTPException:
+            await ctx.send(_("Failed to fetch scoreboard message."))
+            return
+
+        embed = sb_msg.embeds[0]
+        embed.title = _("Season 1 Mythic+ Scoreboard")
+        embed.description = _("Dragonflight Season 1 has ended.\nThis scoreboard is final.")
+        embed.set_footer(text=_("This scoreboard is locked."))
+        await sb_msg.edit(embed=embed)
+
+        await self.config.guild(ctx.guild).scoreboard_channel.clear()
+        await self.config.guild(ctx.guild).scoreboard_message.clear()
+        await ctx.send(_("Scoreboard locked."))
+
     @tasks.loop(minutes=5)
     async def update_dungeon_scoreboard(self):
         for guild in self.bot.guilds:
