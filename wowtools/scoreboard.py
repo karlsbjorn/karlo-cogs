@@ -204,7 +204,7 @@ class Scoreboard:
         embed.title = _("Season 1 Mythic+ Scoreboard")
         embed.description = _("Dragonflight Season 1 has ended.\nThis scoreboard is final.")
         embed.set_footer(text=_("This scoreboard is locked."))
-        await sb_msg.edit(embed=embed)
+        await sb_msg.edit(embed=embed, attachments=[])
 
         await self.config.guild(ctx.guild).scoreboard_channel.clear()
         await self.config.guild(ctx.guild).scoreboard_message.clear()
