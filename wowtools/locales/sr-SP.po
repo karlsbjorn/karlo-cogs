@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-04-06 15:26+0000\n"
-"PO-Revision-Date: 2023-04-06 15:26\n"
+"POT-Creation-Date: 2023-05-02 16:40+0000\n"
+"PO-Revision-Date: 2023-05-02 16:40\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -28,11 +28,11 @@ msgstr ""
 
 #: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:53
 #: wowtools/guildmanage.py:69 wowtools/pvp.py:30 wowtools/scoreboard.py:50
-#: wowtools/scoreboard.py:116 wowtools/scoreboard.py:547 wowtools/token.py:31
+#: wowtools/scoreboard.py:116 wowtools/scoreboard.py:575 wowtools/token.py:31
 #: wowtools/token.py:75 wowtools/wowaudit.py:32 wowtools/wowaudit.py:82
 #: wowtools/wowaudit.py:139 wowtools/wowaudit.py:206 wowtools/wowaudit.py:260
-#: wowtools/wowaudit.py:314 wowtools/wowaudit.py:368 wowtools/wowtools.py:91
-#: wowtools/wowtools.py:107 wowtools/wowtools.py:122 wowtools/wowtools.py:137
+#: wowtools/wowaudit.py:314 wowtools/wowaudit.py:368 wowtools/wowtools.py:93
+#: wowtools/wowtools.py:109 wowtools/wowtools.py:124 wowtools/wowtools.py:139
 msgid "Command failed successfully. {e}"
 msgstr "Команда није успела. {e}"
 
@@ -101,11 +101,11 @@ msgstr ""
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Подесите име савеза који ће се користити у командама за управљање савезом."
 
-#: wowtools/guildmanage.py:47 wowtools/wowtools.py:117
+#: wowtools/guildmanage.py:47 wowtools/wowtools.py:119
 msgid "Guild name cleared."
 msgstr "Име цеха је избрисано."
 
-#: wowtools/guildmanage.py:51 wowtools/wowtools.py:120
+#: wowtools/guildmanage.py:51 wowtools/wowtools.py:122
 msgid "Guild name set."
 msgstr "Име цеха је постављено."
 
@@ -386,68 +386,98 @@ msgstr "Обришите црну листу са семафора."
 msgid "Blacklisted characters cleared."
 msgstr "Ликови са црне листе су обрисани."
 
-#: wowtools/scoreboard.py:210 wowtools/scoreboard.py:358
-#: wowtools/scoreboard.py:452
+#: wowtools/scoreboard.py:189
+#, docstring
+msgid "Lock the current scoreboard and does not update it anymore."
+msgstr ""
+
+#: wowtools/scoreboard.py:193
+msgid "No scoreboard is set."
+msgstr ""
+
+#: wowtools/scoreboard.py:200
+msgid "Failed to fetch scoreboard message."
+msgstr ""
+
+#: wowtools/scoreboard.py:204
+msgid "Season 1 Mythic+ Scoreboard"
+msgstr ""
+
+#: wowtools/scoreboard.py:205
+msgid "Dragonflight Season 1 has ended.\n"
+"This scoreboard is final."
+msgstr ""
+
+#: wowtools/scoreboard.py:206
+msgid "This scoreboard is locked."
+msgstr ""
+
+#: wowtools/scoreboard.py:211
+msgid "Scoreboard locked."
+msgstr ""
+
+#: wowtools/scoreboard.py:238 wowtools/scoreboard.py:386
+#: wowtools/scoreboard.py:480
 msgid "Name"
 msgstr "Име"
 
-#: wowtools/scoreboard.py:210 wowtools/scoreboard.py:358
+#: wowtools/scoreboard.py:238 wowtools/scoreboard.py:386
 msgid "Score"
 msgstr "Резултат"
 
-#: wowtools/scoreboard.py:220 wowtools/scoreboard.py:380
+#: wowtools/scoreboard.py:248 wowtools/scoreboard.py:408
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Митхиц+ Гуилд Сцоребоард"
 
-#: wowtools/scoreboard.py:238
+#: wowtools/scoreboard.py:266
 msgid "Last updated <t:{timestamp}:R>\n"
 msgstr ""
 
-#: wowtools/scoreboard.py:266
+#: wowtools/scoreboard.py:294
 msgid "Updates only when there is a ranking change"
 msgstr ""
 
-#: wowtools/scoreboard.py:362 wowtools/scoreboard.py:456
+#: wowtools/scoreboard.py:390 wowtools/scoreboard.py:484
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:368 wowtools/scoreboard.py:463
+#: wowtools/scoreboard.py:396 wowtools/scoreboard.py:491
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:374 wowtools/scoreboard.py:470
+#: wowtools/scoreboard.py:402 wowtools/scoreboard.py:498
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr ""
 
-#: wowtools/scoreboard.py:452
+#: wowtools/scoreboard.py:480
 msgid "Rating"
 msgstr "Оцена"
 
-#: wowtools/scoreboard.py:477
+#: wowtools/scoreboard.py:505
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr ""
 
-#: wowtools/scoreboard.py:481
+#: wowtools/scoreboard.py:509
 msgid "Guild PvP Leaderboard"
 msgstr "Гуилд ПвП Леадербоард"
 
-#: wowtools/scoreboard.py:493
+#: wowtools/scoreboard.py:521
 msgid "RBG Leaderboard"
 msgstr "РБГ Леадербоард"
 
-#: wowtools/scoreboard.py:506
+#: wowtools/scoreboard.py:534
 msgid "2v2 Arena Leaderboard"
 msgstr "2в2 Арена Леадербоард"
 
-#: wowtools/scoreboard.py:519
+#: wowtools/scoreboard.py:547
 msgid "3v3 Arena Leaderboard"
 msgstr "3в3 Арена Леадербоард"
 
-#: wowtools/scoreboard.py:565
+#: wowtools/scoreboard.py:593
 msgid "Guild not found."
 msgstr ""
 
@@ -592,71 +622,71 @@ msgid "\n"
 msgstr "\n"
 "Нису пронађени акредитиви налога услуге."
 
-#: wowtools/wowtools.py:29
+#: wowtools/wowtools.py:30
 #, docstring
 msgid "Interact with various World of Warcraft APIs"
 msgstr "Интеракција са различитим АПИ-јима за Ворлд оф Варцрафт"
 
-#: wowtools/wowtools.py:72
+#: wowtools/wowtools.py:74
 #, docstring
 msgid "Change WoWTools settings."
 msgstr "Промените подешавања ВоВТоолс-а."
 
-#: wowtools/wowtools.py:78
+#: wowtools/wowtools.py:80
 #, docstring
 msgid "Set the region where characters and guilds will be searched for."
 msgstr "Подесите регион где ће се тражити ликови и цехови."
 
-#: wowtools/wowtools.py:84 wowtools/wowtools.py:243
+#: wowtools/wowtools.py:86 wowtools/wowtools.py:245
 msgid "That region does not exist.\n"
 "Valid regions are: {regions}."
 msgstr ""
 
-#: wowtools/wowtools.py:89
+#: wowtools/wowtools.py:91
 msgid "Region set succesfully."
 msgstr "Регион је успешно постављен."
 
-#: wowtools/wowtools.py:96
+#: wowtools/wowtools.py:98
 #, docstring
 msgid "Set the realm of your guild."
 msgstr "Поставите царство свог цеха."
 
-#: wowtools/wowtools.py:101
+#: wowtools/wowtools.py:103
 msgid "Realm cleared."
 msgstr "Краљевство је очишћено."
 
-#: wowtools/wowtools.py:105
+#: wowtools/wowtools.py:107
 msgid "Realm set."
 msgstr "Реалм сет."
 
-#: wowtools/wowtools.py:112
+#: wowtools/wowtools.py:114
 #, docstring
 msgid "(CASE SENSITIVE) Set the name of your guild."
 msgstr "(ОСЈЕТЉИВ ВЕЛИКА и мала слова) Подесите име свог цеха."
 
-#: wowtools/wowtools.py:127
+#: wowtools/wowtools.py:129
 #, docstring
 msgid "Set the key of your wowaudit spreadsheet."
 msgstr "Подесите кључ ваше воваудит табеле."
 
-#: wowtools/wowtools.py:132
+#: wowtools/wowtools.py:134
 msgid "WowAudit spreadsheet key cleared."
 msgstr "Кључ ВовАудит табеле је обрисан."
 
-#: wowtools/wowtools.py:135
+#: wowtools/wowtools.py:137
 msgid "WowAudit spreadsheet key set."
 msgstr "ВовАудит скуп кључева за табелу."
 
-#: wowtools/wowtools.py:142
+#: wowtools/wowtools.py:144
 #, docstring
 msgid "Set the service account key for the bot. This is required for any wowaudit commands."
 msgstr "Подесите кључ сервисног налога за бота. Ово је потребно за све команде воваудит."
 
-#: wowtools/wowtools.py:144
+#: wowtools/wowtools.py:146
 msgid "This command can only be used in DMs."
 msgstr "Ова команда се може користити само у ДМ-овима."
 
-#: wowtools/wowtools.py:147
+#: wowtools/wowtools.py:149
 msgid "A service account is a special type of Google account intended to represent a non-human user that needs to authenticate and be authorized to access data in Google APIs.\n"
 "Since it’s a separate account, by default it does not have access to any spreadsheet until you share it with this account. Just like any other Google account.\n\n"
 "Here’s how to get one:\n"
@@ -686,78 +716,91 @@ msgstr "Налог услуге је посебан тип Гоогле нало
 "Аутоматски ћете преузети ЈСОН датотеку са акредитивима.\n"
 "Приложите ту датотеку командом коју сте управо откуцали."
 
-#: wowtools/wowtools.py:171
+#: wowtools/wowtools.py:173
 msgid "Service account set."
 msgstr "Сервисни налог је постављен."
 
-#: wowtools/wowtools.py:180
+#: wowtools/wowtools.py:182
 #, docstring
 msgid "Instructions for setting up the Blizzard API."
 msgstr "Упутства за подешавање Близзард АПИ-ја."
 
-#: wowtools/wowtools.py:182
+#: wowtools/wowtools.py:184
 msgid "Create a client on https://develop.battle.net/ and then type in `{prefix}set api blizzard client_id,whoops client_secret,whoops` filling in `whoops` with your client's ID and secret."
 msgstr "Креирајте клијента на хттпс://девелоп.баттле.нет/, а затим укуцајте `{prefix}сет апи близзард цлиент_ид,вхоопс цлиент_сецрет,вхоопс` попуњавајући `вхоопс` ИД-ом и тајном вашег клијента."
 
-#: wowtools/wowtools.py:194
+#: wowtools/wowtools.py:196
 #, docstring
 msgid "Set the emotes used for gold, silver and copper."
 msgstr "Поставите емоције које се користе за злато, сребро и бакар."
 
-#: wowtools/wowtools.py:197
+#: wowtools/wowtools.py:199
 msgid "Invalid currency."
 msgstr "Неважећа валута."
 
-#: wowtools/wowtools.py:201
+#: wowtools/wowtools.py:203
 msgid "{currency} emote set to {emoji}"
 msgstr "{currency} емоција постављена на {emoji}"
 
-#: wowtools/wowtools.py:205
+#: wowtools/wowtools.py:207
 msgid "{currency} emote removed."
 msgstr "Уклоњено је {currency} емоција."
 
-#: wowtools/wowtools.py:211
+#: wowtools/wowtools.py:213
 #, docstring
 msgid "Toggle scoreboard images on or off."
 msgstr ""
 
-#: wowtools/wowtools.py:215
+#: wowtools/wowtools.py:217
 msgid "Images disabled."
 msgstr ""
 
-#: wowtools/wowtools.py:218
+#: wowtools/wowtools.py:220
 msgid "Images enabled."
 msgstr ""
 
-#: wowtools/wowtools.py:222
+#: wowtools/wowtools.py:224
 #, docstring
 msgid "Character settings."
 msgstr ""
 
-#: wowtools/wowtools.py:227
+#: wowtools/wowtools.py:229
 #, docstring
 msgid "Set your character name."
 msgstr ""
 
-#: wowtools/wowtools.py:229
+#: wowtools/wowtools.py:231
 msgid "Character name set."
 msgstr ""
 
-#: wowtools/wowtools.py:233
+#: wowtools/wowtools.py:235
 #, docstring
 msgid "Set your character's realm."
 msgstr ""
 
-#: wowtools/wowtools.py:235
+#: wowtools/wowtools.py:237
 msgid "Character realm set."
 msgstr ""
 
-#: wowtools/wowtools.py:239
+#: wowtools/wowtools.py:241
 #, docstring
 msgid "Set your character's region."
 msgstr ""
 
-#: wowtools/wowtools.py:249
+#: wowtools/wowtools.py:251
 msgid "Character region set."
+msgstr ""
+
+#: wowtools/wowtools.py:257
+#, docstring
+msgid "Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned."
+msgstr ""
+
+#: wowtools/wowtools.py:261
+msgid "On message disabled."
+msgstr ""
+
+#: wowtools/wowtools.py:264
+msgid "On message enabled."
 msgstr ""
 

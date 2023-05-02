@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-12-15 14:53+0000\n"
-"PO-Revision-Date: 2022-12-15 14:53\n"
+"POT-Creation-Date: 2023-04-30 20:16+0000\n"
+"PO-Revision-Date: 2023-04-30 20:17\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,49 +17,36 @@ msgstr ""
 "X-Crowdin-File-ID: 20\n"
 "Language: sr_SP\n"
 
-#: battlenetauth/battlenetauth.py:32
+#: battlenetauth/battlenetauth.py:36
 #, docstring
-msgid "Battle.net authenticator commands."
+msgid "Set up the authenticator.\n\n"
+"        Parameters\n"
+"        ----------\n"
+"        serial: str\n"
+"            The serial number of the authenticator.\n"
+"        secret: str\n"
+"            The secret of the authenticator.\n"
+"        "
 msgstr ""
 
-#: battlenetauth/battlenetauth.py:39
-#, docstring
-msgid "Set up the authenticator."
-msgstr ""
-
-#: battlenetauth/battlenetauth.py:41
-msgid "The owner of this bot will have **full access** to your authenticator details.\n"
-"If you do not fully trust the owner of this bot with this information, do not use this command.\n"
-"If you are sure you want to continue, type `yes`. Otherwise, type `no`."
-msgstr ""
-
-#: battlenetauth/battlenetauth.py:51
-msgid "Assuming `no`."
-msgstr ""
-
-#: battlenetauth/battlenetauth.py:63
+#: battlenetauth/battlenetauth.py:52
 msgid "Invalid serial or secret."
 msgstr ""
 
-#: battlenetauth/battlenetauth.py:66
+#: battlenetauth/battlenetauth.py:57
 msgid "Could not connect: {error}"
 msgstr ""
 
-#: battlenetauth/battlenetauth.py:83
-msgid "Authenticator set.\n"
-"Your code is: **{code}**"
-msgstr ""
-
-#: battlenetauth/battlenetauth.py:87
+#: battlenetauth/battlenetauth.py:77
 #, docstring
 msgid "Get your authenticator code."
 msgstr ""
 
-#: battlenetauth/battlenetauth.py:90
+#: battlenetauth/battlenetauth.py:81
 msgid "You haven't set up the authenticator yet."
 msgstr ""
 
-#: battlenetauth/battlenetauth.py:98
+#: battlenetauth/battlenetauth.py:90
 msgid "Your code is: **{code}**\n"
 "It expires {time}"
 msgstr ""
