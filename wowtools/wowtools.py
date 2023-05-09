@@ -17,7 +17,6 @@ from .pvp import PvP
 from .raiderio import Raiderio
 from .scoreboard import Scoreboard
 from .token import Token
-from .wowaudit import Wowaudit
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -25,7 +24,7 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(
-    PvP, Raiderio, Token, Wowaudit, GuildManage, AuctionHouse, Scoreboard, OnMessage, commands.Cog
+    PvP, Raiderio, Token, GuildManage, AuctionHouse, Scoreboard, OnMessage, commands.Cog
 ):
     """Interact with various World of Warcraft APIs"""
 
@@ -122,59 +121,6 @@ class WoWTools(
             await ctx.send(_("Guild name set."))
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    @wowset.command(name="wowaudit_sheet")
-    @commands.is_owner()
-    async def wowset_wowaudit_sheet(self, ctx: commands.Context, key: str = None):
-        """Set the key of your wowaudit spreadsheet."""
-        try:
-            async with ctx.typing():
-                if key is None:
-                    await self.config.wowaudit_key.clear()
-                    await ctx.send(_("WowAudit spreadsheet key cleared."))
-                    return
-                await self.config.wowaudit_key.set(key)
-            await ctx.send(_("WowAudit spreadsheet key set."))
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
-
-    @wowset.command(name="service_account")
-    @commands.is_owner()
-    async def wowset_service_account(self, ctx: commands.Context):
-        """Set the service account key for the bot. This is required for any wowaudit commands."""
-        if ctx.message.guild is not None:
-            await ctx.send(_("This command can only be used in DMs."))
-            return
-
-        s_account_guide = _(
-            "A service account is a special type of Google account intended to represent a non-human user"
-            " that needs to authenticate and be authorized to access data in Google APIs.\n"
-            "Since it’s a separate account, by default it does not have access to any spreadsheet until you share"
-            " it with this account. Just like any other Google account.\n\n"
-            "Here’s how to get one:\n"
-            "1. Go to https://console.developers.google.com/\n"
-            "2. In the box labeled “Search for APIs and Services”, search for “Google Drive API” and enable it.\n"
-            "3. In the box labeled “Search for APIs and Services”, search for “Google Sheets API” and enable it.\n"
-            "4. Go to “APIs & Services > Credentials” and choose “Create credentials > Service account key”.\n"
-            "5. Fill out the form\n"
-            "6. Click “Create” and “Done”.\n"
-            "7. Press “Manage service accounts” above Service Accounts.\n"
-            "8.  Press on ⋮ near recently created service account and select “Manage keys” and then click on"
-            " “ADD KEY > Create new key”.\n"
-            "9. Select JSON key type and press “Create”.\n\n"
-            "You will automatically download a JSON file with credentials.\nAttach that file with the command you"
-            " just typed."
-        )
-
-        if ctx.message.attachments:
-            for attachment in ctx.message.attachments:
-                if attachment.filename == "service_account.json":
-                    await attachment.save(f"{str(cog_data_path(self))}/service_account.json")
-                    await ctx.send(_("Service account set."))
-                else:
-                    await ctx.send(s_account_guide)
-        else:
-            await ctx.send(s_account_guide)
 
     @wowset.command(name="blizzard")
     @commands.is_owner()
