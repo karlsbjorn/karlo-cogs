@@ -434,7 +434,7 @@ class Scoreboard:
 
     async def _generate_scoreboard_image(self, tabulate_list: list, dev_guild: bool = False):
         img_path = str(
-            bundled_data_path(self) / "scoreboard-df-s1-jrk.png"
+            bundled_data_path(self) / "scoreboard-df-s2-jrk.png"
             if dev_guild
             else bundled_data_path(self) / "scoreboard-df-s1.png"
         )

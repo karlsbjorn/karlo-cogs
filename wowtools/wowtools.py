@@ -6,7 +6,6 @@ import discord
 from aiolimiter import AsyncLimiter
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
-from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
