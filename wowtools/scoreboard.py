@@ -19,7 +19,7 @@ from .utils import get_api_client
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
-dev_guilds = [362298824854863882, 133049272517001216]
+DEV_GUILDS = [362298824854863882, 133049272517001216]
 
 
 class Scoreboard:
@@ -56,7 +56,7 @@ class Scoreboard:
                 await ctx.send(embed=embed)
 
     @commands.cooldown(rate=1, per=60, type=commands.BucketType.guild)
-    @wowscoreboard.command(name="pvp")
+    @wowscoreboard.command(name="pvp", hidden=True)
     @commands.guild_only()
     async def wowscoreboard_pvp(self, ctx: commands.Context):
         """Get all the PvP related scoreboards for this guild.
@@ -182,7 +182,7 @@ class Scoreboard:
         await self.config.guild(ctx.guild).scoreboard_blacklist.clear()
         await ctx.send(_("Blacklisted characters cleared."))
 
-    @sbset.command(name="lock")
+    @sbset.command(name="lock", hidden=True)
     @commands.admin()
     @commands.guild_only()
     async def sbset_lock(self, ctx: commands.Context):
@@ -269,7 +269,7 @@ class Scoreboard:
 
             if image:
                 img_file = await self._generate_scoreboard_image(
-                    tabulate_list, dev_guild=guild.id in dev_guilds
+                    tabulate_list, dev_guild=guild.id in DEV_GUILDS
                 )
                 embed.set_image(url=f"attachment://{img_file.filename}")
                 # TODO: Change language to english when 3.5 is out
@@ -416,7 +416,7 @@ class Scoreboard:
 
         if image:
             img_file = await self._generate_scoreboard_image(
-                tabulate_list, dev_guild=ctx.guild.id in dev_guilds
+                tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
             )
             embed.set_image(url=f"attachment://{img_file.filename}")
             return embed, img_file
