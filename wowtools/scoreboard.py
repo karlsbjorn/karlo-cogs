@@ -363,6 +363,7 @@ class Scoreboard:
                     char_score = char_info[1][0]
                     char_score_color = char_info[1][1]
                     char_img = char_info[1][2]
+                    class_color = char_info[1][3]
                     tabulate_list.append(
                         [
                             f"{index + 1}.",
