@@ -338,13 +338,16 @@ class Scoreboard:
 
                 if score > 0 and char_name.lower() not in sb_blacklist:
                     if image:
+                        class_color: str = Scoreboard.get_class_color(
+                            char["character"]["class"]["name"]
+                        )
                         score_color: str = char["keystoneScores"]["allScoreColor"]
                         char_img: str = (
                             "https://render.worldofwarcraft.com/{region}/character/{}".format(
                                 char["character"]["thumbnail"], region=region
                             )
                         )
-                        lb[char_name] = (score, score_color, char_img)
+                        lb[char_name] = (score, score_color, char_img, class_color)
                     else:
                         lb[char_name] = score
 
@@ -367,6 +370,7 @@ class Scoreboard:
                             str(int(char_score)),
                             char_score_color,
                             char_img,
+                            class_color,
                         ]
                     )
                 else:
@@ -380,6 +384,24 @@ class Scoreboard:
                     )
 
         return tabulate_list
+
+    @staticmethod
+    def get_class_color(player_class: str):
+        return {
+            "DEATH KNIGHT": "#C41F3B",
+            "DEMON HUNTER": "#A330C9",
+            "DRUID": "#FF7D0A",
+            "HUNTER": "#ABD473",
+            "MAGE": "#69CCF0",
+            "MONK": "#00FF96",
+            "PALADIN": "#F58CBA",
+            "PRIEST": "#FFFFFF",
+            "ROGUE": "#FFF569",
+            "SHAMAN": "#0070DE",
+            "WARLOCK": "#9482C9",
+            "WARRIOR": "#C79C6E",
+            "EVOKER": "#1F594D",
+        }[player_class.upper()]
 
     async def _generate_dungeon_scoreboard(self, ctx: commands.Context, image: bool = False):
         max_chars = 20
@@ -447,6 +469,7 @@ class Scoreboard:
 
         for character in tabulate_list[:10]:
             score_color = ImageColor.getcolor(character[3], "RGB")
+            class_color = ImageColor.getcolor(character[5], "RGB")
 
             async with self.session.request("GET", character[4]) as resp:
                 image = await resp.content.read()
@@ -454,7 +477,7 @@ class Scoreboard:
                 image = image.resize((65, 65))
                 img.paste(image, (x - 79, y - 15))
 
-            draw.text((x, y), character[1], (255, 255, 255), font=font)
+            draw.text((x, y), character[1], class_color, font=font)
             draw.text((x + 300, y), character[2], score_color, font=font)
             y += 75
 
