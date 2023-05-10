@@ -336,7 +336,7 @@ class Scoreboard:
                 char_name = char["character"]["name"]
                 score = char["keystoneScores"]["allScore"]
 
-                if score > 0 and char_name.lower() not in sb_blacklist:
+                if score > 250 and char_name.lower() not in sb_blacklist:
                     if image:
                         class_color: str = Scoreboard.get_class_color(
                             char["character"]["class"]["name"]
@@ -600,7 +600,7 @@ class Scoreboard:
             return []
         guild_name = guild_name.replace(" ", "-").lower()
 
-        max_level = 60
+        max_level = 70
         async with api_client as client:
             wow_client = client.Retail
             # await self.limiter.acquire()
