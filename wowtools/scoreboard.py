@@ -336,7 +336,7 @@ class Scoreboard:
                 char_name = char["character"]["name"]
                 score = char["keystoneScores"]["allScore"]
 
-                if char_name.lower() not in sb_blacklist:
+                if score > 0 and char_name.lower() not in sb_blacklist:
                     if image:
                         score_color: str = char["keystoneScores"]["allScoreColor"]
                         char_img: str = (
