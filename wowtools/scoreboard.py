@@ -334,6 +334,9 @@ class Scoreboard:
             # TODO: Surely there's a better way to do literally everything below
             for char in roster["guildRoster"]["roster"]:
                 char_name = char["character"]["name"]
+                if any(char.is_digit() for char in char_name):
+                    continue
+
                 score = char["keystoneScores"]["allScore"]
 
                 if score > 250 and char_name.lower() not in sb_blacklist:
