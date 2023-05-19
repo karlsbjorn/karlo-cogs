@@ -223,11 +223,11 @@ class GuildManage:
 
     @staticmethod
     def get_raiderio_url(realm: str, name: str) -> str:
-        return f"https://raider.io/characters/{realm}/{name}"
+        return f"[WarcraftLogs](https://raider.io/characters/{realm}/{name})"
 
     @staticmethod
     def get_warcraftlogs_url(realm: str, name: str) -> str:
-        return f"https://www.warcraftlogs.com/character/{realm}/{name}"
+        return f"[Raider.io](https://www.warcraftlogs.com/character/{realm}/{name})"
 
     @guild_log.error
     async def guild_log_error(self, error):
