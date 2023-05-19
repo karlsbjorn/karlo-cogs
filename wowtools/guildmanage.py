@@ -152,7 +152,7 @@ class GuildManage:
                 title=_("**{member}** joined the guild as **{rank}**").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.guess_member(guild, member_name),
+                description=await self.make_description(guild, member_name),
                 color=discord.Colour.green(),
             )
             embeds.append(embed)
@@ -169,7 +169,7 @@ class GuildManage:
                 new_rank=member_rank_new,
                 changed=_("promoted") if diff[2][0] > diff[2][1] else _("demoted"),
             ),
-            description=await self.guess_member(guild, member_name),
+            description=await self.make_description(guild, member_name),
             color=discord.Colour.blurple(),
         )
         embeds.append(embed)
@@ -183,12 +183,28 @@ class GuildManage:
                 title=_("**{member} ({rank})** left the guild").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.guess_member(guild, member_name),
+                description=await self.make_description(guild, member_name),
                 color=discord.Colour.red(),
             )
             embeds.append(embed)
 
-    async def guess_member(self, guild: discord.Guild, member_name: str) -> str | None:
+    async def make_description(self, guild: discord.Guild, member_name: str) -> str:
+        realm = await self.config.guild(guild).gmanage_realm()
+        description = await self.guess_member(guild, member_name) or ""
+        description += f"\n{self.get_raiderio_url(realm, member_name)} | "
+        description += f"{self.get_warcraftlogs_url(realm, member_name)}"
+        return description
+
+    @staticmethod
+    async def guess_member(guild: discord.Guild, member_name: str) -> str | None:
+        """
+        Guesses the Discord member based on their name using fuzzy string matching.
+
+        :param guild: The Discord guild to search for the member in.
+        :param member_name: The name of the character to search for.
+        :return: A string containing the Discord mention of the guessed member and the percentage
+        match score, or None if no member was found with a high enough match score.
+        """
         choices = [member.display_name for member in guild.members]
         extract = process.extract(
             member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
@@ -199,11 +215,19 @@ class GuildManage:
             mentions.append(guild.members[member[2]].mention)
         return (
             _("Discord: {member} ({percent}%)").format(
-                member=humanize_list(list(mentions), style="or"), percent=str(extract[0][1])
+                member=humanize_list(list(mentions), style="or"), percent=str(round(extract[0][1]))
             )
             if mentions
             else None
         )
+
+    @staticmethod
+    def get_raiderio_url(realm: str, name: str) -> str:
+        return f"https://raider.io/characters/{realm}/{name}"
+
+    @staticmethod
+    def get_warcraftlogs_url(realm: str, name: str) -> str:
+        return f"https://www.warcraftlogs.com/character/{realm}/{name}"
 
     @guild_log.error
     async def guild_log_error(self, error):
