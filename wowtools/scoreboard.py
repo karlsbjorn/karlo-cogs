@@ -464,6 +464,7 @@ class Scoreboard:
 
             score_color = ImageColor.getcolor(character[3], "RGB")
             class_color = ImageColor.getcolor(character[5], "RGB")
+            ilvl_color = self._get_ilvl_color(int(ilvl))
 
             async with self.session.request("GET", character[4]) as resp:
                 image = await resp.content.read()
@@ -472,7 +473,7 @@ class Scoreboard:
                 img.paste(image, (x - 79, y - 15))
 
             draw.text((x, y), char_name, class_color, font=font)
-            draw.text((x + 225, y), ilvl, font=font)
+            draw.text((x + 225, y), ilvl, ilvl_color, font=font)
             draw.text((x + 300, y), score, score_color, font=font)
             y += 75
 
@@ -481,6 +482,19 @@ class Scoreboard:
         img_obj.seek(0)
 
         return discord.File(fp=img_obj, filename="scoreboard.png")
+
+    @staticmethod
+    def _get_ilvl_color(ilvl: int) -> str:
+        if ilvl >= 445:
+            return "#FFC0CB"
+        elif ilvl >= 440:
+            return "#FFA500"
+        elif ilvl >= 435:
+            return "#0047AB"
+        elif ilvl >= 430:
+            return "#00FF00"
+        else:
+            return "#FFFFFF"
 
     @staticmethod
     async def _delete_scoreboard(ctx: commands.Context, sb_channel_id: int, sb_msg_id: int):
