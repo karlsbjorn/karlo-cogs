@@ -351,7 +351,7 @@ class Scoreboard:
                                 char["character"]["thumbnail"], region=region
                             )
                         )
-                        ilvl = char["character"]["items"]["item_level_equipped"]
+                        ilvl = str(char["character"]["items"]["item_level_equipped"])
                         lb[char_name] = (score, score_color, char_img, class_color, ilvl)
                     else:
                         lb[char_name] = score
