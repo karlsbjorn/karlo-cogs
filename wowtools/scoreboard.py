@@ -1,6 +1,7 @@
 import io
 import logging
 from datetime import datetime, timezone
+from enum import Enum
 from typing import List, Optional
 
 import discord
@@ -341,7 +342,7 @@ class Scoreboard:
 
                 if score > 250 and char_name.lower() not in sb_blacklist:
                     if image:
-                        class_color: str = Scoreboard.get_class_color(
+                        class_color: str = ClassColor.get_class_color(
                             char["character"]["class"]["name"]
                         )
                         score_color: str = char["keystoneScores"]["allScoreColor"]
@@ -350,7 +351,8 @@ class Scoreboard:
                                 char["character"]["thumbnail"], region=region
                             )
                         )
-                        lb[char_name] = (score, score_color, char_img, class_color)
+                        ilvl = char["items"]["item_level_equipped"]
+                        lb[char_name] = (score, score_color, char_img, class_color, ilvl)
                     else:
                         lb[char_name] = score
 
@@ -367,6 +369,7 @@ class Scoreboard:
                     char_score_color = char_info[1][1]
                     char_img = char_info[1][2]
                     class_color = char_info[1][3]
+                    ilvl = char_info[1][4]
                     tabulate_list.append(
                         [
                             f"{index + 1}.",
@@ -375,6 +378,7 @@ class Scoreboard:
                             char_score_color,
                             char_img,
                             class_color,
+                            ilvl,
                         ]
                     )
                 else:
@@ -388,24 +392,6 @@ class Scoreboard:
                     )
 
         return tabulate_list
-
-    @staticmethod
-    def get_class_color(player_class: str):
-        return {
-            "DEATH KNIGHT": "#C41F3B",
-            "DEMON HUNTER": "#A330C9",
-            "DRUID": "#FF7D0A",
-            "HUNTER": "#ABD473",
-            "MAGE": "#69CCF0",
-            "MONK": "#00FF96",
-            "PALADIN": "#F58CBA",
-            "PRIEST": "#FFFFFF",
-            "ROGUE": "#FFF569",
-            "SHAMAN": "#0070DE",
-            "WARLOCK": "#9482C9",
-            "WARRIOR": "#C79C6E",
-            "EVOKER": "#1F594D",
-        }[player_class.upper()]
 
     async def _generate_dungeon_scoreboard(self, ctx: commands.Context, image: bool = False):
         max_chars = 20
@@ -472,6 +458,10 @@ class Scoreboard:
         y = 100 if dev_guild else 25
 
         for character in tabulate_list[:10]:
+            char_name = character[1]
+            score = character[2]
+            ilvl = character[6]
+
             score_color = ImageColor.getcolor(character[3], "RGB")
             class_color = ImageColor.getcolor(character[5], "RGB")
 
@@ -481,8 +471,9 @@ class Scoreboard:
                 image = image.resize((65, 65))
                 img.paste(image, (x - 79, y - 15))
 
-            draw.text((x, y), character[1], class_color, font=font)
-            draw.text((x + 300, y), character[2], score_color, font=font)
+            draw.text((x, y), char_name, class_color, font=font)
+            draw.text((x + 225, y), ilvl, font=font)
+            draw.text((x + 300, y), score, score_color, font=font)
             y += 75
 
         img_obj = io.BytesIO()
@@ -733,3 +724,26 @@ class Scoreboard:
         guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
         sb_blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         return guild_name, realm, region, sb_blacklist
+
+
+class ClassColor(Enum):
+    DEATH_KNIGHT = "#C41F3B"
+    DEMON_HUNTER = "#A330C9"
+    DRUID = "#FF7D0A"
+    HUNTER = "#ABD473"
+    MAGE = "#69CCF0"
+    MONK = "#00FF96"
+    PALADIN = "#F58CBA"
+    PRIEST = "#FFFFFF"
+    ROGUE = "#FFF569"
+    SHAMAN = "#0070DE"
+    WARLOCK = "#9482C9"
+    WARRIOR = "#C79C6E"
+    EVOKER = "#1F594D"
+
+    @staticmethod
+    def get_class_color(player_class: str) -> str:
+        try:
+            return ClassColor[player_class.upper().replace(" ", "_")].value
+        except KeyError:
+            return "#FFFFFF"
