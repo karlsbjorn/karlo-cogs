@@ -492,7 +492,7 @@ class Scoreboard:
         elif ilvl >= 435:
             return "#b040c2"
         elif ilvl >= 430:
-            return "#001eff"
+            return "#283982"
         elif ilvl >= 425:
             return "#00ff1a"
         else:
