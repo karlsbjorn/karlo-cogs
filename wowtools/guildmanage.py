@@ -190,9 +190,10 @@ class GuildManage:
 
     async def make_description(self, guild: discord.Guild, member_name: str) -> str:
         realm = await self.config.guild(guild).gmanage_realm()
+        region = await self.config.guild(guild).region()
         description = await self.guess_member(guild, member_name) or ""
-        description += f"\n{self.get_raiderio_url(realm, member_name)} | "
-        description += f"{self.get_warcraftlogs_url(realm, member_name)}"
+        description += f"\n{self.get_raiderio_url(realm, region, member_name)} | "
+        description += f"{self.get_warcraftlogs_url(realm, region, member_name)}"
         return description
 
     @staticmethod
@@ -222,12 +223,18 @@ class GuildManage:
         )
 
     @staticmethod
-    def get_raiderio_url(realm: str, name: str) -> str:
-        return f"[WarcraftLogs](https://raider.io/characters/{realm}/{name})"
+    def get_raiderio_url(realm: str, region: str, name: str) -> str:
+        return (
+            f"[Raider.io]"
+            f"(https://raider.io/characters/{region.lower()}/{realm.lower()}/{name})"
+        )
 
     @staticmethod
-    def get_warcraftlogs_url(realm: str, name: str) -> str:
-        return f"[Raider.io](https://www.warcraftlogs.com/character/{realm}/{name})"
+    def get_warcraftlogs_url(realm: str, region: str, name: str) -> str:
+        return (
+            f"[WarcraftLogs]"
+            f"(https://www.warcraftlogs.com/character/{region.lower()}/{realm.lower()}/{name})"
+        )
 
     @guild_log.error
     async def guild_log_error(self, error):
