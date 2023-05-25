@@ -293,6 +293,25 @@ class Scoreboard:
                 if old_rankings == formatted_rankings:
                     continue
                 embed.set_footer(text=_("Updates only when there is a ranking change"))
+
+            if assistant := self.bot.get_cog("Assistant"):
+                formatted_rankings = (
+                    "The following is a formatted leaderboard of the top 20 characters "
+                    "doing Mythic+ in the guild"
+                    " for the current season.\n\n"
+                )
+                formatted_rankings += (
+                    tabulate(
+                        tabulate_list,
+                        headers=headers,
+                        tablefmt="plain",
+                        disable_numparse=True,
+                    ),
+                )
+                await assistant.add_embedding(
+                    guild, "wowtools_scoreboard", formatted_rankings, True
+                )
+
             embed.description = desc
 
             try:
