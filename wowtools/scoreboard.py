@@ -296,12 +296,11 @@ class Scoreboard:
 
             if assistant := self.bot.get_cog("Assistant"):
                 if image:
-                    for index, char in enumerate(tabulate_list):
-                        char[index] = char[:3] + [char[-1]]
+                    formatted_tab_list = [char[:3] + [char[-1]] for char in tabulate_list]
                 headers = ["#", " | Name", " | Score", " | Item level"]
                 formatted_rankings = "Mythic+ Guild Scoreboard\n\n"
                 formatted_rankings += tabulate(
-                    tabulate_list,
+                    tabulate_list if not image else formatted_tab_list,
                     headers=headers,
                     tablefmt="plain",
                     disable_numparse=True,
