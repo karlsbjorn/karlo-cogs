@@ -297,9 +297,9 @@ class Scoreboard:
             if assistant := self.bot.get_cog("Assistant"):
                 if image:
                     for char in tabulate_list:
+                        char.pop(2)
                         char.pop(3)
                         char.pop(4)
-                        char.pop(5)
                 formatted_rankings = "Mythic+ Guild Scoreboard\n\n"
                 formatted_rankings += tabulate(
                     tabulate_list,
