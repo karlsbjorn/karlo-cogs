@@ -295,11 +295,7 @@ class Scoreboard:
                 embed.set_footer(text=_("Updates only when there is a ranking change"))
 
             if assistant := self.bot.get_cog("Assistant"):
-                formatted_rankings = (
-                    "The following is a formatted leaderboard of the top 20 characters "
-                    "doing Mythic+ in the guild"
-                    " for the current season.\n\n"
-                )
+                formatted_rankings = "Mythic+ Guild Scoreboard\n\n"
                 formatted_rankings += (
                     tabulate(
                         tabulate_list,
@@ -308,9 +304,12 @@ class Scoreboard:
                         disable_numparse=True,
                     ),
                 )
-                await assistant.add_embedding(
-                    guild, "wowtools_scoreboard", formatted_rankings, True
-                )
+                try:
+                    await assistant.add_embedding(
+                        guild, "wowtools_scoreboard", formatted_rankings, True
+                    )
+                except Exception as e:
+                    log.error(f"Error adding scoreboard to Assistant: {e}", exc_info=True)
 
             embed.description = desc
 
