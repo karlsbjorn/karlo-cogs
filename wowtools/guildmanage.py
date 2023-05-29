@@ -61,13 +61,13 @@ class GuildManage:
             role_id = rank_roles.get(str(rank), None)
             role = guild.get_role(role_id) if role_id else None
 
-            table_data.append([rank, rank_string, role.name if role else ""])
+            table_data.append([rank, rank_string, f"@{role.name}" if role else ""])
 
-        headers = ["Rank", "Rank String", "Rank Role"]
+        headers = [_("Rank"), _("Rank String"), _("Rank Role")]
         table = tabulate(table_data, headers, tablefmt="plain")
 
         embed = discord.Embed(
-            title="Rank Settings", description=f"```{table}```", color=await ctx.embed_color()
+            title=_("Rank Settings"), description=f"```{table}```", color=await ctx.embed_color()
         )
         await ctx.send(embed=embed)
 
