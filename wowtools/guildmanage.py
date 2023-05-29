@@ -8,6 +8,7 @@ from rapidfuzz import fuzz, process
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
+from tabulate import tabulate
 
 from .utils import get_api_client
 
@@ -22,9 +23,9 @@ class GuildManage:
         """Configure guild management."""
         pass
 
-    @gmset.command()
+    @gmset.command(name="rankstring")
     @commands.admin()
-    async def rankstring(self, ctx: commands.Context, rank: int, *, rank_string: str):
+    async def gmset_rankstring(self, ctx: commands.Context, rank: int, *, rank_string: str):
         """Bind a rank to a string."""
         if rank not in range(1, 11):
             await ctx.send(_("Rank must be between 1 and 10."))
@@ -35,6 +36,40 @@ class GuildManage:
                 rank_string=rank_string, rank=rank
             )
         )
+
+    @gmset.command(name="rankrole")
+    @commands.admin()
+    async def gmset_rankrole(self, ctx: commands.Context, rank: int, role: discord.Role):
+        """Bind a rank to a role."""
+        if rank not in range(1, 11):
+            await ctx.send(_("Rank must be between 1 and 10."))
+            return
+        await self.config.guild(ctx.guild).guild_rankroles.set_raw(rank, value=role.id)
+        await ctx.send(_("**{role}** bound to **Rank {rank}**.").format(role=role.name, rank=rank))
+
+    @gmset.command(name="view")
+    @commands.admin()
+    async def gmset_view(self, ctx: commands.Context):
+        """View guild rank settings."""
+        guild = ctx.guild
+        rank_strings = await self.config.guild(guild).guild_rankstrings.get_raw()
+        rank_roles = await self.config.guild(guild).guild_rankroles.get_raw()
+
+        table_data = []
+        for rank in range(1, 11):
+            rank_string = rank_strings.get(str(rank), "")
+            role_id = rank_roles.get(str(rank), None)
+            role = guild.get_role(role_id) if role_id else None
+
+            table_data.append([rank, rank_string, role.name if role else ""])
+
+        headers = ["Rank", "Rank String", "Rank Role"]
+        table = tabulate(table_data, headers, tablefmt="fancy_grid")
+
+        embed = discord.Embed(
+            title="Rank Settings", description=f"```{table}```", color=await ctx.embed_color()
+        )
+        await ctx.send(embed=embed)
 
     @gmset.command()
     @commands.admin()

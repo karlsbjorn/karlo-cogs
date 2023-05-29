@@ -45,6 +45,7 @@ class WoWTools(
             "gmanage_guild": None,
             "gmanage_realm": None,
             "guild_rankstrings": {},
+            "guild_rankroles": {},
             "guild_log_channel": None,
             "guild_roster": {},
             "old_sb": None,
