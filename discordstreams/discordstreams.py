@@ -358,19 +358,21 @@ class DiscordStream:
         )
 
         try:
+            start_timestamp = activity.timestamps.get("start")
+            end_timestamp = activity.timestamps.get("end")
             details_msg = (
                 ""
                 + (f"**{activity.name}**\n" if activity.details else "")
                 + (f"{activity.details}\n" if activity.details else "")
                 + (f"{activity.state}\n" if activity.state else "")
                 + (
-                    f"Started {activity.timestamps.get('start')}\n"
-                    if activity.timestamps.get("start")
+                    f"Started {discord.utils.format_dt(datetime.fromtimestamp(start_timestamp), 'R')}\n"
+                    if start_timestamp
                     else ""
                 )
                 + (
-                    f"Ends {activity.timestamps.get('end')}"
-                    if activity.timestamps.get("end")
+                    f"Ends {discord.utils.format_dt(datetime.fromtimestamp(end_timestamp), 'R')}\n"
+                    if end_timestamp
                     else ""
                 )
             )
