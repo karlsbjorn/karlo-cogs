@@ -362,7 +362,17 @@ class DiscordStream:
                 ""
                 + (f"**{activity.name}**\n" if activity.details else "")
                 + (f"{activity.details}\n" if activity.details else "")
-                + (f"{activity.state}" if activity.state else "")
+                + (f"{activity.state}\n" if activity.state else "")
+                + (
+                    f"Started {activity.timestamps.get('start')}\n"
+                    if activity.timestamps.get("start")
+                    else ""
+                )
+                + (
+                    f"Ends {activity.timestamps.get('end')}"
+                    if activity.timestamps.get("end")
+                    else ""
+                )
             )
         except AttributeError:
             details_msg = ""
