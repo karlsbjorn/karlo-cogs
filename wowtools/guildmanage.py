@@ -64,7 +64,7 @@ class GuildManage:
             table_data.append([rank, rank_string, role.name if role else ""])
 
         headers = ["Rank", "Rank String", "Rank Role"]
-        table = tabulate(table_data, headers, tablefmt="fancy_grid")
+        table = tabulate(table_data, headers, tablefmt="plain")
 
         embed = discord.Embed(
             title="Rank Settings", description=f"```{table}```", color=await ctx.embed_color()
