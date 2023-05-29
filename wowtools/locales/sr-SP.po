@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-05-29 12:35+0000\n"
-"PO-Revision-Date: 2023-05-29 12:36\n"
+"POT-Creation-Date: 2023-05-29 12:47+0000\n"
+"PO-Revision-Date: 2023-05-29 12:47\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -106,6 +106,22 @@ msgstr ""
 #: wowtools/guildmanage.py:53
 #, docstring
 msgid "View guild rank settings."
+msgstr ""
+
+#: wowtools/guildmanage.py:66
+msgid "Rank"
+msgstr ""
+
+#: wowtools/guildmanage.py:66
+msgid "Rank String"
+msgstr ""
+
+#: wowtools/guildmanage.py:66
+msgid "Rank Role"
+msgstr ""
+
+#: wowtools/guildmanage.py:70
+msgid "Rank Settings"
 msgstr ""
 
 #: wowtools/guildmanage.py:77

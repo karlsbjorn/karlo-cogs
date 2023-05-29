@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-03-11 09:29+0000\n"
-"PO-Revision-Date: 2023-03-11 09:30\n"
+"POT-Creation-Date: 2023-05-29 13:33+0000\n"
+"PO-Revision-Date: 2023-05-29 13:34\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -73,11 +73,19 @@ msgstr ""
 msgid "Stream started {relative_timestamp}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:378
+#: discordstreams/discordstreams.py:371
+msgid "Started "
+msgstr ""
+
+#: discordstreams/discordstreams.py:372
+msgid "Ends "
+msgstr ""
+
+#: discordstreams/discordstreams.py:385
 msgid "Playing: {activity}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:391
+#: discordstreams/discordstreams.py:398
 msgid "Nothing"
 msgstr ""
 
