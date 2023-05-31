@@ -173,7 +173,7 @@ class AutoPlay(commands.Cog):
     @staticmethod
     def _get_spotify_activity(member: discord.Member) -> Optional[discord.Spotify]:
         """Get the Spotify activity of a member."""
-        return next(
+        activity = next(
             (
                 activity
                 for activity in member.activities
@@ -183,6 +183,9 @@ class AutoPlay(commands.Cog):
             ),
             None,
         )
+        if activity and isinstance(activity, discord.Spotify):
+            return activity
+        return None
 
     @commands.Cog.listener()
     async def on_command(self, ctx: commands.Context):
@@ -200,7 +203,7 @@ class AutoPlay(commands.Cog):
             "pause",
             "resume",
         ]
-        if ctx.command.name in player_commands:
+        if ctx.command.name in player_commands and ctx.guild:
             await self._stop_autoplay(ctx.guild)
 
     @commands.Cog.listener()
@@ -224,7 +227,7 @@ class AutoPlay(commands.Cog):
             "pause",
             "resume",
         ]
-        if interaction.command.name in player_commands:
+        if interaction.command.name in player_commands and interaction.guild:
             await self._stop_autoplay(interaction.guild)
 
     @commands.Cog.listener()
