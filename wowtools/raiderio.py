@@ -141,12 +141,15 @@ class Raiderio:
             fortified_str: [],
             tyrannical_str: [],
         }
+        existing_dungeons = set()
 
         best_runs: List[Dict] = profile_data["mythic_plus_best_runs"]
         for run in best_runs:
             dungeon_short = run["short_name"]
             key_level = run["mythic_level"]
-            runs[dungeon_str] += [dungeon_short]
+            if dungeon_short not in existing_dungeons:
+                runs[dungeon_str] += [dungeon_short]
+                existing_dungeons.add(dungeon_short)
             if run["affixes"][0]["id"] == 10:  # Fortified
                 runs[fortified_str] += [f"+{key_level}"]
             elif run["affixes"][0]["id"] == 9:  # Tyrannical
@@ -156,7 +159,9 @@ class Raiderio:
         for run in alt_runs:
             dungeon_short = run["short_name"]
             key_level = run["mythic_level"]
-            runs[dungeon_str] += [dungeon_short]
+            if dungeon_short not in existing_dungeons:
+                runs[dungeon_str] += [dungeon_short]
+                existing_dungeons.add(dungeon_short)
             if run["affixes"][0]["id"] == 10:  # Fortified
                 runs[fortified_str] += [f"+{key_level}"]
             elif run["affixes"][0]["id"] == 9:  # Tyrannical
