@@ -61,6 +61,7 @@ class Raiderio:
                     "raid_progression",
                     "gear",
                     "mythic_plus_best_runs",
+                    "mythic_plus_alternate_runs",
                     "talents",
                     "guild",
                 ],
@@ -133,17 +134,34 @@ class Raiderio:
         embeds = [embed]
         # Dungeon specifics page
         dungeon_str = _("Dungeon")
-        key_level_str = _("Level")
+        fortified_str = _("Forti")
+        tyrannical_str = _("Tyrann")
         runs = {
             dungeon_str: [],
-            key_level_str: [],
+            fortified_str: [],
+            tyrannical_str: [],
         }
+
         best_runs: List[Dict] = profile_data["mythic_plus_best_runs"]
         for run in best_runs:
             dungeon_short = run["short_name"]
             key_level = run["mythic_level"]
             runs[dungeon_str] += [dungeon_short]
-            runs[key_level_str] += [f"+{key_level}"]
+            if run["affixes"][0]["id"] == 10:  # Fortified
+                runs[fortified_str] += [f"+{key_level}"]
+            elif run["affixes"][0]["id"] == 9:  # Tyrannical
+                runs[tyrannical_str] += [f"+{key_level}"]
+
+        alt_runs: List[Dict] = profile_data["mythic_plus_alternate_runs"]
+        for run in alt_runs:
+            dungeon_short = run["short_name"]
+            key_level = run["mythic_level"]
+            runs[dungeon_str] += [dungeon_short]
+            if run["affixes"][0]["id"] == 10:  # Fortified
+                runs[fortified_str] += [f"+{key_level}"]
+            elif run["affixes"][0]["id"] == 9:  # Tyrannical
+                runs[tyrannical_str] += [f"+{key_level}"]
+
         if runs[dungeon_str]:
             tabulated = tabulate(
                 runs, headers="keys", tablefmt="simple", colalign=("left", "right")
