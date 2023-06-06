@@ -144,6 +144,8 @@ class Raiderio:
         existing_dungeons = set()
 
         best_runs: List[Dict] = profile_data["mythic_plus_best_runs"]
+        alt_runs: List[Dict] = profile_data["mythic_plus_alternate_runs"]
+
         for run in best_runs:
             dungeon_short = run["short_name"]
             key_level = run["mythic_level"]
@@ -155,17 +157,14 @@ class Raiderio:
             elif run["affixes"][0]["id"] == 9:  # Tyrannical
                 runs[tyrannical_str] += [f"+{key_level}"]
 
-        alt_runs: List[Dict] = profile_data["mythic_plus_alternate_runs"]
-        for run in alt_runs:
-            dungeon_short = run["short_name"]
-            key_level = run["mythic_level"]
-            if dungeon_short not in existing_dungeons:
-                runs[dungeon_str] += [dungeon_short]
-                existing_dungeons.add(dungeon_short)
-            if run["affixes"][0]["id"] == 10:  # Fortified
-                runs[fortified_str] += [f"+{key_level}"]
-            elif run["affixes"][0]["id"] == 9:  # Tyrannical
-                runs[tyrannical_str] += [f"+{key_level}"]
+            for alt_run in alt_runs:
+                alt_dungeon_short = alt_run["short_name"]
+                if alt_dungeon_short == dungeon_short:
+                    alt_key_level = alt_run["mythic_level"]
+                    if alt_run["affixes"][0]["id"] == 10:  # Fortified
+                        runs[fortified_str] += [f"+{alt_key_level}"]
+                    elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
+                        runs[tyrannical_str] += [f"+{alt_key_level}"]
 
         if runs[dungeon_str]:
             tabulated = tabulate(
