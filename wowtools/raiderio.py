@@ -190,7 +190,7 @@ class Raiderio:
         alt_runs = profile_data["mythic_plus_alternate_runs"]
 
         for run in best_runs:
-            dungeon_name: str = run["dungeon"]["name"]
+            dungeon_name: str = run["short_name"]
             normalized_name = dungeon_name.upper()
             key_level = run["mythic_level"]
             if normalized_name not in existing_dungeons:
@@ -202,7 +202,7 @@ class Raiderio:
                 runs[dungeon_name]["Tyrannical"].append(f"+{key_level}")
 
         for alt_run in alt_runs:
-            dungeon_name: str = alt_run["dungeon"]["name"]
+            dungeon_name: str = alt_run["short_name"]
             normalized_name = dungeon_name.lower()
             if normalized_name in existing_dungeons:
                 key_level = alt_run["mythic_level"]
