@@ -267,14 +267,14 @@ class Raiderio:
             last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
             ranks = (
-                profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["normal"],
-                profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["heroic"],
-                profile_data["raid_rankings"]["sepulcher-of-the-first-ones"]["mythic"],
+                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["normal"],
+                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["heroic"],
+                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["mythic"],
             )
             difficulties = ("Normal", "Heroic", "Mythic")
 
             raid_progression: str = profile_data["raid_progression"][
-                "sepulcher-of-the-first-ones"
+                "aberrus-the-shadowed-crucible"
             ]["summary"]
 
             embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)

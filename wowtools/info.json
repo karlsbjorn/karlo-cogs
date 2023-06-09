@@ -5,7 +5,6 @@
     "install_msg": "Make sure you check out [p]help wowset after loading this cog and set all your settings as most of the commands won't work otherwise.",
     "tags": ["warcraft", "world of warcraft"],
     "requirements": [
-        "gspread-asyncio",
         "tabulate",
         "aiolimiter",
         "Pillow",

@@ -19,6 +19,7 @@ log = logging.getLogger("red.karlo-cogs.wowtools")
 class GuildManage:
     @commands.group()
     @commands.admin()
+    @commands.guild_only()
     async def gmset(self, ctx: commands.Context):
         """Configure guild management."""
         pass
@@ -51,7 +52,7 @@ class GuildManage:
     @commands.admin()
     async def gmset_view(self, ctx: commands.Context):
         """View guild rank settings."""
-        guild = ctx.guild
+        guild: discord.Guild = ctx.guild
         rank_strings = await self.config.guild(guild).guild_rankstrings.get_raw()
         rank_roles = await self.config.guild(guild).guild_rankroles.get_raw()
 
