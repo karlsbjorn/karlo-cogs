@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
+from typing import List
 
 import discord
 from dateutil.parser import isoparse
@@ -132,43 +132,13 @@ class Raiderio:
             text=_("Last updated: {char_last_updated}").format(char_last_updated=char_last_updated)
         )
         embeds = [embed]
-        # Dungeon specifics page
-        dungeon_str = _("Dungeon")
-        fortified_str = _("Forti")
-        tyrannical_str = _("Tyrann")
-        runs = {
-            dungeon_str: [],
-            fortified_str: [],
-            tyrannical_str: [],
-        }
-        existing_dungeons = set()
 
-        best_runs: List[Dict] = profile_data["mythic_plus_best_runs"]
-        alt_runs: List[Dict] = profile_data["mythic_plus_alternate_runs"]
-
-        for run in best_runs:
-            dungeon_short = run["short_name"]
-            key_level = run["mythic_level"]
-            if dungeon_short not in existing_dungeons:
-                runs[dungeon_str] += [dungeon_short]
-                existing_dungeons.add(dungeon_short)
-            if run["affixes"][0]["id"] == 10:  # Fortified
-                runs[fortified_str] += [f"+{key_level}"]
-            elif run["affixes"][0]["id"] == 9:  # Tyrannical
-                runs[tyrannical_str] += [f"+{key_level}"]
-
-            for alt_run in alt_runs:
-                alt_dungeon_short = alt_run["short_name"]
-                if alt_dungeon_short == dungeon_short:
-                    alt_key_level = alt_run["mythic_level"]
-                    if alt_run["affixes"][0]["id"] == 10:  # Fortified
-                        runs[fortified_str] += [f"+{alt_key_level}"]
-                    elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
-                        runs[tyrannical_str] += [f"+{alt_key_level}"]
-
-        if runs[dungeon_str]:
+        if runs := self.get_all_runs(profile_data):
             tabulated = tabulate(
-                runs, headers="keys", tablefmt="simple", colalign=("left", "right")
+                runs.items(),
+                headers=[_("Dungeon"), _("Fortified"), _("Tyrannical")],
+                tablefmt="simple",
+                colalign=("left", "right", "right"),
             )
 
             embed = discord.Embed(
@@ -200,6 +170,47 @@ class Raiderio:
         await ProfileMenu(pages=embeds, talents=char_talents, disable_after_timeout=True).start(
             ctx
         )
+
+    def get_all_runs(self, profile_data: dict) -> dict[str, dict[str, list[str]]]:
+        """Extracts info about a player's Mythic+ dungeon runs from their Raider.IO profile data.
+
+        Args:
+            profile_data (dict): A dictionary containing the player's Raider.IO profile data.
+
+        Returns:
+            dict: A dictionary containing information about the player's runs in each dungeon.
+            The keys of the dictionary are the names of the dungeons, and the values are
+            dictionaries with keys "Fortified" and "Tyrannical" and values that are lists of
+            strings representing the key levels completed with the corresponding affixes.
+        """
+        runs = {}
+        existing_dungeons = set()
+
+        best_runs = profile_data["mythic_plus_best_runs"]
+        alt_runs = profile_data["mythic_plus_alternate_runs"]
+
+        for run in best_runs:
+            dungeon_name: str = run["dungeon"]["name"]
+            normalized_name = dungeon_name.upper()
+            key_level = run["mythic_level"]
+            if normalized_name not in existing_dungeons:
+                runs[dungeon_name] = {"Fortified": [], "Tyrannical": []}
+                existing_dungeons.add(normalized_name)
+            if run["affixes"][0]["id"] == 10:  # Fortified
+                runs[dungeon_name]["Fortified"].append(f"+{key_level}")
+            elif run["affixes"][0]["id"] == 9:  # Tyrannical
+                runs[dungeon_name]["Tyrannical"].append(f"+{key_level}")
+
+        for alt_run in alt_runs:
+            dungeon_name: str = alt_run["dungeon"]["name"]
+            normalized_name = dungeon_name.lower()
+            if normalized_name in existing_dungeons:
+                key_level = alt_run["mythic_level"]
+                if alt_run["affixes"][0]["id"] == 10:  # Fortified
+                    runs[dungeon_name]["Fortified"].append(f"+{key_level}")
+                elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
+                    runs[dungeon_name]["Tyrannical"].append(f"+{key_level}")
+        return runs
 
     @raiderio_profile.autocomplete("realm")
     async def raiderio_profile_realm_autocomplete(
