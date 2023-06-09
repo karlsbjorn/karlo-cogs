@@ -134,8 +134,11 @@ class Raiderio:
         embeds = [embed]
 
         if runs := self.get_all_runs(profile_data):
+            data = [
+                [dungeon, runs["Fortified"], runs["Tyrannical"]] for dungeon, runs in runs.items()
+            ]
             tabulated = tabulate(
-                runs.items(),
+                data,
                 headers=[_("Dungeon"), _("Fortified"), _("Tyrannical")],
                 tablefmt="simple",
                 colalign=("left", "right", "right"),
@@ -194,22 +197,22 @@ class Raiderio:
             normalized_name = dungeon_name.upper()
             key_level = run["mythic_level"]
             if normalized_name not in existing_dungeons:
-                runs[dungeon_name] = {"Fortified": [], "Tyrannical": []}
+                runs[dungeon_name] = {"Fortified": "", "Tyrannical": ""}
                 existing_dungeons.add(normalized_name)
             if run["affixes"][0]["id"] == 10:  # Fortified
-                runs[dungeon_name]["Fortified"].append(f"+{key_level}")
+                runs[dungeon_name]["Fortified"] = f"+{key_level}"
             elif run["affixes"][0]["id"] == 9:  # Tyrannical
-                runs[dungeon_name]["Tyrannical"].append(f"+{key_level}")
+                runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
 
         for alt_run in alt_runs:
             dungeon_name: str = alt_run["short_name"]
-            normalized_name = dungeon_name.lower()
+            normalized_name = dungeon_name.upper()
             if normalized_name in existing_dungeons:
                 key_level = alt_run["mythic_level"]
                 if alt_run["affixes"][0]["id"] == 10:  # Fortified
-                    runs[dungeon_name]["Fortified"].append(f"+{key_level}")
+                    runs[dungeon_name]["Fortified"] = f"+{key_level}"
                 elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
-                    runs[dungeon_name]["Tyrannical"].append(f"+{key_level}")
+                    runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
         return runs
 
     @raiderio_profile.autocomplete("realm")
