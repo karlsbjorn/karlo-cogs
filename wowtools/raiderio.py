@@ -139,7 +139,7 @@ class Raiderio:
             ]
             tabulated = tabulate(
                 data,
-                headers=[_("Dungeon"), _("Fortified"), _("Tyrannical")],
+                headers=[_("Dungeon"), _("Forti"), _("Tyrann")],
                 tablefmt="simple",
                 colalign=("left", "right", "right"),
             )
