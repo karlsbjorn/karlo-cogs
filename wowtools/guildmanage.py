@@ -298,8 +298,18 @@ class GuildManage:
         ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
         if ingame_member:
             msg += f"{ingame_member}\n"
-            msg += f"{self.get_raiderio_url(member_name)} | "
-            msg += f"{self.get_warcraftlogs_url(member_name)}"
+
+            rio_url = self.get_raiderio_url(
+                await self.config.guild(ctx.guild).gmanage_realm(),
+                await self.config.guild(ctx.guild).region(),
+                member_name,
+            )
+            wcl_url = self.get_warcraftlogs_url(
+                await self.config.guild(ctx.guild).gmanage_realm(),
+                await self.config.guild(ctx.guild).region(),
+                member_name,
+            )
+            msg += f"{rio_url} | {wcl_url}"
 
         embed = discord.Embed(
             title=f"**{member_name.capitalize()}**",
