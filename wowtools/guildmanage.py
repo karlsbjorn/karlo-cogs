@@ -129,7 +129,7 @@ class GuildManage:
         }
         return roster
 
-    @commands.command()
+    @gmset.command()
     @commands.guild_only()
     async def guildlog(self, ctx: commands.Context, channel: discord.TextChannel | discord.Thread):
         """Set the channel for guild logs."""
@@ -279,3 +279,41 @@ class GuildManage:
     async def get_rank_string(self, guild: discord.Guild, rank: int) -> str:
         rank_strings: dict = await self.config.guild(guild).guild_rankstrings()
         return rank_strings.get(str(rank), f"Rank {rank}")
+
+    @commands.group()
+    @commands.guild_only()
+    async def gmanage(self, ctx: commands.Context):
+        """Guild management commands."""
+        pass
+
+    @gmanage.command(name="findmember")
+    @commands.guild_only()
+    async def gmanage_findmember(self, ctx: commands.Context, member_name: str):
+        """Find a member in the guild."""
+        msg = ""
+        discord_member = await self.guess_member(ctx.guild, member_name)
+        if discord_member:
+            msg += f"{discord_member}\n"
+
+        ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
+        if ingame_member:
+            msg += f"{ingame_member}\n"
+
+        if msg:
+            msg = discord.utils.escape_mentions(msg)
+        await ctx.send(msg or _("Nothing found."))
+
+    async def guess_ingame_member(self, guild: discord.Guild, member_name: str) -> str | None:
+        roster = await self.get_guild_roster(guild)
+        choices = [member[0] for member in roster]
+        extract = process.extract(
+            member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
+        )
+        return (
+            _("In-game: {member} ({percent}%)").format(
+                member=humanize_list([member[0] for member in extract], style="or"),
+                percent=str(round(extract[0][1])),
+            )
+            if extract
+            else None
+        )
