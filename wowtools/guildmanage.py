@@ -4,7 +4,7 @@ from typing import Dict
 import dictdiffer
 import discord
 from discord.ext import tasks
-from rapidfuzz import fuzz, process
+from rapidfuzz import fuzz, process, utils
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
@@ -244,7 +244,12 @@ class GuildManage:
         """
         choices = [member.display_name for member in guild.members]
         extract = process.extract(
-            member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
+            member_name,
+            choices,
+            scorer=fuzz.WRatio,
+            limit=5,
+            score_cutoff=80,
+            processor=utils.default_process,
         )
 
         mentions = []
@@ -326,7 +331,12 @@ class GuildManage:
         roster = await self.get_guild_roster(guild)
         choices = list(roster)
         extract = process.extract(
-            member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
+            member_name,
+            choices,
+            scorer=fuzz.WRatio,
+            limit=5,
+            score_cutoff=80,
+            processor=utils.default_process,
         )
         return (
             _("In-game: {member} ({percent}%)").format(
