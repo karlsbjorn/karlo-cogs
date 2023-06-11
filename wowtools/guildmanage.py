@@ -298,9 +298,17 @@ class GuildManage:
         ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
         if ingame_member:
             msg += f"{ingame_member}\n"
+            msg += f"{self.get_raiderio_url(member_name)} | "
+            msg += f"{self.get_warcraftlogs_url(member_name)}"
+
+        embed = discord.Embed(
+            title=f"**{member_name.capitalize()}**",
+            description=msg or _("Nothing found."),
+            color=await ctx.embed_color(),
+        )
 
         await ctx.send(
-            msg or _("Nothing found."),
+            embed=embed,
             allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
         )
 
