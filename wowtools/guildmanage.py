@@ -299,13 +299,14 @@ class GuildManage:
         if ingame_member:
             msg += f"{ingame_member}\n"
 
-        if msg:
-            msg = discord.utils.escape_mentions(msg)
-        await ctx.send(msg or _("Nothing found."))
+        await ctx.send(
+            msg or _("Nothing found."),
+            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
+        )
 
     async def guess_ingame_member(self, guild: discord.Guild, member_name: str) -> str | None:
         roster = await self.get_guild_roster(guild)
-        choices = [member[0] for member in roster]
+        choices = list(roster)
         extract = process.extract(
             member_name, choices, scorer=fuzz.WRatio, limit=5, score_cutoff=80
         )
