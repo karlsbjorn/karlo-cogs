@@ -141,11 +141,11 @@ class AutoPlay(commands.Cog):
         log.verbose(f"Querying {current_activity.track_url}")
         query = await Query.from_string(current_activity.track_url)
         response = await self.bot.lavalink.search_query(query=query)
-        if response is None or not response.tracks:
+        if response.loadType == "error":
             log.verbose(f"No tracks found. Response: {response}")
             return
 
-        log.verbose(f"Query successful: {response.tracks[0]}")
+        log.verbose(f"Query successful: {response.data}")
 
         if player.paused:
             # To prevent overlapping tracks, we'll stop the player first to clear the paused track.
@@ -153,10 +153,10 @@ class AutoPlay(commands.Cog):
         if player.queue.size():
             log.verbose("Queue is not empty, clearing.")
             player.queue.clear()
-        log.verbose(f"Playing {response.tracks[0].info.title}.")
+        log.verbose(f"Playing {response.data.info.title}.")
         await player.play(
             query=query,
-            track=response.tracks[0],
+            track=response.data,
             requester=member_after,
         )
         await self.config.guild(member_after.guild).paused_track.set(None)
@@ -183,9 +183,7 @@ class AutoPlay(commands.Cog):
             ),
             None,
         )
-        if activity and isinstance(activity, discord.Spotify):
-            return activity
-        return None
+        return activity if activity and isinstance(activity, discord.Spotify) else None
 
     @commands.Cog.listener()
     async def on_command(self, ctx: commands.Context):
