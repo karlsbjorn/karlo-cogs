@@ -317,7 +317,6 @@ class GuildManage:
             msg += f"{rio_url} | {wcl_url}"
 
         embed = discord.Embed(
-            title=f"**{member_name.capitalize()}**",
             description=msg or _("Nothing found."),
             color=await ctx.embed_color(),
         )

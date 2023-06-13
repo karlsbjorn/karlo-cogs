@@ -7,7 +7,7 @@ from typing import List, Optional
 import discord
 from aiohttp import ClientResponseError
 from discord.ext import tasks
-from PIL import Image, ImageColor, ImageDraw, ImageFont
+from PIL import Image, ImageColor, ImageDraw, ImageFilter, ImageFont
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
@@ -495,7 +495,14 @@ class Scoreboard:
                 img.paste(image, (x - 79, y - 15))
 
             draw.text((x, y), char_name, class_color, font=font)
-            draw.text((x + 225, y), ilvl, ilvl_color, font=font)
+            if ilvl_color == "#FF69B4":  # This is whatever the color for the highest ilvl is
+                glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
+                ImageDraw.Draw(glow).text((x + 225, y), ilvl, ilvl_color, font=font)
+                blurred_glow = glow.filter(ImageFilter.GaussianBlur(5))
+                ImageDraw.Draw(blurred_glow).text((x + 225, y), ilvl, ilvl_color, font=font)
+                img = Image.alpha_composite(img, blurred_glow)
+            else:
+                draw.text((x + 225, y), ilvl, ilvl_color, font=font)
             draw.text((x + 300, y), score, score_color, font=font)
             y += 75
 
@@ -508,7 +515,7 @@ class Scoreboard:
     @staticmethod
     def _get_ilvl_color(ilvl: int) -> str:
         if ilvl >= 443:
-            return "#FFC0CB"
+            return "#FF69B4"
         elif ilvl >= 440:
             return "#FFA500"
         elif ilvl >= 435:
