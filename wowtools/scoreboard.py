@@ -293,6 +293,7 @@ class Scoreboard:
                     continue
                 embed.set_footer(text=_("Updates only when there is a ranking change"))
 
+            ass_integration = await self.config.assistant_cog_integration()
             if assistant := self.bot.get_cog("Assistant"):
                 await self.add_assistant_embedding(assistant, guild, image, tabulate_list)
 
@@ -367,13 +368,13 @@ class Scoreboard:
                         class_color: str = ClassColor.get_class_color(
                             char["character"]["class"]["name"]
                         )
-                        score_color: str = char["keystoneScores"]["allScoreColor"]
                         char_img: str = (
                             "https://render.worldofwarcraft.com/{region}/character/{}".format(
                                 char["character"]["thumbnail"], region=region
                             )
                         )
                         ilvl = str(char["character"]["items"]["item_level_equipped"])
+                        score_color: str = char["keystoneScores"]["allScoreColor"]
                         lb[char_name] = (score, score_color, char_img, class_color, ilvl)
                     else:
                         lb[char_name] = score

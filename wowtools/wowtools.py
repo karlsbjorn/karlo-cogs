@@ -37,6 +37,7 @@ class WoWTools(
                 "silver": None,
                 "copper": None,
             },
+            "assistant_cog_integration": False,
         }
         default_guild = {
             "region": None,
@@ -208,6 +209,17 @@ class WoWTools(
         else:
             await self.config.guild(ctx.guild).on_message.set(True)
             await ctx.send(_("On message enabled."))
+
+    @wowset.command(name="assintegration")
+    @commands.is_owner()
+    async def wowset_assintegration(self, ctx: commands.Context):
+        enabled = await self.config.assistant_cog_integration()
+        if enabled:
+            await self.config.assistant_cog_integration.set(False)
+            await ctx.send(_("Assistant cog integration disabled."))
+        else:
+            await self.config.assistant_cog_integration.set(True)
+            await ctx.send(_("Assistant cog integration enabled."))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
