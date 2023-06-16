@@ -294,7 +294,7 @@ class Scoreboard:
                 embed.set_footer(text=_("Updates only when there is a ranking change"))
 
             ass_integration = await self.config.assistant_cog_integration()
-            if assistant := self.bot.get_cog("Assistant") and ass_integration:
+            if (assistant := self.bot.get_cog("Assistant")) and ass_integration:
                 await self.add_assistant_embedding(assistant, guild, image, tabulate_list)
 
             embed.description = desc

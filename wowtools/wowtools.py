@@ -213,6 +213,7 @@ class WoWTools(
     @wowset.command(name="assintegration")
     @commands.is_owner()
     async def wowset_assintegration(self, ctx: commands.Context):
+        """Toggle the assistant cog integration."""
         enabled = await self.config.assistant_cog_integration()
         if enabled:
             await self.config.assistant_cog_integration.set(False)
