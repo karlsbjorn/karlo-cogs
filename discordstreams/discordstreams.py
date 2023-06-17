@@ -269,8 +269,7 @@ class DiscordStreams(commands.Cog):
 
         await set_contextual_locales_from_guild(self.bot, member_guild)
 
-        banner = (await self.bot.fetch_user(member.id)).banner
-        stream = DiscordStream(after.channel, member, banner)
+        stream = DiscordStream(after.channel, member)
         embed = await stream.make_embed()
 
         active_messages = await self.config.guild(member_guild).active_messages()
