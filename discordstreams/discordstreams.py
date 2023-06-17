@@ -160,8 +160,7 @@ class DiscordStreams(commands.Cog):
             current_embed = message.embeds[0]
             current_embed_dict = current_embed.to_dict()
 
-            banner = (await self.bot.fetch_user(member.id)).banner
-            stream = DiscordStream(member.voice.channel, member, banner)
+            stream = DiscordStream(member.voice.channel, member)
 
             new_embed = await stream.make_embed(start_time=message.created_at)
             new_embed_dict = new_embed.to_dict()
@@ -315,9 +314,7 @@ class DiscordStreams(commands.Cog):
 
 
 class DiscordStream:
-    def __init__(
-        self, voice_channel: discord.VoiceChannel, member: discord.Member, banner: discord.Asset
-    ):
+    def __init__(self, voice_channel: discord.VoiceChannel, member: discord.Member):
         """
         A class to represent a Discord "Go Live" stream.
 
@@ -326,7 +323,6 @@ class DiscordStream:
         """
         self.voice_channel = voice_channel
         self.member = member
-        self.banner = banner
 
     async def make_embed(self, start_time: Optional[datetime] = None) -> discord.Embed:
         """
@@ -338,6 +334,7 @@ class DiscordStream:
         zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
+        banner: discord.Asset | None = (await self.bot.fetch_user(member.id)).banner
 
         activity = self.get_activity()
 
@@ -379,8 +376,8 @@ class DiscordStream:
                 value=details_msg,
             )
 
-        if self.banner:
-            embed.set_image(url=self.banner.url)
+        if banner:
+            embed.set_image(url=banner.url)
 
         embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
 
