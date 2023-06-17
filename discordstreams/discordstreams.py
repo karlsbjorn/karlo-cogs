@@ -160,7 +160,7 @@ class DiscordStreams(commands.Cog):
             current_embed = message.embeds[0]
             current_embed_dict = current_embed.to_dict()
 
-            stream = DiscordStream(member.voice.channel, member)
+            stream = DiscordStream(self.bot, member.voice.channel, member)
 
             new_embed = await stream.make_embed(start_time=message.created_at)
             new_embed_dict = new_embed.to_dict()
@@ -269,7 +269,7 @@ class DiscordStreams(commands.Cog):
 
         await set_contextual_locales_from_guild(self.bot, member_guild)
 
-        stream = DiscordStream(after.channel, member)
+        stream = DiscordStream(self.bot, after.channel, member)
         embed = await stream.make_embed()
 
         active_messages = await self.config.guild(member_guild).active_messages()
@@ -313,13 +313,14 @@ class DiscordStreams(commands.Cog):
 
 
 class DiscordStream:
-    def __init__(self, voice_channel: discord.VoiceChannel, member: discord.Member):
+    def __init__(self, bot: Red, voice_channel: discord.VoiceChannel, member: discord.Member):
         """
         A class to represent a Discord "Go Live" stream.
 
         :param voice_channel: Voice channel where the stream is taking place
         :param member: The member who started the stream
         """
+        self.bot = bot
         self.voice_channel = voice_channel
         self.member = member
 
