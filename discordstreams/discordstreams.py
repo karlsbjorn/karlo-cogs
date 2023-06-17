@@ -334,7 +334,7 @@ class DiscordStream:
         zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
-        banner: discord.Asset | None = (await self.bot.fetch_user(member.id)).banner
+        self.banner: discord.Asset | None = (await self.bot.fetch_user(member.id)).banner
 
         activity = self.get_activity()
 
@@ -376,8 +376,8 @@ class DiscordStream:
                 value=details_msg,
             )
 
-        if banner:
-            embed.set_image(url=banner.url)
+        if self.banner:
+            embed.set_image(url=self.banner.url)
 
         embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
 
