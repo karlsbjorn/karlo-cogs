@@ -79,7 +79,7 @@ class Raiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"]["vault-of-the-incarnates"]["summary"]
+        char_raid = profile_data["raid_progression"]["aberrus-the-shadowed-crucible"]["summary"]
         char_last_updated = self._parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
