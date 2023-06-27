@@ -10,6 +10,7 @@ from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .auctionhouse import AuctionHouse
+from .cvardocs import CVar, CVarDocs
 from .guildmanage import GuildManage
 from .on_message import OnMessage
 from .pvp import PvP
@@ -23,7 +24,7 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(
-    PvP, Raiderio, Token, GuildManage, AuctionHouse, Scoreboard, OnMessage, commands.Cog
+    PvP, Raiderio, Token, GuildManage, AuctionHouse, Scoreboard, OnMessage, CVarDocs, commands.Cog
 ):
     """Interact with various World of Warcraft APIs"""
 
@@ -66,6 +67,7 @@ class WoWTools(
         self.config.register_user(**default_user)
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
+        self.cvar_cache: list[CVar] = []
         self.update_dungeon_scoreboard.start()
         self.guild_log.start()
 
