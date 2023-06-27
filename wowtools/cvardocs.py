@@ -195,6 +195,6 @@ class CVarDocs:
             )
             category = cells[4].text.replace("\n", "").strip()
             scope = cells[5].text.replace("\n", "").strip()
-            description = cells[6].text.replace("\n", "").strip()
+            description = cells[6].text.strip()
             cvars.append(CVar(name, default, category, scope, description, version))
         return cvars
