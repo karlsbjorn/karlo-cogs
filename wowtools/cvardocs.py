@@ -65,6 +65,11 @@ class CVarView(discord.ui.View):
         self.author: int = author
         self.add_item(CVarSelect(cvars, current_cvar, author))
 
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(view=self)
+
     async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user.id != self.author:
             await interaction.response.send_message(
