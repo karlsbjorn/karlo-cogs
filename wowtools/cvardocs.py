@@ -52,10 +52,12 @@ class CVarDocs:
         if cvar.category:
             embed.add_field(name=_("Category"), value=cvar.category, inline=False)
         if cvar.scope:
-            embed.add_field(name=_("Scope"), value=cvar.scope, inline=False)
+            embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
-        await interaction.response.send_message(embed=embed)
+
+        content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
+        await interaction.response.send_message(content=content, embed=embed)
 
     @slash_cvar.autocomplete("cvar")
     async def slash_cvar_autocomplete(
