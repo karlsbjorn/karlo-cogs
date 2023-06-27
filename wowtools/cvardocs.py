@@ -11,6 +11,69 @@ _ = Translator("WoWTools", __file__)
 log = logging.getLogger("red.karlo-cogs.wowtools")
 
 
+class CVarSelect(discord.ui.Select):
+    def __init__(self, cvars: list, current_cvar: str, author: int):
+        self.cvars = cvars
+        self.current_cvar = current_cvar
+        self.author = author
+
+        options = [
+            discord.SelectOption(
+                label=cvar.name, value=cvar.name, description=cvar.description[:100]
+            )
+            for cvar in cvars
+        ]
+        if current_cvar:
+            options = sorted(
+                options, key=lambda x: fuzz.partial_ratio(x.value, current_cvar), reverse=True
+            )
+        else:
+            # Sort by name
+            options = sorted(options, key=lambda x: x.value)
+        super().__init__(placeholder="Select a CVar", options=options[:25])
+
+    async def callback(self, interaction: discord.Interaction):
+        cvar = self.values[0]
+        cvar: CVar = next((cvar_obj for cvar_obj in self.cvars if cvar_obj.name == cvar))
+
+        embed = discord.Embed(
+            title=cvar.name,
+            description=cvar.description,
+            color=interaction.message.embeds[0].color,
+        )
+        embed.add_field(
+            name=_("Default"),
+            value=_("Yes") if cvar.default else _("No"),
+            inline=False,
+        )
+        if cvar.category:
+            embed.add_field(name=_("Category"), value=cvar.category, inline=False)
+        if cvar.scope:
+            embed.add_field(name=_("Scope"), value=cvar.scope)
+        if cvar.version:
+            embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
+
+        content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
+        await interaction.response.edit_message(
+            content=content, embed=embed, view=CVarView(self.cvars, cvar.name, interaction.user.id)
+        )
+
+
+class CVarView(discord.ui.View):
+    def __init__(self, cvars, current_cvar, author):
+        super().__init__()
+        self.author: int = author
+        self.add_item(CVarSelect(cvars, current_cvar, author))
+
+    async def interaction_check(self, interaction: discord.Interaction):
+        if interaction.user.id != self.author:
+            await interaction.response.send_message(
+                _("You are not authorized to interact with this."), ephemeral=True
+            )
+            return False
+        return True
+
+
 @dataclass
 class CVar:
     name: str
@@ -29,7 +92,7 @@ class CVarDocs:
         description="Get information about a WoW CVar",
     )
     async def slash_cvar(self, interaction: discord.Interaction, cvar: str):
-        """Get information about a WoW CVar"""
+        """Get information about a WoW Console Variable"""
         if not self.cvar_cache:
             self.cvar_cache = await self.get_all_cvars()
 
@@ -57,7 +120,11 @@ class CVarDocs:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
 
         content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
-        await interaction.response.send_message(content=content, embed=embed)
+        await interaction.response.send_message(
+            content=content,
+            embed=embed,
+            view=CVarView(self.cvar_cache, cvar.name, interaction.user.id),
+        )
 
     @slash_cvar.autocomplete("cvar")
     async def slash_cvar_autocomplete(
