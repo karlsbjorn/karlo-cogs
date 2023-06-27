@@ -41,11 +41,18 @@ class CVarSelect(discord.ui.Select):
             description=cvar.description,
             color=interaction.message.embeds[0].color,
         )
-        embed.add_field(
-            name=_("Default"),
-            value=_("Yes") if cvar.default else _("No"),
-            inline=False,
-        )
+        if cvar.default:
+            if cvar.default is False:
+                default = _("No")
+            elif cvar.default is True:
+                default = _("Yes")
+            else:
+                default = cvar.default
+            embed.add_field(
+                name=_("Default"),
+                value=default,
+                inline=False,
+            )
         if cvar.category:
             embed.add_field(name=_("Category"), value=cvar.category, inline=False)
         if cvar.scope:
@@ -116,7 +123,7 @@ class CVarDocs:
         if cvar.default:
             if cvar.default is False:
                 default = _("No")
-            elif cvar.default == True:
+            elif cvar.default is True:
                 default = _("Yes")
             else:
                 default = cvar.default
