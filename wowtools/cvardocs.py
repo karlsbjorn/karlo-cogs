@@ -63,6 +63,7 @@ class CVarView(discord.ui.View):
     def __init__(self, cvars, current_cvar, author):
         super().__init__()
         self.author: int = author
+        self.message: discord.Message = None
         self.add_item(CVarSelect(cvars, current_cvar, author))
 
     async def on_timeout(self):
@@ -82,7 +83,7 @@ class CVarView(discord.ui.View):
 @dataclass
 class CVar:
     name: str
-    default: bool
+    default: bool | str | int | float
     category: str
     scope: str
     description: str
@@ -112,23 +113,31 @@ class CVarDocs:
             description=cvar.description,
             color=await self.bot.get_embed_color(interaction.channel),
         )
-        embed.add_field(
-            name=_("Default"),
-            value=_("Yes") if cvar.default else _("No"),
-            inline=False,
-        )
+        if cvar.default:
+            if cvar.default is False:
+                default = _("No")
+            elif cvar.default == True:
+                default = _("Yes")
+            else:
+                default = cvar.default
+            embed.add_field(
+                name=_("Default"),
+                value=default,
+                inline=False,
+            )
         if cvar.category:
-            embed.add_field(name=_("Category"), value=cvar.category, inline=False)
+            embed.add_field(name=_("Category"), value=cvar.category)
         if cvar.scope:
             embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
 
+        view = CVarView(self.cvar_cache, cvar.name, interaction.user.id)
         content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
-        await interaction.response.send_message(
+        view.message = await interaction.response.send_message(
             content=content,
             embed=embed,
-            view=CVarView(self.cvar_cache, cvar.name, interaction.user.id),
+            view=view,
         )
 
     @slash_cvar.autocomplete("cvar")
@@ -170,11 +179,15 @@ class CVarDocs:
         cvars = []
         for row in rows:
             cells = row.find_all("td")
-            version = cells[0].text.replace("\n", "")
-            name = cells[2].text.replace("\n", "")
-            default = cells[3].text == "1"
-            category = cells[4].text.replace("\n", "")
-            scope = cells[5].text.replace("\n", "")
-            description = cells[6].text.replace("\n", "")
+            version = cells[0].text.replace("\n", "").strip()
+            name = cells[2].text.replace("\n", "").strip()
+            default = (
+                cells[3].text == "1"
+                or cells[3].text != "0"
+                or cells[3].text.replace("\n", "").strip()
+            )
+            category = cells[4].text.replace("\n", "").strip()
+            scope = cells[5].text.replace("\n", "").strip()
+            description = cells[6].text.replace("\n", "").strip()
             cvars.append(CVar(name, default, category, scope, description, version))
         return cvars
