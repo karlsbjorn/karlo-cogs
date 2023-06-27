@@ -12,10 +12,11 @@ log = logging.getLogger("red.karlo-cogs.wowtools")
 
 
 class CVarSelect(discord.ui.Select):
-    def __init__(self, cvars: list, current_cvar: str, author: int):
+    def __init__(self, cvars: list, current_cvar: str, author: int, message: discord.Message):
         self.cvars = cvars
         self.current_cvar = current_cvar
         self.author = author
+        self.message = message
 
         options = [
             discord.SelectOption(
@@ -62,16 +63,18 @@ class CVarSelect(discord.ui.Select):
 
         content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
         await interaction.response.edit_message(
-            content=content, embed=embed, view=CVarView(self.cvars, cvar.name, interaction.user.id)
+            content=content,
+            embed=embed,
+            view=CVarView(self.cvars, cvar.name, interaction.user.id, interaction.message),
         )
 
 
 class CVarView(discord.ui.View):
-    def __init__(self, cvars, current_cvar, author):
+    def __init__(self, cvars, current_cvar, author, message=None):
         super().__init__()
         self.author: int = author
         self.message: discord.Message = None
-        self.add_item(CVarSelect(cvars, current_cvar, author))
+        self.add_item(CVarSelect(cvars, current_cvar, author, message))
 
     async def on_timeout(self):
         for child in self.children:
