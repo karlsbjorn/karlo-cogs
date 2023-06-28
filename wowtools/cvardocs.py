@@ -31,7 +31,7 @@ class CVarSelect(discord.ui.Select):
         else:
             # Sort by name
             options = sorted(options, key=lambda x: x.value)
-        super().__init__(placeholder="Select a CVar", options=options[:25])
+        super().__init__(placeholder=_("Select a CVar"), options=options[:25])
 
     async def callback(self, interaction: discord.Interaction):
         cvar = self.values[0]
@@ -65,7 +65,7 @@ class CVarSelect(discord.ui.Select):
         await interaction.response.edit_message(
             content=content,
             embed=embed,
-            view=CVarView(self.cvars, cvar.name, interaction.user.id, interaction.message),
+            view=CVarView(self.cvars, cvar.name, interaction.user.id, self.message),
         )
 
 
