@@ -42,7 +42,7 @@ class CVarSelect(discord.ui.Select):
             description=cvar.description,
             color=interaction.message.embeds[0].color,
         )
-        if cvar.default:
+        if cvar.default is not None:
             if cvar.default is False:
                 default = _("No")
             elif cvar.default is True:
