@@ -36,6 +36,30 @@ class CVarSelect(discord.ui.Select):
         cvar = self.values[0]
         cvar: CVar = next((cvar_obj for cvar_obj in self.cvars if cvar_obj.name == cvar))
 
+        embed = self.create_cvar_embed(interaction, cvar)
+
+        content = (
+            f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
+            if isinstance(cvar.default, bool)
+            else None
+        )
+        await interaction.response.edit_message(
+            content=content,
+            embed=embed,
+            view=CVarView(self.cvars, cvar.name, interaction.user.id),
+        )
+
+    def create_cvar_embed(self, interaction: discord.Interaction, cvar) -> discord.Embed:
+        """
+        Create an embed with information about a given CVar.
+
+        Args:
+            interaction (discord.Interaction): The interaction that triggered the command.
+            cvar (CVar): The CVar object to create the embed for.
+
+        Returns:
+            discord.Embed: The embed with information about the CVar.
+        """
         embed = discord.Embed(
             title=cvar.name,
             description=cvar.description,
@@ -59,17 +83,7 @@ class CVarSelect(discord.ui.Select):
             embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
-
-        content = (
-            f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
-            if isinstance(cvar.default, bool)
-            else None
-        )
-        await interaction.response.edit_message(
-            content=content,
-            embed=embed,
-            view=CVarView(self.cvars, cvar.name, interaction.user.id),
-        )
+        return embed
 
 
 class CVarView(discord.ui.View):
@@ -115,12 +129,37 @@ class CVarDocs:
                 _("No CVar found with that name."), ephemeral=True
             )
 
+        embed = await self.create_cvar_embed(interaction, cvar)
+
+        view = CVarView(self.cvar_cache, cvar.name, interaction.user.id)
+        content = (
+            f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
+            if isinstance(cvar.default, bool)
+            else None
+        )
+        await interaction.response.send_message(
+            content=None or content,
+            embed=embed,
+            view=view,
+        )
+
+    async def create_cvar_embed(self, interaction: discord.Interaction, cvar) -> discord.Embed:
+        """
+        Create an embed with information about a given CVar.
+
+        Args:
+            interaction (discord.Interaction): The interaction that triggered the command.
+            cvar (CVar): The CVar object to create the embed for.
+
+        Returns:
+            discord.Embed: The embed with information about the CVar.
+        """
         embed = discord.Embed(
             title=cvar.name,
             description=cvar.description,
             color=await self.bot.get_embed_color(interaction.channel),
         )
-        if cvar.default:
+        if cvar.default is not None:
             if cvar.default is False:
                 default = _("No")
             elif cvar.default is True:
@@ -138,18 +177,7 @@ class CVarDocs:
             embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
-
-        view = CVarView(self.cvar_cache, cvar.name, interaction.user.id)
-        content = (
-            f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
-            if isinstance(cvar.default, bool)
-            else None
-        )
-        await interaction.response.send_message(
-            content=None or content,
-            embed=embed,
-            view=view,
-        )
+        return embed
 
     @slash_cvar.autocomplete("cvar")
     async def slash_cvar_autocomplete(
