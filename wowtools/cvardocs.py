@@ -61,7 +61,8 @@ class CVarSelect(discord.ui.Select):
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
 
-        content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
+        if isinstance(cvar.default, bool):
+            content = f"Enable: `/console {cvar.name} 1`\nDisable: `/console {cvar.name} 0`"
         await interaction.response.edit_message(
             content=content,
             embed=embed,
