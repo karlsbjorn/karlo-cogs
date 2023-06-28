@@ -12,11 +12,10 @@ log = logging.getLogger("red.karlo-cogs.wowtools")
 
 
 class CVarSelect(discord.ui.Select):
-    def __init__(self, cvars: list, current_cvar: str, author: int, message: discord.Message):
+    def __init__(self, cvars: list, current_cvar: str, author: int):
         self.cvars = cvars
         self.current_cvar = current_cvar
         self.author = author
-        self.message = message
 
         options = [
             discord.SelectOption(
@@ -69,21 +68,15 @@ class CVarSelect(discord.ui.Select):
         await interaction.response.edit_message(
             content=content,
             embed=embed,
-            view=CVarView(self.cvars, cvar.name, interaction.user.id, self.message),
+            view=CVarView(self.cvars, cvar.name, interaction.user.id),
         )
 
 
 class CVarView(discord.ui.View):
-    def __init__(self, cvars, current_cvar, author, message=None):
+    def __init__(self, cvars, current_cvar, author):
         super().__init__()
         self.author: int = author
-        self.message: discord.Message = message
-        self.add_item(CVarSelect(cvars, current_cvar, author, message))
-
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-        await self.message.edit(view=self)
+        self.add_item(CVarSelect(cvars, current_cvar, author))
 
     async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user.id != self.author:
@@ -152,7 +145,7 @@ class CVarDocs:
             if isinstance(cvar.default, bool)
             else None
         )
-        view.message = await interaction.response.send_message(
+        await interaction.response.send_message(
             content=None or content,
             embed=embed,
             view=view,
