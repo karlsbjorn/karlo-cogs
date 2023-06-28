@@ -73,7 +73,7 @@ class CVarView(discord.ui.View):
     def __init__(self, cvars, current_cvar, author, message=None):
         super().__init__()
         self.author: int = author
-        self.message: discord.Message = None
+        self.message: discord.Message = message
         self.add_item(CVarSelect(cvars, current_cvar, author, message))
 
     async def on_timeout(self):
