@@ -29,6 +29,7 @@ class DiscordStreams(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @commands.mod_or_permissions(manage_channels=True)
     async def golivealert(self, ctx: commands.Context, channel: discord.TextChannel = None):
         """Set the channel for live alerts."""
         if channel is None:
@@ -52,6 +53,7 @@ class DiscordStreams(commands.Cog):
 
     @commands.group()
     @commands.guild_only()
+    @commands.mod_or_permissions(manage_channels=True)
     async def discordstreamsset(self, ctx: commands.Context):
         """Change settings for the live alerts."""
         pass
