@@ -336,11 +336,11 @@ class GuildManage:
             score_cutoff=80,
             processor=utils.default_process,
         )
-        ingame_rank = await self.get_rank_string(guild, roster[member_name])
+        ranks = [member[1] for member in extract]
+        ingame_rank = await self.get_rank_string(guild, max(ranks))
         return (
-            _("In-game: {member} ({percent}%)\nRank: {rank}").format(
+            _("In-game: {member}\nRank: {rank}").format(
                 member=humanize_list([member[0] for member in extract], style="or"),
-                percent=str(round(extract[0][1])),
                 rank=ingame_rank,
             )
             if extract
