@@ -291,9 +291,9 @@ class GuildManage:
         """Guild management commands."""
         pass
 
-    @gmanage.command(name="findmember")
+    @gmanage.command(name="find")
     @commands.guild_only()
-    async def gmanage_findmember(self, ctx: commands.Context, member_name: str):
+    async def gmanage_find(self, ctx: commands.Context, member_name: str):
         """Find a member in the guild."""
         msg = ""
         discord_member = await self.guess_member(ctx.guild, member_name)
@@ -328,19 +328,20 @@ class GuildManage:
 
     async def guess_ingame_member(self, guild: discord.Guild, member_name: str) -> str | None:
         roster = await self.get_guild_roster(guild)
-        choices = list(roster)
         extract = process.extract(
             member_name,
-            choices,
+            roster.keys(),
             scorer=fuzz.WRatio,
             limit=5,
             score_cutoff=80,
             processor=utils.default_process,
         )
+        ingame_rank = await self.get_rank_string(guild, roster[member_name])
         return (
-            _("In-game: {member} ({percent}%)").format(
+            _("In-game: {member} ({percent}%)\nRank: {rank}").format(
                 member=humanize_list([member[0] for member in extract], style="or"),
                 percent=str(round(extract[0][1])),
+                rank=ingame_rank,
             )
             if extract
             else None
