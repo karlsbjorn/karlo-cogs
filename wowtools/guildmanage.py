@@ -310,12 +310,12 @@ class GuildManage:
             rio_url = self.get_raiderio_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                member_name,
+                ingame_member,
             )
             wcl_url = self.get_warcraftlogs_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                member_name,
+                ingame_member,
             )
             msg += f"{rio_url} | {wcl_url}"
 
