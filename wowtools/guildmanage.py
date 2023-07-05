@@ -248,7 +248,7 @@ class GuildManage:
             choices,
             scorer=fuzz.WRatio,
             limit=10,
-            score_cutoff=80,
+            score_cutoff=85,
             processor=utils.default_process,
         )
 
@@ -310,12 +310,12 @@ class GuildManage:
             rio_url = self.get_raiderio_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                ingame_member,
+                ingame_member[0],
             )
             wcl_url = self.get_warcraftlogs_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                ingame_member,
+                ingame_member[0],
             )
             msg += f"{rio_url} | {wcl_url}"
 
@@ -336,7 +336,7 @@ class GuildManage:
             roster.keys(),
             scorer=fuzz.WRatio,
             limit=10,
-            score_cutoff=80,
+            score_cutoff=85,
             processor=utils.default_process,
         )
         extract.sort(key=lambda member: roster[member[0]])
