@@ -336,7 +336,7 @@ class GuildManage:
             score_cutoff=80,
             processor=utils.default_process,
         )
-        ranks = [member[1] for member in extract]
+        ranks = [roster[member[0]] for member in extract]
         ingame_rank = await self.get_rank_string(guild, max(ranks))
         return (
             _("In-game: {member}\nRank: {rank}").format(
