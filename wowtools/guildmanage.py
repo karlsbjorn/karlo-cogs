@@ -300,7 +300,10 @@ class GuildManage:
         if discord_member:
             msg += f"{discord_member}\n"
 
-        ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
+        try:
+            ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
+        except AttributeError:
+            ingame_member = None
         if ingame_member:
             msg += f"{ingame_member}\n"
 
@@ -336,6 +339,7 @@ class GuildManage:
             score_cutoff=80,
             processor=utils.default_process,
         )
+        extract.sort(key=lambda member: roster[member[0]])
         ranks = [roster[member[0]] for member in extract]
         ingame_rank = await self.get_rank_string(guild, min(ranks))
         return (
