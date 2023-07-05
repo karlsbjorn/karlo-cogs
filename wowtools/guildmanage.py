@@ -247,7 +247,7 @@ class GuildManage:
             member_name,
             choices,
             scorer=fuzz.WRatio,
-            limit=5,
+            limit=10,
             score_cutoff=80,
             processor=utils.default_process,
         )
@@ -335,7 +335,7 @@ class GuildManage:
             member_name,
             roster.keys(),
             scorer=fuzz.WRatio,
-            limit=5,
+            limit=10,
             score_cutoff=80,
             processor=utils.default_process,
         )
