@@ -306,7 +306,8 @@ class GuildManage:
             ingame_member = None
         if ingame_member:
             msg += f"{ingame_member}\n"
-            most_likely_ingame = ingame_member.split(",")[0].strip()
+            # shit like this is why we should construct the string _later_
+            most_likely_ingame = ingame_member.split(",")[0].strip().replace("In-game: ", "")
 
             rio_url = self.get_raiderio_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
