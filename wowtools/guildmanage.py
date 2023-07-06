@@ -228,19 +228,18 @@ class GuildManage:
     async def make_description(self, guild: discord.Guild, member_name: str) -> str:
         realm = await self.config.guild(guild).gmanage_realm()
         region = await self.config.guild(guild).region()
-        description = await self.guess_member(guild, member_name) or ""
+        description = humanize_list(await self.guess_member(guild, member_name), style="or")
         description += f"\n{self.get_raiderio_url(realm, region, member_name)} | "
         description += f"{self.get_warcraftlogs_url(realm, region, member_name)}"
         return description
 
-    async def guess_member(self, guild: discord.Guild, member_name: str) -> str | None:
+    async def guess_member(self, guild: discord.Guild, member_name: str) -> tuple[str]:
         """
         Guesses the Discord member based on their name using fuzzy string matching.
 
         :param guild: The Discord guild to search for the member in.
         :param member_name: The name of the character to search for.
-        :return: A string containing the Discord mention of the guessed member and the percentage
-        match score, or None if no member was found with a high enough match score.
+        :return: A tuple containing mentions of the Discord members that match the character name.
         """
         choices = [member.display_name for member in guild.members]
         extract = process.extract(
@@ -249,18 +248,9 @@ class GuildManage:
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=85,
+            processor=utils.default_process,
         )
-
-        mentions = []
-        for member in extract:
-            mentions.append(guild.members[member[2]].mention)
-        return (
-            _("Discord: {member} ({percent}%)").format(
-                member=humanize_list(list(mentions), style="or"), percent=str(round(extract[0][1]))
-            )
-            if mentions
-            else None
-        )
+        return [guild.members[member[2]].mention for member in extract]
 
     @staticmethod
     def get_raiderio_url(realm: str, region: str, name: str) -> str:
@@ -295,29 +285,27 @@ class GuildManage:
     async def gmanage_find(self, ctx: commands.Context, member_name: str):
         """Find a member in the guild."""
         msg = ""
-        discord_member = await self.guess_member(ctx.guild, member_name)
-        if discord_member:
-            msg += f"{discord_member}\n"
+        discord_members = await self.guess_member(ctx.guild, member_name)
+        if discord_members:
+            msg += f"Discord: {humanize_list(discord_members, style='or')}\n"
 
         member_name = member_name.title()
         try:
-            ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
-        except AttributeError:
-            ingame_member = None
-        if ingame_member:
-            msg += f"{ingame_member}\n"
-            # shit like this is why we should construct the string _later_
-            most_likely_ingame = ingame_member.split(",")[0].strip().replace("In-game: ", "")
+            ingame_members, rank = await self.guess_ingame_member(ctx.guild, member_name)
+        except (AttributeError, ValueError):
+            ingame_members, rank = (None, None)
+        if ingame_members:
+            msg += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
 
             rio_url = self.get_raiderio_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                most_likely_ingame,
+                ingame_members[0],
             )
             wcl_url = self.get_warcraftlogs_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                most_likely_ingame,
+                ingame_members[0],
             )
             msg += f"{rio_url} | {wcl_url}"
 
@@ -331,7 +319,9 @@ class GuildManage:
             allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
         )
 
-    async def guess_ingame_member(self, guild: discord.Guild, member_name: str) -> str | None:
+    async def guess_ingame_member(
+        self, guild: discord.Guild, member_name: str
+    ) -> tuple[list[str], str]:
         roster = await self.get_guild_roster(guild)
         extract = process.extract(
             member_name,
@@ -344,14 +334,7 @@ class GuildManage:
         extract.sort(key=lambda member: roster[member[0]])
         ranks = [roster[member[0]] for member in extract]
         ingame_rank = await self.get_rank_string(guild, min(ranks))
-        return (
-            _("In-game: {member}\nRank: {rank}").format(
-                member=humanize_list([member[0] for member in extract], style="or"),
-                rank=ingame_rank,
-            )
-            if extract
-            else None
-        )
+        return [member[0] for member in extract], ingame_rank
 
     def custom_processor(self, string: str) -> str:
         return "".join(
