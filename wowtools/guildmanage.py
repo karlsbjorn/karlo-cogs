@@ -306,16 +306,17 @@ class GuildManage:
             ingame_member = None
         if ingame_member:
             msg += f"{ingame_member}\n"
+            most_likely_ingame = ingame_member.split(",")[0].strip()
 
             rio_url = self.get_raiderio_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                ingame_member[0],
+                most_likely_ingame,
             )
             wcl_url = self.get_warcraftlogs_url(
                 await self.config.guild(ctx.guild).gmanage_realm(),
                 await self.config.guild(ctx.guild).region(),
-                ingame_member[0],
+                most_likely_ingame,
             )
             msg += f"{rio_url} | {wcl_url}"
 
