@@ -1,4 +1,5 @@
 import logging
+import unicodedata
 from typing import Dict
 
 import dictdiffer
@@ -232,8 +233,7 @@ class GuildManage:
         description += f"{self.get_warcraftlogs_url(realm, region, member_name)}"
         return description
 
-    @staticmethod
-    async def guess_member(guild: discord.Guild, member_name: str) -> str | None:
+    async def guess_member(self, guild: discord.Guild, member_name: str) -> str | None:
         """
         Guesses the Discord member based on their name using fuzzy string matching.
 
@@ -249,7 +249,7 @@ class GuildManage:
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=85,
-            processor=utils.default_process,
+            processor=self.custom_processor,
         )
 
         mentions = []
@@ -300,6 +300,7 @@ class GuildManage:
         if discord_member:
             msg += f"{discord_member}\n"
 
+        member_name = member_name.title()
         try:
             ingame_member = await self.guess_ingame_member(ctx.guild, member_name)
         except AttributeError:
@@ -339,7 +340,7 @@ class GuildManage:
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=85,
-            processor=utils.default_process,
+            processor=self.custom_processor,
         )
         extract.sort(key=lambda member: roster[member[0]])
         ranks = [roster[member[0]] for member in extract]
@@ -351,4 +352,11 @@ class GuildManage:
             )
             if extract
             else None
+        )
+
+    def custom_processor(self, string: str) -> str:
+        return "".join(
+            string
+            for string in unicodedata.normalize("NFD", string)
+            if unicodedata.category(string) != "Mn"
         )
