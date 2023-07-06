@@ -249,7 +249,6 @@ class GuildManage:
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=85,
-            processor=self.custom_processor,
         )
 
         mentions = []
