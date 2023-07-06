@@ -241,7 +241,17 @@ class GuildManage:
         :param member_name: The name of the character to search for.
         :return: A tuple containing mentions of the Discord members that match the character name.
         """
-        choices = [member.display_name for member in guild.members]
+        choices: list[str] = []
+        for member in guild.members:
+            names = {member.display_name, member.name, member.nick, member.global_name}
+            extract = process.extractOne(
+                member_name,
+                {name for name in names if name is not None},
+                scorer=fuzz.WRatio,
+                processor=utils.default_process,
+            )
+            choices.append(extract[0])
+
         extract = process.extract(
             member_name,
             choices,
