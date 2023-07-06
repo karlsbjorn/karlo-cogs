@@ -257,7 +257,7 @@ class GuildManage:
             choices,
             scorer=fuzz.WRatio,
             limit=10,
-            score_cutoff=85,
+            score_cutoff=80,
             processor=utils.default_process,
         )
         return [guild.members[member[2]].mention for member in extract]
@@ -338,7 +338,7 @@ class GuildManage:
             roster.keys(),
             scorer=fuzz.WRatio,
             limit=10,
-            score_cutoff=85,
+            score_cutoff=80,
             processor=self.custom_processor,
         )
         extract.sort(key=lambda member: roster[member[0]])
