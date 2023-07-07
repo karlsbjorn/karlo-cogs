@@ -248,7 +248,7 @@ class GuildManage:
                 member_name,
                 {name for name in names if name is not None},
                 scorer=fuzz.WRatio,
-                processor=utils.default_process,
+                processor=self.custom_processor,
             )
             choices.append(extract[0])
 
@@ -258,7 +258,7 @@ class GuildManage:
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=80,
-            processor=utils.default_process,
+            processor=self.custom_processor,
         )
         return [guild.members[member[2]].mention for member in extract]
 
