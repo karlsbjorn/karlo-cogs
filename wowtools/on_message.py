@@ -100,8 +100,21 @@ class OnMessage:
             for result in search_results["results"]:
                 if result["data"]["name"]["en_US"].lower() != search_string.lower():
                     continue
-                embeds.append(await self.make_embed(description_method, media_method, result))
+                result_id = result["data"]["id"]
+                embed = await self.get_or_fetch_embed(
+                    media_method, description_method, result, result_id
+                )
+
+                embeds.append(embed)
                 break
+
+    async def get_or_fetch_embed(self, media_method, description_method, result, result_id):
+        if self.on_message_cache.get(result_id):
+            embed = self.on_message_cache.get(result_id)
+        else:
+            embed = await self.make_embed(description_method, media_method, result)
+            self.on_message_cache[result_id] = embed
+        return embed
 
     async def make_embed(self, description_method, media_method, result):
         result_description = await description_method(result["data"]["id"])

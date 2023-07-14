@@ -5,7 +5,7 @@ from typing import Dict
 import dictdiffer
 import discord
 from discord.ext import tasks
-from rapidfuzz import fuzz, process, utils
+from rapidfuzz import fuzz, process
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list

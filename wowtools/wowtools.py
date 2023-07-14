@@ -29,6 +29,7 @@ class WoWTools(
     """Interact with various World of Warcraft APIs"""
 
     def __init__(self, bot):
+        self.on_message_cache: dict = {}
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=42069)
         default_global = {
