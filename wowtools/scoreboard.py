@@ -157,6 +157,7 @@ class Scoreboard:
         blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
         for character in characters.split(" "):
             character = character.strip(",")
+            character = character.lower()
             if character in blacklist:
                 blacklist.remove(character.lower())
         await self.config.guild(ctx.guild).scoreboard_blacklist.set(blacklist)
