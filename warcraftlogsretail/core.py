@@ -459,7 +459,7 @@ class WarcraftLogsRetail(commands.Cog):
             all_stars = encounter["allStars"]
             enc_details = encounter["encounter"]
             best_amt = (
-                "{:.1f}".format(encounter["bestAmount"]) if encounter["bestAmount"] != 0 else "-"
+                self.humanize_dps(encounter["bestAmount"]) if encounter["bestAmount"] != 0 else "-"
             )
             median_pct = (
                 "{:.1f}".format(encounter["medianPercent"]) if encounter["medianPercent"] else "-"
@@ -526,6 +526,15 @@ class WarcraftLogsRetail(commands.Cog):
     ) -> List[app_commands.Choice[str]]:
         realms = await self.get_realms(current)
         return realms[:25]
+
+    @staticmethod
+    def humanize_dps(dps: int | float) -> str:
+        if dps >= 1000000:
+            return f"{round(dps / 1000000)}M"
+        elif dps >= 10000:
+            return f"{round(dps / 1000)}k"
+        else:
+            return str(dps)
 
     @commands.group()
     async def wclset(self, ctx: commands.Context):
