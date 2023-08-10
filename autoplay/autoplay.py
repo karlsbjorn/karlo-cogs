@@ -96,6 +96,7 @@ class AutoPlay(commands.Cog):
 
         if not player and author.voice:
             await self.bot.pylav.connect_player(author, author.voice.channel)
+            player: Player = self.bot.pylav.get_player(guild.id)
         elif player and player.channel.id != author.voice.channel.id:
             await player.move_to(author, author.voice.channel)
 
