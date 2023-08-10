@@ -219,14 +219,14 @@ class CVarDocs:
         for row in rows:
             cells = row.find_all("td")
             version = cells[0].text.replace("\n", "").strip()
-            name = cells[2].text.replace("\n", "").strip()
-            default = cells[3].text.replace("\n", "").strip()
+            name = cells[3].text.replace("\n", "").strip()
+            default = cells[4].text.replace("\n", "").strip()
             if default == "1":
                 default = True
             elif default == "0":
                 default = False
-            category = cells[4].text.replace("\n", "").strip()
-            scope = cells[5].text.replace("\n", "").strip()
-            description = cells[6].text.strip()
+            category = cells[5].text.replace("\n", "").strip()
+            scope = cells[6].text.replace("\n", "").strip()
+            description = cells[7].text.strip()
             cvars.append(CVar(name, default, category, scope, description, version))
         return cvars
