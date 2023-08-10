@@ -166,11 +166,12 @@ class CVarDocs:
                 default = _("Yes")
             else:
                 default = cvar.default
-            embed.add_field(
-                name=_("Default"),
-                value=default,
-                inline=False,
-            )
+            if default:
+                embed.add_field(
+                    name=_("Default"),
+                    value=default,
+                    inline=False,
+                )
         if cvar.category:
             embed.add_field(name=_("Category"), value=cvar.category)
         if cvar.scope:
