@@ -509,7 +509,7 @@ class Scoreboard:
                 img.paste(image, (x - 79, y - 15))
 
             draw.text((x, y), char_name, class_color, font=font)
-            if ilvl_color == "#FF69B4":  # This is whatever the color for the highest ilvl is
+            if int(ilvl) >= 446:  # This is whatever the color for the highest ilvl is
                 glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
                 ImageDraw.Draw(glow).text((x + 225, y), ilvl, ilvl_color, font=font)
                 blurred_glow = glow.filter(ImageFilter.GaussianBlur(5))
