@@ -268,6 +268,9 @@ class Scoreboard:
             desc = _("Last updated <t:{timestamp}:R>\n").format(
                 timestamp=int(datetime.now(timezone.utc).timestamp())
             )
+            desc += _("Score cutoff for season title: `{cutoff}`").format(
+                cutoff=await self.get_season_title_cutoff(region)
+            )
 
             if image:
                 img_file = await self._generate_scoreboard_image(
@@ -335,6 +338,15 @@ class Scoreboard:
             await assistant.add_embedding(guild, "wowtools_scoreboard", formatted_rankings, True)
         except Exception as e:
             log.error(f"Error adding scoreboard to Assistant: {e}", exc_info=True)
+
+    @staticmethod
+    async def get_season_title_cutoff(region: str) -> float:
+        current_season = "season-df-2"  # TODO: Needs to be manually updated every season
+        async with RaiderIO() as rio:
+            cutoffs = (await rio.get_mythic_plus_season_cutoffs(region, current_season)).get(
+                "cutoffs"
+            )
+        return cutoffs["p999"]["all"]["quantileMinValue"]
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
