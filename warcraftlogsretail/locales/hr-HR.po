@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-02-25 04:45+0000\n"
-"PO-Revision-Date: 2023-05-29 12:36\n"
+"POT-Creation-Date: 2023-08-08 02:04+0000\n"
+"PO-Revision-Date: 2023-09-10 20:54\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -187,69 +187,69 @@ msgid "Rank:\n"
 msgstr "Rank:\n"
 "`{rank}`\n"
 
-#: warcraftlogsretail/core.py:532
+#: warcraftlogsretail/core.py:541
 #, docstring
 msgid "Commands for setting up WCL settings."
 msgstr "Naredbe za postavljanje WCL postavki."
 
-#: warcraftlogsretail/core.py:537
+#: warcraftlogsretail/core.py:546
 #, docstring
 msgid "Set your character's name."
 msgstr "Postavi ime svog lika."
 
-#: warcraftlogsretail/core.py:540
+#: warcraftlogsretail/core.py:549
 msgid "Your character name was set to {charname}."
 msgstr "Ime vašeg lika postavljeno je na {charname}."
 
-#: warcraftlogsretail/core.py:545
+#: warcraftlogsretail/core.py:554
 #, docstring
 msgid "Set your realm."
 msgstr "Postavi svoj realm."
 
-#: warcraftlogsretail/core.py:548
+#: warcraftlogsretail/core.py:557
 msgid "Your realm was set to {realm}."
 msgstr "Vaš realm je postavljen na {realm}."
 
-#: warcraftlogsretail/core.py:552
+#: warcraftlogsretail/core.py:561
 #, docstring
 msgid "Set your region."
 msgstr "Postavi svoju regiju."
 
-#: warcraftlogsretail/core.py:556
+#: warcraftlogsretail/core.py:565
 msgid "Valid regions are: {valid_regions}"
 msgstr "Važeće regije su: {valid_regions}"
 
-#: warcraftlogsretail/core.py:561
+#: warcraftlogsretail/core.py:570
 msgid "Your realm's region was set to {region}."
 msgstr "Regija vašeg realma postavljena je na {region}."
 
-#: warcraftlogsretail/core.py:565
+#: warcraftlogsretail/core.py:574
 #, docstring
 msgid "Set the channel where WCL updates will be sent."
 msgstr "Postavite kanal na koji će se slati WCL ažuriranja."
 
-#: warcraftlogsretail/core.py:568
+#: warcraftlogsretail/core.py:577
 msgid "WCL updates will now be sent to {channel}."
 msgstr "WCL ažuriranja sada će se slati u {channel}."
 
-#: warcraftlogsretail/core.py:573
+#: warcraftlogsretail/core.py:582
 #, docstring
 msgid "Show your current settings."
 msgstr "Prikaži svoje trenutne postavke."
 
-#: warcraftlogsretail/core.py:579
+#: warcraftlogsretail/core.py:588
 msgid "[Settings for {guild}]\n"
 msgstr "[Postavke za {guild}]\n"
 
-#: warcraftlogsretail/core.py:583
+#: warcraftlogsretail/core.py:592
 msgid "Notification channel: {channel}\n"
 msgstr "Kanal obavijesti: {channel}\n"
 
-#: warcraftlogsretail/core.py:586
+#: warcraftlogsretail/core.py:595
 msgid "[Settings for {user}]\n"
 msgstr "[Postavke za {user}]\n"
 
-#: warcraftlogsretail/core.py:590
+#: warcraftlogsretail/core.py:599
 msgid "Character: {charname}\n"
 "Realm: {realmname}\n"
 "Region: {regionname}\n\n"
@@ -257,24 +257,24 @@ msgstr "Lik: {charname}\n"
 "Realm: {realmname}\n"
 "Regija: {regionname}\n\n"
 
-#: warcraftlogsretail/core.py:594
+#: warcraftlogsretail/core.py:603
 msgid "[Bot Permissions Needed]\n"
 msgstr "[Potrebne dozvole za bota]\n"
 
-#: warcraftlogsretail/core.py:596
+#: warcraftlogsretail/core.py:605
 msgid "[X] Embed Links permissions\n"
 msgstr "[X] Embed Links dozvole\n"
 
-#: warcraftlogsretail/core.py:598
+#: warcraftlogsretail/core.py:607
 msgid "[ ] I need Embed Links permissions\n"
 msgstr "[ ] Trebam Embed Links dozvole\n"
 
-#: warcraftlogsretail/core.py:605
+#: warcraftlogsretail/core.py:614
 #, docstring
 msgid "Instructions for setting the api key."
 msgstr "Upute za postavljanje API ključa."
 
-#: warcraftlogsretail/core.py:606
+#: warcraftlogsretail/core.py:615
 msgid "Set your API key by adding it to Red's API key storage.\n"
 "Get a key from <https://www.warcraftlogs.com> by signing up for an account, then visit your settings.\n"
 "At the bottom is a section called Web API. Click on the blue link that says `manage your V2 clients here`.\n"

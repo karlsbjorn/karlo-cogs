@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-05-29 12:47+0000\n"
-"PO-Revision-Date: 2023-05-29 13:23\n"
+"POT-Creation-Date: 2023-09-10 20:52+0000\n"
+"PO-Revision-Date: 2023-09-10 20:54\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -27,11 +27,11 @@ msgid "The Auction House is not available in China.\n"
 msgstr "Aukcijska kuća nije dostupna u Kini.\n"
 "Molim da postavite drugu regiju s `{prefix}wowset region`."
 
-#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:88
-#: wowtools/guildmanage.py:104 wowtools/pvp.py:30 wowtools/scoreboard.py:51
-#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:631 wowtools/token.py:31
-#: wowtools/token.py:75 wowtools/wowtools.py:92 wowtools/wowtools.py:108
-#: wowtools/wowtools.py:123
+#: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:90
+#: wowtools/guildmanage.py:106 wowtools/pvp.py:30 wowtools/scoreboard.py:51
+#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:654 wowtools/token.py:31
+#: wowtools/token.py:75 wowtools/wowtools.py:96 wowtools/wowtools.py:112
+#: wowtools/wowtools.py:127
 msgid "Command failed successfully. {e}"
 msgstr "Naredba uspješno neuspješna. {e}"
 
@@ -77,112 +77,163 @@ msgstr "Cijena ovog artikla može biti netočna zbog\n"
 msgid "More details"
 msgstr "Više detalja"
 
-#: wowtools/guildmanage.py:23
+#: wowtools/cvardocs.py:33
+msgid "Select a CVar"
+msgstr "Odaberi CVar"
+
+#: wowtools/cvardocs.py:70 wowtools/cvardocs.py:164
+msgid "No"
+msgstr "Ne"
+
+#: wowtools/cvardocs.py:72 wowtools/cvardocs.py:166
+msgid "Yes"
+msgstr "Da"
+
+#: wowtools/cvardocs.py:76 wowtools/cvardocs.py:171
+msgid "Default"
+msgstr "Zadano"
+
+#: wowtools/cvardocs.py:81 wowtools/cvardocs.py:176
+msgid "Category"
+msgstr "Kategorija"
+
+#: wowtools/cvardocs.py:83 wowtools/cvardocs.py:178
+msgid "Scope"
+msgstr "Opseg"
+
+#: wowtools/cvardocs.py:85 wowtools/cvardocs.py:180
+msgid "Introduced in"
+msgstr "Uvedeno u"
+
+#: wowtools/cvardocs.py:98
+msgid "You are not authorized to interact with this."
+msgstr "Niste ovlašteni za interakciju s ovim."
+
+#: wowtools/cvardocs.py:122
+#, docstring
+msgid "Get information about a WoW Console Variable"
+msgstr "Dobijte informacije o varijabli WoW konzole"
+
+#: wowtools/cvardocs.py:129
+msgid "No CVar found with that name."
+msgstr "Nije pronađen CVar s tim nazivom."
+
+#: wowtools/guildmanage.py:25
 #, docstring
 msgid "Configure guild management."
 msgstr "Konfiguriraj upravljanje guildom."
 
-#: wowtools/guildmanage.py:29
+#: wowtools/guildmanage.py:31
 #, docstring
 msgid "Bind a rank to a string."
 msgstr "Poveži rang s tekstom."
 
-#: wowtools/guildmanage.py:31 wowtools/guildmanage.py:45
+#: wowtools/guildmanage.py:33 wowtools/guildmanage.py:47
 msgid "Rank must be between 1 and 10."
 msgstr "Rank mora biti između 1 i 10."
 
-#: wowtools/guildmanage.py:35
+#: wowtools/guildmanage.py:37
 msgid "**{rank_string}** bound to **Rank {rank}**."
 msgstr "**{rank_string}** vezan za **Rank {rank}**."
 
-#: wowtools/guildmanage.py:43
+#: wowtools/guildmanage.py:45
 #, docstring
 msgid "Bind a rank to a role."
 msgstr "Poveži rank s ulogom."
 
-#: wowtools/guildmanage.py:48
+#: wowtools/guildmanage.py:50
 msgid "**{role}** bound to **Rank {rank}**."
 msgstr "**{role}** vezan za **Rank {rank}**."
 
-#: wowtools/guildmanage.py:53
+#: wowtools/guildmanage.py:55
 #, docstring
 msgid "View guild rank settings."
 msgstr "Pogledajte postavke rankova guilda."
 
-#: wowtools/guildmanage.py:66
+#: wowtools/guildmanage.py:68
 msgid "Rank"
 msgstr "Rank"
 
-#: wowtools/guildmanage.py:66
+#: wowtools/guildmanage.py:68
 msgid "Rank String"
 msgstr "Rank string"
 
-#: wowtools/guildmanage.py:66
+#: wowtools/guildmanage.py:68
 msgid "Rank Role"
 msgstr "Rank uloga"
 
-#: wowtools/guildmanage.py:70
+#: wowtools/guildmanage.py:72
 msgid "Rank Settings"
 msgstr "Rank postavke"
 
-#: wowtools/guildmanage.py:77
+#: wowtools/guildmanage.py:79
 #, docstring
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Postavi naziv guilda koji će se koristiti u naredbama za upravljanje guildom."
 
-#: wowtools/guildmanage.py:82 wowtools/wowtools.py:118
+#: wowtools/guildmanage.py:84 wowtools/wowtools.py:122
 msgid "Guild name cleared."
 msgstr "Ime guilda izbrisano."
 
-#: wowtools/guildmanage.py:86 wowtools/wowtools.py:121
+#: wowtools/guildmanage.py:88 wowtools/wowtools.py:125
 msgid "Guild name set."
 msgstr "Ime guilda postavljeno."
 
-#: wowtools/guildmanage.py:93
+#: wowtools/guildmanage.py:95
 #, docstring
 msgid "Set the realm of the guild."
 msgstr "Postavi realm guilda."
 
-#: wowtools/guildmanage.py:98
+#: wowtools/guildmanage.py:100
 msgid "Guild realm cleared."
 msgstr "Realm guilda izbrisan."
 
-#: wowtools/guildmanage.py:102
+#: wowtools/guildmanage.py:104
 msgid "Guild realm set."
 msgstr "Realm guilda postavljen."
 
-#: wowtools/guildmanage.py:134
+#: wowtools/guildmanage.py:136
 #, docstring
 msgid "Set the channel for guild logs."
 msgstr "Postavi kanal za guild obavijesti."
 
-#: wowtools/guildmanage.py:138
+#: wowtools/guildmanage.py:140
 msgid "Guild log channel set to {channel}."
 msgstr "Kanal za guild logove je postavljen na {channel}"
 
-#: wowtools/guildmanage.py:187
+#: wowtools/guildmanage.py:189
 msgid "**{member}** joined the guild as **{rank}**"
 msgstr "**{member}** se pridružio guildu kao **{rank}**"
 
-#: wowtools/guildmanage.py:201
+#: wowtools/guildmanage.py:203
 msgid "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
 msgstr "**{member}** je {changed} sa **{old_rank}** na **{new_rank}**"
 
-#: wowtools/guildmanage.py:205
+#: wowtools/guildmanage.py:207
 msgid "promoted"
 msgstr "promotean"
 
-#: wowtools/guildmanage.py:205
+#: wowtools/guildmanage.py:207
 msgid "demoted"
 msgstr "demotean"
 
-#: wowtools/guildmanage.py:218
+#: wowtools/guildmanage.py:220
 msgid "**{member} ({rank})** left the guild"
 msgstr "**{member} ({rank})** je napustio guild"
 
-#: wowtools/guildmanage.py:253
-msgid "Discord: {member} ({percent}%)"
-msgstr "Discord: {member} ({percent}%)"
+#: wowtools/guildmanage.py:290
+#, docstring
+msgid "Guild management commands."
+msgstr "Naredbe upravljanja guildom."
+
+#: wowtools/guildmanage.py:296
+#, docstring
+msgid "Find a member in the guild."
+msgstr "Pronađite člana u guildu."
+
+#: wowtools/guildmanage.py:323
+msgid "Nothing found."
+msgstr "Ništa nije pronađeno."
 
 #: wowtools/pvp.py:48
 msgid "Character \"{character_name}\" not found."
@@ -231,47 +282,51 @@ msgstr "Prikaži Raider.IO profil nekog lika.\n\n"
 "        [p]raiderio profile Karlo Ragnaros\n"
 "        "
 
-#: wowtools/raiderio.py:72
+#: wowtools/raiderio.py:73
 msgid "Character not found."
 msgstr "Character nije pronađen."
 
-#: wowtools/raiderio.py:107 wowtools/raiderio.py:161 wowtools/raiderio.py:378
+#: wowtools/raiderio.py:108 wowtools/raiderio.py:156 wowtools/raiderio.py:414
 msgid "Raider.io profile"
 msgstr "Raider.io profil"
 
-#: wowtools/raiderio.py:112
+#: wowtools/raiderio.py:113
 msgid "__**Mythic+ Score**__"
 msgstr "__**Mythic+ Score**__"
 
-#: wowtools/raiderio.py:116
+#: wowtools/raiderio.py:117
 msgid "Raid progress"
 msgstr "Raid progres"
 
-#: wowtools/raiderio.py:117
+#: wowtools/raiderio.py:118
 msgid "Item level"
 msgstr "Item level"
 
-#: wowtools/raiderio.py:119
+#: wowtools/raiderio.py:120
 msgid "__Other links__"
 msgstr "__Ostali linkovi__"
 
-#: wowtools/raiderio.py:120
+#: wowtools/raiderio.py:121
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:131 wowtools/raiderio.py:166 wowtools/raiderio.py:383
+#: wowtools/raiderio.py:132 wowtools/raiderio.py:161 wowtools/raiderio.py:419
 msgid "Last updated: {char_last_updated}"
 msgstr "Zadnje ažuriranje: {char_last_updated}"
 
-#: wowtools/raiderio.py:135
+#: wowtools/raiderio.py:142
 msgid "Dungeon"
 msgstr "Dungeon"
 
-#: wowtools/raiderio.py:136
-msgid "Level"
-msgstr "Level"
+#: wowtools/raiderio.py:142
+msgid "Forti"
+msgstr "Forti"
 
-#: wowtools/raiderio.py:193
+#: wowtools/raiderio.py:142
+msgid "Tyrann"
+msgstr "Tyrann"
+
+#: wowtools/raiderio.py:229
 #, docstring
 msgid "Display the raider.io profile of a guild.\n\n"
 "        If the guild or realm name have spaces in them, they need to be enclosed in quotes.\n\n"
@@ -284,23 +339,23 @@ msgstr "Prikaži Raider.IO profil guilda.\n\n"
 "        [p]raiderio guild \"Jahaci Rumene Kadulje\" Ragnaros\n"
 "        "
 
-#: wowtools/raiderio.py:225
+#: wowtools/raiderio.py:261
 msgid "The guild {guild} does not exist on {realm}."
 msgstr "Guild {guild} ne postoji na {realm} realmu."
 
-#: wowtools/raiderio.py:246
+#: wowtools/raiderio.py:282
 msgid "Guild profile"
 msgstr "Profil guilda"
 
-#: wowtools/raiderio.py:249
+#: wowtools/raiderio.py:285
 msgid "__**Progress**__"
 msgstr "__**Progres**__"
 
-#: wowtools/raiderio.py:257
+#: wowtools/raiderio.py:293
 msgid "{difficulty} rank"
 msgstr "{difficulty} rank"
 
-#: wowtools/raiderio.py:258
+#: wowtools/raiderio.py:294
 msgid "World: {world}\n"
 "Region: {region}\n"
 "Realm: {realm}"
@@ -308,30 +363,30 @@ msgstr "Svijet: {world}\n"
 "Regija: {region}\n"
 "Realm: {realm}"
 
-#: wowtools/raiderio.py:264
+#: wowtools/raiderio.py:300
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/raiderio.py:279
+#: wowtools/raiderio.py:315
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Prikaži ovotjedne afikse."
 
-#: wowtools/raiderio.py:299 wowtools/raiderio.py:310
+#: wowtools/raiderio.py:335 wowtools/raiderio.py:346
 msgid "\n"
 "The weekly reset is {timestamp}."
 msgstr "\n"
 "Sljedeći tjedni reset je {timestamp}."
 
-#: wowtools/raiderio.py:315
+#: wowtools/raiderio.py:351
 msgid "This week's Mythic+ affixes"
 msgstr "Mythic+ afiksi ovaj za ovaj tjedan"
 
-#: wowtools/raiderio.py:348
+#: wowtools/raiderio.py:384
 msgid "**Average ilvl:** {avg_ilvl}\n"
 msgstr "**Prosječni ilvl:** {avg_ilvl}\n"
 
-#: wowtools/raiderio.py:444
+#: wowtools/raiderio.py:480
 msgid "Talents"
 msgstr "Talenti"
 
@@ -396,133 +451,137 @@ msgstr "Ukloni charactere s popisa blokiranih.\n\n"
 "        Characteri se mogu odvajati razmacima ili zarezima.\n"
 "        "
 
-#: wowtools/scoreboard.py:163
+#: wowtools/scoreboard.py:164
 msgid "Blacklisted characters removed."
 msgstr "Characteri maknuti s popisa blokiranih."
 
-#: wowtools/scoreboard.py:169
+#: wowtools/scoreboard.py:170
 #, docstring
 msgid "List the characters on the scoreboard blacklist."
 msgstr "Pokaži charactere na popisu blokiranih."
 
-#: wowtools/scoreboard.py:172
+#: wowtools/scoreboard.py:173
 msgid "No characters are blacklisted."
 msgstr "Nema charactera na popisu blokiranih."
 
-#: wowtools/scoreboard.py:175
+#: wowtools/scoreboard.py:176
 msgid "Blacklisted characters: {characters}"
 msgstr "Characteri na popisu blokiranih: {characters}"
 
-#: wowtools/scoreboard.py:182
+#: wowtools/scoreboard.py:183
 #, docstring
 msgid "Clear the scoreboard blacklist."
 msgstr "Izbriši popis blokiranih."
 
-#: wowtools/scoreboard.py:184
+#: wowtools/scoreboard.py:185
 msgid "Blacklisted characters cleared."
 msgstr "Svi characteri s popisa blokiranih su izbrisani."
 
-#: wowtools/scoreboard.py:190
+#: wowtools/scoreboard.py:191
 #, docstring
 msgid "Lock the current scoreboard and does not update it anymore."
 msgstr "Zaključaj trenutnu ljestvicu i više ju ne ažuriraj."
 
-#: wowtools/scoreboard.py:194
+#: wowtools/scoreboard.py:195
 msgid "No scoreboard is set."
 msgstr "Ljestvica nije postavljena."
 
-#: wowtools/scoreboard.py:201
+#: wowtools/scoreboard.py:202
 msgid "Failed to fetch scoreboard message."
 msgstr "Nije uspjelo dohvaćanje poruke ljestvice."
 
-#: wowtools/scoreboard.py:205
+#: wowtools/scoreboard.py:206
 msgid "Season 1 Mythic+ Scoreboard"
 msgstr "Mythic+ ljestvica 1. sezone"
 
-#: wowtools/scoreboard.py:206
+#: wowtools/scoreboard.py:207
 msgid "Dragonflight Season 1 has ended.\n"
 "This scoreboard is final."
 msgstr "1. sezona Dragonflighta je gotova.\n"
 "Ova ljestvica je konačna."
 
-#: wowtools/scoreboard.py:207
+#: wowtools/scoreboard.py:208
 msgid "This scoreboard is locked."
 msgstr "Ova ljestvica je zaključana."
 
-#: wowtools/scoreboard.py:212
+#: wowtools/scoreboard.py:213
 msgid "Scoreboard locked."
 msgstr "Ljestvica zaključana."
 
-#: wowtools/scoreboard.py:239 wowtools/scoreboard.py:420
-#: wowtools/scoreboard.py:536
+#: wowtools/scoreboard.py:240 wowtools/scoreboard.py:434
+#: wowtools/scoreboard.py:559
 msgid "Name"
 msgstr "Ime"
 
-#: wowtools/scoreboard.py:239 wowtools/scoreboard.py:420
+#: wowtools/scoreboard.py:240 wowtools/scoreboard.py:434
 msgid "Score"
 msgstr "Score"
 
-#: wowtools/scoreboard.py:249 wowtools/scoreboard.py:442
+#: wowtools/scoreboard.py:250 wowtools/scoreboard.py:456
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Guild Mythic+ Ljestvica"
 
-#: wowtools/scoreboard.py:267
+#: wowtools/scoreboard.py:268
 msgid "Last updated <t:{timestamp}:R>\n"
 msgstr "Zadnji put je ažurirano <t:{timestamp}:R>\n"
 
-#: wowtools/scoreboard.py:276
+#: wowtools/scoreboard.py:271
+msgid "Score cutoff for season title: `{cutoff}`"
+msgstr "Minimalan score za rank 1 titulu: `{cutoff}`"
+
+#: wowtools/scoreboard.py:280
 msgid "Updates every 5 minutes"
 msgstr "Ažurira se svakih 5 minuta"
 
-#: wowtools/scoreboard.py:294
+#: wowtools/scoreboard.py:298
 msgid "Updates only when there is a ranking change"
 msgstr "Ažurira se samo kada dođe do promjene u poretku"
 
-#: wowtools/scoreboard.py:424 wowtools/scoreboard.py:540
+#: wowtools/scoreboard.py:438 wowtools/scoreboard.py:563
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset region`."
 
-#: wowtools/scoreboard.py:430 wowtools/scoreboard.py:547
+#: wowtools/scoreboard.py:444 wowtools/scoreboard.py:570
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti realm s `{prefix}wowset realm`."
 
-#: wowtools/scoreboard.py:436 wowtools/scoreboard.py:554
+#: wowtools/scoreboard.py:450 wowtools/scoreboard.py:577
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset guild`."
 
-#: wowtools/scoreboard.py:536
+#: wowtools/scoreboard.py:559
 msgid "Rating"
 msgstr "Rating"
 
-#: wowtools/scoreboard.py:561
+#: wowtools/scoreboard.py:584
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr "Dohvaćanje ljestvice...\n"
 "Ovo može potrajati do 30 minuta za velike guilde."
 
-#: wowtools/scoreboard.py:565
+#: wowtools/scoreboard.py:588
 msgid "Guild PvP Leaderboard"
 msgstr "Guild PvP Ljestvica"
 
-#: wowtools/scoreboard.py:577
+#: wowtools/scoreboard.py:600
 msgid "RBG Leaderboard"
 msgstr "RBG Ljestvica"
 
-#: wowtools/scoreboard.py:590
+#: wowtools/scoreboard.py:613
 msgid "2v2 Arena Leaderboard"
 msgstr "2v2 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:603
+#: wowtools/scoreboard.py:626
 msgid "3v3 Arena Leaderboard"
 msgstr "3v3 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:649
+#: wowtools/scoreboard.py:672
 msgid "Guild not found."
 msgstr "Guild nije pronađen."
 
@@ -544,130 +603,143 @@ msgid "The Blizzard API is not properly set up.\n"
 msgstr "Blizzard API nije pravilno postavljen.\n"
 "Napravite klijent na https://develop.battle.net/ a zatim upišite `{prefix}set api blizzard client_id,whoops client_secret,whoops` popunjavajući `whoops` s ID-om i tajnom vašeg klijenta."
 
-#: wowtools/wowtools.py:28
+#: wowtools/wowtools.py:29
 #, docstring
 msgid "Interact with various World of Warcraft APIs"
 msgstr "Komuniciraj s raznim World of Warcraft API-jima"
 
-#: wowtools/wowtools.py:73
+#: wowtools/wowtools.py:77
 #, docstring
 msgid "Change WoWTools settings."
 msgstr "Promjeni postavke WoWTools-a."
 
-#: wowtools/wowtools.py:79
+#: wowtools/wowtools.py:83
 #, docstring
 msgid "Set the region where characters and guilds will be searched for."
 msgstr "Postavi regiju gdje će se characteri i guildovi pretraživati."
 
-#: wowtools/wowtools.py:85 wowtools/wowtools.py:191
+#: wowtools/wowtools.py:89 wowtools/wowtools.py:195
 msgid "That region does not exist.\n"
 "Valid regions are: {regions}."
 msgstr "Ta regija ne postoji.\n"
 "Važeće regije su: {regions}."
 
-#: wowtools/wowtools.py:90
+#: wowtools/wowtools.py:94
 msgid "Region set succesfully."
 msgstr "Regija uspješno postavljena."
 
-#: wowtools/wowtools.py:97
+#: wowtools/wowtools.py:101
 #, docstring
 msgid "Set the realm of your guild."
 msgstr "Postavi realm svog guilda."
 
-#: wowtools/wowtools.py:102
+#: wowtools/wowtools.py:106
 msgid "Realm cleared."
 msgstr "Realm izbrisan."
 
-#: wowtools/wowtools.py:106
+#: wowtools/wowtools.py:110
 msgid "Realm set."
 msgstr "Realm postavljen."
 
-#: wowtools/wowtools.py:113
+#: wowtools/wowtools.py:117
 #, docstring
 msgid "(CASE SENSITIVE) Set the name of your guild."
 msgstr "(Razlikuje velika i mala slova) Postavi ime svog guilda."
 
-#: wowtools/wowtools.py:128
+#: wowtools/wowtools.py:132
 #, docstring
 msgid "Instructions for setting up the Blizzard API."
 msgstr "Upute za postavljanje Blizzard API-ja."
 
-#: wowtools/wowtools.py:130
+#: wowtools/wowtools.py:134
 msgid "Create a client on https://develop.battle.net/ and then type in `{prefix}set api blizzard client_id,whoops client_secret,whoops` filling in `whoops` with your client's ID and secret."
 msgstr "Napravite klijent na https://develop.battle.net/ a zatim upišite `{prefix}set api blizzard client_id,whoops client_secret,whoops` popunjavajući `whoops` s ID-om i tajnom vašeg klijenta."
 
-#: wowtools/wowtools.py:142
+#: wowtools/wowtools.py:146
 #, docstring
 msgid "Set the emotes used for gold, silver and copper."
 msgstr "Postavi emote koji se koriste za gold, silver i copper."
 
-#: wowtools/wowtools.py:145
+#: wowtools/wowtools.py:149
 msgid "Invalid currency."
 msgstr "Nevažeća valuta."
 
-#: wowtools/wowtools.py:149
+#: wowtools/wowtools.py:153
 msgid "{currency} emote set to {emoji}"
 msgstr "{currency} emote postavljen na {emoji}"
 
-#: wowtools/wowtools.py:153
+#: wowtools/wowtools.py:157
 msgid "{currency} emote removed."
 msgstr "{currency} emote uklonjen."
 
-#: wowtools/wowtools.py:159
+#: wowtools/wowtools.py:163
 #, docstring
 msgid "Toggle scoreboard images on or off."
 msgstr "Uključite ili isključite slike za ljestvice."
 
-#: wowtools/wowtools.py:163
+#: wowtools/wowtools.py:167
 msgid "Images disabled."
 msgstr "Slike onemogućene."
 
-#: wowtools/wowtools.py:166
+#: wowtools/wowtools.py:170
 msgid "Images enabled."
 msgstr "Slike omogućene."
 
-#: wowtools/wowtools.py:170
+#: wowtools/wowtools.py:174
 #, docstring
 msgid "Character settings."
 msgstr "Postavke charactera."
 
-#: wowtools/wowtools.py:175
+#: wowtools/wowtools.py:179
 #, docstring
 msgid "Set your character name."
 msgstr "Postavi ime svog charactera."
 
-#: wowtools/wowtools.py:177
+#: wowtools/wowtools.py:181
 msgid "Character name set."
 msgstr "Ime charactera postavljeno."
 
-#: wowtools/wowtools.py:181
+#: wowtools/wowtools.py:185
 #, docstring
 msgid "Set your character's realm."
 msgstr "Postavi realm svog charactera."
 
-#: wowtools/wowtools.py:183
+#: wowtools/wowtools.py:187
 msgid "Character realm set."
 msgstr "Realm charactera postavljen."
 
-#: wowtools/wowtools.py:187
+#: wowtools/wowtools.py:191
 #, docstring
 msgid "Set your character's region."
 msgstr "Postavi regiju svog charactera."
 
-#: wowtools/wowtools.py:197
+#: wowtools/wowtools.py:201
 msgid "Character region set."
 msgstr "Regija charactera postavljena."
 
-#: wowtools/wowtools.py:203
+#: wowtools/wowtools.py:207
 #, docstring
 msgid "Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned."
 msgstr "Uključite/isključite sposobnost bota da odgovori na poruke kada se spomene podržani naziv spella."
 
-#: wowtools/wowtools.py:207
+#: wowtools/wowtools.py:211
 msgid "On message disabled."
 msgstr "Odgovaranje na poruke onemogućeno."
 
-#: wowtools/wowtools.py:210
+#: wowtools/wowtools.py:214
 msgid "On message enabled."
 msgstr "Odgovaranje na poruke omogućeno."
+
+#: wowtools/wowtools.py:219
+#, docstring
+msgid "Toggle the assistant cog integration."
+msgstr "Uključivanje/isključivanje integracije Assistant Cog-a."
+
+#: wowtools/wowtools.py:223
+msgid "Assistant cog integration disabled."
+msgstr "Integracija Assistan Cog-a onemogućena."
+
+#: wowtools/wowtools.py:226
+msgid "Assistant cog integration enabled."
+msgstr "Integracija Assistan Cog-a omogućena."
 
