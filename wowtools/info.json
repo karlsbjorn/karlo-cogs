@@ -17,5 +17,6 @@
     "min_bot_version": "3.5.3.dev0",
     "max_bot_version": "3.6.0.dev0",
     "type": "COG",
-    "end_user_data_statement": "This cog can store the name, realm and region of a Discord user's World of Warcraft character. This data is used to fetch information about the character from the Blizzard and Raider.io APIs."
+    "end_user_data_statement": "This cog can store the name, realm and region of a Discord user's World of Warcraft character. This data is used to fetch information about the character from the Blizzard and Raider.io APIs.",
+    "min_python_version": [3, 10, 0]
 }

@@ -167,7 +167,7 @@ class GuildManage:
             await self.config.guild(guild).guild_roster.set(current_roster)
 
             for i in range((len(embeds) // 10) + 1):
-                await guild_log_channel.send(embeds=embeds[i * 10 : (i + 1) * 10])
+                await guild_log_channel.send(embeds=embeds[i * 10 : (i + 1) * 10], silent=True)
 
     async def get_event_embeds(self, difference, guild):
         embeds = []
@@ -233,7 +233,7 @@ class GuildManage:
         description += f"{self.get_warcraftlogs_url(realm, region, member_name)}"
         return description
 
-    async def guess_member(self, guild: discord.Guild, member_name: str) -> tuple[str]:
+    async def guess_member(self, guild: discord.Guild, member_name: str) -> list[str]:
         """
         Guesses the Discord member based on their name using fuzzy string matching.
 
