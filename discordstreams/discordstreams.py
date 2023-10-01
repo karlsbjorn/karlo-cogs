@@ -120,11 +120,17 @@ class DiscordStreams(commands.Cog):
         """
         active_messages: Dict = await self.config.guild(guild).active_messages()
         for member_id, message in active_messages.items():
-            member: discord.Member = guild.get_member(int(member_id))
-            if member is None:
-                continue
+            try:
+                member: discord.Member = guild.get_member(int(member_id))
+                if member is None:
+                    continue
 
-            await self.update_message_embeds(guild, member, message)
+                await self.update_message_embeds(guild, member, message)
+            except Exception as e:  # This is just so the task doesn't stop running
+                log.error(
+                    f"Something went wrong while updating embed {member_id} in {guild.id}. {e}",
+                    exc_info=True,
+                )
 
     async def update_message_embeds(
         self, guild: discord.Guild, member: discord.Member, message: Dict
