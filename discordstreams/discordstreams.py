@@ -173,8 +173,8 @@ class DiscordStreams(commands.Cog):
             new_embed = await stream.make_embed(start_time=message.created_at)
             new_embed_dict = new_embed.to_dict()
 
-            same_fields: bool = current_embed_dict["fields"] == new_embed_dict["fields"]
-            same_footer: bool = current_embed_dict["footer"] == new_embed_dict["footer"]
+            same_fields: bool = current_embed_dict.get("fields") == new_embed_dict.get("fields")
+            same_footer: bool = current_embed_dict.get("footer") == new_embed_dict.get("footer")
             if same_fields and same_footer:
                 # Don't edit if there's no change
                 continue
