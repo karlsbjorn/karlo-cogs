@@ -375,7 +375,7 @@ class DiscordStream:
                 + (f"{activity.state}\n" if activity.state else "")
                 + (f"{discord.utils.format_dt(start, 'R')}\n" if start else "")
                 + (f"{_('Ends ')} {discord.utils.format_dt(end, 'R')}\n" if end else "")
-            )
+            ).rstrip()
         except AttributeError:
             details_msg = ""
         if details_msg:
