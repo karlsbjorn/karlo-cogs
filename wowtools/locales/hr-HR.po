@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-09-10 20:52+0000\n"
-"PO-Revision-Date: 2023-09-10 20:54\n"
+"POT-Creation-Date: 2023-11-02 19:29+0000\n"
+"PO-Revision-Date: 2023-11-02 19:33\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Aukcijska kuća nije dostupna u Kini.\n"
 
 #: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:90
 #: wowtools/guildmanage.py:106 wowtools/pvp.py:30 wowtools/scoreboard.py:51
-#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:654 wowtools/token.py:31
+#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:732 wowtools/token.py:31
 #: wowtools/token.py:75 wowtools/wowtools.py:96 wowtools/wowtools.py:112
 #: wowtools/wowtools.py:127
 msgid "Command failed successfully. {e}"
@@ -486,102 +486,98 @@ msgstr "Zaključaj trenutnu ljestvicu i više ju ne ažuriraj."
 msgid "No scoreboard is set."
 msgstr "Ljestvica nije postavljena."
 
-#: wowtools/scoreboard.py:202
-msgid "Failed to fetch scoreboard message."
-msgstr "Nije uspjelo dohvaćanje poruke ljestvice."
-
-#: wowtools/scoreboard.py:206
-msgid "Season 1 Mythic+ Scoreboard"
-msgstr "Mythic+ ljestvica 1. sezone"
-
-#: wowtools/scoreboard.py:207
-msgid "Dragonflight Season 1 has ended.\n"
-"This scoreboard is final."
-msgstr "1. sezona Dragonflighta je gotova.\n"
-"Ova ljestvica je konačna."
-
 #: wowtools/scoreboard.py:208
-msgid "This scoreboard is locked."
-msgstr "Ova ljestvica je zaključana."
+msgid "Scoreboard message not found"
+msgstr "Poruka ljestvice nije pronađena"
 
-#: wowtools/scoreboard.py:213
-msgid "Scoreboard locked."
-msgstr "Ljestvica zaključana."
-
-#: wowtools/scoreboard.py:240 wowtools/scoreboard.py:434
-#: wowtools/scoreboard.py:559
+#: wowtools/scoreboard.py:212 wowtools/scoreboard.py:316
+#: wowtools/scoreboard.py:510 wowtools/scoreboard.py:637
 msgid "Name"
 msgstr "Ime"
 
-#: wowtools/scoreboard.py:240 wowtools/scoreboard.py:434
+#: wowtools/scoreboard.py:212 wowtools/scoreboard.py:316
+#: wowtools/scoreboard.py:510
 msgid "Score"
 msgstr "Score"
 
-#: wowtools/scoreboard.py:250 wowtools/scoreboard.py:456
+#: wowtools/scoreboard.py:222 wowtools/scoreboard.py:326
+#: wowtools/scoreboard.py:532
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Guild Mythic+ Ljestvica"
 
-#: wowtools/scoreboard.py:268
+#: wowtools/scoreboard.py:240
+msgid "Season 2 of Dragonflight is over.\n"
+msgstr "2. sezona Dragonflighta je gotova.\n"
+
+#: wowtools/scoreboard.py:243
+msgid "Score cutoff for season title was: `{cutoff}`\n"
+msgstr "Minimalan score za rank 1 titulu je bio: `{cutoff}`\n"
+
+#: wowtools/scoreboard.py:289
+msgid "Scoreboard locked."
+msgstr "Ljestvica zaključana."
+
+#: wowtools/scoreboard.py:344
 msgid "Last updated <t:{timestamp}:R>\n"
 msgstr "Zadnji put je ažurirano <t:{timestamp}:R>\n"
 
-#: wowtools/scoreboard.py:271
-msgid "Score cutoff for season title: `{cutoff}`"
-msgstr "Minimalan score za rank 1 titulu: `{cutoff}`"
+#: wowtools/scoreboard.py:347
+msgid "Score cutoff for season title: `{cutoff}`\n"
+msgstr "Minimalan score za rank 1 titulu: `{cutoff}`\n"
 
-#: wowtools/scoreboard.py:280
+#: wowtools/scoreboard.py:356
 msgid "Updates every 5 minutes"
 msgstr "Ažurira se svakih 5 minuta"
 
-#: wowtools/scoreboard.py:298
+#: wowtools/scoreboard.py:374
 msgid "Updates only when there is a ranking change"
 msgstr "Ažurira se samo kada dođe do promjene u poretku"
 
-#: wowtools/scoreboard.py:438 wowtools/scoreboard.py:563
+#: wowtools/scoreboard.py:514 wowtools/scoreboard.py:641
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset region`."
 
-#: wowtools/scoreboard.py:444 wowtools/scoreboard.py:570
+#: wowtools/scoreboard.py:520 wowtools/scoreboard.py:648
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti realm s `{prefix}wowset realm`."
 
-#: wowtools/scoreboard.py:450 wowtools/scoreboard.py:577
+#: wowtools/scoreboard.py:526 wowtools/scoreboard.py:655
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset guild`."
 
-#: wowtools/scoreboard.py:559
+#: wowtools/scoreboard.py:637
 msgid "Rating"
 msgstr "Rating"
 
-#: wowtools/scoreboard.py:584
+#: wowtools/scoreboard.py:662
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr "Dohvaćanje ljestvice...\n"
 "Ovo može potrajati do 30 minuta za velike guilde."
 
-#: wowtools/scoreboard.py:588
+#: wowtools/scoreboard.py:666
 msgid "Guild PvP Leaderboard"
 msgstr "Guild PvP Ljestvica"
 
-#: wowtools/scoreboard.py:600
+#: wowtools/scoreboard.py:678
 msgid "RBG Leaderboard"
 msgstr "RBG Ljestvica"
 
-#: wowtools/scoreboard.py:613
+#: wowtools/scoreboard.py:691
 msgid "2v2 Arena Leaderboard"
 msgstr "2v2 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:626
+#: wowtools/scoreboard.py:704
 msgid "3v3 Arena Leaderboard"
 msgstr "3v3 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:672
+#: wowtools/scoreboard.py:750
 msgid "Guild not found."
 msgstr "Guild nije pronađen."
 
