@@ -240,7 +240,7 @@ class Scoreboard:
         desc = _("Season 2 of Dragonflight is over.\n").format(
             timestamp=int(datetime.now(timezone.utc).timestamp())
         )
-        desc += _("Score cutoff for season title was: `{cutoff}`").format(
+        desc += _("Score cutoff for season title was: `{cutoff}`\n").format(
             cutoff=await self.get_season_title_cutoff(region)
         )
 
@@ -344,7 +344,7 @@ class Scoreboard:
             desc = _("Last updated <t:{timestamp}:R>\n").format(
                 timestamp=int(datetime.now(timezone.utc).timestamp())
             )
-            desc += _("Score cutoff for season title: `{cutoff}`").format(
+            desc += _("Score cutoff for season title: `{cutoff}`\n").format(
                 cutoff=await self.get_season_title_cutoff(region)
             )
 
