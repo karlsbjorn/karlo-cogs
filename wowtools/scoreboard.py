@@ -197,16 +197,92 @@ class Scoreboard:
 
         sb_channel = ctx.guild.get_channel(sb_channel_id)
         try:
-            sb_msg = await sb_channel.fetch_message(sb_msg_id)
+            sb_msg: discord.Message = await sb_channel.fetch_message(sb_msg_id)
         except discord.HTTPException:
-            await ctx.send(_("Failed to fetch scoreboard message."))
+            log.error(
+                f"Failed to fetch scoreboard message in guild {ctx.guild.id} ({ctx.guild.name}).",
+                exc_info=True,
+            )
+            return
+        if not sb_msg:
+            await ctx.send(_("Scoreboard message not found"))
             return
 
-        embed = sb_msg.embeds[0]
-        embed.title = _("Season 1 Mythic+ Scoreboard")
-        embed.description = _("Dragonflight Season 1 has ended.\nThis scoreboard is final.")
-        embed.set_footer(text=_("This scoreboard is locked."))
-        await sb_msg.edit(embed=embed, attachments=[])
+        max_chars = 20
+        headers = ["#", _("Name"), _("Score")]
+        region: str = await self.config.guild(ctx.guild).region()
+        realm: str = await self.config.guild(ctx.guild).realm()
+        guild_name: str = await self.config.guild(ctx.guild).real_guild_name()
+        sb_blacklist: List[str] = await self.config.guild(ctx.guild).scoreboard_blacklist()
+        if not region or not realm or not guild_name:
+            return
+        image: bool = await self.config.guild(ctx.guild).sb_image()
+
+        embed = discord.Embed(
+            title=_("Mythic+ Guild Scoreboard"),
+            color=await self.bot.get_embed_color(sb_msg),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
+        try:
+            tabulate_list = await self._get_dungeon_scores(
+                guild_name,
+                max_chars,
+                realm,
+                region,
+                sb_blacklist,
+                image=image,
+            )
+        except ValueError as e:
+            log.error(f"Error getting dungeon scores for {ctx.guild.id}, skipping. Response: {e}")
+            return
+
+        # TODO: When dpy2 is out, use discord.utils.format_dt()
+        desc = _("Season 2 of Dragonflight is over.\n").format(
+            timestamp=int(datetime.now(timezone.utc).timestamp())
+        )
+        desc += _("Score cutoff for season title was: `{cutoff}`").format(
+            cutoff=await self.get_season_title_cutoff(region)
+        )
+
+        if image:
+            img_file = await self._generate_scoreboard_image(
+                tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
+            )
+            embed.set_image(url=f"attachment://{img_file.filename}")
+        else:
+            formatted_rankings = box(
+                tabulate(
+                    tabulate_list,
+                    headers=headers,
+                    tablefmt="plain",
+                    disable_numparse=True,
+                ),
+                lang="md",
+            )
+            desc += formatted_rankings
+
+        ass_integration = await self.config.assistant_cog_integration()
+        if (assistant := self.bot.get_cog("Assistant")) and ass_integration:
+            await self.add_assistant_embedding(assistant, ctx.guild, image, tabulate_list)
+
+        embed.description = desc
+
+        try:
+            if image:
+                await sb_msg.edit(embed=embed, attachments=[img_file])
+            else:
+                await sb_msg.edit(embed=embed, attachments=[])
+        except discord.Forbidden:
+            log.error(
+                f"Failed to edit scoreboard message in guild {ctx.guild.id} ({ctx.guild.name}) "
+                f"due to missing permissions.",
+                exc_info=True,
+            )
+        except discord.HTTPException:
+            log.error(
+                f"Failed to edit scoreboard message in guild {ctx.guild.id} ({ctx.guild.name}).",
+                exc_info=True,
+            )
 
         await self.config.guild(ctx.guild).scoreboard_channel.clear()
         await self.config.guild(ctx.guild).scoreboard_message.clear()
