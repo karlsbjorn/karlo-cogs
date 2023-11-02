@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-07-01 23:42+0000\n"
-"PO-Revision-Date: 2023-07-01 23:42\n"
+"POT-Creation-Date: 2023-10-22 23:46+0000\n"
+"PO-Revision-Date: 2023-10-22 23:46\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -61,31 +61,27 @@ msgstr ""
 msgid "Ignored Channels"
 msgstr ""
 
-#: discordstreams/discordstreams.py:288
+#: discordstreams/discordstreams.py:294
 msgid "Watch the stream"
 msgstr ""
 
-#: discordstreams/discordstreams.py:295
+#: discordstreams/discordstreams.py:301
 msgid "{member} is live!"
 msgstr ""
 
-#: discordstreams/discordstreams.py:351
+#: discordstreams/discordstreams.py:357
 msgid "Stream started {relative_timestamp}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:370
-msgid "Started "
-msgstr ""
-
-#: discordstreams/discordstreams.py:371
+#: discordstreams/discordstreams.py:377
 msgid "Ends "
 msgstr ""
 
-#: discordstreams/discordstreams.py:384
+#: discordstreams/discordstreams.py:391
 msgid "Playing: {activity}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:397
+#: discordstreams/discordstreams.py:404
 msgid "Nothing"
 msgstr ""
 
