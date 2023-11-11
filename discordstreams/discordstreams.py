@@ -368,22 +368,23 @@ class DiscordStream:
             if end := activity.timestamps.get("end"):
                 end = datetime.fromtimestamp(end / 1000)
 
-            details_msg = (
-                ""
-                + (f"**{activity.name}**\n" if activity.details or activity.state else "")
-                + (f"{activity.details}\n" if activity.details else "")
-                + (f"{activity.state}\n" if activity.state else "")
-                + (
-                    f"{discord.utils.format_dt(start, 'R')}\n"
-                    if start and (activity.details or activity.state)
-                    else ""
-                )
-                + (
-                    f"{_('Ends ')} {discord.utils.format_dt(end, 'R')}\n"
-                    if end and (activity.details or activity.state)
-                    else ""
-                )
-            ).rstrip()
+            if hasattr(activity, "details") or hasattr(activity, "state"):
+                details_msg = (
+                    ""
+                    + (f"**{activity.name}**\n" if activity.details or activity.state else "")
+                    + (f"{activity.details}\n" if activity.details else "")
+                    + (f"{activity.state}\n" if activity.state else "")
+                    + (
+                        f"{discord.utils.format_dt(start, 'R')}\n"
+                        if start and (activity.details or activity.state)
+                        else ""
+                    )
+                    + (
+                        f"{_('Ends ')} {discord.utils.format_dt(end, 'R')}\n"
+                        if end and (activity.details or activity.state)
+                        else ""
+                    )
+                ).rstrip()
         except AttributeError:
             details_msg = ""
         if details_msg:
