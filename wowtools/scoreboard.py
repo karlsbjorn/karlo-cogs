@@ -237,7 +237,7 @@ class Scoreboard:
             return
 
         # TODO: When dpy2 is out, use discord.utils.format_dt()
-        desc = _("Season 2 of Dragonflight is over.\n").format(
+        desc = _("Season 3 of Dragonflight is over.\n").format(
             timestamp=int(datetime.now(timezone.utc).timestamp())
         )
         desc += _("Score cutoff for season title was: `{cutoff}`\n").format(
@@ -558,7 +558,7 @@ class Scoreboard:
 
     async def _generate_scoreboard_image(self, tabulate_list: list, dev_guild: bool = False):
         img_path = str(
-            bundled_data_path(self) / "scoreboard-df-s2-jrk.png"
+            bundled_data_path(self) / "scoreboard-df-s3-jrk.png"
             if dev_guild
             else bundled_data_path(self) / "scoreboard-df-s1.png"
         )

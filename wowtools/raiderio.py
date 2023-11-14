@@ -79,7 +79,7 @@ class Raiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"]["aberrus-the-shadowed-crucible"]["summary"]
+        char_raid = profile_data["raid_progression"]["amirdrassil-the-dreams-hope"]["summary"]
         char_last_updated = self._parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
@@ -267,14 +267,14 @@ class Raiderio:
             last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
             ranks = (
-                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["normal"],
-                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["heroic"],
-                profile_data["raid_rankings"]["aberrus-the-shadowed-crucible"]["mythic"],
+                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["normal"],
+                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["heroic"],
+                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["mythic"],
             )
             difficulties = ("Normal", "Heroic", "Mythic")
 
             raid_progression: str = profile_data["raid_progression"][
-                "aberrus-the-shadowed-crucible"
+                "amirdrassil-the-dreams-hope"
             ]["summary"]
 
             embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
