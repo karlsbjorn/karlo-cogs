@@ -606,17 +606,17 @@ class Scoreboard:
 
     @staticmethod
     def _get_ilvl_color(ilvl: int) -> str:
-        if ilvl >= 446:
+        if ilvl >= 485:
             return "#f16960"
-        elif ilvl >= 443:
+        elif ilvl >= 482:
             return "#FF69B4"
-        elif ilvl >= 440:
+        elif ilvl >= 479:
             return "#FFA500"
-        elif ilvl >= 435:
+        elif ilvl >= 474:
             return "#b040c2"
-        elif ilvl >= 430:
+        elif ilvl >= 469:
             return "#445bc2"
-        elif ilvl >= 425:
+        elif ilvl >= 464:
             return "#00ff1a"
         else:
             return "#FFFFFF"
