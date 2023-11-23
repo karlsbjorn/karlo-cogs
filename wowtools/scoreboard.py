@@ -417,7 +417,7 @@ class Scoreboard:
 
     @staticmethod
     async def get_season_title_cutoff(region: str) -> float:
-        current_season = "season-df-2"  # TODO: Needs to be manually updated every season
+        current_season = "season-df-3"  # TODO: Needs to be manually updated every season
         async with RaiderIO() as rio:
             cutoffs = (await rio.get_mythic_plus_season_cutoffs(region, current_season)).get(
                 "cutoffs"
