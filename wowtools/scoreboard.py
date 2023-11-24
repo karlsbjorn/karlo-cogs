@@ -344,9 +344,8 @@ class Scoreboard:
             desc = _("Last updated <t:{timestamp}:R>\n").format(
                 timestamp=int(datetime.now(timezone.utc).timestamp())
             )
-            desc += _("Score cutoff for season title: `{cutoff}`\n").format(
-                cutoff=await self.get_season_title_cutoff(region)
-            )
+            if cutoff := await self.get_season_title_cutoff(region):
+                desc += _("Score cutoff for season title: `{cutoff}`\n").format(cutoff=cutoff)
 
             if image:
                 img_file = await self._generate_scoreboard_image(
@@ -422,7 +421,7 @@ class Scoreboard:
             cutoffs = (await rio.get_mythic_plus_season_cutoffs(region, current_season)).get(
                 "cutoffs"
             )
-        return cutoffs["p999"]["all"]["quantileMinValue"]
+        return cutoffs["p999"]["all"]["quantileMinValue"] if cutoffs else 0
 
     @update_dungeon_scoreboard.error
     async def update_dungeon_scoreboard_error(self, error):
