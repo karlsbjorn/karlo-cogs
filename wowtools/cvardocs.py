@@ -203,7 +203,7 @@ class CVarDocs:
     async def get_all_cvars(self) -> list[CVar]:
         """Get all cvars from wowpedia"""
         log.info("Fetching all cvars from wowpedia")
-        request_url = "https://wowpedia.fandom.com/wiki/Console_variables/Complete_list"
+        request_url = "https://warcraft.wiki.gg/wiki/Console_variables"
         async with self.session.request("GET", request_url) as resp:
             if resp.status != 200:
                 log.error(f"Error fetching {request_url}: {resp.status}")
