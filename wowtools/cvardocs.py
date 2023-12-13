@@ -61,7 +61,7 @@ class CVarSelect(discord.ui.Select):
             discord.Embed: The embed with information about the CVar.
         """
         embed = discord.Embed(
-            title=cvar.name,
+            title=f"{cvar.secure}{cvar.name}",
             description=cvar.description,
             color=interaction.message.embeds[0].color,
         )
@@ -83,6 +83,8 @@ class CVarSelect(discord.ui.Select):
             embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
+        if cvar.source:
+            embed.url = cvar.source
         return embed
 
 
@@ -109,6 +111,8 @@ class CVar:
     scope: str
     description: str
     version: str
+    source: str
+    secure: str
 
 
 class CVarDocs:
@@ -155,7 +159,7 @@ class CVarDocs:
             discord.Embed: The embed with information about the CVar.
         """
         embed = discord.Embed(
-            title=cvar.name,
+            title=f"{cvar.secure}{cvar.name}",
             description=cvar.description,
             color=await self.bot.get_embed_color(interaction.channel),
         )
@@ -178,6 +182,8 @@ class CVarDocs:
             embed.add_field(name=_("Scope"), value=cvar.scope)
         if cvar.version:
             embed.add_field(name=_("Introduced in"), value=cvar.version, inline=False)
+        if cvar.source:
+            embed.url = cvar.source
         return embed
 
     @slash_cvar.autocomplete("cvar")
@@ -220,6 +226,8 @@ class CVarDocs:
         for row in rows:
             cells = row.find_all("td")
             version = cells[0].text.replace("\n", "").strip()
+            source = cells[1].contents[0].attrs["href"] if cells[1].contents else ""
+            secure = cells[2].text.replace("\n", "").strip()
             name = cells[3].text.replace("\n", "").strip()
             default = cells[4].text.replace("\n", "").strip()
             if default == "1":
@@ -229,5 +237,7 @@ class CVarDocs:
             category = cells[5].text.replace("\n", "").strip()
             scope = cells[6].text.replace("\n", "").strip()
             description = cells[7].text.strip()
-            cvars.append(CVar(name, default, category, scope, description, version))
+            cvars.append(
+                CVar(name, default, category, scope, description, version, source, secure)
+            )
         return cvars
