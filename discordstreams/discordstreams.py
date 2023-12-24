@@ -396,7 +396,7 @@ class DiscordStream:
         if self.banner:
             embed.set_image(url=self.banner.url)
 
-        if not (hasattr(activity, "details") or hasattr(activity, "state")):
+        if not details_msg:  # No RP
             embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
 
         return embed
