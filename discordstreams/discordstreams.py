@@ -119,7 +119,7 @@ class DiscordStreams(commands.Cog):
         :return: None
         """
         active_messages: Dict = await self.config.guild(guild).active_messages()
-        for member_id, message in active_messages.items():
+        for member_id, message in list(active_messages.items()):
             try:
                 member: discord.Member = guild.get_member(int(member_id))
                 # Discord sometimes won't send a voice state event, so we need an extra condition
