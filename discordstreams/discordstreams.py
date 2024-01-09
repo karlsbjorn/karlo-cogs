@@ -122,8 +122,13 @@ class DiscordStreams(commands.Cog):
         for member_id, message in active_messages.items():
             try:
                 member: discord.Member = guild.get_member(int(member_id))
-                if member is None:
-                    continue
+                # Discord sometimes won't send a voice state event, so we need an extra condition
+                # to clean shit up with
+                if not member.voice:
+                    guild_config = await self.config.guild(member.guild).all()  # guh
+                    await self._remove_stream_alerts(
+                        active_messages, guild_config, member.guild, member_id
+                    )
 
                 await self.update_message_embeds(guild, member, message)
             except Exception as e:  # This is just so the task doesn't stop running
