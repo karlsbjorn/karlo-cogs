@@ -10,7 +10,7 @@ from pylav.type_hints.bot import DISCORD_BOT_TYPE, DISCORD_INTERACTION_TYPE
 from redbot.core import Config, commands
 from redbot.core.i18n import Translator, cog_i18n
 
-log = getLogger("red.karlo-cogs.autoplay")
+log = getLogger("PyLav.3rdpt.karlo-cogs.autoplay")
 _ = Translator("AutoPlay", __file__)
 
 
