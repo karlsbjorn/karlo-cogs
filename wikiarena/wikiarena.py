@@ -358,18 +358,18 @@ class ButtonsView(discord.ui.View):
             "Your final score was: **{score}**"
         ).format(
             score=self.score,
-            blue_views=f"**{self.blue_views}**"
-            if self.blue_views > self.red_views
-            else self.blue_views,
-            red_views=f"**{self.red_views}**"
-            if self.red_views > self.blue_views
-            else self.red_views,
-            blue_words=f"**{self.blue_words}**"
-            if self.blue_words > self.red_words
-            else self.blue_words,
-            red_words=f"**{self.red_words}**"
-            if self.red_words > self.blue_words
-            else self.red_words,
+            blue_views=(
+                f"**{self.blue_views}**" if self.blue_views > self.red_views else self.blue_views
+            ),
+            red_views=(
+                f"**{self.red_views}**" if self.red_views > self.blue_views else self.red_views
+            ),
+            blue_words=(
+                f"**{self.blue_words}**" if self.blue_words > self.red_words else self.blue_words
+            ),
+            red_words=(
+                f"**{self.red_words}**" if self.red_words > self.blue_words else self.red_words
+            ),
         )
 
         end_msg = await self.update_user_data(end_msg)
@@ -410,18 +410,18 @@ class ButtonsView(discord.ui.View):
             "Your final score was: **{score}**"
         ).format(
             score=self.score,
-            blue_views=f"**{self.blue_views}**"
-            if self.blue_views > self.red_views
-            else self.blue_views,
-            red_views=f"**{self.red_views}**"
-            if self.red_views > self.blue_views
-            else self.red_views,
-            blue_words=f"**{self.blue_words}**"
-            if self.blue_words > self.red_words
-            else self.blue_words,
-            red_words=f"**{self.red_words}**"
-            if self.red_words > self.blue_words
-            else self.red_words,
+            blue_views=(
+                f"**{self.blue_views}**" if self.blue_views > self.red_views else self.blue_views
+            ),
+            red_views=(
+                f"**{self.red_views}**" if self.red_views > self.blue_views else self.red_views
+            ),
+            blue_words=(
+                f"**{self.blue_words}**" if self.blue_words > self.red_words else self.blue_words
+            ),
+            red_words=(
+                f"**{self.red_words}**" if self.red_words > self.blue_words else self.red_words
+            ),
         )
 
         end_msg = await self.update_user_data(end_msg)

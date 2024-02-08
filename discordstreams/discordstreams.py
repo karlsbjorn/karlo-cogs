@@ -360,9 +360,11 @@ class DiscordStream:
         embed.add_field(
             name=zws,
             value=_("Stream started {relative_timestamp}").format(
-                relative_timestamp=discord.utils.format_dt(start_time, style="R")
-                if start_time
-                else discord.utils.format_dt(discord.utils.utcnow(), style="R")
+                relative_timestamp=(
+                    discord.utils.format_dt(start_time, style="R")
+                    if start_time
+                    else discord.utils.format_dt(discord.utils.utcnow(), style="R")
+                )
             ),
             inline=False,
         )
