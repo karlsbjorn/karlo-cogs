@@ -1,0 +1,12 @@
+{
+    "author": ["Karlo"],
+    "description": "RPC methods for PyLav. This cog has no commands, it is meant to be used only for RPC.",
+    "short": "RPC methods for PyLav.",
+    "tags": ["music", "pylav", "rpc"],
+    "min_python_version": [3, 11, 0],
+    "requirements": ["Py-Lav>=1.10.10"],
+    "min_bot_version": "3.5.0.dev306",
+    "max_bot_version": "3.5.99",
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}
