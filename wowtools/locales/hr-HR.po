@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-11-02 19:29+0000\n"
-"PO-Revision-Date: 2023-11-06 13:57\n"
+"POT-Creation-Date: 2023-12-13 17:29+0000\n"
+"PO-Revision-Date: 2024-04-22 12:59\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Aukcijska kuća nije dostupna u Kini.\n"
 
 #: wowtools/auctionhouse.py:44 wowtools/guildmanage.py:90
 #: wowtools/guildmanage.py:106 wowtools/pvp.py:30 wowtools/scoreboard.py:51
-#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:732 wowtools/token.py:31
+#: wowtools/scoreboard.py:117 wowtools/scoreboard.py:731 wowtools/token.py:31
 #: wowtools/token.py:75 wowtools/wowtools.py:96 wowtools/wowtools.py:112
 #: wowtools/wowtools.py:127
 msgid "Command failed successfully. {e}"
@@ -81,40 +81,40 @@ msgstr "Više detalja"
 msgid "Select a CVar"
 msgstr "Odaberi CVar"
 
-#: wowtools/cvardocs.py:70 wowtools/cvardocs.py:164
+#: wowtools/cvardocs.py:70 wowtools/cvardocs.py:168
 msgid "No"
 msgstr "Ne"
 
-#: wowtools/cvardocs.py:72 wowtools/cvardocs.py:166
+#: wowtools/cvardocs.py:72 wowtools/cvardocs.py:170
 msgid "Yes"
 msgstr "Da"
 
-#: wowtools/cvardocs.py:76 wowtools/cvardocs.py:171
+#: wowtools/cvardocs.py:76 wowtools/cvardocs.py:175
 msgid "Default"
 msgstr "Zadano"
 
-#: wowtools/cvardocs.py:81 wowtools/cvardocs.py:176
+#: wowtools/cvardocs.py:81 wowtools/cvardocs.py:180
 msgid "Category"
 msgstr "Kategorija"
 
-#: wowtools/cvardocs.py:83 wowtools/cvardocs.py:178
+#: wowtools/cvardocs.py:83 wowtools/cvardocs.py:182
 msgid "Scope"
 msgstr "Opseg"
 
-#: wowtools/cvardocs.py:85 wowtools/cvardocs.py:180
+#: wowtools/cvardocs.py:85 wowtools/cvardocs.py:184
 msgid "Introduced in"
 msgstr "Uvedeno u"
 
-#: wowtools/cvardocs.py:98
+#: wowtools/cvardocs.py:100
 msgid "You are not authorized to interact with this."
 msgstr "Niste ovlašteni za interakciju s ovim."
 
-#: wowtools/cvardocs.py:122
+#: wowtools/cvardocs.py:126
 #, docstring
 msgid "Get information about a WoW Console Variable"
 msgstr "Dobijte informacije o varijabli WoW konzole"
 
-#: wowtools/cvardocs.py:129
+#: wowtools/cvardocs.py:133
 msgid "No CVar found with that name."
 msgstr "Nije pronađen CVar s tim nazivom."
 
@@ -491,23 +491,23 @@ msgid "Scoreboard message not found"
 msgstr "Poruka ljestvice nije pronađena"
 
 #: wowtools/scoreboard.py:212 wowtools/scoreboard.py:316
-#: wowtools/scoreboard.py:510 wowtools/scoreboard.py:637
+#: wowtools/scoreboard.py:509 wowtools/scoreboard.py:636
 msgid "Name"
 msgstr "Ime"
 
 #: wowtools/scoreboard.py:212 wowtools/scoreboard.py:316
-#: wowtools/scoreboard.py:510
+#: wowtools/scoreboard.py:509
 msgid "Score"
 msgstr "Score"
 
 #: wowtools/scoreboard.py:222 wowtools/scoreboard.py:326
-#: wowtools/scoreboard.py:532
+#: wowtools/scoreboard.py:531
 msgid "Mythic+ Guild Scoreboard"
 msgstr "Guild Mythic+ Ljestvica"
 
 #: wowtools/scoreboard.py:240
-msgid "Season 2 of Dragonflight is over.\n"
-msgstr "2. sezona Dragonflighta je gotova.\n"
+msgid "Season 3 of Dragonflight is over.\n"
+msgstr "3. sezona Dragonflighta je gotova.\n"
 
 #: wowtools/scoreboard.py:243
 msgid "Score cutoff for season title was: `{cutoff}`\n"
@@ -521,63 +521,63 @@ msgstr "Ljestvica zaključana."
 msgid "Last updated <t:{timestamp}:R>\n"
 msgstr "Zadnji put je ažurirano <t:{timestamp}:R>\n"
 
-#: wowtools/scoreboard.py:347
+#: wowtools/scoreboard.py:348
 msgid "Score cutoff for season title: `{cutoff}`\n"
 msgstr "Minimalan score za rank 1 titulu: `{cutoff}`\n"
 
-#: wowtools/scoreboard.py:356
+#: wowtools/scoreboard.py:355
 msgid "Updates every 5 minutes"
 msgstr "Ažurira se svakih 5 minuta"
 
-#: wowtools/scoreboard.py:374
+#: wowtools/scoreboard.py:373
 msgid "Updates only when there is a ranking change"
 msgstr "Ažurira se samo kada dođe do promjene u poretku"
 
-#: wowtools/scoreboard.py:514 wowtools/scoreboard.py:641
+#: wowtools/scoreboard.py:513 wowtools/scoreboard.py:640
 msgid "\n"
 "A server admin needs to set a region with `{prefix}wowset region` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset region`."
 
-#: wowtools/scoreboard.py:520 wowtools/scoreboard.py:648
+#: wowtools/scoreboard.py:519 wowtools/scoreboard.py:647
 msgid "\n"
 "A server admin needs to set a realm with `{prefix}wowset realm` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti realm s `{prefix}wowset realm`."
 
-#: wowtools/scoreboard.py:526 wowtools/scoreboard.py:655
+#: wowtools/scoreboard.py:525 wowtools/scoreboard.py:654
 msgid "\n"
 "A server admin needs to set a guild name with `{prefix}wowset guild` first."
 msgstr "\n"
 "Administrator servera prvo mora postaviti regiju s `{prefix}wowset guild`."
 
-#: wowtools/scoreboard.py:637
+#: wowtools/scoreboard.py:636
 msgid "Rating"
 msgstr "Rating"
 
-#: wowtools/scoreboard.py:662
+#: wowtools/scoreboard.py:661
 msgid "Fetching scoreboard...\n"
 "This can take up to 30 minutes for very large guilds."
 msgstr "Dohvaćanje ljestvice...\n"
 "Ovo može potrajati do 30 minuta za velike guilde."
 
-#: wowtools/scoreboard.py:666
+#: wowtools/scoreboard.py:665
 msgid "Guild PvP Leaderboard"
 msgstr "Guild PvP Ljestvica"
 
-#: wowtools/scoreboard.py:678
+#: wowtools/scoreboard.py:677
 msgid "RBG Leaderboard"
 msgstr "RBG Ljestvica"
 
-#: wowtools/scoreboard.py:691
+#: wowtools/scoreboard.py:690
 msgid "2v2 Arena Leaderboard"
 msgstr "2v2 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:704
+#: wowtools/scoreboard.py:703
 msgid "3v3 Arena Leaderboard"
 msgstr "3v3 Arena Ljestvica"
 
-#: wowtools/scoreboard.py:750
+#: wowtools/scoreboard.py:749
 msgid "Guild not found."
 msgstr "Guild nije pronađen."
 
