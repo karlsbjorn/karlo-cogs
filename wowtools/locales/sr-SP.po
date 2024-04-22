@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-12-13 17:29+0000\n"
-"PO-Revision-Date: 2023-12-13 17:29\n"
+"POT-Creation-Date: 2024-04-22 14:51+0000\n"
+"PO-Revision-Date: 2024-04-22 14:52\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -492,13 +492,12 @@ msgstr "Име"
 msgid "Score"
 msgstr "Резултат"
 
-#: wowtools/scoreboard.py:222 wowtools/scoreboard.py:326
-#: wowtools/scoreboard.py:531
-msgid "Mythic+ Guild Scoreboard"
-msgstr "Митхиц+ Гуилд Сцоребоард"
+#: wowtools/scoreboard.py:222
+msgid "3rd Season Guild Scoreboard"
+msgstr ""
 
 #: wowtools/scoreboard.py:240
-msgid "Season 3 of Dragonflight is over.\n"
+msgid "Season 4 of Dragonflight is over.\n"
 msgstr ""
 
 #: wowtools/scoreboard.py:243
@@ -508,6 +507,10 @@ msgstr ""
 #: wowtools/scoreboard.py:289
 msgid "Scoreboard locked."
 msgstr ""
+
+#: wowtools/scoreboard.py:326 wowtools/scoreboard.py:531
+msgid "Mythic+ Guild Scoreboard"
+msgstr "Митхиц+ Гуилд Сцоребоард"
 
 #: wowtools/scoreboard.py:344
 msgid "Last updated <t:{timestamp}:R>\n"
