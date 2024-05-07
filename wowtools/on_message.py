@@ -1,7 +1,7 @@
 import itertools
 import re
 from io import BytesIO
-from typing import List
+from typing import List, Optional
 
 import discord
 from aiohttp import ClientResponseError
@@ -131,14 +131,58 @@ class OnMessage:
         result_icon = await media_method(result["data"]["id"])
         embed = discord.Embed(
             title=result["data"]["name"]["en_US"],
-            description=result_description["description"],
+            description=self.generate_description(result_description, obj_type),
             url=f"https://www.wowhead.com/{obj_type}={result['data']['id']}",
-            colour=await self.get_embed_colour(result_icon["assets"][0]["value"]),
+            colour=(
+                await self.get_spell_colour(result_icon["assets"][0]["value"])
+                if obj_type == "spell"
+                else self.get_item_rarity_color(result_description.get("quality"))
+            ),
         )
         embed.set_thumbnail(url=result_icon["assets"][0]["value"])
         return embed
 
-    async def get_embed_colour(self, url: str) -> discord.Color:
+    def generate_description(self, description, obj_type):
+        if obj_type == "spell":
+            return description["description"]
+        if obj_type == "item" and description.get("preview_item"):
+            preview = description["preview_item"]
+            generated_str = ""
+            if preview.get("level"):
+                generated_str += f"**{preview['level']['display_string']}**"
+            if preview.get("binding"):
+                generated_str += f"\n{preview['binding']['name']}"
+
+            # if preview.get("item_class"):
+            #     generated_str += f"\n{preview['item_class']['name']}"
+            if preview.get("item_subclass"):
+                generated_str += f"\n{preview['item_subclass']['name']}"
+            if preview.get("inventory_type"):
+                generated_str += f" - {preview['inventory_type']['name']}\n"
+
+            if preview.get("weapon"):
+                generated_str += (
+                    f"{preview['weapon']['damage']['display_string']}\n"
+                    f"{preview['weapon']['dps']['display_string']}\n"
+                )
+
+            if preview.get("stats"):
+                for stat in preview["stats"]:
+                    generated_str += f"\n{stat['display']['display_string']}"
+
+            if preview.get("spells"):
+                generated_str += "\n".join(
+                    [
+                        f"\n\n**{spell['spell']['name']}**\n{spell['description']}"
+                        for spell in preview["spells"]
+                    ]
+                )
+
+            if preview.get("requirements"):
+                generated_str += f"\n\n{preview['requirements']['level']['display_string']}"
+            return generated_str
+
+    async def get_spell_colour(self, url: str) -> discord.Color:
         """Get the average colour of an image by averaging the RGB values of all pixels."""
         async with self.session.get(url) as response:
             img = BytesIO(await response.read())
@@ -159,3 +203,28 @@ class OnMessage:
         avg_g = total_g // pixels
         avg_b = total_b // pixels
         return discord.Color.from_rgb(avg_r, avg_g, avg_b)
+
+    def get_item_rarity_color(self, rarity: Optional[dict]) -> discord.Color:
+        if not rarity:
+            return discord.Color.blurple()
+        else:
+            rarity = rarity["type"]
+        if rarity.lower() == "poor":
+            return discord.Color.from_str("#9d9d9d")
+        if rarity.lower() == "common":
+            return discord.Color.from_str("#ffffff")
+        if rarity.lower() == "uncommon":
+            return discord.Color.from_str("#1eff00")
+        if rarity.lower() == "rare":
+            return discord.Color.from_str("#0070dd")
+        if rarity.lower() == "epic":
+            return discord.Color.from_str("#a335ee")
+        if rarity.lower() == "legendary":
+            return discord.Color.from_str("#ff8000")
+        if rarity.lower() == "artifact":
+            return discord.Color.from_str("#e6cc80	")
+        if rarity.lower() == "heirloom":
+            return discord.Color.from_str("#00ccff")
+        if rarity.lower() == "wow_token":
+            return discord.Color.from_str("#00ccff")
+        return discord.Color.blurple()
