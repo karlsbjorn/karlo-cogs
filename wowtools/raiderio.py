@@ -266,12 +266,13 @@ class Raiderio:
             guild_url: str = profile_data["profile_url"]
             last_updated: str = self._parse_date(profile_data["last_crawled_at"])
 
-            ranks = (
-                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["normal"],
-                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["heroic"],
-                profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["mythic"],
-            )
-            difficulties = ("Normal", "Heroic", "Mythic")
+            # Fated/Awakened raids fuck with this
+            # ranks = (
+            #     profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["normal"],
+            #     profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["heroic"],
+            #     profile_data["raid_rankings"]["amirdrassil-the-dreams-hope"]["mythic"],
+            # )
+            # difficulties = ("Normal", "Heroic", "Mythic")
 
             raid_progression: str = profile_data["raid_progression"][
                 "amirdrassil-the-dreams-hope"
@@ -284,17 +285,17 @@ class Raiderio:
             )
             embed.add_field(name=_("__**Progress**__"), value=raid_progression, inline=False)
 
-            for rank, difficulty in zip(ranks, difficulties):
-                world = rank["world"]
-                region = rank["region"]
-                realm = rank["realm"]
-
-                embed.add_field(
-                    name=_("{difficulty} rank").format(difficulty=difficulty),
-                    value=_("World: {world}\nRegion: {region}\nRealm: {realm}").format(
-                        world=world, region=region, realm=realm
-                    ),
-                )
+            # for rank, difficulty in zip(ranks, difficulties):
+            #     world = rank["world"]
+            #     region = rank["region"]
+            #     realm = rank["realm"]
+            #
+            #     embed.add_field(
+            #         name=_("{difficulty} rank").format(difficulty=difficulty),
+            #         value=_("World: {world}\nRegion: {region}\nRealm: {realm}").format(
+            #             world=world, region=region, realm=realm
+            #         ),
+            #     )
 
             embed.set_footer(
                 text=_("Last updated: {last_updated}").format(last_updated=last_updated)
