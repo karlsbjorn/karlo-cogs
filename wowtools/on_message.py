@@ -81,7 +81,14 @@ class OnMessage:
                     api_client.Retail.GameData.get_spell_search,
                     api_client.Retail.GameData.get_spell_media,
                     api_client.Retail.GameData.get_spell,
-                ]
+                    "spell",
+                ],
+                [
+                    api_client.Retail.GameData.get_item_search,
+                    api_client.Retail.GameData.get_item_media,
+                    api_client.Retail.GameData.get_item,
+                    "item",
+                ],
             ]
             await self.start_searching(embeds, search_methods, search_params, search_string)
 
@@ -90,6 +97,7 @@ class OnMessage:
             search_method = method[0]
             media_method = method[1]
             description_method = method[2]
+            obj_type = method[3]
 
             try:
                 await self.limiter.acquire()
@@ -102,27 +110,29 @@ class OnMessage:
                     continue
                 result_id = result["data"]["id"]
                 embed = await self.get_or_fetch_embed(
-                    media_method, description_method, result, result_id
+                    media_method, description_method, result, result_id, obj_type
                 )
 
                 embeds.append(embed)
                 break
 
-    async def get_or_fetch_embed(self, media_method, description_method, result, result_id):
+    async def get_or_fetch_embed(
+        self, media_method, description_method, result, result_id, obj_type
+    ):
         if self.on_message_cache.get(result_id):
             embed = self.on_message_cache.get(result_id)
         else:
-            embed = await self.make_embed(description_method, media_method, result)
+            embed = await self.make_embed(description_method, media_method, result, obj_type)
             self.on_message_cache[result_id] = embed
         return embed
 
-    async def make_embed(self, description_method, media_method, result):
+    async def make_embed(self, description_method, media_method, result, obj_type):
         result_description = await description_method(result["data"]["id"])
         result_icon = await media_method(result["data"]["id"])
         embed = discord.Embed(
             title=result["data"]["name"]["en_US"],
             description=result_description["description"],
-            url=f"https://www.wowhead.com/spell={result['data']['id']}",
+            url=f"https://www.wowhead.com/{obj_type}={result['data']['id']}",
             colour=await self.get_embed_colour(result_icon["assets"][0]["value"]),
         )
         embed.set_thumbnail(url=result_icon["assets"][0]["value"])
