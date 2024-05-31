@@ -120,6 +120,7 @@ class DiscordStreams(commands.Cog):
             mentions.append(role_or_member.id)
             await ctx.send(
                 _(f"{role_or_member.mention} will now be mentioned when a stream starts."),
+                allowed_mentions=discord.AllowedMentions.none(),
             )
         await self.config.guild(ctx.guild).mentions.set(mentions)
 
