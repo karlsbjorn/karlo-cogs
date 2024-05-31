@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from io import BytesIO
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import colorgram
 import discord
@@ -23,6 +23,7 @@ class DiscordStreams(commands.Cog):
             "alert_channels": [],
             "ignored_channels": [],
             "active_messages": {},
+            "mentions": [],
         }
         self.config.register_guild(**default_guild)
         self.update_stream_messages.start()
@@ -54,12 +55,13 @@ class DiscordStreams(commands.Cog):
     @commands.group()
     @commands.guild_only()
     @commands.mod_or_permissions(manage_channels=True)
-    async def discordstreamsset(self, ctx: commands.Context):
+    async def discordstreamset(self, ctx: commands.Context):
         """Change settings for the live alerts."""
         pass
 
-    @discordstreamsset.command(name="ignore")
-    async def discordstreamsset_ignore(self, ctx: commands.Context, channel: discord.VoiceChannel):
+    @discordstreamset.command(name="ignore")
+    @commands.guild_only()
+    async def discordstreamset_ignore(self, ctx: commands.Context, channel: discord.VoiceChannel):
         """Ignore a voice channel."""
         ignored_channels: List[int] = await self.config.guild(ctx.guild).ignored_channels()
         if channel.id in ignored_channels:
@@ -79,8 +81,9 @@ class DiscordStreams(commands.Cog):
                 )
             )
 
-    @discordstreamsset.command(name="ignored")
-    async def discordstreamsset_ignored(self, ctx: commands.Context):
+    @discordstreamset.command(name="ignored")
+    @commands.guild_only()
+    async def discordstreamset_ignored(self, ctx: commands.Context):
         """List ignored voice channels."""
         ignored_channels: List[int] = await self.config.guild(ctx.guild).ignored_channels()
         if not ignored_channels:
@@ -98,6 +101,27 @@ class DiscordStreams(commands.Cog):
             color=await ctx.embed_color(),
         )
         await ctx.send(embed=embed)
+
+    @discordstreamset.command(name="mention")
+    @commands.guild_only()
+    async def discordstreamset_mention(
+        self, ctx: commands.Context, role_or_member: Union[discord.Role, discord.Member]
+    ):
+        """Toggle a role or member mention."""
+        mentions: List[int] = await self.config.guild(ctx.guild).mentions()
+
+        if role_or_member.id in mentions:
+            mentions.remove(role_or_member.id)
+            await ctx.send(
+                _(f"{role_or_member.mention} will no longer be mentioned when a stream starts."),
+                allowed_mentions=discord.AllowedMentions.none(),
+            )
+        else:
+            mentions.append(role_or_member.id)
+            await ctx.send(
+                _(f"{role_or_member.mention} will now be mentioned when a stream starts."),
+            )
+        await self.config.guild(ctx.guild).mentions.set(mentions)
 
     @tasks.loop(seconds=10)
     async def update_stream_messages(self):
@@ -302,8 +326,16 @@ class DiscordStreams(commands.Cog):
                 )
             )
 
+            mentions = await self.config.guild(member_guild).mentions()
+            if mentions:
+                mentions = [f"<@{mention}>" for mention in mentions]
+                content = _("{mentions}\n{member} is live!").format(
+                    mentions=" ".join(mentions), member=member.display_name
+                )
+            else:
+                content = _("{member} is live!").format(member=member.display_name)
             message = await channel.send(
-                content=_("{member} is live!").format(member=member.display_name),
+                content=content,
                 embed=embed,
                 view=view,
             )
@@ -347,7 +379,7 @@ class DiscordStream:
         zws = "\N{ZERO WIDTH SPACE}"
         member = self.member
         voice_channel = self.voice_channel
-        self.banner: discord.Asset | None = (await self.bot.fetch_user(member.id)).banner
+        self.banner: Optional[discord.Asset] = (await self.bot.fetch_user(member.id)).banner
 
         activity = self.get_activity()
 
