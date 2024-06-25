@@ -178,7 +178,7 @@ class OnMessage:
                     ]
                 )
 
-            if preview.get("requirements"):
+            if preview.get("requirements") and preview["requirements"].get("level"):
                 generated_str += f"\n\n{preview['requirements']['level']['display_string']}"
             return generated_str
 
