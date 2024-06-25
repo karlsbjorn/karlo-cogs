@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-02-08 14:51+0000\n"
-"PO-Revision-Date: 2024-02-08 14:51\n"
+"POT-Creation-Date: 2024-05-31 13:25+0000\n"
+"PO-Revision-Date: 2024-05-31 13:25\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,71 +17,81 @@ msgstr ""
 "X-Crowdin-File-ID: 26\n"
 "Language: sr_SP\n"
 
-#: discordstreams/discordstreams.py:34
+#: discordstreams/discordstreams.py:35
 #, docstring
 msgid "Set the channel for live alerts."
 msgstr ""
 
-#: discordstreams/discordstreams.py:43
+#: discordstreams/discordstreams.py:44
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr ""
 
-#: discordstreams/discordstreams.py:51
+#: discordstreams/discordstreams.py:52
 msgid "Go Live alerts will be sent to {channel}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:58
+#: discordstreams/discordstreams.py:59
 #, docstring
 msgid "Change settings for the live alerts."
 msgstr ""
 
-#: discordstreams/discordstreams.py:63
+#: discordstreams/discordstreams.py:65
 #, docstring
 msgid "Ignore a voice channel."
 msgstr ""
 
-#: discordstreams/discordstreams.py:69
+#: discordstreams/discordstreams.py:71
 msgid "Streams happening in {channel} will no longer be ignored."
 msgstr ""
 
-#: discordstreams/discordstreams.py:77
+#: discordstreams/discordstreams.py:79
 msgid "Streams happening in {channel} will now be ignored."
 msgstr ""
 
-#: discordstreams/discordstreams.py:84
+#: discordstreams/discordstreams.py:87
 #, docstring
 msgid "List ignored voice channels."
 msgstr ""
 
-#: discordstreams/discordstreams.py:87
+#: discordstreams/discordstreams.py:90
 msgid "No channels are currently ignored."
 msgstr ""
 
-#: discordstreams/discordstreams.py:96
+#: discordstreams/discordstreams.py:99
 msgid "Ignored Channels"
 msgstr ""
 
-#: discordstreams/discordstreams.py:299
+#: discordstreams/discordstreams.py:110
+#, docstring
+msgid "Toggle a role or member mention."
+msgstr ""
+
+#: discordstreams/discordstreams.py:324
 msgid "Watch the stream"
 msgstr ""
 
-#: discordstreams/discordstreams.py:306
+#: discordstreams/discordstreams.py:333
+msgid "{mentions}\n"
+"{member} is live!"
+msgstr ""
+
+#: discordstreams/discordstreams.py:337
 msgid "{member} is live!"
 msgstr ""
 
-#: discordstreams/discordstreams.py:362
+#: discordstreams/discordstreams.py:395
 msgid "Stream started {relative_timestamp}"
 msgstr ""
 
-#: discordstreams/discordstreams.py:390
+#: discordstreams/discordstreams.py:423
 msgid "Ends "
 msgstr ""
 
-#: discordstreams/discordstreams.py:406 discordstreams/discordstreams.py:420
+#: discordstreams/discordstreams.py:439 discordstreams/discordstreams.py:453
 msgid "Nothing"
 msgstr ""
 
-#: discordstreams/discordstreams.py:407
+#: discordstreams/discordstreams.py:440
 msgid "Playing: {activity}"
 msgstr ""
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-12-13 17:29+0000\n"
-"PO-Revision-Date: 2024-04-22 12:59\n"
+"POT-Creation-Date: 2024-05-07 03:30+0000\n"
+"PO-Revision-Date: 2024-05-07 03:31\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -286,7 +286,7 @@ msgstr "Prikaži Raider.IO profil nekog lika.\n\n"
 msgid "Character not found."
 msgstr "Character nije pronađen."
 
-#: wowtools/raiderio.py:108 wowtools/raiderio.py:156 wowtools/raiderio.py:414
+#: wowtools/raiderio.py:108 wowtools/raiderio.py:156 wowtools/raiderio.py:415
 msgid "Raider.io profile"
 msgstr "Raider.io profil"
 
@@ -310,7 +310,7 @@ msgstr "__Ostali linkovi__"
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 
-#: wowtools/raiderio.py:132 wowtools/raiderio.py:161 wowtools/raiderio.py:419
+#: wowtools/raiderio.py:132 wowtools/raiderio.py:161 wowtools/raiderio.py:420
 msgid "Last updated: {char_last_updated}"
 msgstr "Zadnje ažuriranje: {char_last_updated}"
 
@@ -343,50 +343,38 @@ msgstr "Prikaži Raider.IO profil guilda.\n\n"
 msgid "The guild {guild} does not exist on {realm}."
 msgstr "Guild {guild} ne postoji na {realm} realmu."
 
-#: wowtools/raiderio.py:282
+#: wowtools/raiderio.py:283
 msgid "Guild profile"
 msgstr "Profil guilda"
 
-#: wowtools/raiderio.py:285
+#: wowtools/raiderio.py:286
 msgid "__**Progress**__"
 msgstr "__**Progres**__"
 
-#: wowtools/raiderio.py:293
-msgid "{difficulty} rank"
-msgstr "{difficulty} rank"
-
-#: wowtools/raiderio.py:294
-msgid "World: {world}\n"
-"Region: {region}\n"
-"Realm: {realm}"
-msgstr "Svijet: {world}\n"
-"Regija: {region}\n"
-"Realm: {realm}"
-
-#: wowtools/raiderio.py:300
+#: wowtools/raiderio.py:301
 msgid "Last updated: {last_updated}"
 msgstr "Zadnje ažuriranje: {last_updated}"
 
-#: wowtools/raiderio.py:315
+#: wowtools/raiderio.py:316
 #, docstring
 msgid "Display this week's affixes."
 msgstr "Prikaži ovotjedne afikse."
 
-#: wowtools/raiderio.py:335 wowtools/raiderio.py:346
+#: wowtools/raiderio.py:336 wowtools/raiderio.py:347
 msgid "\n"
 "The weekly reset is {timestamp}."
 msgstr "\n"
 "Sljedeći tjedni reset je {timestamp}."
 
-#: wowtools/raiderio.py:351
+#: wowtools/raiderio.py:352
 msgid "This week's Mythic+ affixes"
 msgstr "Mythic+ afiksi ovaj za ovaj tjedan"
 
-#: wowtools/raiderio.py:384
+#: wowtools/raiderio.py:385
 msgid "**Average ilvl:** {avg_ilvl}\n"
 msgstr "**Prosječni ilvl:** {avg_ilvl}\n"
 
-#: wowtools/raiderio.py:480
+#: wowtools/raiderio.py:481
 msgid "Talents"
 msgstr "Talenti"
 
@@ -500,14 +488,13 @@ msgstr "Ime"
 msgid "Score"
 msgstr "Score"
 
-#: wowtools/scoreboard.py:222 wowtools/scoreboard.py:326
-#: wowtools/scoreboard.py:531
-msgid "Mythic+ Guild Scoreboard"
-msgstr "Guild Mythic+ Ljestvica"
+#: wowtools/scoreboard.py:222
+msgid "3rd Season Guild Scoreboard"
+msgstr ""
 
 #: wowtools/scoreboard.py:240
-msgid "Season 3 of Dragonflight is over.\n"
-msgstr "3. sezona Dragonflighta je gotova.\n"
+msgid "Season 4 of Dragonflight is over.\n"
+msgstr ""
 
 #: wowtools/scoreboard.py:243
 msgid "Score cutoff for season title was: `{cutoff}`\n"
@@ -516,6 +503,10 @@ msgstr "Minimalan score za rank 1 titulu: `{cutoff}`\n"
 #: wowtools/scoreboard.py:289
 msgid "Scoreboard locked."
 msgstr "Ljestvica zaključana."
+
+#: wowtools/scoreboard.py:326 wowtools/scoreboard.py:531
+msgid "Mythic+ Guild Scoreboard"
+msgstr "Guild Mythic+ Ljestvica"
 
 #: wowtools/scoreboard.py:344
 msgid "Last updated <t:{timestamp}:R>\n"
