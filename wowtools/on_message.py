@@ -75,6 +75,7 @@ class OnMessage:
                 "name.en_US": search_string,
                 "orderby": "id",
                 "_page": 1,
+                "_pageSize": 1000,
             }
             search_methods = [  # Currently only 1 method, but this is for future expansion
                 [
