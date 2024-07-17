@@ -4,6 +4,7 @@ from typing import Literal
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
+from aiowowapi import WowApi
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -68,9 +69,20 @@ class WoWTools(
         self.config.register_user(**default_user)
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
+        self.blizzard: dict[str, WowApi] = {}
         self.cvar_cache: list[CVar] = []
         self.update_dungeon_scoreboard.start()
         self.guild_log.start()
+
+    async def cog_load(self) -> None:
+        blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
+        cid = blizzard_api.get("client_id")
+        secret = blizzard_api.get("client_secret")
+        if not cid or not secret:
+            return
+        self.blizzard["eu"] = WowApi(client_id=cid, client_secret=secret, client_region="eu")
+        self.blizzard["us"] = WowApi(client_id=cid, client_secret=secret, client_region="us")
+        self.blizzard["kr"] = WowApi(client_id=cid, client_secret=secret, client_region="kr")
 
     @commands.group()
     async def wowset(self, ctx):

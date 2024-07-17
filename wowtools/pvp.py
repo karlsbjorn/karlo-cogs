@@ -7,7 +7,7 @@ from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
-from .utils import get_api_client, get_realms
+from wowtools.utils import get_realms
 
 _ = Translator("WoWTools", __file__)
 
@@ -22,13 +22,20 @@ class PvP:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        realm, region = realm.split(sep=":")
-        region = region.lower()
+        if ":" in realm:
+            realm, region = realm.split(sep=":")
+            region = region.lower()
+        else:
+            region = await self.config.guild(ctx.guild).region()
         try:
-            api_client = await get_api_client(self.bot, region)
+            api_client = self.blizzard.get(region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
+        if not api_client:
+            await ctx.send("Blizzard API not properly set up.")
+            return
+
         realm = await api_client.get_realm_slug(realm)
 
         rbg_rating = "0"

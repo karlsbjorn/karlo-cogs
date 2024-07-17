@@ -1,0 +1,2 @@
+class InvalidBlizzardAPI(Exception):
+    pass

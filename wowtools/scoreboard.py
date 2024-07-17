@@ -15,7 +15,7 @@ from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box, humanize_list, humanize_number
 from tabulate import tabulate
 
-from .utils import get_api_client
+from wowtools.exceptions import InvalidBlizzardAPI
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -70,7 +70,11 @@ class Scoreboard:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        embed = await self._generate_pvp_scoreboard(ctx)
+        try:
+            embed = await self._generate_pvp_scoreboard(ctx)
+        except InvalidBlizzardAPI:
+            await ctx.send(_("Blizzard API not properly set up."))
+            return
         if embed:
             # TODO: In dpy2, make this a list of embeds to send in a single message
             await ctx.send(embed=embed)
@@ -726,10 +730,12 @@ class Scoreboard:
         sb_blacklist: List[str],
     ) -> list:
         try:
-            api_client = await get_api_client(self.bot, region)
+            api_client = self.blizzard.get(region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return []
+        if not api_client:
+            raise InvalidBlizzardAPI
         guild_name = guild_name.replace(" ", "-").lower()
 
         max_level = 70

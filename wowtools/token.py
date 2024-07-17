@@ -5,7 +5,7 @@ from discord import app_commands
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
-from .utils import format_to_gold, get_api_client
+from .utils import format_to_gold
 
 _ = Translator("WoWTools", __file__)
 
@@ -25,10 +25,14 @@ class Token:
         if region == "all":
             await self.priceall(ctx)
             return
+
         try:
-            api_client = await get_api_client(self.bot, region)
+            api_client = self.blizzard.get(region)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            return
+        if not api_client:
+            await ctx.send(_("Blizzard API not properly set up."))
             return
 
         if region not in VALID_REGIONS:
@@ -63,17 +67,19 @@ class Token:
             if current.lower() in region.lower()
         ]
 
-    async def priceall(self, ctx):
+    async def priceall(self, ctx: commands.Context):
         """Check price of the WoW token in all supported regions"""
         embed = discord.Embed(title=_("WoW Token prices"), colour=await ctx.embed_colour())
 
         await ctx.defer()
         for region in VALID_REGIONS:
             try:
-                api_client = await get_api_client(self.bot, region)
+                api_client = self.blizzard.get(region)
             except Exception as e:
                 await ctx.send(_("Command failed successfully. {e}").format(e=e))
                 return
+            if not api_client:
+                continue
             async with api_client as wow_client:
                 wow_client = wow_client.Retail
                 await self.limiter.acquire()

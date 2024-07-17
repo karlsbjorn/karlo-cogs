@@ -1,6 +1,6 @@
 import logging
 import unicodedata
-from typing import Dict
+from typing import Dict, Optional
 
 import dictdiffer
 import discord
@@ -11,7 +11,7 @@ from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 from tabulate import tabulate
 
-from .utils import get_api_client
+from .exceptions import InvalidBlizzardAPI
 
 _ = Translator("WoWTools", __file__)
 log = logging.getLogger("red.karlo-cogs.wowtools")
@@ -105,7 +105,7 @@ class GuildManage:
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    async def get_guild_roster(self, guild: discord.Guild) -> Dict[str, int]:
+    async def get_guild_roster(self, guild: discord.Guild) -> Optional[Dict[str, int]]:
         """
         Get guild roster from Blizzard's API.
 
@@ -118,8 +118,9 @@ class GuildManage:
         realm: str = await self.config.guild(guild).gmanage_realm()
         realm = realm.lower()
 
-        api_client = await get_api_client(self.bot, region)
-        async with api_client as wow_client:
+        if self.blizzard.get(region) is None:
+            raise InvalidBlizzardAPI
+        async with self.blizzard.get(region) as wow_client:
             wow_client = wow_client.Retail
             guild_roster = await wow_client.Profile.get_guild_roster(
                 name_slug=wow_guild_name, realm_slug=realm
@@ -135,7 +136,11 @@ class GuildManage:
     async def guildlog(self, ctx: commands.Context, channel: discord.TextChannel | discord.Thread):
         """Set the channel for guild logs."""
         await self.config.guild(ctx.guild).guild_log_channel.set(channel.id)
-        guild_roster = await self.get_guild_roster(ctx.guild)
+        try:
+            guild_roster = await self.get_guild_roster(ctx.guild)
+        except InvalidBlizzardAPI:
+            await ctx.send(_("Blizzard API isn't properly set up."))
+            return
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
 
@@ -156,7 +161,11 @@ class GuildManage:
                 continue
 
             log.debug("Comparing guild rosters.")
-            current_roster = await self.get_guild_roster(guild)
+            try:
+                current_roster = await self.get_guild_roster(guild)
+            except InvalidBlizzardAPI:
+                log.warning("Blizzard API isn't properly set up.")
+                return
             previous_roster = await self.config.guild(guild).guild_roster()
             difference = list(dictdiffer.diff(previous_roster, current_roster))
             if not difference:
@@ -304,6 +313,9 @@ class GuildManage:
             ingame_members, rank = await self.guess_ingame_member(ctx.guild, member_name)
         except (AttributeError, ValueError):
             ingame_members, rank = (None, None)
+        except InvalidBlizzardAPI:
+            await ctx.send(_("Blizzard API isn't properly set up."))
+            return
         if ingame_members:
             msg += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
 

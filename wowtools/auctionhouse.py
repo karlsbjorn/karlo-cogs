@@ -5,7 +5,7 @@ import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 
-from .utils import format_to_gold, get_api_client
+from .utils import format_to_gold
 
 _ = Translator("WoWTools", __file__)
 
@@ -38,12 +38,6 @@ class AuctionHouse:
             )
             return
 
-        try:
-            api_client = await get_api_client(self.bot, config_region)
-        except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
-            return
-
         config_realm: str = await self.config.guild(ctx.guild).realm()
         if not config_realm:
             await ctx.send(
@@ -56,7 +50,10 @@ class AuctionHouse:
         boe_disclaimer = False
 
         async with ctx.typing():
-            async with api_client as wow_client:
+            async with self.blizzard.get(config_region) as wow_client:
+                if not wow_client:
+                    await ctx.send("Blizzard API not properly set up.")
+                    return
                 wow_client = wow_client.Retail
                 # Search for the item
                 await self.limiter.acquire()

@@ -1,4 +1,5 @@
 import itertools
+import logging
 import re
 from io import BytesIO
 from typing import List, Optional
@@ -8,7 +9,9 @@ from aiohttp import ClientResponseError
 from PIL import Image
 from redbot.core import commands
 
-from .utils import get_api_client
+from wowtools.exceptions import InvalidBlizzardAPI
+
+log = logging.getLogger("red.karlo-cogs.wowtools")
 
 
 class OnMessage:
@@ -23,7 +26,10 @@ class OnMessage:
         if not search_strings:
             return
 
-        embeds = await self.get_embeds(search_strings)
+        try:
+            embeds = await self.get_embeds(search_strings)
+        except InvalidBlizzardAPI:
+            log.warning("")
         if not embeds:
             return
 
@@ -58,10 +64,9 @@ class OnMessage:
         return re.findall(pattern, string)
 
     async def get_embeds(self, search_strings: List[str]) -> List[discord.Embed]:
-        try:
-            api_client = await get_api_client(self.bot, "us")
-        except Exception:
-            return []
+        api_client = self.blizzard.get("us")
+        if not api_client:
+            raise InvalidBlizzardAPI
 
         embeds = []
         for search_string in search_strings[:5]:
