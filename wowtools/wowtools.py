@@ -18,6 +18,7 @@ from .pvp import PvP
 from .raiderio import Raiderio
 from .scoreboard import Scoreboard
 from .token import Token
+from .user_installable.auctionhouse import UserInstallableAuctionHouse
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -25,7 +26,16 @@ _ = Translator("WoWTools", __file__)
 
 @cog_i18n(_)
 class WoWTools(
-    PvP, Raiderio, Token, GuildManage, AuctionHouse, Scoreboard, OnMessage, CVarDocs, commands.Cog
+    PvP,
+    Raiderio,
+    Token,
+    GuildManage,
+    AuctionHouse,
+    Scoreboard,
+    OnMessage,
+    CVarDocs,
+    UserInstallableAuctionHouse,
+    commands.Cog,
 ):
     """Interact with various World of Warcraft APIs"""
 
