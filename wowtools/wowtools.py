@@ -19,6 +19,7 @@ from .raiderio import Raiderio
 from .scoreboard import Scoreboard
 from .token import Token
 from .user_installable.auctionhouse import UserInstallableAuctionHouse
+from .user_installable.raiderio import UserInstallableRaiderio
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -35,6 +36,7 @@ class WoWTools(
     OnMessage,
     CVarDocs,
     UserInstallableAuctionHouse,
+    UserInstallableRaiderio,
     commands.Cog,
 ):
     """Interact with various World of Warcraft APIs"""

@@ -22,7 +22,7 @@ class Raiderio:
     """Cog for interaction with the raider.io API"""
 
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    @commands.hybrid_group(aliases=["rio"])
+    @commands.command(aliases=["rio"])
     async def raiderio(self, ctx: commands.Context):
         """Commands for interacting with Raider.io"""
         pass
@@ -80,7 +80,7 @@ class Raiderio:
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
         char_raid = profile_data["raid_progression"]["amirdrassil-the-dreams-hope"]["summary"]
-        char_last_updated = self._parse_date(profile_data["last_crawled_at"])
+        char_last_updated = self.parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
         char_url = profile_data["profile_url"]
@@ -165,7 +165,7 @@ class Raiderio:
             embeds.append(embed)
 
         # Gear page
-        embed = await self._make_gear_embed(
+        embed = await self.make_gear_embed(
             char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
         )
         embeds.append(embed)
@@ -174,7 +174,8 @@ class Raiderio:
             ctx
         )
 
-    def get_all_runs(self, profile_data: dict) -> dict[str, dict[str, list[str]]]:
+    @staticmethod
+    def get_all_runs(profile_data: dict) -> dict[str, dict[str, list[str]]]:
         """Extracts info about a player's Mythic+ dungeon runs from their Raider.IO profile data.
 
         Args:
@@ -264,7 +265,7 @@ class Raiderio:
                 )
                 return
             guild_url: str = profile_data["profile_url"]
-            last_updated: str = self._parse_date(profile_data["last_crawled_at"])
+            last_updated: str = self.parse_date(profile_data["last_crawled_at"])
 
             # Fated/Awakened raids fuck with this
             # ranks = (
@@ -374,11 +375,11 @@ class Raiderio:
         ][:25]
 
     @staticmethod
-    def _parse_date(tz_date) -> str:
+    def parse_date(tz_date) -> str:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         return parsed.strftime("%d/%m/%y - %H:%M:%S")
 
-    async def _make_gear_embed(  # TODO: Holy shit just use a class instead of all these args
+    async def make_gear_embed(  # TODO: Holy shit just use a class instead of all these args
         self, char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
     ):
         item_list = [

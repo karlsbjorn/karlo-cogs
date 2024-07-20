@@ -3,7 +3,7 @@ from typing import Dict
 
 import discord
 from redbot.core import commands
-from redbot.core.i18n import Translator, set_contextual_locales_from_guild
+from redbot.core.i18n import Translator
 
 from .utils import format_to_gold
 
@@ -12,13 +12,9 @@ _ = Translator("WoWTools", __file__)
 
 class AuctionHouse:
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-    @commands.hybrid_command()
+    @commands.command()
     async def price(self, ctx: commands.Context, *, item: str):
         """Get the current auction price of an item."""
-        if ctx.interaction:
-            # There is no contextual locale for interactions, so we need to set it manually
-            # (This is probably a bug in Red, remove this when it's fixed)
-            await set_contextual_locales_from_guild(self.bot, ctx.guild)
         config_region: str = await self.config.guild(ctx.guild).region()
         if not config_region:
             await ctx.send(

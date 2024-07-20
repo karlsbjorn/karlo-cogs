@@ -11,9 +11,12 @@ _ = Translator("WoWTools", __file__)
 
 
 class UserInstallableAuctionHouse:
-    @app_commands.command(name="ahprice")
-    @app_commands.allowed_installs(guilds=False, users=True)
+    @app_commands.command(name="price")
+    @app_commands.allowed_installs(guilds=True, users=True)
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    @app_commands.describe(
+        item="Exact name of the item to search for", realm="Realm's auction house to search in"
+    )
     async def user_install_price(self, interaction: discord.Interaction, item: str, realm: str):
         """Get the current auction price of an item."""
         realm, region = realm.split(sep=":")
