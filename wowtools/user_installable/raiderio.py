@@ -4,7 +4,7 @@ import discord
 from discord.app_commands import AppCommandContext, AppInstallationType
 from raiderio_async import RaiderIO
 from redbot.core import app_commands
-from redbot.core.commands import commands
+from redbot.core.commands import Context
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from tabulate import tabulate
@@ -161,7 +161,7 @@ class UserInstallableRaiderio:
         )
         embeds.append(embed)
 
-        ctx: commands.Context = await commands.Context.from_interaction(interaction)
+        ctx: Context = await Context.from_interaction(interaction)
         await ProfileMenu(pages=embeds, talents=char_talents, disable_after_timeout=True).start(
             ctx
         )

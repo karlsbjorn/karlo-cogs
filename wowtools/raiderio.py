@@ -12,8 +12,6 @@ from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
 from tabulate import tabulate
 
-from .utils import get_realms
-
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
 
