@@ -18,6 +18,7 @@ _ = Translator("WoWTools", __file__)
 class UserInstallableRaiderio:
     user_install_raiderio = app_commands.Group(
         name="raiderio",
+        description=_("Raider.io commands"),
         allowed_installs=AppInstallationType(guild=True, user=True),
         allowed_contexts=AppCommandContext(guild=True, dm_channel=True, private_channel=True),
     )
