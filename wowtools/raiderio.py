@@ -216,13 +216,6 @@ class Raiderio:
                     runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
         return runs
 
-    @raiderio_profile.autocomplete("realm")
-    async def raiderio_profile_realm_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        realms = await get_realms(current)
-        return realms[:25]
-
     @raiderio.command(name="guild")
     @commands.guild_only()
     @app_commands.describe(guild="The name of the guild", realm="The guild's realm")
@@ -304,12 +297,12 @@ class Raiderio:
 
         await ctx.send(embed=embed)
 
-    @raiderio_guild.autocomplete("realm")
-    async def raiderio_guild_realm_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        realms = await get_realms(current)
-        return realms[:25]
+    # @raiderio_guild.autocomplete("realm")
+    # async def raiderio_guild_realm_autocomplete(
+    #     self, interaction: discord.Interaction, current: str
+    # ) -> List[app_commands.Choice[str]]:
+    #     realms = await get_realms(current)
+    #     return realms[:25]
 
     @raiderio.command(name="affixes")
     @commands.guild_only()
@@ -364,15 +357,15 @@ class Raiderio:
             )
         await ctx.send(embed=embed)
 
-    @raiderio_affixes.autocomplete("region")
-    async def raiderio_affixes_region_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> List[app_commands.Choice[str]]:
-        return [
-            app_commands.Choice(name=region, value=region)
-            for region in ["EU", "US"]
-            if current.lower() in region.lower()
-        ][:25]
+    # @raiderio_affixes.autocomplete("region")
+    # async def raiderio_affixes_region_autocomplete(
+    #     self, interaction: discord.Interaction, current: str
+    # ) -> List[app_commands.Choice[str]]:
+    #     return [
+    #         app_commands.Choice(name=region, value=region)
+    #         for region in ["EU", "US"]
+    #         if current.lower() in region.lower()
+    #     ][:25]
 
     @staticmethod
     def parse_date(tz_date) -> str:

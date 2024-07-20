@@ -1,3 +1,5 @@
+from typing import List
+
 import discord
 from discord.app_commands import AppCommandContext, AppInstallationType
 from raiderio_async import RaiderIO
@@ -8,6 +10,7 @@ from redbot.core.utils.chat_formatting import box
 from tabulate import tabulate
 
 from wowtools.raiderio import ProfileMenu, Raiderio
+from wowtools.utils import get_realms
 
 _ = Translator("WoWTools", __file__)
 
@@ -161,3 +164,10 @@ class UserInstallableRaiderio:
         await ProfileMenu(pages=embeds, talents=char_talents, disable_after_timeout=True).start(
             ctx
         )
+
+    @user_install_raiderio_profile.autocomplete("realm")
+    async def raiderio_profile_realm_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        realms = await get_realms(current)
+        return realms[:25]
