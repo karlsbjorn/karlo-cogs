@@ -22,7 +22,7 @@ class Raiderio:
     """Cog for interaction with the raider.io API"""
 
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    @commands.command(aliases=["rio"])
+    @commands.group(aliases=["rio"])
     async def raiderio(self, ctx: commands.Context):
         """Commands for interacting with Raider.io"""
         pass
