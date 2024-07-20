@@ -372,8 +372,9 @@ class Raiderio:
         parsed = isoparse(tz_date) + timedelta(hours=2)
         return parsed.strftime("%d/%m/%y - %H:%M:%S")
 
+    @staticmethod
     async def make_gear_embed(  # TODO: Holy shit just use a class instead of all these args
-        self, char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
+        char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
     ):
         item_list = [
             _("**Average ilvl:** {avg_ilvl}\n").format(avg_ilvl=char_gear["item_level_equipped"])
@@ -384,7 +385,7 @@ class Raiderio:
             item_str = ""
 
             # Item rarity
-            item_str += await self._get_item_quality(item)
+            item_str += await Raiderio._get_item_quality(item)
 
             # Item level
             item_str += f" `{item['item_level']}`"
@@ -395,7 +396,7 @@ class Raiderio:
 
             # Item link
             item_id = item["item_id"]
-            item_str += f"({self._wowhead_url(item_id)})"
+            item_str += f"({Raiderio._wowhead_url(item_id)})"
 
             item_list.append(item_str)
 
