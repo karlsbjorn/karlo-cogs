@@ -11,7 +11,7 @@ from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .auctionhouse import AuctionHouse
-from .cvardocs import CVar, CVarDocs
+from wowtools.user_installable.cvardocs import CVar, CVarDocs
 from .guildmanage import GuildManage
 from .on_message import OnMessage
 from .pvp import PvP

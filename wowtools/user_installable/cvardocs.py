@@ -122,6 +122,8 @@ class CVarDocs:
         name="cvar",
         description="Get information about a WoW CVar",
     )
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     async def slash_cvar(self, interaction: discord.Interaction, cvar: str):
         """Get information about a WoW Console Variable"""
         if not self.cvar_cache:
