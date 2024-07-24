@@ -112,7 +112,7 @@ class WikiArena(commands.Cog):
         await self._send_scoreboard(interaction, max_users_per_page, scoreboard_dict)
 
     async def _send_scoreboard(
-            self, interaction: discord.Interaction, max_users_per_page, scoreboard_dict
+        self, interaction: discord.Interaction, max_users_per_page, scoreboard_dict
     ):
         tabulate_list = await self._make_tabulate_list(scoreboard_dict)
         if len(tabulate_list) > max_users_per_page:
@@ -134,7 +134,7 @@ class WikiArena(commands.Cog):
 
     @staticmethod
     async def _make_scoreboard_pages(
-            interaction: discord.Interaction, max_users_per_page, tabulate_friendly_list
+        interaction: discord.Interaction, max_users_per_page, tabulate_friendly_list
     ) -> List[discord.Embed]:
         page_count = len(tabulate_friendly_list) // max_users_per_page
         embeds = []
@@ -167,7 +167,7 @@ class WikiArena(commands.Cog):
 
     @staticmethod
     async def _make_scoreboard_page(
-            interaction: discord.Interaction, scoreboard_dict, tabulate_friendly_list
+        interaction: discord.Interaction, scoreboard_dict, tabulate_friendly_list
     ):
         scoreboard = box(
             tabulate(
