@@ -5,7 +5,9 @@ from typing import List, Tuple
 import aiohttp
 import aiowiki
 import discord
-from redbot.core import Config, commands, i18n
+from discord.app_commands import AppCommandContext, AppInstallationType
+from redbot.core import Config, app_commands, commands, i18n
+from redbot.core.commands import Context
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import SimpleMenu
@@ -36,23 +38,29 @@ class WikiArena(commands.Cog):
         }
         self.config.register_user(**default_user)
 
-    @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
-    @commands.hybrid_command()
-    async def wikiarena(self, ctx):
+    slash_wikiarena = app_commands.Group(
+        name="wikiarena",
+        description="WikiArena commands",
+        allowed_installs=AppInstallationType(guild=True, user=True),
+        allowed_contexts=AppCommandContext(guild=True, dm_channel=True, private_channel=True),
+    )
+
+    @slash_wikiarena.command(
+        name="start",
+        description="Start a game of WikiArena",
+    )
+    async def slash_wikiarena_start(self, interaction: discord.Interaction):
         """
         Starts a game of WikiArena.
 
         Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena
         """
-        if ctx.interaction:
-            # No contextual locale for hybrid commands yet
-            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+        # self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("-")[0]
+        self.wiki_language = "en"
+        await interaction.response.defer()
+        await self.start_game(interaction)
 
-        self.wiki_language = (await i18n.get_locale_from_guild(self.bot, ctx.guild)).split("-")[0]
-        async with ctx.typing():
-            await self.start_game(ctx)
-
-    async def start_game(self, ctx):
+    async def start_game(self, interaction: discord.Interaction):
         (
             embeds,
             blue_views,
@@ -68,9 +76,9 @@ class WikiArena(commands.Cog):
             red_views=red_views,
             blue_words=blue_word_count,
             red_words=red_word_count,
-            author=ctx.author,
+            author=interaction.user,
         )
-        view.message = await ctx.send(
+        view.message = await interaction.followup.send(
             _(
                 "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
                 "Score: **{score}**\n"
@@ -80,38 +88,42 @@ class WikiArena(commands.Cog):
             view=view,
         )
 
-    @commands.hybrid_command(aliases=["wikiarenascoreboard"])
-    async def wascoreboard(self, ctx):
+    @slash_wikiarena.command(
+        name="scoreboard", description="Look at the WikiArena global scoreboard."
+    )
+    async def slash_wikiarena_scoreboard(self, interaction: discord.Interaction):
         """Display the WikiArena scoreboard for this guild."""
-        if ctx.interaction:
-            # No contextual locale for hybrid commands yet
-            await set_contextual_locales_from_guild(self.bot, ctx.guild)
-
+        await interaction.response.defer()
         user_data = await self.config.all_users()
         if not user_data:
-            return await ctx.send(_("No users have played WikiArena yet."))
+            return await interaction.followup.send(_("No users have played WikiArena yet."))
         user_data = dict(sorted(user_data.items(), key=lambda x: x[1]["high_score"], reverse=True))
         scoreboard_dict = {}
         for user_id, data in user_data.items():
-            user = ctx.bot.get_user(user_id)
+            user = interaction.client.get_user(user_id)
             if user is None:
                 continue
 
             scoreboard_dict[user.name] = data["high_score"]
         if not scoreboard_dict:
-            return await ctx.send(_("No users have played WikiArena yet."))
+            return await interaction.followup.send(_("No users have played WikiArena yet."))
 
         max_users_per_page = 20
-        await self._send_scoreboard(ctx, max_users_per_page, scoreboard_dict)
+        await self._send_scoreboard(interaction, max_users_per_page, scoreboard_dict)
 
-    async def _send_scoreboard(self, ctx, max_users_per_page, scoreboard_dict):
+    async def _send_scoreboard(
+            self, interaction: discord.Interaction, max_users_per_page, scoreboard_dict
+    ):
         tabulate_list = await self._make_tabulate_list(scoreboard_dict)
         if len(tabulate_list) > max_users_per_page:
-            embeds = await self._make_scoreboard_pages(ctx, max_users_per_page, tabulate_list)
+            embeds = await self._make_scoreboard_pages(
+                interaction, max_users_per_page, tabulate_list
+            )
+            ctx: Context = await Context.from_interaction(interaction)
             await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
         else:
-            embed = await self._make_scoreboard_page(ctx, scoreboard_dict, tabulate_list)
-            await ctx.send(embed=embed)
+            embed = await self._make_scoreboard_page(interaction, scoreboard_dict, tabulate_list)
+            await interaction.followup.send(embed=embed)
 
     @staticmethod
     async def _make_tabulate_list(scoreboard_dict):
@@ -122,7 +134,7 @@ class WikiArena(commands.Cog):
 
     @staticmethod
     async def _make_scoreboard_pages(
-        ctx, max_users_per_page, tabulate_friendly_list
+            interaction: discord.Interaction, max_users_per_page, tabulate_friendly_list
     ) -> List[discord.Embed]:
         page_count = len(tabulate_friendly_list) // max_users_per_page
         embeds = []
@@ -141,7 +153,7 @@ class WikiArena(commands.Cog):
             embed = discord.Embed(
                 title=_("WikiArena Scoreboard"),
                 description=scoreboard,
-                color=await ctx.embed_color(),
+                color=await interaction.client.get_embed_colour(interaction.channel),
             )
             embed.set_footer(
                 text=_("Page {page}/{page_count} | Total players: {num_players}").format(
@@ -154,7 +166,9 @@ class WikiArena(commands.Cog):
         return embeds
 
     @staticmethod
-    async def _make_scoreboard_page(ctx, scoreboard_dict, tabulate_friendly_list):
+    async def _make_scoreboard_page(
+            interaction: discord.Interaction, scoreboard_dict, tabulate_friendly_list
+    ):
         scoreboard = box(
             tabulate(
                 tabulate_friendly_list,
@@ -167,7 +181,7 @@ class WikiArena(commands.Cog):
         embed = discord.Embed(
             title=_("WikiArena Scoreboard"),
             description=scoreboard,
-            colour=await ctx.embed_colour(),
+            colour=await interaction.client.get_embed_colour(interaction.channel),
         )
         embed.set_footer(
             text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))

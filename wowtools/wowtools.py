@@ -10,8 +10,9 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .auctionhouse import AuctionHouse
 from wowtools.user_installable.cvardocs import CVar, CVarDocs
+
+from .auctionhouse import AuctionHouse
 from .guildmanage import GuildManage
 from .on_message import OnMessage
 from .pvp import PvP
