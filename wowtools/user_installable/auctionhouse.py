@@ -5,7 +5,7 @@ import discord
 from redbot.core import app_commands
 from redbot.core.i18n import Translator
 
-from wowtools.utils import format_to_gold, get_realms
+from wowtools.utils import format_to_gold, get_realms, read_item_state
 
 _ = Translator("WoWTools", __file__)
 
@@ -107,6 +107,33 @@ class UserInstallableAuctionHouse:
                 await interaction.followup.send(_("No auctions could be found for this item."))
                 return
 
+            # Sell orders
+            undermine_url = f"https://undermine.exchange/"
+            url = [
+                "data",
+                "cached",
+                str(c_realm_id),
+                str(found_item_id & 0xFF),
+                f"{found_item_id}.bin",
+            ]
+            url = undermine_url + "/".join(url)
+
+            data_dict = {}
+            async with self.session.request("GET", url) as r:
+                if r.status == 200:
+                    data = await r.content.read()
+                    data_dict = read_item_state(data)
+
+            listing_count = 0
+            listings_str = ""
+            for listing in data_dict.get("auctions", []):
+                if listing_count >= 7:
+                    break
+                listings_str += (
+                    f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}"
+                )
+                listing_count += 1
+
             # Embed stuff
             # Get item icon
             await self.limiter.acquire()
@@ -127,6 +154,8 @@ class UserInstallableAuctionHouse:
             min_buyout = format_to_gold(min(prices), gold_emotes)
             embed.add_field(name=_("Min Buyout"), value=min_buyout)
             embed.add_field(name=_("Current quantity"), value=str(item_quantity))
+            if listings_str:
+                embed.add_field(name=_("Current listings"), value=listings_str)
             if boe_disclaimer:
                 embed.add_field(
                     name=_("Warning"),

@@ -75,3 +75,106 @@ async def get_realms(current):
                 for region in REALMS[realm]
             )
     return realms
+
+
+# Undermine.exchange
+
+import struct
+
+
+def read_item_state(data: bytes) -> dict:
+    # Constants
+    VERSION_ITEM_STATE = 5
+    MS_SEC = 1000
+    COPPER_SILVER = 100
+    MS_DAY = 86400000
+
+    view = memoryview(data)
+    offset = 0
+
+    def read(byte_count):
+        nonlocal offset
+        result = offset
+        offset += byte_count
+        return result
+
+    version = struct.unpack_from("B", view, read(1))[0]
+    full_modifiers = True
+    daily_history = True
+
+    if version == 3:
+        full_modifiers = False
+    elif version == 4:
+        daily_history = False
+    elif version != VERSION_ITEM_STATE:
+        raise ValueError("Unknown data version for item state.")
+
+    result = {}
+
+    result["snapshot"] = struct.unpack_from("<I", view, read(4))[0] * MS_SEC
+    result["price"] = struct.unpack_from("<I", view, read(4))[0] * COPPER_SILVER
+    result["quantity"] = struct.unpack_from("<I", view, read(4))[0]
+
+    result["auctions"] = []
+    for _ in range(struct.unpack_from("<H", view, read(2))[0]):
+        price = struct.unpack_from("<I", view, read(4))[0] * COPPER_SILVER
+        quantity = struct.unpack_from("<I", view, read(4))[0]
+        result["auctions"].append({"price": price, "quantity": quantity})
+    result["auctions"].sort(key=lambda x: x["price"])
+
+    result["specifics"] = []
+    for _ in range(struct.unpack_from("<H", view, read(2))[0]):
+        price = struct.unpack_from("<I", view, read(4))[0] * COPPER_SILVER
+        modifiers = {}
+        if full_modifiers:
+            for _ in range(struct.unpack_from("B", view, read(1))[0]):
+                type_ = struct.unpack_from("<H", view, read(2))[0]
+                value = struct.unpack_from("<I", view, read(4))[0]
+                modifiers[type_] = value
+        else:
+            level = struct.unpack_from("B", view, read(1))[0]
+            if level:
+                modifiers["timewalker_level"] = level
+
+        bonuses = [
+            struct.unpack_from("<H", view, read(2))[0]
+            for _ in range(struct.unpack_from("B", view, read(1))[0])
+        ]
+        bonuses.sort()
+        result["specifics"].append({"price": price, "modifiers": modifiers, "bonuses": bonuses})
+    result["specifics"].sort(key=lambda x: x["price"])
+
+    result["snapshots"] = []
+    deltas = {}
+    prev_delta = None
+    for _ in range(struct.unpack_from("<H", view, read(2))[0]):
+        snapshot = struct.unpack_from("<I", view, read(4))[0] * MS_SEC
+        price = struct.unpack_from("<I", view, read(4))[0] * COPPER_SILVER
+        quantity = struct.unpack_from("<I", view, read(4))[0]
+        deltas[snapshot] = {"snapshot": snapshot, "price": price, "quantity": quantity}
+
+        if deltas[snapshot]["quantity"] == 0 and prev_delta and deltas[snapshot]["price"] == 0:
+            deltas[snapshot]["price"] = prev_delta["price"]
+        if not prev_delta:
+            prev_delta = deltas[snapshot]
+
+    result["daily"] = []
+    if daily_history:
+        for _ in range(struct.unpack_from("<H", view, read(2))[0]):
+            snapshot = struct.unpack_from("<H", view, read(2))[0] * MS_DAY
+            price = struct.unpack_from("<I", view, read(4))[0] * COPPER_SILVER
+            quantity = struct.unpack_from("<I", view, read(4))[0]
+            day_state = {"snapshot": snapshot, "price": price, "quantity": quantity}
+
+            if result["daily"]:
+                prev_seen = result["daily"][-1]
+                lost_day = prev_seen["snapshot"] + MS_DAY
+                while lost_day < day_state["snapshot"]:
+                    result["daily"].append(
+                        {"snapshot": lost_day, "price": prev_seen["price"], "quantity": 0}
+                    )
+                    lost_day += MS_DAY
+
+            result["daily"].append(day_state)
+
+    return result
