@@ -223,7 +223,7 @@ class Scoreboard:
         image: bool = await self.config.guild(ctx.guild).sb_image()
 
         embed = discord.Embed(
-            title=_("3rd Season Guild Scoreboard"),
+            title=_("4th Season Guild Scoreboard"),
             color=await self.bot.get_embed_color(sb_msg),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
