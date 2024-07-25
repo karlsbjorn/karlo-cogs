@@ -138,7 +138,7 @@ class UserInstallableAuctionHouse:
                 if listing_count >= 7:
                     break
                 listings_str += (
-                    f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}"
+                    f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}\n"
                 )
                 listing_count += 1
 
