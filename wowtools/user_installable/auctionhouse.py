@@ -108,11 +108,20 @@ class UserInstallableAuctionHouse:
                 return
 
             # Sell orders
+            commodity_realms = {
+                {
+                    "us": 32512,
+                    "eu": 32513,
+                    "tw": 32514,
+                    "kr": 32515,
+                }
+            }
+
             undermine_url = f"https://undermine.exchange/"
             url = [
                 "data",
                 "cached",
-                str(c_realm_id),
+                str(commodity_realms[region.lower()]),
                 str(found_item_id & 0xFF),
                 f"{found_item_id}.bin",
             ]
