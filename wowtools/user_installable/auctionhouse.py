@@ -109,12 +109,10 @@ class UserInstallableAuctionHouse:
 
             # Sell orders
             commodity_realms = {
-                {
-                    "us": 32512,
-                    "eu": 32513,
-                    "tw": 32514,
-                    "kr": 32515,
-                }
+                "us": 32512,
+                "eu": 32513,
+                "tw": 32514,
+                "kr": 32515,
             }
 
             undermine_url = f"https://undermine.exchange/"
