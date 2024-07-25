@@ -131,6 +131,7 @@ class UserInstallableAuctionHouse:
                     data = await r.content.read()
                     data_dict = read_item_state(data)
 
+            gold_emotes: Dict = await self.config.emotes()
             listing_count = 0
             listings_str = ""
             for listing in data_dict.get("auctions", []):
@@ -157,7 +158,6 @@ class UserInstallableAuctionHouse:
                 timestamp=datetime.now(timezone.utc),
             )
             embed.set_thumbnail(url=item_icon_url)
-            gold_emotes: Dict = await self.config.emotes()
             min_buyout = format_to_gold(min(prices), gold_emotes)
             embed.add_field(name=_("Min Buyout"), value=min_buyout)
             embed.add_field(name=_("Current quantity"), value=str(item_quantity))
