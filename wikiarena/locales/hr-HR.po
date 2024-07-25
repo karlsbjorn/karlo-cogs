@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2022-12-28 11:41+0000\n"
-"PO-Revision-Date: 2024-04-22 12:59\n"
+"POT-Creation-Date: 2024-07-24 11:41+0000\n"
+"PO-Revision-Date: 2024-07-25 04:55\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 31\n"
 "Language: hr_HR\n"
 
-#: wikiarena/wikiarena.py:21
+#: wikiarena/wikiarena.py:23
 #, docstring
 msgid "WikiArena\n\n"
 "    A Wikipedia game heavily inspired by **WikiArena** by Fabian Fischer.\n\n"
@@ -28,7 +28,15 @@ msgstr "WikiArena\n\n"
 "    Pogledaj originalnu igru! https://ludokultur.itch.io/wikiarena\n"
 "    "
 
-#: wikiarena/wikiarena.py:74 wikiarena/wikiarena.py:339
+#: wikiarena/wikiarena.py:53
+#, docstring
+msgid "\n"
+"        Starts a game of WikiArena.\n\n"
+"        Check out the original game by Fabian Fischer! https://ludokultur.itch.io/wikiarena\n"
+"        "
+msgstr ""
+
+#: wikiarena/wikiarena.py:82 wikiarena/wikiarena.py:353
 msgid "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
 "Score: **{score}**\n"
 "Time's up {in_time}!"
@@ -36,39 +44,44 @@ msgstr "Pogodite koji članak ima __više riječi__ ili __više pregleda__ u zad
 "Rezultat: **{score}**\n"
 "Vrijeme isteće {in_time}!"
 
-#: wikiarena/wikiarena.py:92 wikiarena/wikiarena.py:102
+#: wikiarena/wikiarena.py:95
+#, docstring
+msgid "Display the WikiArena scoreboard for this guild."
+msgstr ""
+
+#: wikiarena/wikiarena.py:99 wikiarena/wikiarena.py:109
 msgid "No users have played WikiArena yet."
 msgstr "Nijedan korisnik još nije igrao WikiArenu."
 
-#: wikiarena/wikiarena.py:135 wikiarena/wikiarena.py:161
+#: wikiarena/wikiarena.py:147 wikiarena/wikiarena.py:175
 msgid "Name"
 msgstr "Ime"
 
-#: wikiarena/wikiarena.py:135 wikiarena/wikiarena.py:161
+#: wikiarena/wikiarena.py:147 wikiarena/wikiarena.py:175
 msgid "Score"
 msgstr "Score"
 
-#: wikiarena/wikiarena.py:142 wikiarena/wikiarena.py:168
+#: wikiarena/wikiarena.py:154 wikiarena/wikiarena.py:182
 msgid "WikiArena Scoreboard"
 msgstr "WikiArena ljestvica"
 
-#: wikiarena/wikiarena.py:147
+#: wikiarena/wikiarena.py:159
 msgid "Page {page}/{page_count} | Total players: {num_players}"
 msgstr "Stranica {page}/{page_count} | Ukupno igrača: {num_players}"
 
-#: wikiarena/wikiarena.py:173
+#: wikiarena/wikiarena.py:187
 msgid "Total players: {num_players}"
 msgstr "Ukupno igrača: {num_players}"
 
-#: wikiarena/wikiarena.py:275 wikiarena/wikiarena.py:276
+#: wikiarena/wikiarena.py:289 wikiarena/wikiarena.py:290
 msgid "More views"
 msgstr "Više pregleda"
 
-#: wikiarena/wikiarena.py:277 wikiarena/wikiarena.py:278
+#: wikiarena/wikiarena.py:291 wikiarena/wikiarena.py:292
 msgid "More words"
 msgstr "Više riječi"
 
-#: wikiarena/wikiarena.py:352
+#: wikiarena/wikiarena.py:366
 msgid "Wrong! Better luck next time!\n"
 "🔵 Views: {blue_views}\n"
 "🔵 Words: {blue_words}\n"
@@ -82,19 +95,19 @@ msgstr "Krivo! Više sreće drugi put!\n"
 "🔴 Riječi: {red_words}\n\n"
 "Tvoj završni broj bodova je: **{score}**"
 
-#: wikiarena/wikiarena.py:388
+#: wikiarena/wikiarena.py:402
 msgid "\n"
 "You've beaten your high score of **{user_high_score}**!"
 msgstr "\n"
 "Pobijedio si svoj najviši rezultat od **{user_high_score}**!"
 
-#: wikiarena/wikiarena.py:392
+#: wikiarena/wikiarena.py:406
 msgid "\n"
 "Your high score is **{user_high_score}**"
 msgstr "\n"
 "Tvoj najbolji rezultat je **{user_high_score}**"
 
-#: wikiarena/wikiarena.py:404
+#: wikiarena/wikiarena.py:418
 msgid "Time's up! Be faster next time!\n"
 "🔵 Views: {blue_views}\n"
 "🔵 Words: {blue_words}\n"
@@ -108,7 +121,7 @@ msgstr "Vrijeme je isteklo! Sljedeći put budi brži!\n"
 "🔴 Riječi: {red_words}\n\n"
 "Tvoj završni broj bodova je: **{score}**"
 
-#: wikiarena/wikiarena.py:438
+#: wikiarena/wikiarena.py:452
 msgid "This isn't your game of WikiArena."
 msgstr "Ovo nije tvoja igra WikiArene."
 
