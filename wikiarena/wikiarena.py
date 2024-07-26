@@ -6,7 +6,7 @@ import aiohttp
 import aiowiki
 import discord
 from discord.app_commands import AppCommandContext, AppInstallationType
-from redbot.core import Config, app_commands, commands, i18n
+from redbot.core import Config, app_commands, commands
 from redbot.core.commands import Context
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import box

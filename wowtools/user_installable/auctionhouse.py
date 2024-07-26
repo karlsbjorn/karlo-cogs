@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Dict, List
 
 import discord
+from aiowowapi import RetailApi
 from redbot.core import app_commands
 from redbot.core.i18n import Translator
 
@@ -31,40 +32,14 @@ class UserInstallableAuctionHouse:
             if not wow_client:
                 await interaction.followup.send("Blizzard API not properly set up.")
                 return
-            wow_client = wow_client.Retail
-            # Search for the item
-            items = await wow_client.GameData.get_item_search(
-                {"name.en_US": item, "_pageSize": 1000}
-            )
+            wow_client: RetailApi = wow_client.Retail
 
-            results: Dict = items["results"]
-            found_items: Dict[int, str] = {}
-            for result in results:
-                item_id: int = result["data"]["id"]
-                item_name: str = result["data"]["name"]["en_US"]
-                if found_items:
-                    if item_name in found_items.values():
-                        continue
-                elif item.lower() in item_name.lower():
-                    item = item_name  # Use the exact name for all further searches
-                    found_items[item_id] = item_name
+            found_items = await self.search_for_item(item, wow_client)
             if not found_items:
                 await interaction.followup.send(_("No results found."))
                 return
 
-            # Get connected realm ID
-            c_realms = await wow_client.GameData.get_connected_realms_search({"_pageSize": 1000})
-
-            c_realm_id = None
-            results: Dict = c_realms["results"]
-            for result in results:
-                c_realm_data = result["data"]
-                realms = c_realm_data["realms"]
-                for realm in realms:
-                    realm_names = list(realm["name"].values())
-                    realm_names = [name.lower() for name in realm_names]
-                    if config_realm in realm_names:
-                        c_realm_id = c_realm_data["id"]
+            c_realm_id = await self.get_connected_realm_id(config_realm, wow_client)
             if not c_realm_id:
                 await interaction.followup.send(_("Could not find realm."))
                 return
@@ -103,44 +78,10 @@ class UserInstallableAuctionHouse:
                         item_quantity += auction["quantity"]
                         item_price = auction["unit_price"]
                         prices.append(item_price)
+                listings_str = await self.get_undermine_commodity_listings(region, found_item_id)
             if not prices:
                 await interaction.followup.send(_("No auctions could be found for this item."))
                 return
-
-            # Sell orders
-            commodity_realms = {
-                "us": 32512,
-                "eu": 32513,
-                "tw": 32514,
-                "kr": 32515,
-            }
-
-            undermine_url = f"https://undermine.exchange/"
-            url = [
-                "data",
-                "cached",
-                str(commodity_realms[region.lower()]),
-                str(found_item_id & 0xFF),
-                f"{found_item_id}.bin",
-            ]
-            url = undermine_url + "/".join(url)
-
-            data_dict = {}
-            async with self.session.request("GET", url) as r:
-                if r.status == 200:
-                    data = await r.content.read()
-                    data_dict = read_item_state(data)
-
-            gold_emotes: Dict = await self.config.emotes()
-            listing_count = 0
-            listings_str = ""
-            for listing in data_dict.get("auctions", []):
-                if listing_count >= 7:
-                    break
-                listings_str += (
-                    f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}\n"
-                )
-                listing_count += 1
 
             # Embed stuff
             # Get item icon
@@ -149,6 +90,7 @@ class UserInstallableAuctionHouse:
             item_icon_url = item_media["assets"][0]["value"]
 
             # Create embed
+            gold_emotes: Dict = await self.config.emotes()
             embed_title = _("Price: {item}").format(item=item_name)
             embed_url = f"https://www.wowhead.com/item={found_item_id}"
             embed = discord.Embed(
@@ -184,6 +126,73 @@ class UserInstallableAuctionHouse:
             )
 
         await interaction.followup.send(embed=embed, view=view)
+
+    async def search_for_item(self, item, wow_client):
+        items = await wow_client.GameData.get_item_search({"name.en_US": item, "_pageSize": 1000})
+
+        results: Dict = items["results"]
+        found_items: Dict[int, str] = {}
+        for result in results:
+            item_id: int = result["data"]["id"]
+            item_name: str = result["data"]["name"]["en_US"]
+            if found_items:
+                if item_name in found_items.values():
+                    continue
+            elif item.lower() in item_name.lower():
+                item = item_name  # Use the exact name for all further searches
+                found_items[item_id] = item_name
+        return found_items
+
+    async def get_connected_realm_id(self, config_realm: str, wow_client: RetailApi):
+        c_realms = await wow_client.GameData.get_connected_realms_search({"_pageSize": 1000})
+
+        c_realm_id = None
+        results: Dict = c_realms["results"]
+        for result in results:
+            c_realm_data = result["data"]
+            realms = c_realm_data["realms"]
+            for realm in realms:
+                realm_names = list(realm["name"].values())
+                realm_names = [name.lower() for name in realm_names]
+                if config_realm in realm_names:
+                    c_realm_id = c_realm_data["id"]
+        return c_realm_id
+
+    async def get_undermine_commodity_listings(self, region: str, found_item_id: int) -> str:
+        commodity_realms = {
+            "us": 32512,
+            "eu": 32513,
+            "tw": 32514,
+            "kr": 32515,
+        }
+
+        undermine_url = "https://undermine.exchange/"
+        url = [
+            "data",
+            "cached",
+            str(commodity_realms[region.lower()]),
+            str(found_item_id & 0xFF),
+            f"{found_item_id}.bin",
+        ]
+        url = undermine_url + "/".join(url)
+
+        data_dict = {}
+        async with self.session.request("GET", url) as r:
+            if r.status == 200:
+                data = await r.content.read()
+                data_dict = read_item_state(data)
+
+        gold_emotes: Dict = await self.config.emotes()
+        listing_count = 0
+        listings_str = ""
+        for listing in data_dict.get("auctions", []):
+            if listing_count >= 7:
+                break
+            listings_str += (
+                f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}\n"
+            )
+            listing_count += 1
+        return listings_str
 
     @user_install_price.autocomplete("realm")
     async def user_install_price_realm_autocomplete(
