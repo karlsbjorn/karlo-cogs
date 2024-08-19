@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Literal
 
@@ -5,9 +6,10 @@ import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
 from aiowowapi import WowApi
+from discord.ext import tasks
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
-from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 
 from wowtools.user_installable.cvardocs import CVar, CVarDocs
@@ -71,6 +73,7 @@ class WoWTools(
             "scoreboard_blacklist": [],
             "sb_image": False,
             "on_message": False,
+            "countdown_channel": None,
         }
         default_user = {
             "wow_character_name": None,
@@ -86,6 +89,7 @@ class WoWTools(
         self.cvar_cache: list[CVar] = []
         self.update_dungeon_scoreboard.start()
         self.guild_log.start()
+        self.update_countdown_channels.start()
 
     async def cog_load(self) -> None:
         blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
@@ -250,10 +254,108 @@ class WoWTools(
             await self.config.assistant_cog_integration.set(True)
             await ctx.send(_("Assistant cog integration enabled."))
 
+    @wowset.command(name="expansioncountdown", hidden=True)
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_guild=True, manage_channels=True)
+    async def wowset_expansioncountdown(self, ctx: commands.Context):
+        "Add or remove a locked channel to the channel list that will display the time until the next expansion releases."
+        cd_channel_id = await self.config.guild(ctx.guild).countdown_channel()
+        if cd_channel_id:
+            cd_channel = ctx.guild.get_channel(cd_channel_id)
+            if cd_channel:
+                await cd_channel.delete(
+                    reason=_(
+                        "User with ID {cmd_author} requested deletion of countdown channel."
+                    ).format(cmd_author=ctx.author.id)
+                )
+            await self.config.guild(ctx.guild).countdown_channel.clear()
+            await ctx.send(_("Countdown channel removed"))
+            return
+
+        early_access_time = datetime.datetime(2024, 8, 22, 22, tzinfo=datetime.UTC)
+        release_time = datetime.datetime(2024, 8, 26, 22, tzinfo=datetime.UTC)
+        now = datetime.datetime.now(datetime.UTC)
+
+        diff = early_access_time - now
+        early_access = True
+        if diff.total_seconds() < 0:
+            diff = release_time - now
+            early_access = False
+        if diff.total_seconds() < 0:
+            await ctx.send(_("The War Within has already released."))
+            return
+
+        days = diff.days
+        hours, remainder = divmod(diff.seconds, 3600)
+        minutes, __ = divmod(remainder, 60)
+        if diff.days > 0:
+            time_str = f"{days}d{hours}h{minutes}m"
+        else:
+            time_str = f"{hours}h {minutes}m"
+
+        channel_name = (
+            _("🔴War Within EA: {countdown}").format(countdown=time_str)
+            if early_access
+            else _("🟡War Within: {countdown}").format(countdown=time_str)
+        )
+        perms = {
+            ctx.guild.default_role: discord.PermissionOverwrite(connect=False),
+        }
+
+        channel = await ctx.guild.create_voice_channel(
+            channel_name, position=0, category=None, overwrites=perms
+        )
+        await self.config.guild(ctx.guild).countdown_channel.set(channel.id)
+        await ctx.tick()
+
+    @tasks.loop(minutes=6)
+    async def update_countdown_channels(self):
+        for guild in self.bot.guilds:
+            if await self.bot.cog_disabled_in_guild(self, guild):
+                continue
+            countdown_channel_id: int = await self.config.guild(guild).countdown_channel()
+            if countdown_channel_id is None:
+                continue
+            await set_contextual_locales_from_guild(self.bot, guild)
+
+            countdown_channel = guild.get_channel(countdown_channel_id)
+            if not countdown_channel:
+                continue
+
+            early_access_time = datetime.datetime(2024, 8, 22, 22, tzinfo=datetime.UTC)
+            release_time = datetime.datetime(2024, 8, 26, 22, tzinfo=datetime.UTC)
+            now = datetime.datetime.now(datetime.UTC)
+
+            diff = early_access_time - now
+            early_access = True
+            if diff.total_seconds() < 0:
+                diff = release_time - now
+                early_access = False
+            if diff.total_seconds() < 0:
+                await countdown_channel.delete()
+                await self.config.guild(guild).countdown_channel.clear()
+                return
+
+            days = diff.days
+            hours, remainder = divmod(diff.seconds, 3600)
+            minutes, __ = divmod(remainder, 60)
+            if diff.days > 0:
+                time_str = f"{days}d{hours}h{minutes}m"
+            else:
+                time_str = f"{hours}h {minutes}m"
+
+            channel_name = (
+                _("🔴War Within EA: {countdown}").format(countdown=time_str)
+                if early_access
+                else _("🟡War Within: {countdown}").format(countdown=time_str)
+            )
+            await countdown_channel.edit(name=channel_name)
+
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
         self.update_dungeon_scoreboard.stop()
         self.guild_log.stop()
+        self.update_countdown_channels.stop()
 
     async def red_delete_data_for_user(
         self,
