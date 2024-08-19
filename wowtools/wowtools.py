@@ -349,7 +349,11 @@ class WoWTools(
                 if early_access
                 else _("🟡War Within: {countdown}").format(countdown=time_str)
             )
-            await countdown_channel.edit(name=channel_name)
+            try:
+                await countdown_channel.edit(name=channel_name)
+            except Exception as e:
+                # Probably rate limit stuff. Just ignore.
+                log.debug("Exception in countdown channel editing. {}".format(e))
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
