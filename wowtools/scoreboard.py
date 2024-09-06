@@ -223,7 +223,7 @@ class Scoreboard:
         image: bool = await self.config.guild(ctx.guild).sb_image()
 
         embed = discord.Embed(
-            title=_("4th Season Guild Scoreboard"),
+            title=_("1st War Within Season Scoreboard"),
             color=await self.bot.get_embed_color(sb_msg),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
@@ -241,7 +241,7 @@ class Scoreboard:
             return
 
         # TODO: When dpy2 is out, use discord.utils.format_dt()
-        desc = _("Season 4 of Dragonflight is over.\n").format(
+        desc = _("Season 1 of War Within is over.\n").format(
             timestamp=int(datetime.now(timezone.utc).timestamp())
         )
         desc += _("Score cutoff for season title was: `{cutoff}`\n").format(
@@ -420,7 +420,7 @@ class Scoreboard:
 
     @staticmethod
     async def get_season_title_cutoff(region: str) -> float:
-        current_season = "season-df-4"  # TODO: Needs to be manually updated every season
+        current_season = "season-tww-1"  # TODO: Needs to be manually updated every season
         async with RaiderIO() as rio:
             cutoffs = (await rio.get_mythic_plus_season_cutoffs(region, current_season)).get(
                 "cutoffs"
