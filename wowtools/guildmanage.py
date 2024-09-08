@@ -199,8 +199,8 @@ class GuildManage:
         if not ingame_members:
             return
 
-        desc = f"Discord: {member.mention}"
-        desc += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
+        desc = f"Discord: {member.mention}\n"
+        desc += f"In-game: {humanize_list(ingame_members, style='or')}?\nRank: {rank}?\n"
 
         rio_url = self.get_raiderio_url(
             await self.config.guild(guild).gmanage_realm(),
@@ -217,6 +217,7 @@ class GuildManage:
         embed = discord.Embed(
             title=_("**{member}** joined the server").format(member=member.display_name),
             description=desc,
+            color=discord.Colour.green(),
         )
 
         guild_log_channel_id: int = await self.config.guild(guild).guild_log_channel()
