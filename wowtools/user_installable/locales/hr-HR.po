@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-07-24 10:10+0000\n"
-"PO-Revision-Date: 2024-07-25 04:55\n"
+"POT-Creation-Date: 2024-07-26 09:32+0000\n"
+"PO-Revision-Date: 2024-09-08 17:21\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,45 +17,49 @@ msgstr ""
 "X-Crowdin-File-ID: 54\n"
 "Language: hr_HR\n"
 
-#: wowtools/user_installable/auctionhouse.py:21
+#: wowtools/user_installable/auctionhouse.py:22
 #, docstring
 msgid "Get the current auction price of an item."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:52
+#: wowtools/user_installable/auctionhouse.py:39
 msgid "No results found."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:69
+#: wowtools/user_installable/auctionhouse.py:44
 msgid "Could not find realm."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:107
+#: wowtools/user_installable/auctionhouse.py:83
 msgid "No auctions could be found for this item."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:117
+#: wowtools/user_installable/auctionhouse.py:94
 msgid "Price: {item}"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:128
+#: wowtools/user_installable/auctionhouse.py:104
 msgid "Min Buyout"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:129
+#: wowtools/user_installable/auctionhouse.py:105
 msgid "Current quantity"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:132
+#: wowtools/user_installable/auctionhouse.py:107
+msgid "Current listings"
+msgstr ""
+
+#: wowtools/user_installable/auctionhouse.py:110
 msgid "Warning"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:133
+#: wowtools/user_installable/auctionhouse.py:111
 msgid "The expected price of this item may be incorrect due to\n"
 "item level differences or other factors."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:146
+#: wowtools/user_installable/auctionhouse.py:124
 msgid "More details"
 msgstr ""
 
