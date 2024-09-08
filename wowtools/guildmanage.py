@@ -178,6 +178,62 @@ class GuildManage:
             for i in range((len(embeds) // 10) + 1):
                 await guild_log_channel.send(embeds=embeds[i * 10 : (i + 1) * 10], silent=True)
 
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        guild = member.guild
+        if not await self.config.guild(guild).guild_log_channel():
+            return
+        if guild is None:
+            return
+        if await self.bot.cog_disabled_in_guild(self, guild):
+            return
+        if member.bot:
+            return
+
+        try:
+            ingame_members, rank = await self.guess_ingame_member(guild, member.display_name)
+        except (AttributeError, ValueError):
+            return
+        except InvalidBlizzardAPI:
+            return
+        if not ingame_members:
+            return
+
+        desc = f"Discord: {member.mention}"
+        desc += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
+
+        rio_url = self.get_raiderio_url(
+            await self.config.guild(guild).gmanage_realm(),
+            await self.config.guild(guild).region(),
+            ingame_members[0],
+        )
+        wcl_url = self.get_warcraftlogs_url(
+            await self.config.guild(guild).gmanage_realm(),
+            await self.config.guild(guild).region(),
+            ingame_members[0],
+        )
+        desc += f"{rio_url} | {wcl_url}"
+
+        embed = discord.Embed(
+            title=_("**{member}** joined the server").format(member=member.display_name),
+            description=desc,
+        )
+
+        guild_log_channel_id: int = await self.config.guild(guild).guild_log_channel()
+        if guild_log_channel_id is None:
+            return
+        guild_log_channel: discord.TextChannel | discord.Thread | None = (
+            guild.get_channel_or_thread(guild_log_channel_id)
+        )
+        if guild_log_channel is None:
+            return
+
+        await guild_log_channel.send(
+            embed=embed,
+            silent=True,
+            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
+        )
+
     async def get_event_embeds(self, difference, guild):
         embeds = []
         for diff in difference:
