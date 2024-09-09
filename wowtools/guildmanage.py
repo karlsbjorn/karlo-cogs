@@ -144,6 +144,21 @@ class GuildManage:
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
 
+    @gmset.command()
+    @commands.guild_only()
+    async def guildlog_welcome(
+        self, ctx: commands.Context, channel: discord.TextChannel | discord.Thread
+    ):
+        """Set the guild log welcome channel."""
+        await self.config.guild(ctx.guild).guild_log_welcome_channel.set(channel.id)
+        try:
+            guild_roster = await self.get_guild_roster(ctx.guild)
+        except InvalidBlizzardAPI:
+            await ctx.send(_("Blizzard API isn't properly set up."))
+            return
+        await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
+        await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
+
     @tasks.loop(minutes=5)
     async def guild_log(self):
         for guild in self.bot.guilds:
@@ -215,17 +230,14 @@ class GuildManage:
         desc += f"{rio_url} | {wcl_url}"
 
         embed = discord.Embed(
-            title=_("**{member}** joined the server").format(member=member.display_name),
             description=desc,
             color=discord.Colour.green(),
         )
 
-        guild_log_channel_id: int = await self.config.guild(guild).guild_log_channel()
+        guild_log_channel_id: int = await self.config.guild(guild).guild_log_welcome_channel()
         if guild_log_channel_id is None:
             return
-        guild_log_channel: discord.TextChannel | discord.Thread | None = (
-            guild.get_channel_or_thread(guild_log_channel_id)
-        )
+        guild_log_channel = guild.get_channel_or_thread(guild_log_channel_id)
         if guild_log_channel is None:
             return
 

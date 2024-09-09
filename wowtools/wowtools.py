@@ -66,6 +66,7 @@ class WoWTools(
             "guild_rankstrings": {},
             "guild_rankroles": {},
             "guild_log_channel": None,
+            "guild_log_welcome_channel": None,
             "guild_roster": {},
             "old_sb": None,
             "scoreboard_channel": None,
