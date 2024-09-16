@@ -321,7 +321,7 @@ class GuildManage:
         """
         choices: list[str] = []
         for member in guild.members:
-            names = {member.display_name, member.name, member.nick, member.global_name}
+            names = {member.display_name, member.name, member.nick}
             extract = process.extractOne(
                 member_name,
                 {name for name in names if name is not None},
