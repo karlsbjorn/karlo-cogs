@@ -59,7 +59,6 @@ class Raiderio:
                     "raid_progression",
                     "gear",
                     "mythic_plus_best_runs",
-                    "mythic_plus_alternate_runs",
                     "talents",
                     "guild",
                 ],
@@ -131,36 +130,38 @@ class Raiderio:
         )
         embeds = [embed]
 
-        if runs := self.get_all_runs(profile_data):
-            data = [
-                [dungeon, runs["Fortified"], runs["Tyrannical"]] for dungeon, runs in runs.items()
-            ]
-            tabulated = tabulate(
-                data,
-                headers=[_("Dungeon"), _("Forti"), _("Tyrann")],
-                tablefmt="simple",
-                colalign=("left", "right", "right"),
-            )
+        # As of TWW, fortified and tyrannical no longer track separately
+        #
+        # if runs := self.get_all_runs(profile_data):
+        #     data = [
+        #         [dungeon, runs["Fortified"], runs["Tyrannical"]] for dungeon, runs in runs.items()
+        #     ]
+        #     tabulated = tabulate(
+        #         data,
+        #         headers=[_("Dungeon"), _("Forti"), _("Tyrann")],
+        #         tablefmt="simple",
+        #         colalign=("left", "right", "right"),
+        #     )
 
-            embed = discord.Embed(
-                title=char_name,
-                description=box(
-                    tabulated,
-                ),
-                url=char_url,
-                color=char_score_color,
-            )
-            embed.set_author(
-                name=_("Raider.io profile"),
-                icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
-            )
-            embed.set_thumbnail(url=char_image)
-            embed.set_footer(
-                text=_("Last updated: {char_last_updated}").format(
-                    char_last_updated=char_last_updated
-                )
-            )
-            embeds.append(embed)
+        #     embed = discord.Embed(
+        #         title=char_name,
+        #         description=box(
+        #             tabulated,
+        #         ),
+        #         url=char_url,
+        #         color=char_score_color,
+        #     )
+        #     embed.set_author(
+        #         name=_("Raider.io profile"),
+        #         icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+        #     )
+        #     embed.set_thumbnail(url=char_image)
+        #     embed.set_footer(
+        #         text=_("Last updated: {char_last_updated}").format(
+        #             char_last_updated=char_last_updated
+        #         )
+        #     )
+        #     embeds.append(embed)
 
         # Gear page
         embed = await self.make_gear_embed(
@@ -172,47 +173,49 @@ class Raiderio:
             ctx
         )
 
-    @staticmethod
-    def get_all_runs(profile_data: dict) -> dict[str, dict[str, list[str]]]:
-        """Extracts info about a player's Mythic+ dungeon runs from their Raider.IO profile data.
+    # As of TWW, fortified and tyrannical no longer track separately
+    #
+    # @staticmethod
+    # def get_all_runs(profile_data: dict) -> dict[str, dict[str, list[str]]]:
+    #     """Extracts info about a player's Mythic+ dungeon runs from their Raider.IO profile data.
 
-        Args:
-            profile_data (dict): A dictionary containing the player's Raider.IO profile data.
+    #     Args:
+    #         profile_data (dict): A dictionary containing the player's Raider.IO profile data.
 
-        Returns:
-            dict: A dictionary containing information about the player's runs in each dungeon.
-            The keys of the dictionary are the names of the dungeons, and the values are
-            dictionaries with keys "Fortified" and "Tyrannical" and values that are lists of
-            strings representing the key levels completed with the corresponding affixes.
-        """
-        runs = {}
-        existing_dungeons = set()
+    #     Returns:
+    #         dict: A dictionary containing information about the player's runs in each dungeon.
+    #         The keys of the dictionary are the names of the dungeons, and the values are
+    #         dictionaries with keys "Fortified" and "Tyrannical" and values that are lists of
+    #         strings representing the key levels completed with the corresponding affixes.
+    #     """
+    #     runs = {}
+    #     existing_dungeons = set()
 
-        best_runs = profile_data["mythic_plus_best_runs"]
-        alt_runs = profile_data["mythic_plus_alternate_runs"]
+    #     best_runs = profile_data["mythic_plus_best_runs"]
+    #     alt_runs = profile_data["mythic_plus_alternate_runs"]
 
-        for run in best_runs:
-            dungeon_name: str = run["short_name"]
-            normalized_name = dungeon_name.upper()
-            key_level = run["mythic_level"]
-            if normalized_name not in existing_dungeons:
-                runs[dungeon_name] = {"Fortified": "", "Tyrannical": ""}
-                existing_dungeons.add(normalized_name)
-            if run["affixes"][0]["id"] == 10:  # Fortified
-                runs[dungeon_name]["Fortified"] = f"+{key_level}"
-            elif run["affixes"][0]["id"] == 9:  # Tyrannical
-                runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
+    #     for run in best_runs:
+    #         dungeon_name: str = run["short_name"]
+    #         normalized_name = dungeon_name.upper()
+    #         key_level = run["mythic_level"]
+    #         if normalized_name not in existing_dungeons:
+    #             runs[dungeon_name] = {"Fortified": "", "Tyrannical": ""}
+    #             existing_dungeons.add(normalized_name)
+    #         if run["affixes"][0]["id"] == 10:  # Fortified
+    #             runs[dungeon_name]["Fortified"] = f"+{key_level}"
+    #         elif run["affixes"][0]["id"] == 9:  # Tyrannical
+    #             runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
 
-        for alt_run in alt_runs:
-            dungeon_name: str = alt_run["short_name"]
-            normalized_name = dungeon_name.upper()
-            if normalized_name in existing_dungeons:
-                key_level = alt_run["mythic_level"]
-                if alt_run["affixes"][0]["id"] == 10:  # Fortified
-                    runs[dungeon_name]["Fortified"] = f"+{key_level}"
-                elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
-                    runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
-        return runs
+    #     for alt_run in alt_runs:
+    #         dungeon_name: str = alt_run["short_name"]
+    #         normalized_name = dungeon_name.upper()
+    #         if normalized_name in existing_dungeons:
+    #             key_level = alt_run["mythic_level"]
+    #             if alt_run["affixes"][0]["id"] == 10:  # Fortified
+    #                 runs[dungeon_name]["Fortified"] = f"+{key_level}"
+    #             elif alt_run["affixes"][0]["id"] == 9:  # Tyrannical
+    #                 runs[dungeon_name]["Tyrannical"] = f"+{key_level}"
+    #     return runs
 
     @raiderio.command(name="guild")
     @commands.guild_only()

@@ -52,7 +52,6 @@ class UserInstallableRaiderio:
                     "raid_progression",
                     "gear",
                     "mythic_plus_best_runs",
-                    "mythic_plus_alternate_runs",
                     "talents",
                     "guild",
                 ],
@@ -124,36 +123,38 @@ class UserInstallableRaiderio:
         )
         embeds = [embed]
 
-        if runs := Raiderio.get_all_runs(profile_data):
-            data = [
-                [dungeon, runs["Fortified"], runs["Tyrannical"]] for dungeon, runs in runs.items()
-            ]
-            tabulated = tabulate(
-                data,
-                headers=[_("Dungeon"), _("Forti"), _("Tyrann")],
-                tablefmt="simple",
-                colalign=("left", "right", "right"),
-            )
+        # As of TWW, fortified and tyrannical no longer track separately
+        #
+        # if runs := Raiderio.get_all_runs(profile_data):
+        #     data = [
+        #         [dungeon, runs["Fortified"], runs["Tyrannical"]] for dungeon, runs in runs.items()
+        #     ]
+        #     tabulated = tabulate(
+        #         data,
+        #         headers=[_("Dungeon"), _("Forti"), _("Tyrann")],
+        #         tablefmt="simple",
+        #         colalign=("left", "right", "right"),
+        #     )
 
-            embed = discord.Embed(
-                title=char_name,
-                description=box(
-                    tabulated,
-                ),
-                url=char_url,
-                color=char_score_color,
-            )
-            embed.set_author(
-                name=_("Raider.io profile"),
-                icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
-            )
-            embed.set_thumbnail(url=char_image)
-            embed.set_footer(
-                text=_("Last updated: {char_last_updated}").format(
-                    char_last_updated=char_last_updated
-                )
-            )
-            embeds.append(embed)
+        #     embed = discord.Embed(
+        #         title=char_name,
+        #         description=box(
+        #             tabulated,
+        #         ),
+        #         url=char_url,
+        #         color=char_score_color,
+        #     )
+        #     embed.set_author(
+        #         name=_("Raider.io profile"),
+        #         icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+        #     )
+        #     embed.set_thumbnail(url=char_image)
+        #     embed.set_footer(
+        #         text=_("Last updated: {char_last_updated}").format(
+        #             char_last_updated=char_last_updated
+        #         )
+        #     )
+        #     embeds.append(embed)
 
         # Gear page
         embed = await Raiderio.make_gear_embed(
