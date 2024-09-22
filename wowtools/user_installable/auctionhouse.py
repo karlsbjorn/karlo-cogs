@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import discord
 from aiowowapi import RetailApi
@@ -158,40 +158,43 @@ class UserInstallableAuctionHouse:
                     c_realm_id = c_realm_data["id"]
         return c_realm_id
 
-    async def get_undermine_commodity_listings(self, region: str, found_item_id: int) -> str:
-        commodity_realms = {
-            "us": 32512,
-            "eu": 32513,
-            "tw": 32514,
-            "kr": 32515,
-        }
+    async def get_undermine_commodity_listings(
+        self, region: str, found_item_id: int
+    ) -> Optional[str]:
+        # commodity_realms = {
+        #     "us": 32512,
+        #     "eu": 32513,
+        #     "tw": 32514,
+        #     "kr": 32515,
+        # }
 
-        undermine_url = "https://undermine.exchange/"
-        url = [
-            "data",
-            "cached",
-            str(commodity_realms[region.lower()]),
-            str(found_item_id & 0xFF),
-            f"{found_item_id}.bin",
-        ]
-        url = undermine_url + "/".join(url)
+        # undermine_url = "https://undermine.exchange/"
+        # url = [
+        #     "data",
+        #     "cached",
+        #     str(commodity_realms[region.lower()]),
+        #     str(found_item_id & 0xFF),
+        #     f"{found_item_id}.bin",
+        # ]
+        # url = undermine_url + "/".join(url)
 
-        data_dict = {}
-        async with self.session.request("GET", url) as r:
-            if r.status == 200:
-                data = await r.content.read()
-                data_dict = read_item_state(data)
+        # data_dict = {}
+        # async with self.session.request("GET", url) as r:
+        #     if r.status == 200:
+        #         data = await r.content.read()
+        #         data_dict = read_item_state(data)
 
-        gold_emotes: Dict = await self.config.emotes()
-        listing_count = 0
-        listings_str = ""
-        for listing in data_dict.get("auctions", []):
-            if listing_count >= 7:
-                break
-            listings_str += (
-                f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}\n"
-            )
-            listing_count += 1
+        # gold_emotes: Dict = await self.config.emotes()
+        # listing_count = 0
+        # listings_str = ""
+        # for listing in data_dict.get("auctions", []):
+        #     if listing_count >= 7:
+        #         break
+        #     listings_str += (
+        #         f"{format_to_gold(listing['price'], gold_emotes)} | {listing['quantity']}\n"
+        #     )
+        #     listing_count += 1
+        listings_str = None
         return listings_str
 
     @user_install_price.autocomplete("realm")
