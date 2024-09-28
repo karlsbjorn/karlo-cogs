@@ -1,6 +1,7 @@
 import datetime
 import logging
-from typing import Literal
+from typing import Literal, Optional
+from raiderio_async import RaiderIO
 
 import aiohttp
 import discord
@@ -56,6 +57,7 @@ class WoWTools(
                 "copper": None,
             },
             "assistant_cog_integration": False,
+            "status_guild": [],
         }
         default_guild = {
             "region": None,
@@ -355,6 +357,62 @@ class WoWTools(
             except Exception as e:
                 # Probably rate limit stuff. Just ignore.
                 log.debug("Exception in countdown channel editing. {}".format(e))
+
+    @wowset.command(name="status", hidden=True)
+    async def wowset_status(self, ctx: commands.Context, guild_name: str, realm: str, region):
+        status_guild = [guild_name, realm, region]
+        await self.config.status_guild.set(status_guild)
+        if await self.set_bot_status():
+            await ctx.send(_("Status guild set."))
+            return
+        await ctx.send(_("Setting guild bot status failed."))
+
+    async def set_bot_status(self) -> bool:
+        try:
+            guild, realm, region = await self.config.status_guild()
+        except ValueError:
+            return False
+
+        async with RaiderIO() as rio:
+            guild_data = await rio.get_guild_profile(
+                region,
+                realm,
+                guild,
+                fields=["raid_progression"],
+            )
+        try:
+            guild: str = guild_data["name"]
+            progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
+        except KeyError:
+            return False
+        activity = discord.CustomActivity(name=f"{guild}: {progress}")
+        await self.bot.change_presence(activity=activity)
+        return True
+
+    @tasks.loop(minutes=60)
+    async def update_bot_status(self):
+        try:
+            guild, realm, region = await self.config.status_guild()
+        except ValueError:
+            return
+
+        async with RaiderIO() as rio:
+            guild_data = await rio.get_guild_profile(
+                region,
+                realm,
+                guild,
+                fields=["raid_progression"],
+            )
+        try:
+            guild: str = guild_data["name"]
+            progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
+        except KeyError:
+            log.warning(
+                f"Unable to fetch info of guild ({guild}). Setting the bot's status failed."
+            )
+            return
+        activity = discord.CustomActivity(name=f"{guild}: {progress}")
+        await self.bot.change_presence(activity=activity)
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
