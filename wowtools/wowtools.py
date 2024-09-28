@@ -93,6 +93,7 @@ class WoWTools(
         self.update_dungeon_scoreboard.start()
         self.guild_log.start()
         self.update_countdown_channels.start()
+        self.update_bot_status.start()
 
     async def cog_load(self) -> None:
         blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
@@ -413,6 +414,7 @@ class WoWTools(
         self.update_dungeon_scoreboard.stop()
         self.guild_log.stop()
         self.update_countdown_channels.stop()
+        self.update_bot_status.stop()
 
     async def red_delete_data_for_user(
         self,
