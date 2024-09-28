@@ -359,8 +359,20 @@ class WoWTools(
                 log.debug("Exception in countdown channel editing. {}".format(e))
 
     @wowset.command(name="status", hidden=True)
-    async def wowset_status(self, ctx: commands.Context, guild_name: str, realm: str, region):
-        status_guild = [guild_name, realm, region]
+    async def wowset_status(
+        self,
+        ctx: commands.Context,
+        guild_name: str,
+        realm: str,
+        region,
+        emoji: Optional[discord.Emoji] = None,
+    ):
+        status_guild = [
+            guild_name.replace("-", " ").lower(),
+            realm,
+            region,
+            emoji.id if emoji else None,
+        ]
         await self.config.status_guild.set(status_guild)
         if await self.set_bot_status():
             await ctx.send(_("Status guild set."))
@@ -369,7 +381,7 @@ class WoWTools(
 
     async def set_bot_status(self) -> bool:
         try:
-            guild, realm, region = await self.config.status_guild()
+            guild, realm, region, emoji = await self.config.status_guild()
         except ValueError:
             return False
 
@@ -385,34 +397,16 @@ class WoWTools(
             progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
         except KeyError:
             return False
-        activity = discord.CustomActivity(name=f"{guild}: {progress}")
+        activity = discord.CustomActivity(
+            name=f"{guild}: {progress}", emoji=self.bot.get_emoji(emoji)
+        )
         await self.bot.change_presence(activity=activity)
         return True
 
     @tasks.loop(minutes=60)
     async def update_bot_status(self):
-        try:
-            guild, realm, region = await self.config.status_guild()
-        except ValueError:
-            return
-
-        async with RaiderIO() as rio:
-            guild_data = await rio.get_guild_profile(
-                region,
-                realm,
-                guild,
-                fields=["raid_progression"],
-            )
-        try:
-            guild: str = guild_data["name"]
-            progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
-        except KeyError:
-            log.warning(
-                f"Unable to fetch info of guild ({guild}). Setting the bot's status failed."
-            )
-            return
-        activity = discord.CustomActivity(name=f"{guild}: {progress}")
-        await self.bot.change_presence(activity=activity)
+        if not self.set_bot_status():
+            log.warning(f"Setting the bot's status failed.")
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
