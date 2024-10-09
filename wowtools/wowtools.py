@@ -1,18 +1,18 @@
 import datetime
 import logging
 from typing import Literal, Optional
-from raiderio_async import RaiderIO
 
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
-from aiowowapi import WowApi
 from discord.ext import tasks
+from raiderio_async import RaiderIO
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 
+from aiowowapi import WowApi
 from wowtools.user_installable.cvardocs import CVar, CVarDocs
 
 from .auctionhouse import AuctionHouse
@@ -365,7 +365,7 @@ class WoWTools(
         ctx: commands.Context,
         guild_name: str,
         realm: str,
-        region,
+        region: str,
         emoji: Optional[discord.Emoji] = None,
     ):
         status_guild = [
@@ -398,15 +398,13 @@ class WoWTools(
             progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
         except KeyError:
             return False
-        activity = discord.CustomActivity(
-            name=f"{guild}: {progress}", emoji=self.bot.get_emoji(emoji)
-        )
+        activity = discord.CustomActivity(name=f"{guild}: {progress}", emoji=emoji)
         await self.bot.change_presence(activity=activity)
         return True
 
     @tasks.loop(minutes=60)
     async def update_bot_status(self):
-        if not self.set_bot_status():
+        if not await self.set_bot_status():
             log.warning(f"Setting the bot's status failed.")
 
     def cog_unload(self):
