@@ -405,7 +405,7 @@ class WoWTools(
     @tasks.loop(minutes=60)
     async def update_bot_status(self):
         if not await self.set_bot_status():
-            log.warning(f"Setting the bot's status failed.")
+            log.warning("Setting the bot's status failed.")
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())

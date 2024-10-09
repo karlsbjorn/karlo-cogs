@@ -8,9 +8,7 @@ from discord import app_commands
 from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
-from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
-from tabulate import tabulate
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)

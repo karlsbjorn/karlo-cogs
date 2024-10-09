@@ -8,7 +8,6 @@ from redbot.core.commands import Context
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from tabulate import tabulate
-
 from wowtools.raiderio import ProfileMenu, Raiderio
 from wowtools.utils import get_realms
 
