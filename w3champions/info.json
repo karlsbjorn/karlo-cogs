@@ -1,0 +1,14 @@
+{
+    "author": ["Karlo"],
+    "description": "Cog for interacting with W3Champions",
+    "short": "Cog for interacting with W3Champions",
+    "tags": ["warcraft", "w3champions", "ladder"],
+    "requirements": [
+        "tabulate"
+    ],
+    "min_bot_version": "3.5.3.dev0",
+    "max_bot_version": "3.6.0.dev0",
+    "type": "COG",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "min_python_version": [3, 10, 0]
+}
