@@ -15,13 +15,16 @@ from tabulate import tabulate
 
 from w3champions.league import W3ChampionsLeague
 from w3champions.mode import ModeType, W3ChampionsMode
-from w3champions.player import W3ChampionsPlayer
+from w3champions.player import ModeStats, RaceStats, W3ChampionsPlayer
 from w3champions.profile_picture_race import W3ChampionsProfilePictureRace
+from w3champions.race import Race
 from w3champions.ranking_player import W3ChampionsRankingPlayer
 from w3champions.season import W3ChampionsSeason
 
 _ = Translator("W3Champions", __file__)
 log = logging.getLogger("red.karlo-cogs.w3champions")
+
+CURRENT_SEASON = 20  # TODO: fetch this
 
 
 @cog_i18n(_)
@@ -133,8 +136,10 @@ class W3Champions(commands.Cog):
         await interaction.response.defer()
         try:
             profile: W3ChampionsPlayer = await self.fetch_player_profile(player)
-        except Exception:
-            await interaction.followup.send(f"{player} not found")
+        except Exception as e:
+            await interaction.followup.send(f"{player} not found.")
+            log.warning(f"{player} not found.", exc_info=e)
+            return
 
         embed: discord.Embed = self.make_profile_embed(
             profile, await interaction.client.get_embed_colour(interaction.channel)
@@ -151,11 +156,16 @@ class W3Champions(commands.Cog):
             personal_settings["profilePicture"]["isClassic"],
         )
 
+        mode_stats: List[ModeStats] = await self.fetch_mode_stats(player)
+        race_stats: List[RaceStats] = await self.fetch_race_stats(player)
+
         return W3ChampionsPlayer(
             name=player,
             profile_picture_url=profile_picture_url,
             total_games=total_games,
             total_wins=total_wins,
+            stats_by_mode=mode_stats,
+            stats_by_race=race_stats,
         )
 
     async def fetch_personal_settings(self, player: str) -> Dict:
@@ -175,11 +185,82 @@ class W3Champions(commands.Cog):
             f"{'classic/' if classic else ''}{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
         )
 
+    async def fetch_mode_stats(self, player: str) -> List[ModeStats]:
+        request_url = urllib.parse.quote(
+            f"https://website-backend.w3champions.com/api/players/{player}/game-mode-stats",
+            safe=":/",
+        )
+        params = {"gateWay": CURRENT_SEASON, "season": CURRENT_SEASON}
+        data: List[Dict] = []
+        async with self.session.request("GET", request_url, params=params) as resp:
+            if resp.status != 200:
+                return []
+            data = await resp.json()
+        mode_stats = []
+        for mode in data:
+            gamemode = self.get_gamemode_from_id(mode["gameMode"])
+            if not gamemode:
+                continue
+            mode_stats.append(
+                ModeStats(
+                    gamemode=gamemode,
+                    race=Race(mode["race"]) if mode["race"] else None,
+                    mmr=mode["mmr"],
+                    quantile=mode["quantile"],
+                    wins=mode["wins"],
+                    losses=mode["losses"],
+                    games=mode["games"],
+                    winrate=mode["winrate"],
+                )
+            )
+        return mode_stats
+
+    def get_gamemode_from_id(self, id: int) -> W3ChampionsMode | None:
+        for mode in self.w3c_modes:
+            if mode.id == id:
+                return mode
+        return None
+
+    async def fetch_race_stats(self, player: str) -> List[RaceStats]:
+        request_url = urllib.parse.quote(
+            f"https://website-backend.w3champions.com/api/players/{player}/race-stats",
+            safe=":/",
+        )
+        params = {"gateWay": CURRENT_SEASON, "season": CURRENT_SEASON}
+        data: List[Dict] = []
+        async with self.session.request("GET", request_url, params=params) as resp:
+            if resp.status != 200:
+                return []
+            data = await resp.json()
+        return [
+            RaceStats(
+                race=Race(race["race"]),
+                wins=race["wins"],
+                losses=race["losses"],
+                games=race["games"],
+                winrate=race["winrate"],
+            )
+            for race in data
+        ]
+
     def make_profile_embed(
         self, profile: W3ChampionsPlayer, colour: discord.Color
     ) -> discord.Embed:
         description = f"Games:{profile.total_games}\nWins: {profile.total_wins}"
         embed = discord.Embed(color=colour, title=profile.name, description=description)
+
+        if profile.stats_by_race:
+            headers = [_("# Race"), _("Win"), _("Loss"), _("WR%")]
+            rows = [race.to_row() for race in profile.stats_by_race]
+            table = tabulate(rows, headers=headers, tablefmt="plain", disable_numparse=True)
+            embed.add_field(name=_("Stats by race"), value=box(table, "md"), inline=False)
+
+        if profile.stats_by_mode:
+            headers = [_("# Mode"), _("Win"), _("Loss"), _("WR%"), _("MMR")]
+            rows = [mode.to_row() for mode in profile.stats_by_mode]
+            table = tabulate(rows, headers=headers, tablefmt="plain", disable_numparse=True)
+            embed.add_field(name=_("Stats by mode"), value=box(table, "md"), inline=False)
+
         embed.set_thumbnail(url=profile.profile_picture_url)
         return embed
 
