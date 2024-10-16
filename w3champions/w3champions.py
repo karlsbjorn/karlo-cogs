@@ -1,4 +1,5 @@
 import logging
+import urllib.parse
 from typing import Dict, List
 
 import aiohttp
@@ -12,10 +13,12 @@ from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.views import SimpleMenu
 from tabulate import tabulate
 
-from w3champions.w3champions_league import W3ChampionsLeague
-from w3champions.w3champions_mode import ModeType, W3ChampionsMode
-from w3champions.w3champions_ranking_player import W3ChampionsRankingPlayer
-from w3champions.w3champions_season import W3ChampionsSeason
+from w3champions.league import W3ChampionsLeague
+from w3champions.mode import ModeType, W3ChampionsMode
+from w3champions.player import W3ChampionsPlayer
+from w3champions.profile_picture_race import W3ChampionsProfilePictureRace
+from w3champions.ranking_player import W3ChampionsRankingPlayer
+from w3champions.season import W3ChampionsSeason
 
 _ = Translator("W3Champions", __file__)
 log = logging.getLogger("red.karlo-cogs.w3champions")
@@ -94,7 +97,7 @@ class W3Champions(commands.Cog):
             _("Winrate"),
             _("MMR"),
         ]
-        # await interaction.response.defer()
+        await interaction.response.defer()
         rankings = await self.fetch_ladder_players(
             interaction, season, mode.split(":")[1], league.split(":")[1]
         )
@@ -104,8 +107,8 @@ class W3Champions(commands.Cog):
         page_count = (len(rows) + max_per_page - 1) // max_per_page
         pages = []
         for page in range(page_count):
-            from_here = page * max_per_page  # 0  20
-            to_there = from_here + max_per_page  # 20  40
+            from_here = page * max_per_page
+            to_there = from_here + max_per_page
             table = tabulate(
                 rows[from_here:to_there],
                 headers=headers,
@@ -117,6 +120,68 @@ class W3Champions(commands.Cog):
         ctx: Context = await Context.from_interaction(interaction)
         await SimpleMenu(pages=pages, disable_after_timeout=True).start(ctx)
         # await interaction.followup.send(content)
+
+    @slash_w3champions.command(name="profile")
+    @app_commands.describe(player="The full battletag of the user you want to look up")
+    async def slash_w3champions_profile(self, interaction: discord.Interaction, player: str):
+        if len(player.split("#")) != 2:
+            await interaction.response.send_message(
+                "Please input the full Battletag of the user you want to look up. (Name#12345)",
+                ephemeral=True,
+            )
+            return
+        await interaction.response.defer()
+        try:
+            profile: W3ChampionsPlayer = await self.fetch_player_profile(player)
+        except Exception:
+            await interaction.followup.send(f"{player} not found")
+
+        embed: discord.Embed = self.make_profile_embed(
+            profile, await interaction.client.get_embed_colour(interaction.channel)
+        )
+        await interaction.followup.send(embed=embed)
+
+    async def fetch_player_profile(self, player: str) -> W3ChampionsPlayer:
+        personal_settings: Dict = await self.fetch_personal_settings(player)
+        total_wins = sum([int(race["wins"]) for race in personal_settings.get("winLosses", [])])
+        total_games = sum([int(race["games"]) for race in personal_settings.get("winLosses", [])])
+        profile_picture_url: str = self.get_profile_picture_url(
+            personal_settings["profilePicture"]["race"],
+            personal_settings["profilePicture"]["pictureId"],
+            personal_settings["profilePicture"]["isClassic"],
+        )
+
+        return W3ChampionsPlayer(
+            name=player,
+            profile_picture_url=profile_picture_url,
+            total_games=total_games,
+            total_wins=total_wins,
+        )
+
+    async def fetch_personal_settings(self, player: str) -> Dict:
+        request_url = urllib.parse.quote(
+            f"https://website-backend.w3champions.com/api/personal-settings/{player}", safe=":/"
+        )
+        data: Dict = {}
+        async with self.session.request("GET", request_url) as resp:
+            if resp.status != 200:
+                raise ValueError
+            data = await resp.json()
+        return data
+
+    def get_profile_picture_url(self, race: int, picture_id: int, classic: bool) -> str:
+        return (
+            "https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/"
+            f"{'classic/' if classic else ''}{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
+        )
+
+    def make_profile_embed(
+        self, profile: W3ChampionsPlayer, colour: discord.Color
+    ) -> discord.Embed:
+        description = f"Games:{profile.total_games}\nWins: {profile.total_wins}"
+        embed = discord.Embed(color=colour, title=profile.name, description=description)
+        embed.set_thumbnail(url=profile.profile_picture_url)
+        return embed
 
     async def fetch_ladder_players(
         self, interaction: discord.Interaction, season: int, mode: str, league: str
