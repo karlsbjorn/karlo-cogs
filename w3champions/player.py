@@ -1,3 +1,4 @@
+import urllib.parse
 from dataclasses import dataclass
 from typing import List
 
@@ -52,3 +53,6 @@ class W3ChampionsPlayer:
     total_wins: int
     stats_by_race: List[RaceStats]
     stats_by_mode: List[ModeStats]
+
+    def get_player_url(self) -> str:
+        return urllib.parse.quote(f"https://w3champions.com/player/{self.name}", safe=":/")

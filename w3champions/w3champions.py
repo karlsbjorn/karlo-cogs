@@ -145,7 +145,15 @@ class W3Champions(commands.Cog):
         embed: discord.Embed = self.make_profile_embed(
             profile, await interaction.client.get_embed_colour(interaction.channel)
         )
-        await interaction.followup.send(embed=embed)
+        view = discord.ui.View()
+        view.add_item(
+            discord.ui.Button(
+                label=_("Profile"),
+                style=discord.ButtonStyle.link,
+                url=profile.get_player_url(),
+            )
+        )
+        await interaction.followup.send(embed=embed, view=view)
 
     async def fetch_player_profile(self, player: str) -> W3ChampionsPlayer:
         personal_settings: Dict = await self.fetch_personal_settings(player)
@@ -253,6 +261,7 @@ class W3Champions(commands.Cog):
             color=colour,
             title=f"{profile.name} {flag.flag(profile.location)}",
             description=description,
+            url=profile.get_player_url(),
         )
 
         if profile.stats_by_race:
