@@ -4,6 +4,7 @@ from typing import Dict, List
 
 import aiohttp
 import discord
+import flag
 from discord.app_commands import AppCommandContext, AppInstallationType
 from redbot.core import app_commands, commands
 from redbot.core.bot import Red
@@ -161,6 +162,7 @@ class W3Champions(commands.Cog):
 
         return W3ChampionsPlayer(
             name=player,
+            location=personal_settings["location"],
             profile_picture_url=profile_picture_url,
             total_games=total_games,
             total_wins=total_wins,
@@ -247,7 +249,11 @@ class W3Champions(commands.Cog):
         self, profile: W3ChampionsPlayer, colour: discord.Color
     ) -> discord.Embed:
         description = f"Games:{profile.total_games}\nWins: {profile.total_wins}"
-        embed = discord.Embed(color=colour, title=profile.name, description=description)
+        embed = discord.Embed(
+            color=colour,
+            title=f"{profile.name} {flag.flag(profile.location)}",
+            description=description,
+        )
 
         if profile.stats_by_race:
             headers = [_("# Race"), _("Win"), _("Loss"), _("WR%")]

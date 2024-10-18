@@ -46,6 +46,7 @@ class ModeStats:
 @dataclass
 class W3ChampionsPlayer:
     name: str
+    location: str
     profile_picture_url: str
     total_games: int
     total_wins: int

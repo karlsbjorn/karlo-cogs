@@ -4,7 +4,8 @@
     "short": "Cog for interacting with W3Champions",
     "tags": ["warcraft", "w3champions", "ladder"],
     "requirements": [
-        "tabulate"
+        "tabulate",
+        "emoji-country-flag"
     ],
     "min_bot_version": "3.5.3.dev0",
     "max_bot_version": "3.6.0.dev0",
