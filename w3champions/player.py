@@ -1,13 +1,13 @@
 import urllib.parse
-from dataclasses import dataclass
 from typing import List
+
+from pydantic import BaseModel
 
 from w3champions.mode import W3ChampionsMode
 from w3champions.race import Race
 
 
-@dataclass
-class RaceStats:
+class RaceStats(BaseModel):
     race: Race
     wins: int
     losses: int
@@ -23,8 +23,7 @@ class RaceStats:
         ]
 
 
-@dataclass
-class ModeStats:
+class ModeStats(BaseModel):
     gamemode: W3ChampionsMode
     race: Race | None
     mmr: int
@@ -44,13 +43,11 @@ class ModeStats:
         ]
 
 
-@dataclass
-class OngoingMatch:
+class OngoingMatch(BaseModel):
     map_name: str
 
 
-@dataclass
-class W3ChampionsPlayer:
+class W3ChampionsPlayer(BaseModel):
     name: str
     location: str
     profile_picture_url: str

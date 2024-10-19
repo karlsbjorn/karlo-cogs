@@ -1,8 +1,8 @@
-from dataclasses import dataclass
+
+from pydantic import BaseModel
 
 
-@dataclass
-class W3ChampionsLeague:
+class W3ChampionsLeague(BaseModel):
     division: int
     id: int
     name: str

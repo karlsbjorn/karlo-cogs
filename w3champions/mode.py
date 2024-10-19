@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 from enum import Enum
+
+from pydantic import BaseModel
 
 
 class ModeType(Enum):
@@ -7,8 +8,7 @@ class ModeType(Enum):
     NON_MELEE = 2
 
 
-@dataclass
-class W3ChampionsMode:
+class W3ChampionsMode(BaseModel):
     id: int
     name: str
     type: ModeType

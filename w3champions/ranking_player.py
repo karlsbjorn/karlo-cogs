@@ -1,8 +1,8 @@
-from dataclasses import dataclass
+
+from pydantic import BaseModel
 
 
-@dataclass
-class W3ChampionsRankingPlayer:
+class W3ChampionsRankingPlayer(BaseModel):
     rank_number: int
     name: str
     location: str

@@ -2,10 +2,11 @@
     "author": ["Karlo"],
     "description": "Cog for interacting with W3Champions",
     "short": "Cog for interacting with W3Champions",
-    "tags": ["warcraft", "w3champions", "ladder"],
+    "tags": ["warcraft", "w3champions", "ladder", "w3c"],
     "requirements": [
         "tabulate",
-        "emoji-country-flag"
+        "emoji-country-flag",
+        "pydantic"
     ],
     "min_bot_version": "3.5.3.dev0",
     "max_bot_version": "3.6.0.dev0",

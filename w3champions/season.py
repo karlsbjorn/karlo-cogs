@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
+from pydantic import BaseModel
 
-@dataclass
-class W3ChampionsSeason:
+
+class W3ChampionsSeason(BaseModel):
     id: int

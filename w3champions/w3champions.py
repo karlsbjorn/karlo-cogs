@@ -31,10 +31,10 @@ class W3Champions(commands.Cog):
     def __init__(self, bot):
         self.bot: Red = bot
         self.session = aiohttp.ClientSession(
-            headers={"User-Agent": "Red-DiscordBot/W3ChampionsCog"}
+            headers={"User-Agent": "Red-DiscordBot/karlo-cogs/W3ChampionsCog"}
         )
-        self.w3c_modes: List[W3ChampionsMode] = None
-        self.w3c_seasons: List[W3ChampionsSeason] = None
+        self.w3c_modes: List[W3ChampionsMode] = []
+        self.w3c_seasons: List[W3ChampionsSeason] = []
         self.current_season: int = 0
         self.w3c_leagues: Dict[int, Dict[int, List[W3ChampionsLeague]]] = {}
 
@@ -74,7 +74,7 @@ class W3Champions(commands.Cog):
 
         season_list = []
         for entry in data:
-            season = W3ChampionsSeason(entry["id"])
+            season = W3ChampionsSeason(id=entry["id"])
             season_list.append(season)
         return season_list
 
@@ -122,7 +122,7 @@ class W3Champions(commands.Cog):
             content = f"Season {season} - {mode.split(':')[0]} - {league.split(':')[0]}\n{box(table, 'md')}"
             pages.append(content)
         ctx: Context = await Context.from_interaction(interaction)
-        await SimpleMenu(pages=pages, disable_after_timeout=True).start(ctx)
+        await (SimpleMenu(pages=pages, disable_after_timeout=True)).start(ctx)
         # await interaction.followup.send(content)
 
     @slash_w3champions.command(name="profile")
@@ -143,7 +143,8 @@ class W3Champions(commands.Cog):
             return
 
         embed: discord.Embed = self.make_profile_embed(
-            profile, await interaction.client.get_embed_colour(interaction.channel)
+            profile,
+            await interaction.client.get_embed_colour(interaction.channel),  # type: ignore
         )
         view = discord.ui.View()
         view.add_item(
@@ -189,7 +190,7 @@ class W3Champions(commands.Cog):
             if resp.status != 200:
                 return None
             data = await resp.json()
-        ongoing = OngoingMatch(data["mapName"])
+        ongoing = OngoingMatch(map_name=data["mapName"])
         return ongoing
 
     async def fetch_personal_settings(self, player: str) -> Dict:
@@ -205,8 +206,15 @@ class W3Champions(commands.Cog):
 
     def get_profile_picture_url(self, race: int, picture_id: int, classic: bool) -> str:
         return (
-            "https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/"
-            f"{'classic/' if classic else ''}{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
+            (
+                "https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/"
+                f"{'classic/' if classic else ''}{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
+            )
+            if race != 32
+            else (
+                "https://w3champions.wc3.tools/prod/integration/icons/specialAvatars/"
+                f"{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
+            )
         )
 
     async def fetch_mode_stats(self, player: str) -> List[ModeStats]:
@@ -380,7 +388,9 @@ class W3Champions(commands.Cog):
                     continue
                 for league in mode.get("leagues", []):
                     leagues.append(
-                        W3ChampionsLeague(league["division"], league["id"], league["name"])
+                        W3ChampionsLeague(
+                            division=league["division"], id=league["id"], name=league["name"]
+                        )
                     )
             if not self.w3c_leagues.get(wanted_season):
                 self.w3c_leagues[wanted_season] = {}
