@@ -16,7 +16,7 @@ from tabulate import tabulate
 
 from w3champions.league import W3ChampionsLeague
 from w3champions.mode import ModeType, W3ChampionsMode
-from w3champions.player import ModeStats, RaceStats, W3ChampionsPlayer
+from w3champions.player import ModeStats, OngoingMatch, RaceStats, W3ChampionsPlayer
 from w3champions.profile_picture_race import W3ChampionsProfilePictureRace
 from w3champions.race import Race
 from w3champions.ranking_player import W3ChampionsRankingPlayer
@@ -24,8 +24,6 @@ from w3champions.season import W3ChampionsSeason
 
 _ = Translator("W3Champions", __file__)
 log = logging.getLogger("red.karlo-cogs.w3champions")
-
-CURRENT_SEASON = 20  # TODO: fetch this
 
 
 @cog_i18n(_)
@@ -37,11 +35,13 @@ class W3Champions(commands.Cog):
         )
         self.w3c_modes: List[W3ChampionsMode] = None
         self.w3c_seasons: List[W3ChampionsSeason] = None
+        self.current_season: int = 0
         self.w3c_leagues: Dict[int, Dict[int, List[W3ChampionsLeague]]] = {}
 
     async def cog_load(self) -> None:
         self.w3c_modes = await self.fetch_w3c_modes()
         self.w3c_seasons = await self.fetch_w3c_seasons()
+        self.current_season = self.w3c_seasons[0].id
 
     async def fetch_w3c_modes(self) -> List[W3ChampionsMode]:
         request_url = "https://website-backend.w3champions.com/api/ladder/active-modes"
@@ -167,6 +167,7 @@ class W3Champions(commands.Cog):
 
         mode_stats: List[ModeStats] = await self.fetch_mode_stats(player)
         race_stats: List[RaceStats] = await self.fetch_race_stats(player)
+        ongoing: OngoingMatch | None = await self.fetch_ongoing_match(player)
 
         return W3ChampionsPlayer(
             name=player,
@@ -176,7 +177,20 @@ class W3Champions(commands.Cog):
             total_wins=total_wins,
             stats_by_mode=mode_stats,
             stats_by_race=race_stats,
+            ongoing_match=ongoing,
         )
+
+    async def fetch_ongoing_match(self, player: str) -> OngoingMatch | None:
+        request_url = urllib.parse.quote(
+            f"https://website-backend.w3champions.com/api/matches/ongoing/{player}", safe=":/"
+        )
+        data: Dict = {}
+        async with self.session.request("GET", request_url) as resp:
+            if resp.status != 200:
+                return None
+            data = await resp.json()
+        ongoing = OngoingMatch(data["mapName"])
+        return ongoing
 
     async def fetch_personal_settings(self, player: str) -> Dict:
         request_url = urllib.parse.quote(
@@ -200,7 +214,7 @@ class W3Champions(commands.Cog):
             f"https://website-backend.w3champions.com/api/players/{player}/game-mode-stats",
             safe=":/",
         )
-        params = {"gateWay": CURRENT_SEASON, "season": CURRENT_SEASON}
+        params = {"gateWay": self.current_season, "season": self.current_season}
         data: List[Dict] = []
         async with self.session.request("GET", request_url, params=params) as resp:
             if resp.status != 200:
@@ -236,7 +250,7 @@ class W3Champions(commands.Cog):
             f"https://website-backend.w3champions.com/api/players/{player}/race-stats",
             safe=":/",
         )
-        params = {"gateWay": CURRENT_SEASON, "season": CURRENT_SEASON}
+        params = {"gateWay": self.current_season, "season": self.current_season}
         data: List[Dict] = []
         async with self.session.request("GET", request_url, params=params) as resp:
             if resp.status != 200:
@@ -264,6 +278,14 @@ class W3Champions(commands.Cog):
             url=profile.get_player_url(),
         )
 
+        if profile.ongoing_match:
+            embed.add_field(
+                name=_("Playing"),
+                value=_("Currently playing on {mapName}").format(
+                    mapName=profile.ongoing_match.map_name
+                ),
+            )
+
         if profile.stats_by_race:
             headers = [_("# Race"), _("Win"), _("Loss"), _("WR%")]
             rows = [race.to_row() for race in profile.stats_by_race]
@@ -284,7 +306,7 @@ class W3Champions(commands.Cog):
     ) -> List[W3ChampionsRankingPlayer]:
         request_url = f"https://website-backend.w3champions.com/api/ladder/{league}"
         params = {
-            "gateWay": 20,  # idk what this is. current season? guess we'll find out later
+            "gateWay": self.current_season,  # idk what this is. current season? guess we'll find out later
             "gameMode": mode,
             "season": season,
         }
