@@ -6,6 +6,7 @@ import aiohttp
 import discord
 import flag
 from discord.app_commands import AppCommandContext, AppInstallationType
+from discord.ext import tasks
 from redbot.core import app_commands, commands
 from redbot.core.bot import Red
 from redbot.core.commands import Context
@@ -39,9 +40,7 @@ class W3Champions(commands.Cog):
         self.w3c_leagues: Dict[int, Dict[int, List[W3ChampionsLeague]]] = {}
 
     async def cog_load(self) -> None:
-        self.w3c_modes = await self.fetch_w3c_modes()
-        self.w3c_seasons = await self.fetch_w3c_seasons()
-        self.current_season = self.w3c_seasons[0].id
+        self.refresh_cache.start()
 
     async def fetch_w3c_modes(self) -> List[W3ChampionsMode]:
         request_url = "https://website-backend.w3champions.com/api/ladder/active-modes"
@@ -210,7 +209,7 @@ class W3Champions(commands.Cog):
                 "https://w3champions.wc3.tools/prod/integration/icons/raceAvatars/"
                 f"{'classic/' if classic else ''}{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
             )
-            if race != 32
+            if race != W3ChampionsProfilePictureRace.SPECIAL.value
             else (
                 "https://w3champions.wc3.tools/prod/integration/icons/specialAvatars/"
                 f"{W3ChampionsProfilePictureRace(race).name}_{picture_id}.jpg?v=2"
@@ -287,11 +286,16 @@ class W3Champions(commands.Cog):
         )
 
         if profile.ongoing_match:
-            embed.add_field(
-                name=_("Playing"),
-                value=_("Currently playing on {mapName}").format(
+            # embed.add_field(
+            #     name=_("Playing"),
+            #     value=_("Currently playing on {mapName}").format(
+            #         mapName=profile.ongoing_match.map_name
+            #     ),
+            # )
+            embed.set_footer(
+                text=_("Currently playing on {mapName}").format(
                     mapName=profile.ongoing_match.map_name
-                ),
+                )
             )
 
         if profile.stats_by_race:
@@ -408,5 +412,13 @@ class W3Champions(commands.Cog):
             if current.lower() in league.name.lower()
         ][:25]
 
+    @tasks.loop(hours=6)
+    async def refresh_cache(self):
+        self.w3c_modes = await self.fetch_w3c_modes()
+        self.w3c_seasons = await self.fetch_w3c_seasons()
+        self.current_season = self.w3c_seasons[0].id
+        self.w3c_leagues = {}
+
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
+        self.refresh_cache.stop()
