@@ -738,7 +738,7 @@ class Scoreboard:
             raise InvalidBlizzardAPI
         guild_name = guild_name.replace(" ", "-").lower()
 
-        max_level = 70
+        max_level = 80
         async with api_client as client:
             wow_client = client.Retail
             # await self.limiter.acquire()
