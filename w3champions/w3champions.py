@@ -79,12 +79,12 @@ class W3Champions(commands.Cog):
 
     slash_w3champions = app_commands.Group(
         name="w3champions",
-        description=_("W3Champions commands"),
+        description="W3Champions commands",
         allowed_installs=AppInstallationType(guild=True, user=True),
         allowed_contexts=AppCommandContext(guild=True, dm_channel=True, private_channel=True),
     )
 
-    @slash_w3champions.command(name="rankings")
+    @slash_w3champions.command(name="rankings", description="Look at a W3Champions ladder")
     @app_commands.describe(
         season="Which season", mode="Which mode to look up", league="What league"
     )
@@ -124,7 +124,9 @@ class W3Champions(commands.Cog):
         await (SimpleMenu(pages=pages, disable_after_timeout=True)).start(ctx)
         # await interaction.followup.send(content)
 
-    @slash_w3champions.command(name="profile")
+    @slash_w3champions.command(
+        name="profile", description="Look up the profile of a W3Champions user"
+    )
     @app_commands.describe(player="The full battletag of the user you want to look up")
     async def slash_w3champions_profile(self, interaction: discord.Interaction, player: str):
         if len(player.split("#")) != 2:
