@@ -61,6 +61,8 @@ class NetdataAlerts(commands.Cog):
                 ).set_author(name="Netdata")
             )
             self.activated_alarms.append(alarm.id)
+        if not embeds:
+            return
         destinations = await self.bot.get_owner_notification_destinations()
         for dest in destinations:
             await dest.send(embeds=embeds, silent=False if alarm.status == "CRITICAL" else True)
