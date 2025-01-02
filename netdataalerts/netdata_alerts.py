@@ -22,7 +22,8 @@ class NetdataAlerts(commands.Cog):
             headers={"User-Agent": "Red-DiscordBot/karlo-cogs/NetdataAlertsCog"}
         )
         self.netdata_base = self.form_netdata_base()
-        self.activated_alarms: list[int] = []
+        self.prev_alarms: set[int] = set()
+        self.current_alarms: set[int] = set()
 
     def form_netdata_base(self):
         # use bot config
@@ -45,13 +46,14 @@ class NetdataAlerts(commands.Cog):
     # The server is local so there's no issue spamming the endpoint
     @tasks.loop(seconds=5)
     async def check_alarms(self):
+        self.prev_alarms, self.current_alarms = self.current_alarms, set()
         alarms = await self.get_current_alarms()
         if not alarms:
             return
         embeds: list[discord.Embed] = []
         for key, alarm_data in alarms.items():
             alarm = Alarm.model_validate(alarm_data)
-            if alarm.id in self.activated_alarms:
+            if alarm.id in self.prev_alarms:
                 continue
             embeds.append(
                 discord.Embed(
@@ -60,7 +62,7 @@ class NetdataAlerts(commands.Cog):
                     colour=alarm.get_status_color(),
                 ).set_author(name="Netdata")
             )
-            self.activated_alarms.append(alarm.id)
+            self.current_alarms.add(alarm.id)
         if not embeds:
             return
         destinations = await self.bot.get_owner_notification_destinations()
