@@ -51,6 +51,7 @@ class NetdataAlerts(commands.Cog):
         if not alarms:
             return
         embeds: list[discord.Embed] = []
+        critical = False
         for key, alarm_data in alarms.items():
             alarm = Alarm.model_validate(alarm_data)
             if alarm.id in self.prev_alarms:
@@ -63,12 +64,14 @@ class NetdataAlerts(commands.Cog):
                     colour=alarm.get_status_color(),
                 ).set_author(name="Netdata")
             )
+            if alarm.status == "CRITICAL":
+                critical = True
             self.current_alarms.add(alarm.id)
         if not embeds:
             return
         destinations = await self.bot.get_owner_notification_destinations()
         for dest in destinations:
-            await dest.send(embeds=embeds, silent=False if alarm.status == "CRITICAL" else True)
+            await dest.send(embeds=embeds, silent=critical)
 
     def make_description(self, alarm: Alarm) -> str:
         return f"{alarm.info}\nValue: {alarm.value_string}\n<t:{alarm.last_status_change}:R>"
