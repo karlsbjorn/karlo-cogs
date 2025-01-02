@@ -54,6 +54,7 @@ class NetdataAlerts(commands.Cog):
         for key, alarm_data in alarms.items():
             alarm = Alarm.model_validate(alarm_data)
             if alarm.id in self.prev_alarms:
+                self.current_alarms.add(alarm.id)
                 continue
             embeds.append(
                 discord.Embed(
