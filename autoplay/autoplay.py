@@ -2,13 +2,14 @@ from typing import Optional
 
 import discord
 from discord import AppCommandType
+from redbot.core import Config, commands
+from redbot.core.i18n import Translator, cog_i18n
+
 from pylav.events.player import PlayerDisconnectedEvent
 from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from pylav.type_hints.bot import DISCORD_BOT_TYPE, DISCORD_INTERACTION_TYPE
-from redbot.core import Config, commands
-from redbot.core.i18n import Translator, cog_i18n
 
 log = getLogger("PyLav.3rdpt.karlo-cogs.autoplay")
 _ = Translator("AutoPlay", __file__)
@@ -79,24 +80,25 @@ class AutoPlay(commands.Cog):
             return
 
         await self.config.guild(interaction.guild).tracked_member.set(member.id)
+
+        msg = await self._prepare_autoplay(interaction.guild, interaction.user)
         await interaction.followup.send(
             embed=await self.pylav.construct_embed(
-                description=_(
-                    "I'll now play whatever {member} is listening to.\n"
-                    "To stop autoplay, use a player command like `stop`"
-                ).format(member=member.mention),
+                description=msg.format(member=member.mention),
                 messageable=interaction,
             )
         )
 
-        await self._prepare_autoplay(interaction.guild, interaction.user)
-
-    async def _prepare_autoplay(self, guild, author):
+    async def _prepare_autoplay(self, guild, author) -> str:
         player: Player = self.bot.pylav.get_player(guild.id)
 
         if not player and author.voice:
             await self.bot.pylav.connect_player(author, author.voice.channel)
             player: Player = self.bot.pylav.get_player(guild.id)
+        elif not player:
+            return _(
+                "I am not in a voice channel. Please connect to a voice channel and then use this command."
+            )
         elif player and player.channel.id != author.voice.channel.id:
             await player.move_to(author, author.voice.channel)
 
@@ -104,6 +106,10 @@ class AutoPlay(commands.Cog):
             await player.stop(author)
         if player.queue.size:
             player.queue.clear()
+        return _(
+            "I'll now play whatever {member} is listening to.\n"
+            "To stop autoplay, use a player command like `stop`"
+        )
 
     @commands.Cog.listener()
     async def on_presence_update(
