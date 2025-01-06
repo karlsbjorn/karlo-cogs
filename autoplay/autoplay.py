@@ -47,24 +47,11 @@ class AutoPlay(commands.Cog):
 
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
-            await ctx.send(
-                embed=await self.pylav.construct_embed(
-                    description=_("I'll no longer autoplay."), messageable=ctx
-                )
-            )
             return
         else:
             await self.config.guild(ctx.guild).tracked_member.set(member.id)
-            await ctx.send(
-                embed=await self.pylav.construct_embed(
-                    description=_("I'll now play whatever {member} is listening to.").format(
-                        member=member.mention
-                    ),
-                    messageable=ctx,
-                )
-            )
-
-        await self._prepare_autoplay(ctx.guild, ctx.author)
+        msg = await self._prepare_autoplay(ctx.guild, ctx.author)
+        await ctx.send(embed=await self.pylav.construct_embed(description=msg, messageable=ctx))
 
     async def _context_user_autoplay(
         self, interaction: DISCORD_INTERACTION_TYPE, member: discord.Member
