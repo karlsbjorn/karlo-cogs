@@ -276,8 +276,8 @@ class WoWTools(
             await ctx.send(_("Countdown channel removed"))
             return
 
-        early_access_time = datetime.datetime(2024, 8, 22, 22, tzinfo=datetime.UTC)
-        release_time = datetime.datetime(2024, 8, 26, 22, tzinfo=datetime.UTC)
+        early_access_time = datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
+        release_time = datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
         now = datetime.datetime.now(datetime.UTC)
 
         diff = early_access_time - now
@@ -286,7 +286,7 @@ class WoWTools(
             diff = release_time - now
             early_access = False
         if diff.total_seconds() < 0:
-            await ctx.send(_("The War Within has already released."))
+            await ctx.send(_("New season has already released."))
             return
 
         days = diff.days
@@ -298,9 +298,9 @@ class WoWTools(
             time_str = f"{hours}h {minutes}m"
 
         channel_name = (
-            _("🔴War Within EA: {countdown}").format(countdown=time_str)
+            _("🔴Patch in {countdown}").format(countdown=time_str)
             if early_access
-            else _("🟡War Within: {countdown}").format(countdown=time_str)
+            else _("🟡Season in {countdown}").format(countdown=time_str)
         )
         perms = {
             ctx.guild.default_role: discord.PermissionOverwrite(connect=False),
@@ -326,8 +326,8 @@ class WoWTools(
             if not countdown_channel:
                 continue
 
-            early_access_time = datetime.datetime(2024, 8, 22, 22, tzinfo=datetime.UTC)
-            release_time = datetime.datetime(2024, 8, 26, 22, tzinfo=datetime.UTC)
+            early_access_time = datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
+            release_time = datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
             now = datetime.datetime.now(datetime.UTC)
 
             diff = early_access_time - now
@@ -349,9 +349,9 @@ class WoWTools(
                 time_str = f"{hours}h {minutes}m"
 
             channel_name = (
-                _("🔴War Within EA: {countdown}").format(countdown=time_str)
+                _("🔴Patch in {countdown}").format(countdown=time_str)
                 if early_access
-                else _("🟡War Within: {countdown}").format(countdown=time_str)
+                else _("🟡Season in {countdown}").format(countdown=time_str)
             )
             try:
                 await countdown_channel.edit(name=channel_name)
