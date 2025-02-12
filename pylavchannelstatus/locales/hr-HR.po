@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2023-03-29 12:09+0000\n"
+"POT-Creation-Date: 2024-10-29 15:55+0000\n"
 "PO-Revision-Date: 2025-02-12 11:32\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
@@ -13,7 +13,15 @@ msgstr ""
 "X-Crowdin-Project: karlo-cogs\n"
 "X-Crowdin-Project-ID: 523580\n"
 "X-Crowdin-Language: hr\n"
-"X-Crowdin-File: /silentreplier/locales/messages.pot\n"
-"X-Crowdin-File-ID: 43\n"
+"X-Crowdin-File: /pylavchannelstatus/locales/messages.pot\n"
+"X-Crowdin-File-ID: 66\n"
 "Language: hr_HR\n"
+
+#: pylavchannelstatus/pylav_channel_status.py:30
+msgid "[PyLavChannelStatus] Setting channel status to new track"
+msgstr ""
+
+#: pylavchannelstatus/pylav_channel_status.py:42
+msgid "[PyLavChannelStatus] Removing channel status"
+msgstr ""
 

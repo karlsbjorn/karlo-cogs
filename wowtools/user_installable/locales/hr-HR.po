@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-07-26 09:32+0000\n"
-"PO-Revision-Date: 2024-09-08 17:21\n"
+"POT-Creation-Date: 2024-10-29 15:55+0000\n"
+"PO-Revision-Date: 2025-02-12 11:32\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -110,11 +110,11 @@ msgstr ""
 msgid "No CVar found with that name."
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:21
+#: wowtools/user_installable/raiderio.py:18
 msgid "Raider.io commands"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:34
+#: wowtools/user_installable/raiderio.py:31
 #, docstring
 msgid "Display the raider.io profile of a character.\n\n"
 "        **Example:**\n"
@@ -122,49 +122,35 @@ msgid "Display the raider.io profile of a character.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:64
+#: wowtools/user_installable/raiderio.py:60
 msgid "Character not found."
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:99
-#: wowtools/user_installable/raiderio.py:147
+#: wowtools/user_installable/raiderio.py:95
 msgid "Raider.io profile"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:104
+#: wowtools/user_installable/raiderio.py:100
 msgid "__**Mythic+ Score**__"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:108
+#: wowtools/user_installable/raiderio.py:104
 msgid "Raid progress"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:109
+#: wowtools/user_installable/raiderio.py:105
 msgid "Item level"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:111
+#: wowtools/user_installable/raiderio.py:107
 msgid "__Other links__"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:112
+#: wowtools/user_installable/raiderio.py:108
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:123
-#: wowtools/user_installable/raiderio.py:152
+#: wowtools/user_installable/raiderio.py:119
 msgid "Last updated: {char_last_updated}"
-msgstr ""
-
-#: wowtools/user_installable/raiderio.py:133
-msgid "Dungeon"
-msgstr ""
-
-#: wowtools/user_installable/raiderio.py:133
-msgid "Forti"
-msgstr ""
-
-#: wowtools/user_installable/raiderio.py:133
-msgid "Tyrann"
 msgstr ""
 
