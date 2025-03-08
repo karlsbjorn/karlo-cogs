@@ -74,7 +74,7 @@ class Raiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"]["nerubar-palace"]["summary"]
+        char_raid = profile_data["raid_progression"]["liberation-of-undermine"]["summary"]
         char_last_updated = self.parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
@@ -261,13 +261,13 @@ class Raiderio:
 
             # Fated/Awakened raids fuck with this
             ranks = (
-                profile_data["raid_rankings"]["nerubar-palace"]["normal"],
-                profile_data["raid_rankings"]["nerubar-palace"]["heroic"],
-                profile_data["raid_rankings"]["nerubar-palace"]["mythic"],
+                profile_data["raid_rankings"]["liberation-of-undermine"]["normal"],
+                profile_data["raid_rankings"]["liberation-of-undermine"]["heroic"],
+                profile_data["raid_rankings"]["liberation-of-undermine"]["mythic"],
             )
             difficulties = ("Normal", "Heroic", "Mythic")
 
-            raid_progression: str = profile_data["raid_progression"]["nerubar-palace"]["summary"]
+            raid_progression: str = profile_data["raid_progression"]["liberation-of-undermine"]["summary"]
 
             embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
             embed.set_author(

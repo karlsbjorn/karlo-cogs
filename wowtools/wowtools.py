@@ -395,7 +395,7 @@ class WoWTools(
             )
         try:
             guild: str = guild_data["name"]
-            progress: str = guild_data["raid_progression"]["nerubar-palace"]["summary"]
+            progress: str = guild_data["raid_progression"]["liberation-of-undermine"]["summary"]
         except KeyError:
             return False
         activity = discord.CustomActivity(name=f"{guild}: {progress}", emoji=emoji)
