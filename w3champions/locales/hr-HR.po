@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-11-04 15:10+0000\n"
-"PO-Revision-Date: 2025-02-12 11:32\n"
+"POT-Creation-Date: 2025-03-17 14:18+0000\n"
+"PO-Revision-Date: 2025-03-17 14:18\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,67 +17,67 @@ msgstr ""
 "X-Crowdin-File-ID: 60\n"
 "Language: hr_HR\n"
 
-#: w3champions/w3champions.py:95
+#: w3champions/w3champions.py:96
 msgid "#"
 msgstr ""
 
-#: w3champions/w3champions.py:96
+#: w3champions/w3champions.py:97
 msgid "Player"
 msgstr ""
 
-#: w3champions/w3champions.py:97
+#: w3champions/w3champions.py:98
 msgid "Wins"
 msgstr ""
 
-#: w3champions/w3champions.py:98
+#: w3champions/w3champions.py:99
 msgid "Losses"
 msgstr ""
 
-#: w3champions/w3champions.py:99
+#: w3champions/w3champions.py:100
 msgid "Total"
 msgstr ""
 
-#: w3champions/w3champions.py:100
+#: w3champions/w3champions.py:101
 msgid "Winrate"
 msgstr ""
 
-#: w3champions/w3champions.py:101 w3champions/w3champions.py:310
+#: w3champions/w3champions.py:102 w3champions/w3champions.py:311
 msgid "MMR"
 msgstr ""
 
-#: w3champions/w3champions.py:153
+#: w3champions/w3champions.py:154
 msgid "Profile"
 msgstr ""
 
-#: w3champions/w3champions.py:298
+#: w3champions/w3champions.py:299
 msgid "Currently playing on {mapName}"
 msgstr ""
 
-#: w3champions/w3champions.py:304
+#: w3champions/w3champions.py:305
 msgid "# Race"
 msgstr ""
 
-#: w3champions/w3champions.py:304 w3champions/w3champions.py:310
+#: w3champions/w3champions.py:305 w3champions/w3champions.py:311
 msgid "Win"
 msgstr ""
 
-#: w3champions/w3champions.py:304 w3champions/w3champions.py:310
+#: w3champions/w3champions.py:305 w3champions/w3champions.py:311
 msgid "Loss"
 msgstr ""
 
-#: w3champions/w3champions.py:304 w3champions/w3champions.py:310
+#: w3champions/w3champions.py:305 w3champions/w3champions.py:311
 msgid "WR%"
 msgstr ""
 
-#: w3champions/w3champions.py:307
+#: w3champions/w3champions.py:308
 msgid "Stats by race"
 msgstr ""
 
-#: w3champions/w3champions.py:310
+#: w3champions/w3champions.py:311
 msgid "# Mode"
 msgstr ""
 
-#: w3champions/w3champions.py:313
+#: w3champions/w3champions.py:314
 msgid "Stats by mode"
 msgstr ""
 
