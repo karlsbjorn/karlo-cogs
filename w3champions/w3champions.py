@@ -37,6 +37,7 @@ class W3Champions(commands.Cog):
         self.w3c_modes: List[W3ChampionsMode] = []
         self.w3c_seasons: List[W3ChampionsSeason] = []
         self.current_season: int = 0
+        self.gateway: int = 20  # Thought this might've been current season; it's not
         self.w3c_leagues: Dict[int, Dict[int, List[W3ChampionsLeague]]] = {}
 
     async def cog_load(self) -> None:
@@ -223,7 +224,7 @@ class W3Champions(commands.Cog):
             f"https://website-backend.w3champions.com/api/players/{player}/game-mode-stats",
             safe=":/",
         )
-        params = {"gateWay": self.current_season, "season": self.current_season}
+        params = {"gateWay": self.gateway, "season": self.current_season}
         data: List[Dict] = []
         async with self.session.request("GET", request_url, params=params) as resp:
             if resp.status != 200:
@@ -259,7 +260,7 @@ class W3Champions(commands.Cog):
             f"https://website-backend.w3champions.com/api/players/{player}/race-stats",
             safe=":/",
         )
-        params = {"gateWay": self.current_season, "season": self.current_season}
+        params = {"gateWay": self.gateway, "season": self.current_season}
         data: List[Dict] = []
         async with self.session.request("GET", request_url, params=params) as resp:
             if resp.status != 200:
@@ -320,7 +321,7 @@ class W3Champions(commands.Cog):
     ) -> List[W3ChampionsRankingPlayer]:
         request_url = f"https://website-backend.w3champions.com/api/ladder/{league}"
         params = {
-            "gateWay": self.current_season,  # idk what this is. current season? guess we'll find out later
+            "gateWay": self.gateway,  # idk what this is. current season? guess we'll find out later
             "gameMode": mode,
             "season": season,
         }
