@@ -1,11 +1,10 @@
-from redbot.core import commands
-from redbot.core.i18n import Translator, cog_i18n
-
 from pylav.events.player import PlayerDisconnectedEvent, PlayerStoppedEvent
 from pylav.events.track import TrackEndEvent, TrackResumedEvent, TrackStartEvent
 from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.type_hints.bot import DISCORD_BOT_TYPE
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 
 log = getLogger("PyLav.3rdpt.karlo-cogs.pylavchannelstatus")
 _ = Translator("PyLavChannelStatus", __file__)

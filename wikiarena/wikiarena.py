@@ -43,6 +43,7 @@ class WikiArena(commands.Cog):
         description="WikiArena commands",
         allowed_installs=AppInstallationType(guild=True, user=True),
         allowed_contexts=AppCommandContext(guild=True, dm_channel=True, private_channel=True),
+        extras={"red_force_enable": True},
     )
 
     @slash_wikiarena.command(
@@ -71,6 +72,7 @@ class WikiArena(commands.Cog):
         timeout_timestamp = get_timeout_timestamp()
         view = ButtonsView(
             config=self.config,
+            session=self.session,
             wiki_language=self.wiki_language,
             blue_views=blue_views,
             red_views=red_views,
@@ -116,14 +118,19 @@ class WikiArena(commands.Cog):
     ):
         tabulate_list = await self._make_tabulate_list(scoreboard_dict)
         if len(tabulate_list) > max_users_per_page:
-            embeds = await self._make_scoreboard_pages(
+            pages = await self._make_scoreboard_pages(
                 interaction, max_users_per_page, tabulate_list
             )
             ctx: Context = await Context.from_interaction(interaction)
-            await SimpleMenu(pages=embeds, disable_after_timeout=True).start(ctx)
+            await SimpleMenu(pages=pages, disable_after_timeout=True).start(ctx)
         else:
-            embed = await self._make_scoreboard_page(interaction, scoreboard_dict, tabulate_list)
-            await interaction.followup.send(embed=embed)
+            page: discord.Embed | str = await self._make_scoreboard_page(
+                interaction, scoreboard_dict, tabulate_list
+            )
+            if isinstance(page, discord.Embed):
+                await interaction.followup.send(embed=page)
+            else:
+                await interaction.followup.send(content=page)
 
     @staticmethod
     async def _make_tabulate_list(scoreboard_dict):
@@ -135,9 +142,9 @@ class WikiArena(commands.Cog):
     @staticmethod
     async def _make_scoreboard_pages(
         interaction: discord.Interaction, max_users_per_page, tabulate_friendly_list
-    ) -> List[discord.Embed]:
+    ) -> List[discord.Embed | str]:
         page_count = len(tabulate_friendly_list) // max_users_per_page
-        embeds = []
+        pages = []
         for page in range(page_count):
             from_here = page
             to_there = (page + 1) * max_users_per_page
@@ -150,25 +157,38 @@ class WikiArena(commands.Cog):
                 ),
                 lang="md",
             )
-            embed = discord.Embed(
-                title=_("WikiArena Scoreboard"),
-                description=scoreboard,
-                color=await interaction.client.get_embed_colour(interaction.channel),
-            )
-            embed.set_footer(
-                text=_("Page {page}/{page_count} | Total players: {num_players}").format(
-                    page=page + 1,
-                    page_count=page_count,
-                    num_players=len(tabulate_friendly_list),
+            if interaction.channel.permissions_for(interaction.guild.me).embed_links:
+                embed = discord.Embed(
+                    title=_("WikiArena Scoreboard"),
+                    description=scoreboard,
+                    color=await interaction.client.get_embed_colour(interaction.channel),
                 )
-            )
-            embeds.append(embed)
-        return embeds
+                embed.set_footer(
+                    text=_("Page {page}/{page_count} | Total players: {num_players}").format(
+                        page=page + 1,
+                        page_count=page_count,
+                        num_players=len(tabulate_friendly_list),
+                    )
+                )
+                pages.append(embed)
+            else:
+                pages.append(
+                    _(
+                        "WikiArena Scoreboard\n"
+                        "Page {page}/{page_count} | Total players: {num_players}\n\n"
+                    ).format(
+                        page=page + 1,
+                        page_count=page_count,
+                        num_players=len(tabulate_friendly_list),
+                    )
+                    + scoreboard
+                )
+        return pages
 
     @staticmethod
     async def _make_scoreboard_page(
         interaction: discord.Interaction, scoreboard_dict, tabulate_friendly_list
-    ):
+    ) -> discord.Embed | str:
         scoreboard = box(
             tabulate(
                 tabulate_friendly_list,
@@ -178,15 +198,23 @@ class WikiArena(commands.Cog):
             ),
             lang="md",
         )
-        embed = discord.Embed(
-            title=_("WikiArena Scoreboard"),
-            description=scoreboard,
-            colour=await interaction.client.get_embed_colour(interaction.channel),
-        )
-        embed.set_footer(
-            text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
-        )
-        return embed
+        if interaction.channel.permissions_for(interaction.guild.me).embed_links:
+            page = discord.Embed(
+                title=_("WikiArena Scoreboard"),
+                description=scoreboard,
+                colour=await interaction.client.get_embed_colour(interaction.channel),
+            )
+            page.set_footer(
+                text=_("Total players: {num_players}").format(num_players=len(scoreboard_dict))
+            )
+        else:
+            page = (
+                _("WikiArena Scoreboard\n" "Total players: {num_players}\n\n").format(
+                    num_players=len(scoreboard_dict)
+                )
+                + scoreboard
+            )
+        return page
 
     async def game_setup(
         self, wiki_language: str
@@ -266,6 +294,7 @@ class ButtonsView(discord.ui.View):
     def __init__(
         self,
         config,
+        session,
         wiki_language,
         blue_views,
         red_views,
@@ -290,7 +319,7 @@ class ButtonsView(discord.ui.View):
         self.red_more_views.label = _("More views")
         self.blue_more_words.label = _("More words")
         self.red_more_words.label = _("More words")
-        self.session = aiohttp.ClientSession()
+        self.session = session
 
     @discord.ui.button(style=discord.ButtonStyle.blurple)
     async def blue_more_views(self, interaction: discord.Interaction, button):

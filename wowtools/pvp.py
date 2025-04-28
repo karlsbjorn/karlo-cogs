@@ -15,6 +15,7 @@ _ = Translator("WoWTools", __file__)
 class PvP:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.hybrid_command()
+    @commands.bot_has_permissions(embed_links=True)
     async def rating(self, ctx, character: str, *, realm: str):
         """Check a character's PVP ratings."""
         if ctx.interaction:

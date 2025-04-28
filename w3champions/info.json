@@ -2,6 +2,7 @@
     "author": ["Karlo"],
     "description": "Cog for interacting with W3Champions",
     "short": "Cog for interacting with W3Champions",
+    "install_msg": "This cog is slash-only. After loading it, `[p]slash sync` to sync its commands, then use /w3champions to get started.",
     "tags": ["warcraft", "w3champions", "ladder", "w3c"],
     "requirements": [
         "tabulate",

@@ -1,6 +1,7 @@
 {
     "author": ["Karlo"],
     "description": "RPC methods for PyLav. This cog has no commands, it is meant to be used only for RPC.",
+    "install_msg": "This cog has no commands, it is meant to be used only for RPC.",
     "short": "RPC methods for PyLav.",
     "tags": ["music", "pylav", "rpc"],
     "min_python_version": [3, 11, 0],

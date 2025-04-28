@@ -74,7 +74,7 @@ class Raiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"]["liberation-of-undermine"]["summary"]
+        char_raid = profile_data["raid_progression"][self.current_raid]["summary"]
         char_last_updated = self.parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
@@ -217,6 +217,7 @@ class Raiderio:
 
     @raiderio.command(name="guild")
     @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
     @app_commands.describe(guild="The name of the guild", realm="The guild's realm")
     async def raiderio_guild(self, ctx: commands.Context, guild: str, *, realm: str) -> None:
         """Display the raider.io profile of a guild.
@@ -261,13 +262,13 @@ class Raiderio:
 
             # Fated/Awakened raids fuck with this
             ranks = (
-                profile_data["raid_rankings"]["liberation-of-undermine"]["normal"],
-                profile_data["raid_rankings"]["liberation-of-undermine"]["heroic"],
-                profile_data["raid_rankings"]["liberation-of-undermine"]["mythic"],
+                profile_data["raid_rankings"][self.current_raid]["normal"],
+                profile_data["raid_rankings"][self.current_raid]["heroic"],
+                profile_data["raid_rankings"][self.current_raid]["mythic"],
             )
             difficulties = ("Normal", "Heroic", "Mythic")
 
-            raid_progression: str = profile_data["raid_progression"]["liberation-of-undermine"]["summary"]
+            raid_progression: str = profile_data["raid_progression"][self.current_raid]["summary"]
 
             embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
             embed.set_author(
@@ -339,20 +340,25 @@ class Raiderio:
                 timestamp=f"<t:{int(reset_date.timestamp())}:R>"
             )
         # TODO: Find out when the reset is for KR and CN
-        embed = discord.Embed(
-            title=_("This week's Mythic+ affixes"),
-            description=msg or None,
-            color=await ctx.embed_color(),
-        )
-
-        embed.set_thumbnail(url="https://i.imgur.com/kczQ4Jt.jpg")
-        for affix in affixes:
-            embed.add_field(
-                name=affix["name"],
-                value=affix["description"],
-                inline=False,
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            embed = discord.Embed(
+                title=_("This week's Mythic+ affixes"),
+                description=msg or None,
+                color=await ctx.embed_color(),
             )
-        await ctx.send(embed=embed)
+            embed.set_thumbnail(url="https://i.imgur.com/kczQ4Jt.jpg")
+            for affix in affixes:
+                embed.add_field(
+                    name=affix["name"],
+                    value=affix["description"],
+                    inline=False,
+                )
+            await ctx.send(embed=embed)
+        else:
+            msg = _("This week's Mythic+ affixes:")
+            for affix in affixes:
+                msg += f"\n**{affix['name']}**: {affix['description']}"
+            await ctx.send(msg)
 
     # @raiderio_affixes.autocomplete("region")
     # async def raiderio_affixes_region_autocomplete(

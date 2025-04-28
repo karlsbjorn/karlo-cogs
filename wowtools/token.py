@@ -25,7 +25,12 @@ class Token:
         if region == "all":
             await self.priceall(ctx)
             return
-
+        if region not in VALID_REGIONS:
+            await ctx.send(
+                _("Invalid region. Valid regions are: `eu`, `us`, `kr` or `all`."),
+                ephemeral=True,
+            )
+            return
         try:
             api_client = self.blizzard.get(region)
         except Exception as e:
@@ -33,13 +38,6 @@ class Token:
             return
         if not api_client:
             await ctx.send(_("Blizzard API not properly set up."))
-            return
-
-        if region not in VALID_REGIONS:
-            await ctx.send(
-                _("Invalid region. Valid regions are: `eu`, `us`, `kr` or `all`."),
-                ephemeral=True,
-            )
             return
 
         await ctx.defer()
@@ -54,8 +52,11 @@ class Token:
             region=region.upper(), gold=format_to_gold(token_price, gold_emotes)
         )
 
-        embed = discord.Embed(description=message, colour=await ctx.embed_colour())
-        await ctx.send(embed=embed)
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            embed = discord.Embed(description=message, colour=await ctx.embed_colour())
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(message)
 
     @wowtoken.autocomplete("region")
     async def wowtoken_region_autocomplete(
@@ -91,4 +92,10 @@ class Token:
                 name=region.upper(),
                 value=format_to_gold(token_price, gold_emotes),
             )
-        await ctx.send(embed=embed)
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            await ctx.send(embed=embed)
+        else:
+            msg = _("Current prices of the WoW Token in all regions:\n")
+            for field in embed.fields:
+                msg += f"{field.name}: {field.value}\n"
+            await ctx.send(msg)

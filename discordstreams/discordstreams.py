@@ -16,6 +16,10 @@ _ = Translator("DiscordStreams", __file__)
 
 @cog_i18n(_)
 class DiscordStreams(commands.Cog):
+    """
+    Send alerts to a channel when a member starts Discord "Go Live" streaming.
+    """
+
     def __init__(self, bot):
         self.bot: Red = bot
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
@@ -31,7 +35,7 @@ class DiscordStreams(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.mod_or_permissions(manage_channels=True)
-    async def golivealert(self, ctx: commands.Context, channel: discord.TextChannel = None):
+    async def golivealert(self, ctx: commands.Context, channel: discord.TextChannel | None = None):
         """Set the channel for live alerts."""
         if channel is None:
             channel = ctx.channel
@@ -95,12 +99,19 @@ class DiscordStreams(commands.Cog):
             for channel in ctx.guild.voice_channels
             if channel.id in ignored_channels
         ]
-        embed = discord.Embed(
-            title=_("Ignored Channels"),
-            description="\n".join(mentions),
-            color=await ctx.embed_color(),
-        )
-        await ctx.send(embed=embed)
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            embed = discord.Embed(
+                title=_("Ignored Channels"),
+                description="\n".join(mentions),
+                color=await ctx.embed_color(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(
+                _("Ignored channels: {channels}").format(
+                    channels=", ".join(mentions) if mentions else _("None")
+                )
+            )
 
     @discordstreamset.command(name="mention")
     @commands.guild_only()
@@ -134,7 +145,7 @@ class DiscordStreams(commands.Cog):
 
     @update_stream_messages.error
     async def update_stream_messages_error(self, error):
-        log.error(f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True)
+        log.error(f"Unhandled error in update_stream_messages task: {error}", exc_info=True)
 
     async def update_guild_embeds(self, guild: discord.Guild) -> None:
         """
@@ -146,15 +157,15 @@ class DiscordStreams(commands.Cog):
         active_messages: Dict = await self.config.guild(guild).active_messages()
         for member_id, message in list(active_messages.items()):
             try:
-                member: discord.Member = guild.get_member(int(member_id))
+                member: discord.Member | None = guild.get_member(int(member_id))
                 # Discord sometimes won't send a voice state event, so we need an extra condition
                 # to clean shit up with
-                if not member.voice:
-                    guild_config = await self.config.guild(member.guild).all()  # guh
+                if not member or not member.voice:
+                    guild_config = await self.config.guild(guild).all()  # guh
                     await self._remove_stream_alerts(
-                        active_messages, guild_config, member.guild, member_id
+                        active_messages, guild_config, guild, member_id
                     )
-
+                    continue
                 await self.update_message_embeds(guild, member, message)
             except Exception as e:  # This is just so the task doesn't stop running
                 log.error(
@@ -174,13 +185,13 @@ class DiscordStreams(commands.Cog):
         :return: None
         """
         for channel_id, message_info in message.items():
-            channel: discord.TextChannel = guild.get_channel(int(channel_id))
+            channel: discord.guild.GuildChannel | None = guild.get_channel(int(channel_id))
             if channel is None:
                 continue
 
             message_id = message_info["message"]
             try:
-                message: discord.Message = await channel.fetch_message(message_id)
+                ch_message: discord.Message = await channel.fetch_message(message_id)
             except discord.NotFound:
                 log.error(f"Message {message_id} not found in channel {channel_id}, skipping.")
                 await self.config.guild(guild).active_messages.clear_raw(member.id)
@@ -191,16 +202,17 @@ class DiscordStreams(commands.Cog):
                     exc_info=True,
                 )
                 continue
-
             if member.voice is None:
                 continue
+            if not ch_message.embeds:
+                continue
 
-            current_embed = message.embeds[0]
+            current_embed = ch_message.embeds[0]
             current_embed_dict = current_embed.to_dict()
 
             stream = DiscordStream(self.bot, member.voice.channel, member)
 
-            new_embed = await stream.make_embed(start_time=message.created_at)
+            new_embed = await stream.make_embed(start_time=ch_message.created_at)
             new_embed_dict = new_embed.to_dict()
 
             same_fields: bool = current_embed_dict.get("fields") == new_embed_dict.get("fields")
@@ -210,7 +222,7 @@ class DiscordStreams(commands.Cog):
                 continue
 
             try:
-                await message.edit(embed=new_embed)
+                await ch_message.edit(embed=new_embed)
             except discord.NotFound:
                 log.warning(f"Message {message_id} not found in channel {channel_id}, skipping.")
 
@@ -312,7 +324,7 @@ class DiscordStreams(commands.Cog):
 
         active_messages = await self.config.guild(member_guild).active_messages()
         for channel_id in channels_to_send_to:
-            channel: discord.TextChannel = member_guild.get_channel(channel_id)
+            channel: discord.guild.GuildChannel | None = member_guild.get_channel(channel_id)
             if channel is None:
                 channels_to_send_to.remove(channel_id)
                 await self.config.guild(member_guild).alert_channels.set(channels_to_send_to)
@@ -327,9 +339,17 @@ class DiscordStreams(commands.Cog):
                 )
             )
 
-            mentions = await self.config.guild(member_guild).mentions()
-            if mentions:
-                mentions = [f"<@{mention}>" for mention in mentions]
+            mention_ids: list[int] = await self.config.guild(member_guild).mentions()
+            role_or_member: list[discord.Role | discord.Member] = []
+            for role_or_member_id in mention_ids:
+                role_or_member_obj: discord.Role | discord.Member | None = member_guild.get_role(
+                    role_or_member_id
+                ) or member_guild.get_member(role_or_member_id)
+                if role_or_member_obj:
+                    role_or_member.append(role_or_member_obj)
+
+            if role_or_member:
+                mentions = [role_or_member.mention for role_or_member in role_or_member]
                 content = _("{mentions}\n{member} is live!").format(
                     mentions=" ".join(mentions), member=member.display_name
                 )
@@ -359,7 +379,9 @@ class DiscordStreams(commands.Cog):
 
 
 class DiscordStream:
-    def __init__(self, bot: Red, voice_channel: discord.VoiceChannel, member: discord.Member):
+    def __init__(
+        self, bot: Red, voice_channel: discord.guild.VocalGuildChannel, member: discord.Member
+    ):
         """
         A class to represent a Discord "Go Live" stream.
 

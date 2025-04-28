@@ -33,6 +33,7 @@ class Scoreboard:
 
     @wowscoreboard.command(name="dungeon")
     @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
     async def wowscoreboard_dungeon(self, ctx: commands.Context):
         """Get the Mythic+ scoreboard for this guild."""
         if ctx.interaction:
@@ -51,33 +52,33 @@ class Scoreboard:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
         if embed:
-            if image_enabled:
+            if image_enabled and ctx.channel.permissions_for(ctx.guild.me).attach_files:
                 await ctx.send(embed=embed, file=img_file)
             else:
                 await ctx.send(embed=embed)
 
-    @commands.cooldown(rate=1, per=60, type=commands.BucketType.guild)
-    @wowscoreboard.command(name="pvp", hidden=True)
-    @commands.guild_only()
-    async def wowscoreboard_pvp(self, ctx: commands.Context):
-        """Get all the PvP related scoreboards for this guild.
+    # @commands.cooldown(rate=1, per=60, type=commands.BucketType.guild)
+    # @wowscoreboard.command(name="pvp", hidden=True)
+    # @commands.guild_only()
+    # async def wowscoreboard_pvp(self, ctx: commands.Context):
+    #     """Get all the PvP related scoreboards for this guild.
 
-        **Characters that have not played all PvP gamemodes at
-        some point will not be shown.**
-        """
-        if ctx.interaction:
-            # There is no contextual locale for interactions, so we need to set it manually
-            # (This is probably a bug in Red, remove this when it's fixed)
-            await set_contextual_locales_from_guild(self.bot, ctx.guild)
+    #     **Characters that have not played all PvP gamemodes at
+    #     some point will not be shown.**
+    #     """
+    #     if ctx.interaction:
+    #         # There is no contextual locale for interactions, so we need to set it manually
+    #         # (This is probably a bug in Red, remove this when it's fixed)
+    #         await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        try:
-            embed = await self._generate_pvp_scoreboard(ctx)
-        except InvalidBlizzardAPI:
-            await ctx.send(_("Blizzard API not properly set up."))
-            return
-        if embed:
-            # TODO: In dpy2, make this a list of embeds to send in a single message
-            await ctx.send(embed=embed)
+    #     try:
+    #         embed = await self._generate_pvp_scoreboard(ctx)
+    #     except InvalidBlizzardAPI:
+    #         await ctx.send(_("Blizzard API not properly set up."))
+    #         return
+    #     if embed:
+    #         # TODO: In dpy2, make this a list of embeds to send in a single message
+    #         await ctx.send(embed=embed)
 
     @commands.group()
     @commands.admin()
@@ -89,7 +90,9 @@ class Scoreboard:
     @sbset.command(name="channel")
     @commands.admin()
     @commands.guild_only()
-    async def sbset_channel(self, ctx: commands.Context, channel: discord.TextChannel = None):
+    async def sbset_channel(
+        self, ctx: commands.Context, channel: discord.TextChannel | None = None
+    ):
         """Set the channel to send the scoreboard to."""
         image_enabled = await self.config.guild(ctx.guild).sb_image()
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
@@ -105,6 +108,17 @@ class Scoreboard:
             await self.config.guild(ctx.guild).scoreboard_message.clear()
             await ctx.send(_("Scoreboard channel cleared."))
             return
+        if (
+            not channel.permissions_for(ctx.guild.me).send_messages
+            or not channel.permissions_for(ctx.guild.me).embed_links
+        ):
+            await ctx.send(
+                _(
+                    "I need the `Send Messages` and `Embed Links` permissions to post the scoreboard to {channel}".format(
+                        channel=channel.mention
+                    )
+                )
+            )
         if sb_msg_id:  # Remove the old scoreboard
             await self._delete_scoreboard(
                 ctx,
@@ -113,14 +127,14 @@ class Scoreboard:
             )
         await self.config.guild(ctx.guild).scoreboard_channel.set(channel.id)
         try:
-            if image_enabled:
+            if image_enabled and channel.permissions_for(ctx.guild.me).attach_files:
                 embed, img_file = await self._generate_dungeon_scoreboard(ctx, image=True)
             else:
                 embed = await self._generate_dungeon_scoreboard(ctx)
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
-        if image_enabled:
+        if image_enabled and channel.permissions_for(ctx.guild.me).attach_files:
             sb_msg = await channel.send(file=img_file, embed=embed)
         else:
             sb_msg = await channel.send(embed=embed)
@@ -192,7 +206,7 @@ class Scoreboard:
     @commands.admin()
     @commands.guild_only()
     async def sbset_lock(self, ctx: commands.Context):
-        """Lock the current scoreboard and does not update it anymore."""
+        """Lock the current scoreboard and do not update it anymore."""
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
         sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()
         if not (sb_channel_id and sb_msg_id):

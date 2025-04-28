@@ -5,6 +5,7 @@ from typing import Literal, Optional
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
+from aiowowapi import WowApi
 from discord.ext import tasks
 from raiderio_async import RaiderIO
 from redbot.core import Config, checks, commands
@@ -12,7 +13,6 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 
-from aiowowapi import WowApi
 from wowtools.user_installable.cvardocs import CVar, CVarDocs
 
 from .auctionhouse import AuctionHouse
@@ -95,6 +95,15 @@ class WoWTools(
         self.update_countdown_channels.start()
         self.update_bot_status.start()
 
+        self.current_raid = "liberation-of-undermine"
+        # For countdown channels
+        self.early_access_time = (  # Expansion "early access", or patch release without raid/m+
+            datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
+        )
+        self.release_time = (  # Full expansion release, or season release with raid/m+
+            datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
+        )
+
     async def cog_load(self) -> None:
         blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
         cid = blizzard_api.get("client_id")
@@ -111,10 +120,11 @@ class WoWTools(
         pass
 
     @wowset.command(name="region")
+    @commands.guild_only()
     @commands.admin()
     async def wowset_region(self, ctx: commands.Context, region: str):
         """Set the region where characters and guilds will be searched for."""
-        regions = ("us", "eu", "kr", "cn")
+        regions = ("us", "eu", "kr")
         try:
             async with ctx.typing():
                 if region not in regions:
@@ -129,6 +139,7 @@ class WoWTools(
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @wowset.command(name="realm")
+    @commands.guild_only()
     @commands.admin()
     async def wowset_realm(self, ctx: commands.Context, realm: str = None):
         """Set the realm of your guild."""
@@ -145,6 +156,7 @@ class WoWTools(
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
     @wowset.command(name="guild")
+    @commands.guild_only()
     @commands.admin()
     async def wowset_guild(self, ctx: commands.Context, guild_name: str = None):
         """(CASE SENSITIVE) Set the name of your guild."""
@@ -222,7 +234,7 @@ class WoWTools(
     @wowset_character.command(name="region")
     async def wowset_character_region(self, ctx, region: str):
         """Set your character's region."""
-        regions = ("us", "eu", "kr", "cn")
+        regions = ("us", "eu", "kr")
         if region.lower() not in regions:
             await ctx.send(
                 _("That region does not exist.\nValid regions are: {regions}.").format(
@@ -258,11 +270,11 @@ class WoWTools(
             await self.config.assistant_cog_integration.set(True)
             await ctx.send(_("Assistant cog integration enabled."))
 
-    @wowset.command(name="expansioncountdown", hidden=True)
+    @wowset.command(name="patchcountdown")
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True, manage_channels=True)
-    async def wowset_expansioncountdown(self, ctx: commands.Context):
-        "Add or remove a locked channel to the channel list that will display the time until the next expansion releases."
+    async def wowset_patchcountdown(self, ctx: commands.Context):
+        "Add or remove a locked channel to the channel list that will display the time until the next patch releases."
         cd_channel_id = await self.config.guild(ctx.guild).countdown_channel()
         if cd_channel_id:
             cd_channel = ctx.guild.get_channel(cd_channel_id)
@@ -276,14 +288,12 @@ class WoWTools(
             await ctx.send(_("Countdown channel removed"))
             return
 
-        early_access_time = datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
-        release_time = datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
         now = datetime.datetime.now(datetime.UTC)
 
-        diff = early_access_time - now
+        diff = self.early_access_time - now
         early_access = True
         if diff.total_seconds() < 0:
-            diff = release_time - now
+            diff = self.release_time - now
             early_access = False
         if diff.total_seconds() < 0:
             await ctx.send(_("New season has already released."))
@@ -326,14 +336,12 @@ class WoWTools(
             if not countdown_channel:
                 continue
 
-            early_access_time = datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
-            release_time = datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
             now = datetime.datetime.now(datetime.UTC)
 
-            diff = early_access_time - now
+            diff = self.early_access_time - now
             early_access = True
             if diff.total_seconds() < 0:
-                diff = release_time - now
+                diff = self.release_time - now
                 early_access = False
             if diff.total_seconds() < 0:
                 await countdown_channel.delete()
@@ -395,7 +403,7 @@ class WoWTools(
             )
         try:
             guild: str = guild_data["name"]
-            progress: str = guild_data["raid_progression"]["liberation-of-undermine"]["summary"]
+            progress: str = guild_data["raid_progression"][self.current_raid]["summary"]
         except KeyError:
             return False
         activity = discord.CustomActivity(name=f"{guild}: {progress}", emoji=emoji)

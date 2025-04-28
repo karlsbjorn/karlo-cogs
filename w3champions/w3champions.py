@@ -83,6 +83,7 @@ class W3Champions(commands.Cog):
         description="W3Champions commands",
         allowed_installs=AppInstallationType(guild=True, user=True),
         allowed_contexts=AppCommandContext(guild=True, dm_channel=True, private_channel=True),
+        extras={"red_force_enable": True},
     )
 
     @slash_w3champions.command(name="rankings", description="Look at a W3Champions ladder")
@@ -122,7 +123,7 @@ class W3Champions(commands.Cog):
             content = f"Season {season} - {mode.split(':')[0]} - {league.split(':')[0]}\n{box(table, 'md')}"
             pages.append(content)
         ctx: Context = await Context.from_interaction(interaction)
-        await (SimpleMenu(pages=pages, disable_after_timeout=True)).start(ctx)
+        await SimpleMenu(pages=pages, disable_after_timeout=True).start(ctx)
         # await interaction.followup.send(content)
 
     @slash_w3champions.command(
@@ -144,10 +145,6 @@ class W3Champions(commands.Cog):
             log.warning(f"{player} not found.", exc_info=e)
             return
 
-        embed: discord.Embed = self.make_profile_embed(
-            profile,
-            await interaction.client.get_embed_colour(interaction.channel),  # type: ignore
-        )
         view = discord.ui.View()
         view.add_item(
             discord.ui.Button(
@@ -156,7 +153,17 @@ class W3Champions(commands.Cog):
                 url=profile.get_player_url(),
             )
         )
-        await interaction.followup.send(embed=embed, view=view)
+        if interaction.channel.permissions_for(interaction.user).embed_links:
+            embed: discord.Embed = self.make_profile_embed(
+                profile,
+                await interaction.client.get_embed_colour(interaction.channel),  # type: ignore
+            )
+            await interaction.followup.send(embed=embed, view=view)
+        else:
+            content = f"{profile.name} {flag.flag(profile.location)}\nGames: {profile.total_games}\nWins: {profile.total_wins}"
+            if profile.ongoing_match:
+                content += f"\nCurrently playing on {profile.ongoing_match.map_name}"
+            await interaction.followup.send(content, view=view)
 
     async def fetch_player_profile(self, player: str) -> W3ChampionsPlayer:
         personal_settings: Dict = await self.fetch_personal_settings(player)

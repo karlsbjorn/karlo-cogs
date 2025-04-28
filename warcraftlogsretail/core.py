@@ -245,29 +245,47 @@ class WarcraftLogsRetail(commands.Cog):
         else:
             avg_ilevel = _("Unknown (not present in log data from the API)")
 
-        # embed
-        embed = discord.Embed()
-        title = f"{name.title()} - {realm.title()} ({region.upper()})"
-        guild_name = sorted_by_time[0]["guild"].get("name", None)
-        if guild_name:
-            title += f"\n{guild_name}"
-        embed.title = title
-        embed.description = "\n".join(item_list)
-        embed.colour = await ctx.embed_color()
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            # embed
+            embed = discord.Embed()
+            title = f"{name.title()} - {realm.title()} ({region.upper()})"
+            guild_name = sorted_by_time[0]["guild"].get("name", None)
+            if guild_name:
+                title += f"\n{guild_name}"
+            embed.title = title
+            embed.description = "\n".join(item_list)
+            embed.colour = await ctx.embed_color()
 
-        # embed footer
-        ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
-        encounter_spec = sorted_by_time[0].get("spec", None)
-        spec = _("Encounter spec: {encounter_spec}\n").format(encounter_spec=encounter_spec)
-        gear_data = _("Gear data pulled from {report_url}\n").format(
-            report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
-        )
-        log_date = _("Log Date/Time: {datetime} UTC").format(
-            datetime=self._time_convert(sorted_by_time[0]["startTime"])
-        )
-        embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log_date}")
-
-        await ctx.send(embed=embed)
+            # embed footer
+            ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
+            encounter_spec = sorted_by_time[0].get("spec", None)
+            spec = _("Encounter spec: {encounter_spec}\n").format(encounter_spec=encounter_spec)
+            gear_data = _("Gear data pulled from {report_url}\n").format(
+                report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
+            )
+            log_date = _("Log Date/Time: {datetime} UTC").format(
+                datetime=self._time_convert(sorted_by_time[0]["startTime"])
+            )
+            embed.set_footer(text=f"{spec}{ilvl}{gear_data}{log_date}")
+            await ctx.send(embed=embed)
+        else:
+            title = f"{name.title()} - {realm.title()} ({region.upper()})"
+            guild_name = sorted_by_time[0]["guild"].get("name", None)
+            if guild_name:
+                title += f" - {guild_name}"
+            ilvl = _("Average Item Level: {avg_ilevel}\n").format(avg_ilevel=avg_ilevel)
+            encounter_spec = sorted_by_time[0].get("spec", None)
+            spec = _("Encounter spec: {encounter_spec}\n").format(encounter_spec=encounter_spec)
+            gear_data = _("Gear data pulled from {report_url}\n").format(
+                report_url=WCL_URL.format(sorted_by_time[0]["report"]["code"])
+            )
+            log_date = _("Log Date/Time: {datetime} UTC").format(
+                datetime=self._time_convert(sorted_by_time[0]["startTime"])
+            )
+            msg = "{}\n{}{}{}{}\n\n{}".format(
+                title, spec, ilvl, gear_data, log_date, "\n".join(item_list)
+            )
+            await ctx.send(msg)
 
     @gear.autocomplete("realm")
     async def warcraftlogs_gear_realm_autocomplete(
@@ -569,7 +587,9 @@ class WarcraftLogsRetail(commands.Cog):
         await self.config.user(ctx.author).region.set(region)
         await ctx.send(_("Your realm's region was set to {region}.").format(region=region.upper()))
 
-    @wclset.command(name="channel")
+    @wclset.command(name="channel", hidden=True)
+    @commands.guild_only()
+    @commands.mod_or_permissions(manage_channels=True)
     async def wclset_channel(self, ctx, channel: discord.TextChannel):
         """Set the channel where WCL updates will be sent."""
         await self.config.guild(ctx.guild).notification_channel.set(channel.id)
@@ -578,6 +598,7 @@ class WarcraftLogsRetail(commands.Cog):
         )
 
     @wclset.command(name="settings")
+    @commands.guild_only()
     async def wclset_settings(self, ctx, user: discord.User = None):
         """Show your current settings."""
         if not user:

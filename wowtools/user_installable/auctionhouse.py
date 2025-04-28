@@ -18,6 +18,7 @@ class UserInstallableAuctionHouse:
     @app_commands.describe(
         item="Exact name of the item to search for", realm="Realm's auction house to search in"
     )
+    @app_commands.default_permissions(embed_links=True)
     async def user_install_price(self, interaction: discord.Interaction, item: str, realm: str):
         """Get the current auction price of an item."""
         realm, region = realm.split(sep=":")

@@ -68,10 +68,15 @@ class GuildManage:
         headers = [_("Rank"), _("Rank String"), _("Rank Role")]
         table = tabulate(table_data, headers, tablefmt="plain")
 
-        embed = discord.Embed(
-            title=_("Rank Settings"), description=f"```{table}```", color=await ctx.embed_color()
-        )
-        await ctx.send(embed=embed)
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            embed = discord.Embed(
+                title=_("Rank Settings"),
+                description=f"```{table}```",
+                color=await ctx.embed_color(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"Rank Settings:\n```{table}```")
 
     @gmset.command()
     @commands.admin()
@@ -235,17 +240,24 @@ class GuildManage:
         )
 
         guild_log_channel_id: int = await self.config.guild(guild).guild_log_welcome_channel()
-        if guild_log_channel_id is None:
+        if not guild_log_channel_id:
             return
         guild_log_channel = guild.get_channel_or_thread(guild_log_channel_id)
-        if guild_log_channel is None:
+        if not guild_log_channel:
             return
 
-        await guild_log_channel.send(
-            embed=embed,
-            silent=True,
-            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
-        )
+        if guild_log_channel.permissions_for(guild.me).embed_links:
+            await guild_log_channel.send(
+                embed=embed,
+                silent=True,
+                allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
+            )
+        else:
+            await guild_log_channel.send(
+                content=desc,
+                silent=True,
+                allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
+            )
 
     async def get_event_embeds(self, difference, guild):
         embeds = []
@@ -400,15 +412,17 @@ class GuildManage:
             )
             msg += f"{rio_url} | {wcl_url}"
 
-        embed = discord.Embed(
-            description=msg or _("Nothing found."),
-            color=await ctx.embed_color(),
-        )
-
-        await ctx.send(
-            embed=embed,
-            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
-        )
+        if ctx.channel.permissions_for(ctx.guild.me).embed_links:
+            embed = discord.Embed(
+                description=msg or _("Nothing found."),
+                color=await ctx.embed_color(),
+            )
+            await ctx.send(
+                embed=embed,
+                allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False),
+            )
+        else:
+            await ctx.send(content=msg or _("Nothing found."))
 
     async def guess_ingame_member(
         self, guild: discord.Guild, member_name: str

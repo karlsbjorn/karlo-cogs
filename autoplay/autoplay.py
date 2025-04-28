@@ -2,14 +2,13 @@ from typing import Optional
 
 import discord
 from discord import AppCommandType
-from redbot.core import Config, commands
-from redbot.core.i18n import Translator, cog_i18n
-
 from pylav.events.player import PlayerDisconnectedEvent
 from pylav.logging import getLogger
 from pylav.players.player import Player
 from pylav.players.query.obj import Query
 from pylav.type_hints.bot import DISCORD_BOT_TYPE, DISCORD_INTERACTION_TYPE
+from redbot.core import Config, commands
+from redbot.core.i18n import Translator, cog_i18n
 
 log = getLogger("PyLav.3rdpt.karlo-cogs.autoplay")
 _ = Translator("AutoPlay", __file__)
@@ -33,7 +32,7 @@ class AutoPlay(commands.Cog):
 
     @commands.hybrid_command()
     @commands.guild_only()
-    async def autoplay(self, ctx, member: discord.Member = None):
+    async def autoplay(self, ctx, member: discord.Member | None = None):
         """Toggle autoplay for a member.
 
         This will cause the bot to automatically play music that

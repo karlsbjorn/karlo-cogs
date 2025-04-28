@@ -6,6 +6,7 @@ from raiderio_async import RaiderIO
 from redbot.core import app_commands
 from redbot.core.commands import Context
 from redbot.core.i18n import Translator
+
 from wowtools.raiderio import ProfileMenu, Raiderio
 from wowtools.utils import get_realms
 
@@ -66,7 +67,7 @@ class UserInstallableRaiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"]["liberation-of-undermine"]["summary"]
+        char_raid = profile_data["raid_progression"][self.current_raid]["summary"]
         char_last_updated = Raiderio.parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
