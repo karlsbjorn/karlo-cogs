@@ -25,6 +25,7 @@ class Raiderio:
 
     @raiderio.command(name="profile")
     @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
     @app_commands.describe(
         character="Name of the character to look up",
         realm="The character's realm",
