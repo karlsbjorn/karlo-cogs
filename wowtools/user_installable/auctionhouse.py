@@ -2,11 +2,11 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 import discord
+from aiowowapi import RetailApi
 from redbot.core import app_commands
 from redbot.core.i18n import Translator
-from wowtools.utils import format_to_gold, get_realms
 
-from aiowowapi import RetailApi
+from wowtools.utils import format_to_gold, get_realms
 
 _ = Translator("WoWTools", __file__)
 

@@ -379,9 +379,7 @@ class DiscordStreams(commands.Cog):
 
 
 class DiscordStream:
-    def __init__(
-        self, bot: Red, voice_channel: discord.guild.VocalGuildChannel, member: discord.Member
-    ):
+    def __init__(self, bot: Red, voice_channel: discord.VoiceChannel, member: discord.Member):
         """
         A class to represent a Discord "Go Live" stream.
 

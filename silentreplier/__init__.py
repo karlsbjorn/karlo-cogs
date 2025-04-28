@@ -9,6 +9,9 @@ from functools import partial
 
 from redbot.core import commands
 from redbot.core.bot import Red
+from redbot.core.utils import get_end_user_data_statement
+
+__red_end_user_data_statement__ = get_end_user_data_statement(__file__)
 
 
 async def silent_send(__sender, /, *args, **kwargs):
