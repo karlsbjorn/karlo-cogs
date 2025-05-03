@@ -192,7 +192,8 @@ class W3Champions(commands.Cog):
 
     async def fetch_ongoing_match(self, player: str) -> OngoingMatch | None:
         request_url = urllib.parse.quote(
-            f"https://website-backend.w3champions.com/api/matches/ongoing/{player}", safe=":/"
+            f"https://website-backend.w3champions.com/api/matches/ongoing/{player}",
+            safe=":/",
         )
         data: Dict = {}
         async with self.session.request("GET", request_url) as resp:
@@ -204,7 +205,8 @@ class W3Champions(commands.Cog):
 
     async def fetch_personal_settings(self, player: str) -> Dict:
         request_url = urllib.parse.quote(
-            f"https://website-backend.w3champions.com/api/personal-settings/{player}", safe=":/"
+            f"https://website-backend.w3champions.com/api/personal-settings/{player}",
+            safe=":/",
         )
         data: Dict = {}
         async with self.session.request("GET", request_url) as resp:
@@ -403,7 +405,9 @@ class W3Champions(commands.Cog):
                 for league in mode.get("leagues", []):
                     leagues.append(
                         W3ChampionsLeague(
-                            division=league["division"], id=league["id"], name=league["name"]
+                            division=league["division"],
+                            id=league["id"],
+                            name=league["name"],
                         )
                     )
             if not self.w3c_leagues.get(wanted_season):

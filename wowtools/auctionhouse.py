@@ -169,7 +169,9 @@ class AuctionHouse:
                 view = discord.ui.View()
                 view.add_item(
                     discord.ui.Button(
-                        label=_("More details"), style=discord.ButtonStyle.link, url=details_url
+                        label=_("More details"),
+                        style=discord.ButtonStyle.link,
+                        url=details_url,
                     )
                 )
 

@@ -21,7 +21,11 @@ class AutoPlay(commands.Cog):
     def __init__(self, bot: DISCORD_BOT_TYPE):
         self.bot: DISCORD_BOT_TYPE = bot
         self.config = Config.get_conf(self, identifier=87446677010550784, force_registration=True)
-        default_guild = {"tracked_member": None, "autoplaying": False, "paused_track": None}
+        default_guild = {
+            "tracked_member": None,
+            "autoplaying": False,
+            "paused_track": None,
+        }
         self.config.register_guild(**default_guild)
         self.context_user_autoplay = discord.app_commands.ContextMenu(
             name=_("Start AutoPlay"),
@@ -60,7 +64,8 @@ class AutoPlay(commands.Cog):
         if not interaction.guild:
             await interaction.followup.send(
                 embed=await self.pylav.construct_embed(
-                    description=_("This can only be used in a guild."), messageable=interaction
+                    description=_("This can only be used in a guild."),
+                    messageable=interaction,
                 )
             )
             return

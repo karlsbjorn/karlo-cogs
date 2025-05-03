@@ -57,7 +57,8 @@ class NetdataAlerts(commands.Cog):
         if only_critical:
             await self.config.only_critical.set(False)
             await ctx.send(
-                _("NetdataAlerts will now send notifications for all alerts"), silent=True
+                _("NetdataAlerts will now send notifications for all alerts"),
+                silent=True,
             )
         else:
             await self.config.only_critical.set(True)

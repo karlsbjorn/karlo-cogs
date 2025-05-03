@@ -128,7 +128,8 @@ class WarcraftLogsRetail(commands.Cog):
             name = userdata["charname"]
             if not name:
                 return await ctx.send(
-                    _("Please specify a character name with this command."), ephemeral=True
+                    _("Please specify a character name with this command."),
+                    ephemeral=True,
                 )
         if not realm:
             realm = userdata["realm"]

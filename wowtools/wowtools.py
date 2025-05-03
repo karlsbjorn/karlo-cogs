@@ -97,14 +97,19 @@ class WoWTools(
 
         self.current_raid = "liberation-of-undermine"
         # For countdown channels
-        self.early_access_time = (  # Expansion "early access", or patch release without raid/m+
-            datetime.datetime(2025, 2, 26, 5, tzinfo=datetime.UTC)
+        self.early_access_time = (
+            datetime.datetime(  # Expansion "early access", or patch release without raid/m+
+                2025, 2, 26, 5, tzinfo=datetime.UTC
+            )
         )
         self.release_time = (  # Full expansion release, or season release with raid/m+
             datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
         )
 
     async def cog_load(self) -> None:
+        raiderio_api_key = await self.bot.get_shared_api_tokens("raiderio")
+        self.raiderio_api = RaiderIO(api_key=raiderio_api_key.get("api_key"))
+
         blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
         cid = blizzard_api.get("client_id")
         secret = blizzard_api.get("client_secret")
@@ -394,13 +399,12 @@ class WoWTools(
         except ValueError:
             return False
 
-        async with RaiderIO() as rio:
-            guild_data = await rio.get_guild_profile(
-                region,
-                realm,
-                guild,
-                fields=["raid_progression"],
-            )
+        guild_data = await self.raiderio_api.get_guild_profile(
+            region,
+            realm,
+            guild,
+            fields=["raid_progression"],
+        )
         try:
             guild: str = guild_data["name"]
             progress: str = guild_data["raid_progression"][self.current_raid]["summary"]

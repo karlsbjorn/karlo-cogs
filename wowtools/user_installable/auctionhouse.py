@@ -16,7 +16,8 @@ class UserInstallableAuctionHouse:
     @app_commands.allowed_installs(guilds=True, users=True)
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @app_commands.describe(
-        item="Exact name of the item to search for", realm="Realm's auction house to search in"
+        item="Exact name of the item to search for",
+        realm="Realm's auction house to search in",
     )
     @app_commands.default_permissions(embed_links=True)
     async def user_install_price(self, interaction: discord.Interaction, item: str, realm: str):
@@ -122,7 +123,9 @@ class UserInstallableAuctionHouse:
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    label=_("More details"), style=discord.ButtonStyle.link, url=details_url
+                    label=_("More details"),
+                    style=discord.ButtonStyle.link,
+                    url=details_url,
                 )
             )
 

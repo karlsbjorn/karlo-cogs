@@ -2,7 +2,6 @@ from typing import List
 
 import discord
 from discord.app_commands import AppCommandContext, AppInstallationType
-from raiderio_async import RaiderIO
 from redbot.core import app_commands
 from redbot.core.commands import Context
 from redbot.core.i18n import Translator
@@ -40,20 +39,19 @@ class UserInstallableRaiderio:
         )
         region = region.lower()
         await interaction.response.defer()
-        async with RaiderIO() as rio:
-            profile_data = await rio.get_character_profile(
-                region,
-                realm,
-                character,
-                fields=[
-                    "mythic_plus_scores_by_season:current",
-                    "raid_progression",
-                    "gear",
-                    "mythic_plus_best_runs",
-                    "talents",
-                    "guild",
-                ],
-            )
+        profile_data = await self.raiderio_api.get_character_profile(
+            region,
+            realm,
+            character,
+            fields=[
+                "mythic_plus_scores_by_season:current",
+                "raid_progression",
+                "gear",
+                "mythic_plus_best_runs",
+                "talents",
+                "guild",
+            ],
+        )
 
         try:
             char_name = profile_data["name"]
@@ -156,7 +154,12 @@ class UserInstallableRaiderio:
 
         # Gear page
         embed = await Raiderio.make_gear_embed(
-            char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
+            char_gear,
+            char_image,
+            char_last_updated,
+            char_name,
+            char_score_color,
+            char_url,
         )
         embeds.append(embed)
 

@@ -8,7 +8,6 @@ import discord
 from aiohttp import ClientResponseError
 from discord.ext import tasks
 from PIL import Image, ImageColor, ImageDraw, ImageFilter, ImageFont
-from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
@@ -432,13 +431,11 @@ class Scoreboard:
         except Exception as e:
             log.error(f"Error adding scoreboard to Assistant: {e}", exc_info=True)
 
-    @staticmethod
-    async def get_season_title_cutoff(region: str) -> float:
+    async def get_season_title_cutoff(self, region: str) -> float:
         current_season = "season-tww-2"  # TODO: Needs to be manually updated every season
-        async with RaiderIO() as rio:
-            cutoffs = (await rio.get_mythic_plus_season_cutoffs(region, current_season)).get(
-                "cutoffs"
-            )
+        cutoffs = (
+            await self.raiderio_api.get_mythic_plus_season_cutoffs(region, current_season)
+        ).get("cutoffs")
         return cutoffs["p999"]["all"]["quantileMinValue"] if cutoffs else 0
 
     @update_dungeon_scoreboard.error
@@ -446,8 +443,8 @@ class Scoreboard:
         # Thanks Flame!
         log.error(f"Unhandled error in update_dungeon_scoreboard task: {error}", exc_info=True)
 
-    @staticmethod
     async def _get_dungeon_scores(
+        self,
         guild_name: str,
         max_chars: int,
         realm: str,
@@ -455,70 +452,69 @@ class Scoreboard:
         sb_blacklist: List[str],
         image: bool,
     ):
-        async with RaiderIO() as rio:
-            roster = await rio.get_guild_roster(region, realm, guild_name)
-            if "error" in roster.keys():
-                raise ValueError(f"{roster['message']}.")
+        roster = await self.raiderio_api.get_guild_roster(region, realm, guild_name)
+        if "error" in roster.keys():
+            raise ValueError(f"{roster['message']}.")
 
-            lb = {}
-            # TODO: Surely there's a better way to do literally everything below
-            for char in roster["guildRoster"]["roster"]:
-                char_name: str = char["character"]["name"]
-                if any(char.isdigit() for char in char_name):
-                    continue
+        lb = {}
+        # TODO: Surely there's a better way to do literally everything below
+        for char in roster["guildRoster"]["roster"]:
+            char_name: str = char["character"]["name"]
+            if any(char.isdigit() for char in char_name):
+                continue
 
-                score = char["keystoneScores"]["allScore"]
+            score = char["keystoneScores"]["allScore"]
 
-                if score > 250 and char_name.lower() not in sb_blacklist:
-                    if image:
-                        class_color: str = ClassColor.get_class_color(
-                            char["character"]["class"]["name"]
-                        )
-                        char_img: str = (
-                            "https://render.worldofwarcraft.com/{region}/character/{}".format(
-                                char["character"]["thumbnail"], region=region
-                            )
-                        )
-                        ilvl = str(char["character"]["items"]["item_level_equipped"])
-                        score_color: str = char["keystoneScores"]["allScoreColor"]
-                        lb[char_name] = (score, score_color, char_img, class_color, ilvl)
-                    else:
-                        lb[char_name] = score
-
-            lb = dict(sorted(lb.items(), key=lambda i: i[1], reverse=True))
-
-            chars = list(lb.keys())[:max_chars]
-            scores = list(lb.values())[:max_chars]
-
-            tabulate_list = []
-            for index, char_info in enumerate(zip(chars, scores)):
-                char_name = char_info[0]
+            if score > 250 and char_name.lower() not in sb_blacklist:
                 if image:
-                    char_score = char_info[1][0]
-                    char_score_color = char_info[1][1]
-                    char_img = char_info[1][2]
-                    class_color = char_info[1][3]
-                    ilvl = char_info[1][4]
-                    tabulate_list.append(
-                        [
-                            f"{index + 1}.",
-                            char_name,
-                            str(int(char_score)),
-                            char_score_color,
-                            char_img,
-                            class_color,
-                            ilvl,
-                        ]
+                    class_color: str = ClassColor.get_class_color(
+                        char["character"]["class"]["name"]
                     )
+                    char_img: str = (
+                        "https://render.worldofwarcraft.com/{region}/character/{}".format(
+                            char["character"]["thumbnail"], region=region
+                        )
+                    )
+                    ilvl = str(char["character"]["items"]["item_level_equipped"])
+                    score_color: str = char["keystoneScores"]["allScoreColor"]
+                    lb[char_name] = (score, score_color, char_img, class_color, ilvl)
                 else:
-                    char_score = char_info[1]
-                    tabulate_list.append(
-                        [
-                            f"{index + 1}.",
-                            char_name,
-                            humanize_number(int(char_score)),
-                        ]
-                    )
+                    lb[char_name] = score
+
+        lb = dict(sorted(lb.items(), key=lambda i: i[1], reverse=True))
+
+        chars = list(lb.keys())[:max_chars]
+        scores = list(lb.values())[:max_chars]
+
+        tabulate_list = []
+        for index, char_info in enumerate(zip(chars, scores)):
+            char_name = char_info[0]
+            if image:
+                char_score = char_info[1][0]
+                char_score_color = char_info[1][1]
+                char_img = char_info[1][2]
+                class_color = char_info[1][3]
+                ilvl = char_info[1][4]
+                tabulate_list.append(
+                    [
+                        f"{index + 1}.",
+                        char_name,
+                        str(int(char_score)),
+                        char_score_color,
+                        char_img,
+                        class_color,
+                        ilvl,
+                    ]
+                )
+            else:
+                char_score = char_info[1]
+                tabulate_list.append(
+                    [
+                        f"{index + 1}.",
+                        char_name,
+                        humanize_number(int(char_score)),
+                    ]
+                )
 
         return tabulate_list
 

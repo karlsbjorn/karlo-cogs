@@ -5,7 +5,6 @@ from typing import List
 import discord
 from dateutil.parser import isoparse
 from discord import app_commands
-from raiderio_async import RaiderIO
 from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.views import _ACCEPTABLE_PAGE_TYPES, SimpleMenu
@@ -48,20 +47,19 @@ class Raiderio:
         region = region.lower()
         if ctx.interaction:
             await ctx.defer()
-        async with RaiderIO() as rio:
-            profile_data = await rio.get_character_profile(
-                region,
-                realm,
-                character,
-                fields=[
-                    "mythic_plus_scores_by_season:current",
-                    "raid_progression",
-                    "gear",
-                    "mythic_plus_best_runs",
-                    "talents",
-                    "guild",
-                ],
-            )
+        profile_data = await self.raiderio_api.get_character_profile(
+            region,
+            realm,
+            character,
+            fields=[
+                "mythic_plus_scores_by_season:current",
+                "raid_progression",
+                "gear",
+                "mythic_plus_best_runs",
+                "talents",
+                "guild",
+            ],
+        )
 
         try:
             char_name = profile_data["name"]
@@ -164,7 +162,12 @@ class Raiderio:
 
         # Gear page
         embed = await self.make_gear_embed(
-            char_gear, char_image, char_last_updated, char_name, char_score_color, char_url
+            char_gear,
+            char_image,
+            char_last_updated,
+            char_name,
+            char_score_color,
+            char_url,
         )
         embeds.append(embed)
 
@@ -241,58 +244,55 @@ class Raiderio:
         guild = guild.title()
 
         await ctx.defer()
-        async with RaiderIO() as rio:
-            profile_data = await rio.get_guild_profile(
-                region,
-                realm,
-                guild,
-                fields=["raid_rankings", "raid_progression"],
-            )
+        profile_data = await self.raiderio_api.get_guild_profile(
+            region,
+            realm,
+            guild,
+            fields=["raid_rankings", "raid_progression"],
+        )
 
-            try:
-                guild_name: str = profile_data["name"]
-            except KeyError:
-                await ctx.send(
-                    _("The guild {guild} does not exist on {realm}.").format(
-                        guild=guild, realm=realm[0]
-                    )
+        try:
+            guild_name: str = profile_data["name"]
+        except KeyError:
+            await ctx.send(
+                _("The guild {guild} does not exist on {realm}.").format(
+                    guild=guild, realm=realm[0]
                 )
-                return
-            guild_url: str = profile_data["profile_url"]
-            last_updated: str = self.parse_date(profile_data["last_crawled_at"])
-
-            # Fated/Awakened raids fuck with this
-            ranks = (
-                profile_data["raid_rankings"][self.current_raid]["normal"],
-                profile_data["raid_rankings"][self.current_raid]["heroic"],
-                profile_data["raid_rankings"][self.current_raid]["mythic"],
             )
-            difficulties = ("Normal", "Heroic", "Mythic")
+            return
+        guild_url: str = profile_data["profile_url"]
+        last_updated: str = self.parse_date(profile_data["last_crawled_at"])
 
-            raid_progression: str = profile_data["raid_progression"][self.current_raid]["summary"]
+        # Fated/Awakened raids fuck with this
+        ranks = (
+            profile_data["raid_rankings"][self.current_raid]["normal"],
+            profile_data["raid_rankings"][self.current_raid]["heroic"],
+            profile_data["raid_rankings"][self.current_raid]["mythic"],
+        )
+        difficulties = ("Normal", "Heroic", "Mythic")
 
-            embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
-            embed.set_author(
-                name=_("Guild profile"),
-                icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+        raid_progression: str = profile_data["raid_progression"][self.current_raid]["summary"]
+
+        embed = discord.Embed(title=guild_name, url=guild_url, color=0xFF2121)
+        embed.set_author(
+            name=_("Guild profile"),
+            icon_url="https://cdnassets.raider.io/images/fb_app_image.jpg",
+        )
+        embed.add_field(name=_("__**Progress**__"), value=raid_progression, inline=False)
+
+        for rank, difficulty in zip(ranks, difficulties):
+            world = rank["world"]
+            region = rank["region"]
+            realm = rank["realm"]
+
+            embed.add_field(
+                name=_("{difficulty} rank").format(difficulty=difficulty),
+                value=_("World: {world}\nRegion: {region}\nRealm: {realm}").format(
+                    world=world, region=region, realm=realm
+                ),
             )
-            embed.add_field(name=_("__**Progress**__"), value=raid_progression, inline=False)
 
-            for rank, difficulty in zip(ranks, difficulties):
-                world = rank["world"]
-                region = rank["region"]
-                realm = rank["realm"]
-
-                embed.add_field(
-                    name=_("{difficulty} rank").format(difficulty=difficulty),
-                    value=_("World: {world}\nRegion: {region}\nRealm: {realm}").format(
-                        world=world, region=region, realm=realm
-                    ),
-                )
-
-            embed.set_footer(
-                text=_("Last updated: {last_updated}").format(last_updated=last_updated)
-            )
+        embed.set_footer(text=_("Last updated: {last_updated}").format(last_updated=last_updated))
 
         await ctx.send(embed=embed)
 
@@ -313,9 +313,8 @@ class Raiderio:
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
         await ctx.defer()
-        async with RaiderIO() as rio:
-            affixes = await rio.get_mythic_plus_affixes(region)
-            affixes = affixes["affix_details"]
+        affixes = await self.raiderio_api.get_mythic_plus_affixes(region)
+        affixes = affixes["affix_details"]
 
         msg = ""
         if region == "eu":

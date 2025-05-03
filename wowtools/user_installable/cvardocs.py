@@ -25,7 +25,9 @@ class CVarSelect(discord.ui.Select):
         ]
         if current_cvar:
             options = sorted(
-                options, key=lambda x: fuzz.partial_ratio(x.value, current_cvar), reverse=True
+                options,
+                key=lambda x: fuzz.partial_ratio(x.value, current_cvar),
+                reverse=True,
             )
         else:
             # Sort by name
@@ -202,7 +204,9 @@ class CVarDocs:
 
         if current:
             sorted_choices = sorted(
-                choices, key=lambda x: fuzz.partial_ratio(x.value, current), reverse=True
+                choices,
+                key=lambda x: fuzz.partial_ratio(x.value, current),
+                reverse=True,
             )
         else:
             # Sort by name
