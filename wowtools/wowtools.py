@@ -88,6 +88,7 @@ class WoWTools(
         self.config.register_user(**default_user)
         self.limiter = AsyncLimiter(100, time_period=1)
         self.session = aiohttp.ClientSession(headers={"User-Agent": "Red-DiscordBot/WoWToolsCog"})
+        self.raiderio_api = RaiderIO()
         self.blizzard: dict[str, WowApi] = {}
         self.cvar_cache: list[CVar] = []
         self.update_dungeon_scoreboard.start()
