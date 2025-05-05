@@ -144,7 +144,14 @@ class GuildManage:
         try:
             guild_roster = await self.get_guild_roster(ctx.guild)
         except InvalidBlizzardAPI:
-            await ctx.send(_("Blizzard API isn't properly set up."))
+            await ctx.send(
+                _(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret."
+                )
+            )
             return
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
@@ -159,7 +166,14 @@ class GuildManage:
         try:
             guild_roster = await self.get_guild_roster(ctx.guild)
         except InvalidBlizzardAPI:
-            await ctx.send(_("Blizzard API isn't properly set up."))
+            await ctx.send(
+                _(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret."
+                )
+            )
             return
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
@@ -184,7 +198,12 @@ class GuildManage:
             try:
                 current_roster = await self.get_guild_roster(guild)
             except InvalidBlizzardAPI:
-                log.warning("Blizzard API isn't properly set up.")
+                log.warning(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret."
+                )
                 return
             previous_roster = await self.config.guild(guild).guild_roster()
             difference = list(dictdiffer.diff(previous_roster, current_roster))
@@ -215,6 +234,12 @@ class GuildManage:
         except (AttributeError, ValueError):
             return
         except InvalidBlizzardAPI:
+            log.warning(
+                "The Blizzard API is not properly set up.\n"
+                "Create a client on <https://develop.battle.net/> and then type in "
+                "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                "filling in `whoops` with your client's ID and secret."
+            )
             return
         if not ingame_members:
             return
@@ -395,7 +420,14 @@ class GuildManage:
         except (AttributeError, ValueError):
             ingame_members, rank = (None, None)
         except InvalidBlizzardAPI:
-            await ctx.send(_("Blizzard API isn't properly set up."))
+            await ctx.send(
+                _(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret."
+                )
+            )
             return
         if ingame_members:
             msg += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"

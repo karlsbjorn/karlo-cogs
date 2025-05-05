@@ -29,7 +29,12 @@ class OnMessage:
         try:
             embeds = await self.get_embeds(search_strings)
         except InvalidBlizzardAPI:
-            log.warning("")
+            log.warning(
+                "The Blizzard API is not properly set up.\n"
+                "Create a client on <https://develop.battle.net/> and then type in "
+                "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                "filling in `whoops` with your client's ID and secret."
+            )
         if not embeds:
             return
 
