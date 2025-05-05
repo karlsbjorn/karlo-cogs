@@ -1,4 +1,5 @@
 ENCHANT_ID = {
+    # TODO: This is all from shadowlands. Should be updated for current exp
     # Chest
     "6230": "Primary Stats +30",
     "6214": "Eternal Skirmish",
