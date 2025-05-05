@@ -5,7 +5,7 @@
     "install_msg": "This cog has no commands. It will automatically set the channel status to the currently playing track name.\nIf you want it to stop, unload the cog.",
     "tags": ["music", "pylav", "channel", "status"],
     "min_python_version": [3, 11, 0],
-    "requirements": ["Py-Lav"],
+    "requirements": ["Py-Lav", "aiolimiter"],
     "min_bot_version": "3.5.10",
     "max_bot_version": "3.5.99",
     "type": "COG",

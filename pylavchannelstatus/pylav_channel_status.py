@@ -1,3 +1,4 @@
+from aiolimiter import AsyncLimiter
 from pylav.events.player import PlayerDisconnectedEvent, PlayerStoppedEvent
 from pylav.events.track import TrackEndEvent, TrackResumedEvent, TrackStartEvent
 from pylav.logging import getLogger
@@ -14,8 +15,12 @@ _ = Translator("PyLavChannelStatus", __file__)
 class PyLavChannelStatus(commands.Cog):
     def __init__(self, bot: DISCORD_BOT_TYPE):
         self.bot: DISCORD_BOT_TYPE = bot
+        # 5 every 5 seconds, pylav can be pretty spammy especially when playing a youtube playlist when the youtube source doesnt even work
+        self.limiter = AsyncLimiter(5, 5)
 
     async def set_channel_status(self, event: TrackStartEvent | TrackResumedEvent):
+        if not self.limiter.has_capacity():
+            return
         player: Player = event.player
         channel = player.channel
         track_name = await event.track.get_track_display_name(
@@ -24,6 +29,7 @@ class PyLavChannelStatus(commands.Cog):
             unformatted=True,
             escape=False,
         )
+        await self.limiter.acquire()
         await channel._edit(
             options={"status": track_name},
             reason=_("[PyLavChannelStatus] Setting channel status to new track"),
@@ -32,10 +38,13 @@ class PyLavChannelStatus(commands.Cog):
     async def remove_channel_status(
         self, event: TrackEndEvent | PlayerDisconnectedEvent | PlayerStoppedEvent
     ):
+        if not self.limiter.has_capacity():
+            return
         player: Player = event.player
         channel = player.channel
         if player.current:
             return
+        await self.limiter.acquire()
         await channel._edit(
             options={"status": None},
             reason=_("[PyLavChannelStatus] Removing channel status"),
