@@ -39,7 +39,7 @@ class GuildManage:
             )
         )
 
-    @gmset.command(name="rankrole")
+    @gmset.command(name="rankrole", hidden=True)
     @commands.admin()
     async def gmset_rankrole(self, ctx: commands.Context, rank: int, role: discord.Role):
         """Bind a rank to a role."""
@@ -123,7 +123,7 @@ class GuildManage:
         realm: str = await self.config.guild(guild).gmanage_realm()
         realm = realm.lower()
 
-        if self.blizzard.get(region) is None:
+        if not self.blizzard.get(region):
             raise InvalidBlizzardAPI
         async with self.blizzard.get(region) as wow_client:
             wow_client = wow_client.Retail
@@ -139,7 +139,10 @@ class GuildManage:
     @gmset.command()
     @commands.guild_only()
     async def guildlog(self, ctx: commands.Context, channel: discord.TextChannel | discord.Thread):
-        """Set the channel for guild logs."""
+        """Set the channel for guild logs.
+
+        This channel will be used to send messages when a member joins, leaves or is promoted/demoted within the in-game guild.
+        """
         await self.config.guild(ctx.guild).guild_log_channel.set(channel.id)
         try:
             guild_roster = await self.get_guild_roster(ctx.guild)
@@ -147,10 +150,10 @@ class GuildManage:
             await ctx.send(
                 _(
                     "The Blizzard API is not properly set up.\n"
-                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "Create a client on https://develop.battle.net/ and then type in "
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret."
-                )
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                ).format(prefix=ctx.prefix)
             )
             return
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
@@ -161,7 +164,10 @@ class GuildManage:
     async def guildlog_welcome(
         self, ctx: commands.Context, channel: discord.TextChannel | discord.Thread
     ):
-        """Set the guild log welcome channel."""
+        """Set the guild log welcome channel.
+
+        When a user joins this server, a message will be to the provided channel with their in-game name and rank if the bot is able to find them.
+        """
         await self.config.guild(ctx.guild).guild_log_welcome_channel.set(channel.id)
         try:
             guild_roster = await self.get_guild_roster(ctx.guild)
@@ -169,10 +175,10 @@ class GuildManage:
             await ctx.send(
                 _(
                     "The Blizzard API is not properly set up.\n"
-                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "Create a client on https://develop.battle.net/ and then type in "
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret."
-                )
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                ).format(prefix=ctx.prefix)
             )
             return
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
@@ -200,9 +206,9 @@ class GuildManage:
             except InvalidBlizzardAPI:
                 log.warning(
                     "The Blizzard API is not properly set up.\n"
-                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "Create a client on https://develop.battle.net/ and then type in "
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret."
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
                 )
                 return
             previous_roster = await self.config.guild(guild).guild_roster()
@@ -220,8 +226,6 @@ class GuildManage:
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         guild = member.guild
-        if not await self.config.guild(guild).guild_log_channel():
-            return
         if guild is None:
             return
         if await self.bot.cog_disabled_in_guild(self, guild):
@@ -236,9 +240,9 @@ class GuildManage:
         except InvalidBlizzardAPI:
             log.warning(
                 "The Blizzard API is not properly set up.\n"
-                "Create a client on <https://develop.battle.net/> and then type in "
+                "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                "filling in `whoops` with your client's ID and secret."
+                "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
             )
             return
         if not ingame_members:
@@ -417,16 +421,23 @@ class GuildManage:
         member_name = member_name.title()
         try:
             ingame_members, rank = await self.guess_ingame_member(ctx.guild, member_name)
-        except (AttributeError, ValueError):
+        except ValueError:
             ingame_members, rank = (None, None)
+        except AttributeError:
+            await ctx.send(
+                _("Please use `{prefix}gmset` and set the name and realm of your guild.").format(
+                    prefix=ctx.prefix
+                )
+            )
+            return
         except InvalidBlizzardAPI:
             await ctx.send(
                 _(
                     "The Blizzard API is not properly set up.\n"
-                    "Create a client on <https://develop.battle.net/> and then type in "
+                    "Create a client on https://develop.battle.net/ and then type in "
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret."
-                )
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                ).format(prefix=ctx.prefix)
             )
             return
         if ingame_members:

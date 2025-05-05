@@ -46,10 +46,18 @@ class AuctionHouse:
         boe_disclaimer = False
 
         async with ctx.typing():
-            async with self.blizzard.get(config_region) as wow_client:
-                if not wow_client:
-                    await ctx.send("Blizzard API not properly set up.")
-                    return
+            client = self.blizzard.get(config_region)
+            if not client:
+                await ctx.send(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on https://develop.battle.net/ and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`".format(
+                        prefix=ctx.prefix
+                    )
+                )
+                return
+            async with client as wow_client:
                 wow_client = wow_client.Retail
                 # Search for the item
                 await self.limiter.acquire()

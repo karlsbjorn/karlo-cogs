@@ -40,10 +40,21 @@ class Raiderio:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        realm, region = realm.split(sep=":")
+        try:
+            realm, region = realm.split(sep=":", maxsplit=1)
+        except ValueError:
+            region = await self.config.guild(ctx.guild).region()
+            if not region:
+                await ctx.send(
+                    _(
+                        "No region provided, and no default region set.\nSet a default region with `{prefix}wowset region` or provide a region with the realm like `{prefix}raiderio profile Karlo Ragnaros:EU`"
+                    ).format(prefix=ctx.prefix)
+                )
+                return
         realm = ("-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()).replace(
             " ", "-"
         )
+
         region = region.lower()
         if ctx.interaction:
             await ctx.defer()
@@ -236,7 +247,18 @@ class Raiderio:
             # (This is probably a bug in Red, remove this when it's fixed)
             await set_contextual_locales_from_guild(self.bot, ctx.guild)
 
-        realm, region = realm.split(sep=":")
+        try:
+            realm, region = realm.split(sep=":")
+        except ValueError:
+            region = await self.config.guild(ctx.guild).region()
+            if not region:
+                await ctx.send(
+                    _(
+                        'No region provided, and no default region set.\nSet a default region with `{prefix}wowset region` or provide a region with the realm like `{prefix}raiderio guild "Jahaci Rumene Kadulje" Ragnaros:EU`'
+                    ).format(prefix=ctx.prefix)
+                )
+                return
+
         realm = ("-".join(realm).lower() if isinstance(realm, tuple) else realm.lower()).replace(
             " ", "-"
         )

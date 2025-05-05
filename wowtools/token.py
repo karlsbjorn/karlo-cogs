@@ -37,7 +37,14 @@ class Token:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
             return
         if not api_client:
-            await ctx.send(_("Blizzard API not properly set up."))
+            await ctx.send(
+                _(
+                    "The Blizzard API is not properly set up.\n"
+                    "Create a client on https://develop.battle.net/ and then type in "
+                    "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
+                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                ).format(prefix=ctx.prefix)
+            )
             return
 
         await ctx.defer()

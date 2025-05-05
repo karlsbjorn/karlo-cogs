@@ -92,9 +92,13 @@ class WoWTools(
         self.blizzard: dict[str, WowApi] = {}
         self.cvar_cache: list[CVar] = []
         self.update_dungeon_scoreboard.start()
+        log.info("Dungeon scoreboard updater started.")
         self.guild_log.start()
+        log.info("Guild log updater started.")
         self.update_countdown_channels.start()
+        log.info("Countdown channel updater started.")
         self.update_bot_status.start()
+        log.info("Bot status updater started.")
 
         self.current_raid = "liberation-of-undermine"
         # For countdown channels
@@ -164,7 +168,7 @@ class WoWTools(
     @wowset.command(name="guild")
     @commands.guild_only()
     @commands.admin()
-    async def wowset_guild(self, ctx: commands.Context, guild_name: str = None):
+    async def wowset_guild(self, ctx: commands.Context, guild_name: str | None = None):
         """(CASE SENSITIVE) Set the name of your guild."""
         try:
             async with ctx.typing():
@@ -172,6 +176,7 @@ class WoWTools(
                     await self.config.guild(ctx.guild).real_guild_name.clear()
                     await ctx.send(_("Guild name cleared."))
                     return
+                guild_name = guild_name.replace("-", " ").title()
                 await self.config.guild(ctx.guild).real_guild_name.set(guild_name)
             await ctx.send(_("Guild name set."))
         except Exception as e:
@@ -181,13 +186,14 @@ class WoWTools(
     @commands.is_owner()
     async def wowset_blizzard(self, ctx: commands.Context):
         """Instructions for setting up the Blizzard API."""
-        return await ctx.send(
+        await ctx.send(
             _(
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                "filling in `whoops` with your client's ID and secret."
+                "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
             ).format(prefix=ctx.prefix)
         )
+        return
 
     @wowset.command(name="emote")
     @commands.is_owner()
@@ -418,14 +424,15 @@ class WoWTools(
     @tasks.loop(minutes=60)
     async def update_bot_status(self):
         if not await self.set_bot_status():
-            log.warning("Setting the bot's status failed.")
+            log.debug("Setting the bot's status failed.")
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
-        self.update_dungeon_scoreboard.stop()
-        self.guild_log.stop()
-        self.update_countdown_channels.stop()
-        self.update_bot_status.stop()
+        self.update_dungeon_scoreboard.cancel()
+        self.guild_log.cancel()
+        self.update_countdown_channels.cancel()
+        self.update_bot_status.cancel()
+        log.info("All tasks cancelled.")
 
     async def red_delete_data_for_user(
         self,

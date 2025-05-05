@@ -31,9 +31,9 @@ class OnMessage:
         except InvalidBlizzardAPI:
             log.warning(
                 "The Blizzard API is not properly set up.\n"
-                "Create a client on <https://develop.battle.net/> and then type in "
+                "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                "filling in `whoops` with your client's ID and secret."
+                "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
             )
         if not embeds:
             return
