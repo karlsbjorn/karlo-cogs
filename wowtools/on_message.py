@@ -49,7 +49,7 @@ class OnMessage:
         if message.author.bot:
             return False
         # check whether the bot can send and delete messages in the given channel
-        channel_perms = message.channel.permissions_for(message.guild)
+        channel_perms = message.channel.permissions_for(message.guild.me)
         if not channel_perms.send_messages:
             return False
         # check whether the cog isn't disabled
