@@ -80,15 +80,18 @@ class WikiArena(commands.Cog):
             red_words=red_word_count,
             author=interaction.user,
         )
-        view.message = await interaction.followup.send(
-            _(
-                "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
-                "Score: **{score}**\n"
-                "Time's up {in_time}!"
-            ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
-            embeds=embeds,
-            view=view,
-        )
+        try:
+            view.message = await interaction.followup.send(
+                _(
+                    "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
+                    "Score: **{score}**\n"
+                    "Time's up {in_time}!"
+                ).format(score="0", in_time=f"<t:{timeout_timestamp}:R>"),
+                embeds=embeds,
+                view=view,
+            )
+        except discord.Forbidden:
+            await interaction.followup.send(_("I don't have permission for this."), ephemeral=True)
 
     @slash_wikiarena.command(
         name="scoreboard", description="Look at the WikiArena global scoreboard."
