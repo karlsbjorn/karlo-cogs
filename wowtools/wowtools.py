@@ -432,7 +432,7 @@ class WoWTools(
     async def on_red_api_tokens_update(self, service_name: str, api_tokens: Mapping[str, str]):
         """
         Lifted shamelessly from GHC.
-        Thanks Kowlin for this and everything else you did on this cog.
+        Thanks Kowlin for this
         """
         if service_name != "blizzard":
             return
