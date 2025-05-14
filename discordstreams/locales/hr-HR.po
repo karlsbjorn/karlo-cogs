@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-05-31 13:25+0000\n"
-"PO-Revision-Date: 2025-02-12 11:32\n"
+"POT-Creation-Date: 2025-04-28 16:47+0000\n"
+"PO-Revision-Date: 2025-05-14 01:42\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,81 +17,96 @@ msgstr ""
 "X-Crowdin-File-ID: 26\n"
 "Language: hr_HR\n"
 
-#: discordstreams/discordstreams.py:35
+#: discordstreams/discordstreams.py:19
+#, docstring
+msgid "\n"
+"    Send alerts to a channel when a member starts Discord \"Go Live\" streaming.\n"
+"    "
+msgstr ""
+
+#: discordstreams/discordstreams.py:39
 #, docstring
 msgid "Set the channel for live alerts."
 msgstr "Postavi kanal za obavijesti."
 
-#: discordstreams/discordstreams.py:44
+#: discordstreams/discordstreams.py:48
 msgid "Live alerts will no longer be sent to {channel}."
 msgstr "Obavijesti više neće biti slane u {channel}."
 
-#: discordstreams/discordstreams.py:52
+#: discordstreams/discordstreams.py:56
 msgid "Go Live alerts will be sent to {channel}"
 msgstr "Go Live obavijesti će se sada slati u {channel}"
 
-#: discordstreams/discordstreams.py:59
+#: discordstreams/discordstreams.py:63
 #, docstring
 msgid "Change settings for the live alerts."
 msgstr "Promijenite postavke za obavijesti."
 
-#: discordstreams/discordstreams.py:65
+#: discordstreams/discordstreams.py:69
 #, docstring
 msgid "Ignore a voice channel."
 msgstr "Ignoriraj glasovni kanal."
 
-#: discordstreams/discordstreams.py:71
+#: discordstreams/discordstreams.py:75
 msgid "Streams happening in {channel} will no longer be ignored."
 msgstr "Streamovi koji se odvijaju u {channel} više se neće ignorirati."
 
-#: discordstreams/discordstreams.py:79
+#: discordstreams/discordstreams.py:83
 msgid "Streams happening in {channel} will now be ignored."
 msgstr "Streamovi koji se odvijaju u {channel} će se ignorirati."
 
-#: discordstreams/discordstreams.py:87
+#: discordstreams/discordstreams.py:91
 #, docstring
 msgid "List ignored voice channels."
 msgstr "Popis ignoriranih glasovnih kanala."
 
-#: discordstreams/discordstreams.py:90
+#: discordstreams/discordstreams.py:94
 msgid "No channels are currently ignored."
 msgstr "Nijedan kanal trenutno nije ignoriran."
 
-#: discordstreams/discordstreams.py:99
+#: discordstreams/discordstreams.py:104
 msgid "Ignored Channels"
 msgstr "Ignorirani kanali"
 
-#: discordstreams/discordstreams.py:110
+#: discordstreams/discordstreams.py:111
+msgid "Ignored channels: {channels}"
+msgstr ""
+
+#: discordstreams/discordstreams.py:112
+msgid "None"
+msgstr ""
+
+#: discordstreams/discordstreams.py:121
 #, docstring
 msgid "Toggle a role or member mention."
 msgstr ""
 
-#: discordstreams/discordstreams.py:324
+#: discordstreams/discordstreams.py:336
 msgid "Watch the stream"
 msgstr "Gledaj stream"
 
-#: discordstreams/discordstreams.py:333
+#: discordstreams/discordstreams.py:353
 msgid "{mentions}\n"
 "{member} is live!"
 msgstr ""
 
-#: discordstreams/discordstreams.py:337
+#: discordstreams/discordstreams.py:357
 msgid "{member} is live!"
 msgstr "{member} prenosi uživo!"
 
-#: discordstreams/discordstreams.py:395
+#: discordstreams/discordstreams.py:415
 msgid "Stream started {relative_timestamp}"
 msgstr "Prijenos je započeo {relative_timestamp}"
 
-#: discordstreams/discordstreams.py:423
+#: discordstreams/discordstreams.py:443
 msgid "Ends "
 msgstr "Završava "
 
-#: discordstreams/discordstreams.py:439 discordstreams/discordstreams.py:453
+#: discordstreams/discordstreams.py:459 discordstreams/discordstreams.py:473
 msgid "Nothing"
 msgstr "Ništa"
 
-#: discordstreams/discordstreams.py:440
+#: discordstreams/discordstreams.py:460
 msgid "Playing: {activity}"
 msgstr "Igra: {activity}"
 
