@@ -52,7 +52,7 @@ class AuctionHouse:
                     "The Blizzard API is not properly set up.\n"
                     "Create a client on https://develop.battle.net/ and then type in "
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                    "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`".format(
+                    "filling in `whoops` with your client's ID and secret.".format(
                         prefix=ctx.prefix
                     )
                 )

@@ -434,7 +434,7 @@ class WoWTools(
         Lifted shamelessly from GHC.
         Thanks Kowlin for this and everything else you did on this cog.
         """
-        if service_name != "warcraftlogs":
+        if service_name != "blizzard":
             return
         await self.create_bnet_objs()
 
