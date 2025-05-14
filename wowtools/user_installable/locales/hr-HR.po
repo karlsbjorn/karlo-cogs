@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-10-29 15:55+0000\n"
-"PO-Revision-Date: 2025-02-12 11:32\n"
+"POT-Creation-Date: 2025-05-03 12:21+0000\n"
+"PO-Revision-Date: 2025-05-14 01:42\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -17,96 +17,96 @@ msgstr ""
 "X-Crowdin-File-ID: 54\n"
 "Language: hr_HR\n"
 
-#: wowtools/user_installable/auctionhouse.py:22
+#: wowtools/user_installable/auctionhouse.py:24
 #, docstring
 msgid "Get the current auction price of an item."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:39
+#: wowtools/user_installable/auctionhouse.py:41
 msgid "No results found."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:44
+#: wowtools/user_installable/auctionhouse.py:46
 msgid "Could not find realm."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:83
+#: wowtools/user_installable/auctionhouse.py:85
 msgid "No auctions could be found for this item."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:94
+#: wowtools/user_installable/auctionhouse.py:96
 msgid "Price: {item}"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:104
+#: wowtools/user_installable/auctionhouse.py:106
 msgid "Min Buyout"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:105
+#: wowtools/user_installable/auctionhouse.py:107
 msgid "Current quantity"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:107
+#: wowtools/user_installable/auctionhouse.py:109
 msgid "Current listings"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:110
+#: wowtools/user_installable/auctionhouse.py:112
 msgid "Warning"
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:111
+#: wowtools/user_installable/auctionhouse.py:113
 msgid "The expected price of this item may be incorrect due to\n"
 "item level differences or other factors."
 msgstr ""
 
-#: wowtools/user_installable/auctionhouse.py:124
+#: wowtools/user_installable/auctionhouse.py:126
 msgid "More details"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:33
+#: wowtools/user_installable/cvardocs.py:35
 msgid "Select a CVar"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:70
-#: wowtools/user_installable/cvardocs.py:170
+#: wowtools/user_installable/cvardocs.py:72
+#: wowtools/user_installable/cvardocs.py:173
 msgid "No"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:72
-#: wowtools/user_installable/cvardocs.py:172
+#: wowtools/user_installable/cvardocs.py:74
+#: wowtools/user_installable/cvardocs.py:175
 msgid "Yes"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:76
-#: wowtools/user_installable/cvardocs.py:177
+#: wowtools/user_installable/cvardocs.py:78
+#: wowtools/user_installable/cvardocs.py:180
 msgid "Default"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:81
-#: wowtools/user_installable/cvardocs.py:182
+#: wowtools/user_installable/cvardocs.py:83
+#: wowtools/user_installable/cvardocs.py:185
 msgid "Category"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:83
-#: wowtools/user_installable/cvardocs.py:184
+#: wowtools/user_installable/cvardocs.py:85
+#: wowtools/user_installable/cvardocs.py:187
 msgid "Scope"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:85
-#: wowtools/user_installable/cvardocs.py:186
+#: wowtools/user_installable/cvardocs.py:87
+#: wowtools/user_installable/cvardocs.py:189
 msgid "Introduced in"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:100
+#: wowtools/user_installable/cvardocs.py:102
 msgid "You are not authorized to interact with this."
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:128
+#: wowtools/user_installable/cvardocs.py:131
 #, docstring
 msgid "Get information about a WoW Console Variable"
 msgstr ""
 
-#: wowtools/user_installable/cvardocs.py:135
+#: wowtools/user_installable/cvardocs.py:138
 msgid "No CVar found with that name."
 msgstr ""
 
@@ -122,35 +122,35 @@ msgid "Display the raider.io profile of a character.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:60
+#: wowtools/user_installable/raiderio.py:59
 msgid "Character not found."
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:95
+#: wowtools/user_installable/raiderio.py:94
 msgid "Raider.io profile"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:100
+#: wowtools/user_installable/raiderio.py:99
 msgid "__**Mythic+ Score**__"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:104
+#: wowtools/user_installable/raiderio.py:103
 msgid "Raid progress"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:105
+#: wowtools/user_installable/raiderio.py:104
 msgid "Item level"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:107
+#: wowtools/user_installable/raiderio.py:106
 msgid "__Other links__"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:108
+#: wowtools/user_installable/raiderio.py:107
 msgid "[Armory]({armory_url}) | [WarcraftLogs]({wcl_url}) | [Raidbots]({raidbots_url})"
 msgstr ""
 
-#: wowtools/user_installable/raiderio.py:119
+#: wowtools/user_installable/raiderio.py:118
 msgid "Last updated: {char_last_updated}"
 msgstr ""
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2024-07-24 11:41+0000\n"
-"PO-Revision-Date: 2024-07-24 11:42\n"
+"POT-Creation-Date: 2025-05-12 10:17+0000\n"
+"PO-Revision-Date: 2025-05-14 01:42\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgid "WikiArena\n\n"
 "    "
 msgstr ""
 
-#: wikiarena/wikiarena.py:53
+#: wikiarena/wikiarena.py:54
 #, docstring
 msgid "\n"
 "        Starts a game of WikiArena.\n\n"
@@ -33,50 +33,64 @@ msgid "\n"
 "        "
 msgstr ""
 
-#: wikiarena/wikiarena.py:82 wikiarena/wikiarena.py:353
+#: wikiarena/wikiarena.py:85 wikiarena/wikiarena.py:385
 msgid "Guess which full article has __more words__ or __more views__ in the last 60 days!\n"
 "Score: **{score}**\n"
 "Time's up {in_time}!"
 msgstr ""
 
-#: wikiarena/wikiarena.py:95
+#: wikiarena/wikiarena.py:94
+msgid "I don't have permission for this."
+msgstr ""
+
+#: wikiarena/wikiarena.py:100
 #, docstring
 msgid "Display the WikiArena scoreboard for this guild."
 msgstr ""
 
-#: wikiarena/wikiarena.py:99 wikiarena/wikiarena.py:109
+#: wikiarena/wikiarena.py:104 wikiarena/wikiarena.py:114
 msgid "No users have played WikiArena yet."
 msgstr ""
 
-#: wikiarena/wikiarena.py:147 wikiarena/wikiarena.py:175
+#: wikiarena/wikiarena.py:157 wikiarena/wikiarena.py:198
 msgid "Name"
 msgstr ""
 
-#: wikiarena/wikiarena.py:147 wikiarena/wikiarena.py:175
+#: wikiarena/wikiarena.py:157 wikiarena/wikiarena.py:198
 msgid "Score"
 msgstr ""
 
-#: wikiarena/wikiarena.py:154 wikiarena/wikiarena.py:182
+#: wikiarena/wikiarena.py:165 wikiarena/wikiarena.py:206
 msgid "WikiArena Scoreboard"
 msgstr ""
 
-#: wikiarena/wikiarena.py:159
+#: wikiarena/wikiarena.py:170
 msgid "Page {page}/{page_count} | Total players: {num_players}"
 msgstr ""
 
-#: wikiarena/wikiarena.py:187
+#: wikiarena/wikiarena.py:179
+msgid "WikiArena Scoreboard\n"
+"Page {page}/{page_count} | Total players: {num_players}\n\n"
+msgstr ""
+
+#: wikiarena/wikiarena.py:211
 msgid "Total players: {num_players}"
 msgstr ""
 
-#: wikiarena/wikiarena.py:289 wikiarena/wikiarena.py:290
+#: wikiarena/wikiarena.py:215
+msgid "WikiArena Scoreboard\n"
+"Total players: {num_players}\n\n"
+msgstr ""
+
+#: wikiarena/wikiarena.py:321 wikiarena/wikiarena.py:322
 msgid "More views"
 msgstr ""
 
-#: wikiarena/wikiarena.py:291 wikiarena/wikiarena.py:292
+#: wikiarena/wikiarena.py:323 wikiarena/wikiarena.py:324
 msgid "More words"
 msgstr ""
 
-#: wikiarena/wikiarena.py:366
+#: wikiarena/wikiarena.py:398
 msgid "Wrong! Better luck next time!\n"
 "🔵 Views: {blue_views}\n"
 "🔵 Words: {blue_words}\n"
@@ -85,17 +99,17 @@ msgid "Wrong! Better luck next time!\n"
 "Your final score was: **{score}**"
 msgstr ""
 
-#: wikiarena/wikiarena.py:402
+#: wikiarena/wikiarena.py:434
 msgid "\n"
 "You've beaten your high score of **{user_high_score}**!"
 msgstr ""
 
-#: wikiarena/wikiarena.py:406
+#: wikiarena/wikiarena.py:438
 msgid "\n"
 "Your high score is **{user_high_score}**"
 msgstr ""
 
-#: wikiarena/wikiarena.py:418
+#: wikiarena/wikiarena.py:450
 msgid "Time's up! Be faster next time!\n"
 "🔵 Views: {blue_views}\n"
 "🔵 Words: {blue_words}\n"
@@ -104,7 +118,7 @@ msgid "Time's up! Be faster next time!\n"
 "Your final score was: **{score}**"
 msgstr ""
 
-#: wikiarena/wikiarena.py:452
+#: wikiarena/wikiarena.py:484
 msgid "This isn't your game of WikiArena."
 msgstr ""
 
