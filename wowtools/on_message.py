@@ -33,7 +33,7 @@ class OnMessage:
                 "The Blizzard API is not properly set up.\n"
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                "filling in `whoops` with your client's ID and secret."
             )
         if not embeds:
             return
@@ -41,7 +41,6 @@ class OnMessage:
         await message.channel.send(embeds=embeds)
 
     async def is_valid(self, message: discord.Message) -> bool:
-        # sourcery skip
         # check whether the message was sent in a guild
         if message.guild is None:
             return False

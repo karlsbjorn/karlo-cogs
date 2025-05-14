@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Literal, Optional
+from typing import Literal, Mapping, Optional
 
 import aiohttp
 import discord
@@ -114,7 +114,9 @@ class WoWTools(
     async def cog_load(self) -> None:
         raiderio_api_key = await self.bot.get_shared_api_tokens("raiderio")
         self.raiderio_api = RaiderIO(api_key=raiderio_api_key.get("api_key"))
+        await self.create_bnet_objs()
 
+    async def create_bnet_objs(self):
         blizzard_api = await self.bot.get_shared_api_tokens("blizzard")
         cid = blizzard_api.get("client_id")
         secret = blizzard_api.get("client_secret")
@@ -190,7 +192,7 @@ class WoWTools(
             _(
                 "Create a client on https://develop.battle.net/ and then type in "
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
-                "filling in `whoops` with your client's ID and secret.\nThen `{prefix}reload wowtools`"
+                "filling in `whoops` with your client's ID and secret."
             ).format(prefix=ctx.prefix)
         )
         return
@@ -425,6 +427,16 @@ class WoWTools(
     async def update_bot_status(self):
         if not await self.set_bot_status():
             log.debug("Setting the bot's status failed.")
+
+    @commands.Cog.listener()
+    async def on_red_api_tokens_update(self, service_name: str, api_tokens: Mapping[str, str]):
+        """
+        Lifted shamelessly from GHC.
+        Thanks Kowlin for this and everything else you did on this cog.
+        """
+        if service_name != "warcraftlogs":
+            return
+        await self.create_bnet_objs()
 
     def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
