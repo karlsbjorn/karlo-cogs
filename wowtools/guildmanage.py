@@ -458,15 +458,16 @@ class GuildManage:
         if ingame_members:
             msg += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
 
+            most_likely_member = ingame_members[0]
             rio_url = self.get_raiderio_url(
-                await self.config.guild(ctx.guild).gmanage_realm(),
-                await self.config.guild(ctx.guild).region(),
-                ingame_members[0],
+                realm=most_likely_member.split(":")[1],
+                region=await self.config.guild(ctx.guild).region(),
+                name=most_likely_member.split(":")[0],
             )
             wcl_url = self.get_warcraftlogs_url(
-                await self.config.guild(ctx.guild).gmanage_realm(),
-                await self.config.guild(ctx.guild).region(),
-                ingame_members[0],
+                realm=most_likely_member.split(":")[1],
+                region=await self.config.guild(ctx.guild).region(),
+                name=most_likely_member.split(":")[0],
             )
             msg += f"{rio_url} | {wcl_url}"
 
@@ -498,7 +499,7 @@ class GuildManage:
         extract.sort(key=lambda member: roster[name_mapping[member[0]]])
         ranks: list[int] = [roster[name_mapping[member[0]]] for member in extract]
         ingame_rank = await self.get_rank_string(guild, min(ranks))
-        return [member[0] for member in extract], ingame_rank
+        return [name_mapping[member[0]] for member in extract], ingame_rank
 
     def custom_processor(self, string: str) -> str:
         return "".join(
