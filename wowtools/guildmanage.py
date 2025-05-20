@@ -486,16 +486,17 @@ class GuildManage:
         self, guild: discord.Guild, member_name: str
     ) -> tuple[list[str], str]:
         roster = await self.get_guild_roster(guild)
+        name_mapping: dict[str, str] = {name.split(":")[0]: name for name in roster.keys()}
         extract = process.extract(
             member_name,
-            [name.split(":")[0] for name in roster.keys()],
+            set(name_mapping.keys()),
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=80,
             processor=self.custom_processor,
         )
-        extract.sort(key=lambda member: roster[member[0]])
-        ranks = [roster[member[0]] for member in extract]
+        extract.sort(key=lambda member: roster[name_mapping[member[0]]])
+        ranks: list[int] = [roster[name_mapping[member[0]]] for member in extract]
         ingame_rank = await self.get_rank_string(guild, min(ranks))
         return [member[0] for member in extract], ingame_rank
 
