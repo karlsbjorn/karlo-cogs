@@ -456,15 +456,15 @@ class GuildManage:
             )
             return
         if ingame_members:
-            msg += f"In-game: {humanize_list(ingame_members, style='or')}\nRank: {rank}\n"
+            msg += f"In-game: {humanize_list([member.split(':')[0] for member in ingame_members], style='or')}\nRank: {rank}\n"
 
-            most_likely_member = ingame_members[0]
-            rio_url = self.get_raiderio_url(
+            most_likely_member: str = ingame_members[0]
+            rio_url: str = self.get_raiderio_url(
                 realm=most_likely_member.split(":")[1],
                 region=await self.config.guild(ctx.guild).region(),
                 name=most_likely_member.split(":")[0],
             )
-            wcl_url = self.get_warcraftlogs_url(
+            wcl_url: str = self.get_warcraftlogs_url(
                 realm=most_likely_member.split(":")[1],
                 region=await self.config.guild(ctx.guild).region(),
                 name=most_likely_member.split(":")[0],
