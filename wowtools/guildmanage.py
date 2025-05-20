@@ -131,7 +131,8 @@ class GuildManage:
             )
 
         roster: dict[str, int] = {
-            f"{member['character']['name']}:{member['realm']['slug']}": member["rank"] + 1
+            f"{member['character']['name']}:{member['character']['realm']['slug']}": member["rank"]
+            + 1
             for member in guild_roster["members"]
         }
         return roster
