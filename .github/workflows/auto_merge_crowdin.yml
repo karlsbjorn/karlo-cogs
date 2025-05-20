@@ -1,11 +1,10 @@
 name: Auto-merge Crowdin PR
 
 on:
-  pull_request:
+  workflow_run:
+    workflows: ["Crowdin - Upload strings"]
     types:
-      - opened
-      - synchronize
-      - reopened
+      - completed
 
 jobs:
   auto-merge:
