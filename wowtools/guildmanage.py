@@ -1,6 +1,5 @@
 import logging
 import unicodedata
-from typing import Dict, Optional
 
 import dictdiffer
 import discord
@@ -110,7 +109,7 @@ class GuildManage:
         except Exception as e:
             await ctx.send(_("Command failed successfully. {e}").format(e=e))
 
-    async def get_guild_roster(self, guild: discord.Guild) -> Optional[Dict[str, int]]:
+    async def get_guild_roster(self, guild: discord.Guild) -> dict[str, int]:
         """
         Get guild roster from Blizzard's API.
 
@@ -131,8 +130,9 @@ class GuildManage:
                 name_slug=wow_guild_name, realm_slug=realm
             )
 
-        roster: Dict[str, int] = {
-            member["character"]["name"]: member["rank"] + 1 for member in guild_roster["members"]
+        roster: dict[str, int] = {
+            f"{member['character']['name']}:{member['realm']['slug']}": member["rank"] + 1
+            for member in guild_roster["members"]
         }
         return roster
 
@@ -143,7 +143,6 @@ class GuildManage:
 
         This channel will be used to send messages when a member joins, leaves or is promoted/demoted within the in-game guild.
         """
-        await self.config.guild(ctx.guild).guild_log_channel.set(channel.id)
         try:
             guild_roster = await self.get_guild_roster(ctx.guild)
         except InvalidBlizzardAPI:
@@ -156,6 +155,7 @@ class GuildManage:
                 ).format(prefix=ctx.prefix)
             )
             return
+        await self.config.guild(ctx.guild).guild_log_channel.set(channel.id)
         await self.config.guild(ctx.guild).guild_roster.set(guild_roster)
         await ctx.send(_("Guild log channel set to {channel}.").format(channel=channel.mention))
 
@@ -166,7 +166,7 @@ class GuildManage:
     ):
         """Set the guild log welcome channel.
 
-        When a user joins this server, a message will be to the provided channel with their in-game name and rank if the bot is able to find them.
+        When a user joins this server, a message will be sent to the provided channel with their in-game name and rank if the bot is able to find them.
         """
         await self.config.guild(ctx.guild).guild_log_welcome_channel.set(channel.id)
         try:
@@ -211,8 +211,20 @@ class GuildManage:
                     "filling in `whoops` with your client's ID and secret."
                 )
                 return
-            previous_roster = await self.config.guild(guild).guild_roster()
-            difference = list(dictdiffer.diff(previous_roster, current_roster))
+            previous_roster: dict[str, int] = await self.config.guild(guild).guild_roster()
+
+            # Have to do this now because the key will include the realm name, meaning comparing
+            # means everything in previous will be different and it will send a message for
+            # every single roster member.
+            prev_for_diff: dict[str, int] = {}
+            for name, rank in previous_roster.items():
+                # Converting `character:realm` to just `character`
+                prev_for_diff[name.split(":")[0]] = rank
+            current_for_diff: dict[str, int] = {}
+            for name, rank in current_roster.items():
+                current_for_diff[name.split(":")[0]] = rank
+
+            difference = list(dictdiffer.diff(prev_for_diff, current_for_diff))
             if not difference:
                 log.debug("No difference in guild roster.")
                 continue
@@ -249,17 +261,18 @@ class GuildManage:
             return
 
         desc = f"Discord: {member.mention}\n"
-        desc += f"In-game: {humanize_list(ingame_members, style='or')}?\nRank: {rank}?\n"
+        desc += f"In-game: {humanize_list([name.split(':')[0] for name in ingame_members], style='or')}?\nRank: {rank}?\n"
 
+        most_likely_member = ingame_members[0]
         rio_url = self.get_raiderio_url(
-            await self.config.guild(guild).gmanage_realm(),
-            await self.config.guild(guild).region(),
-            ingame_members[0],
+            realm=most_likely_member.split(":")[1],
+            region=await self.config.guild(guild).region(),
+            name=most_likely_member.split(":")[0],
         )
         wcl_url = self.get_warcraftlogs_url(
-            await self.config.guild(guild).gmanage_realm(),
-            await self.config.guild(guild).region(),
-            ingame_members[0],
+            realm=most_likely_member.split(":")[1],
+            region=await self.config.guild(guild).region(),
+            name=most_likely_member.split(":")[0],
         )
         desc += f"{rio_url} | {wcl_url}"
 
@@ -301,20 +314,20 @@ class GuildManage:
 
     async def add_new_members(self, diff, embeds: list, guild: discord.Guild) -> None:
         for member in diff[2]:
-            member_name = member[0]
+            member_name, member_realm = member[0].split(":")
             member_rank_new = await self.get_rank_string(guild, member[1])
 
             embed = discord.Embed(
                 title=_("**{member}** joined the guild as **{rank}**").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.make_description(guild, member_name),
+                description=await self.make_description(guild, member_name, member_realm),
                 color=discord.Colour.green(),
             )
             embeds.append(embed)
 
     async def add_changed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
-        member_name = diff[1]
+        member_name, member_realm = diff[1].split(":")
         member_rank_old = await self.get_rank_string(guild, diff[2][0])
         member_rank_new = await self.get_rank_string(guild, diff[2][1])
 
@@ -325,31 +338,32 @@ class GuildManage:
                 new_rank=member_rank_new,
                 changed=_("promoted") if diff[2][0] > diff[2][1] else _("demoted"),
             ),
-            description=await self.make_description(guild, member_name),
+            description=await self.make_description(guild, member_name, member_realm),
             color=discord.Colour.blurple(),
         )
         embeds.append(embed)
 
     async def add_removed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
         for member in diff[2]:
-            member_name = member[0]
+            member_name, member_realm = member[0].split(":")
             member_rank_new = await self.get_rank_string(guild, member[1])
 
             embed = discord.Embed(
                 title=_("**{member} ({rank})** left the guild").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.make_description(guild, member_name),
+                description=await self.make_description(guild, member_name, member_realm),
                 color=discord.Colour.red(),
             )
             embeds.append(embed)
 
-    async def make_description(self, guild: discord.Guild, member_name: str) -> str:
-        realm = await self.config.guild(guild).gmanage_realm()
+    async def make_description(
+        self, guild: discord.Guild, member_name: str, member_realm: str
+    ) -> str:
         region = await self.config.guild(guild).region()
         description = humanize_list(await self.guess_member(guild, member_name), style="or")
-        description += f"\n{self.get_raiderio_url(realm, region, member_name)} | "
-        description += f"{self.get_warcraftlogs_url(realm, region, member_name)}"
+        description += f"\n{self.get_raiderio_url(member_realm, region, member_name)} | "
+        description += f"{self.get_warcraftlogs_url(member_realm, region, member_name)}"
         return description
 
     async def guess_member(self, guild: discord.Guild, member_name: str) -> list[str]:
@@ -473,7 +487,7 @@ class GuildManage:
         roster = await self.get_guild_roster(guild)
         extract = process.extract(
             member_name,
-            roster.keys(),
+            [name.split(":")[0] for name in roster.keys()],
             scorer=fuzz.WRatio,
             limit=10,
             score_cutoff=80,
