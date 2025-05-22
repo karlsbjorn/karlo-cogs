@@ -361,10 +361,11 @@ class GuildManage:
     async def make_description(
         self, guild: discord.Guild, member_name: str, member_realm: str
     ) -> str:
-        region = await self.config.guild(guild).region()
+        #region = await self.config.guild(guild).region()
         description = humanize_list(await self.guess_member(guild, member_name), style="or")
-        description += f"\n{self.get_raiderio_url(member_realm, region, member_name)} | "
-        description += f"{self.get_warcraftlogs_url(member_realm, region, member_name)}"
+        # this is fucked
+        #description += f"\n{self.get_raiderio_url(member_realm, region, member_name)} | "
+        #description += f"{self.get_warcraftlogs_url(member_realm, region, member_name)}"
         return description
 
     async def guess_member(self, guild: discord.Guild, member_name: str) -> list[str]:
