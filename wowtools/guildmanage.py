@@ -315,20 +315,20 @@ class GuildManage:
 
     async def add_new_members(self, diff, embeds: list, guild: discord.Guild) -> None:
         for member in diff[2]:
-            member_name, member_realm = member[0].split(":")
+            member_name = member[0]
             member_rank_new = await self.get_rank_string(guild, member[1])
 
             embed = discord.Embed(
                 title=_("**{member}** joined the guild as **{rank}**").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.make_description(guild, member_name, member_realm),
+                description=await self.make_description(guild, member_name),
                 color=discord.Colour.green(),
             )
             embeds.append(embed)
 
     async def add_changed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
-        member_name, member_realm = diff[1].split(":")
+        member_name = diff[1]
         member_rank_old = await self.get_rank_string(guild, diff[2][0])
         member_rank_new = await self.get_rank_string(guild, diff[2][1])
 
@@ -339,33 +339,35 @@ class GuildManage:
                 new_rank=member_rank_new,
                 changed=_("promoted") if diff[2][0] > diff[2][1] else _("demoted"),
             ),
-            description=await self.make_description(guild, member_name, member_realm),
+            description=await self.make_description(guild, member_name),
             color=discord.Colour.blurple(),
         )
         embeds.append(embed)
 
     async def add_removed_members(self, diff, embeds: list, guild: discord.Guild) -> None:
         for member in diff[2]:
-            member_name, member_realm = member[0].split(":")
+            member_name = member[0]
             member_rank_new = await self.get_rank_string(guild, member[1])
 
             embed = discord.Embed(
                 title=_("**{member} ({rank})** left the guild").format(
                     member=member_name, rank=member_rank_new
                 ),
-                description=await self.make_description(guild, member_name, member_realm),
+                description=await self.make_description(guild, member_name),
                 color=discord.Colour.red(),
             )
             embeds.append(embed)
 
     async def make_description(
-        self, guild: discord.Guild, member_name: str, member_realm: str
+        self,
+        guild: discord.Guild,
+        member_name: str,  # member_realm: str
     ) -> str:
-        #region = await self.config.guild(guild).region()
+        # region = await self.config.guild(guild).region()
         description = humanize_list(await self.guess_member(guild, member_name), style="or")
         # this is fucked
-        #description += f"\n{self.get_raiderio_url(member_realm, region, member_name)} | "
-        #description += f"{self.get_warcraftlogs_url(member_realm, region, member_name)}"
+        # description += f"\n{self.get_raiderio_url(member_realm, region, member_name)} | "
+        # description += f"{self.get_warcraftlogs_url(member_realm, region, member_name)}"
         return description
 
     async def guess_member(self, guild: discord.Guild, member_name: str) -> list[str]:
