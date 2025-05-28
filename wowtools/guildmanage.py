@@ -9,7 +9,6 @@ from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 from tabulate import tabulate
-
 from .exceptions import InvalidBlizzardAPI
 
 _ = Translator("WoWTools", __file__)
@@ -95,11 +94,11 @@ class GuildManage:
 
     @gmset.command()
     @commands.admin()
-    async def guild_realm(self, ctx: commands.Context, guild_realm: str):
+    async def guild_realm(self, ctx: commands.Context, guild_realm: str | None = None):
         """Set the realm of the guild."""
         try:
             async with ctx.typing():
-                if guild_realm is None:
+                if not guild_realm:
                     await self.config.guild(ctx.guild).gmanage_realm.clear()
                     await ctx.send(_("Guild realm cleared."))
                     return
@@ -211,6 +210,9 @@ class GuildManage:
                     "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
                     "filling in `whoops` with your client's ID and secret."
                 )
+                return
+            except RuntimeError:
+                # idk, try again later
                 return
             previous_roster: dict[str, int] = await self.config.guild(guild).guild_roster()
 
