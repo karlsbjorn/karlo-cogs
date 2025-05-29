@@ -1,4 +1,4 @@
-REALMS = {
+REALMS: dict[str, list[str]] = {
     "Aegwynn": ["EU", "US"],
     "Aerie Peak": ["EU", "US"],
     "Agamaggan": ["EU", "US"],
