@@ -265,7 +265,10 @@ class WoWTools(
         await self.config.user(ctx.author).wow_character_region.set(region)
         await ctx.send(_("Character region set."))
 
-    @serverset.command(name="onmessage")
+    @serverset.command(
+        name="onmessage",
+        description="Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned.",
+    )
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)
     async def serverset_on_message(self, ctx: commands.Context):
@@ -296,7 +299,7 @@ class WoWTools(
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True, manage_channels=True)
     async def serverset_patchcountdown(self, ctx: commands.Context):
-        "Add or remove a locked channel to the channel list that will display the time until the next patch releases."
+        "Add or remove a locked channel that will display the time until the next patch releases."
         cd_channel_id = await self.config.guild(ctx.guild).countdown_channel()
         if cd_channel_id:
             cd_channel = ctx.guild.get_channel(cd_channel_id)
