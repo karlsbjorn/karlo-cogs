@@ -1,10 +1,8 @@
 name: Auto-merge Crowdin PR
 
 on:
-  workflow_run:
-    workflows: ["Crowdin - Upload strings"]
-    types:
-      - completed
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   auto-merge:
@@ -15,16 +13,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-
-    steps:
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install gh -y
-
-      - name: Enable auto-merge for Crowdin PR
-        run: |
-          gh pr merge "$PR_URL" --merge --auto
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+      steps:
+      - name: Auto-merge PR
+        if: github.actor == 'github-actions'
+        uses: KeisukeYamashita/auto-pull-request-merge@v1
