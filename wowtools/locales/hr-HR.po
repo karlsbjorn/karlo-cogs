@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2025-05-14 01:41+0000\n"
-"PO-Revision-Date: 2025-05-14 01:42\n"
+"POT-Creation-Date: 2025-05-28 23:57+0000\n"
+"PO-Revision-Date: 2025-05-28 23:57\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "MIME-Version: 1.0\n"
@@ -74,84 +74,84 @@ msgstr "Cijena ovog artikla može biti netočna zbog\n"
 msgid "More details"
 msgstr "Više detalja"
 
-#: wowtools/guildmanage.py:25
+#: wowtools/guildmanage.py:23
 #, docstring
 msgid "Configure guild management."
 msgstr "Konfiguriraj upravljanje guildom."
 
-#: wowtools/guildmanage.py:31
+#: wowtools/guildmanage.py:29
 #, docstring
 msgid "Bind a rank to a string."
 msgstr "Poveži rang s tekstom."
 
-#: wowtools/guildmanage.py:33 wowtools/guildmanage.py:47
+#: wowtools/guildmanage.py:31 wowtools/guildmanage.py:45
 msgid "Rank must be between 1 and 10."
 msgstr "Rank mora biti između 1 i 10."
 
-#: wowtools/guildmanage.py:37
+#: wowtools/guildmanage.py:35
 msgid "**{rank_string}** bound to **Rank {rank}**."
 msgstr "**{rank_string}** vezan za **Rank {rank}**."
 
-#: wowtools/guildmanage.py:45
+#: wowtools/guildmanage.py:43
 #, docstring
 msgid "Bind a rank to a role."
 msgstr "Poveži rank s ulogom."
 
-#: wowtools/guildmanage.py:50
+#: wowtools/guildmanage.py:48
 msgid "**{role}** bound to **Rank {rank}**."
 msgstr "**{role}** vezan za **Rank {rank}**."
 
-#: wowtools/guildmanage.py:55
+#: wowtools/guildmanage.py:53
 #, docstring
 msgid "View guild rank settings."
 msgstr "Pogledajte postavke rankova guilda."
 
-#: wowtools/guildmanage.py:68
+#: wowtools/guildmanage.py:66
 msgid "Rank"
 msgstr "Rank"
 
-#: wowtools/guildmanage.py:68
+#: wowtools/guildmanage.py:66
 msgid "Rank String"
 msgstr "Rank string"
 
-#: wowtools/guildmanage.py:68
+#: wowtools/guildmanage.py:66
 msgid "Rank Role"
 msgstr "Rank uloga"
 
-#: wowtools/guildmanage.py:73
+#: wowtools/guildmanage.py:71
 msgid "Rank Settings"
 msgstr "Rank postavke"
 
-#: wowtools/guildmanage.py:84
+#: wowtools/guildmanage.py:82
 #, docstring
 msgid "Set the guild name to be used in the guild management commands."
 msgstr "Postavi naziv guilda koji će se koristiti u naredbama za upravljanje guildom."
 
-#: wowtools/guildmanage.py:89 wowtools/wowtools.py:179
+#: wowtools/guildmanage.py:87 wowtools/wowtools.py:179
 msgid "Guild name cleared."
 msgstr "Ime guilda izbrisano."
 
-#: wowtools/guildmanage.py:93 wowtools/wowtools.py:183
+#: wowtools/guildmanage.py:91 wowtools/wowtools.py:183
 msgid "Guild name set."
 msgstr "Ime guilda postavljeno."
 
-#: wowtools/guildmanage.py:95 wowtools/guildmanage.py:111 wowtools/pvp.py:34
+#: wowtools/guildmanage.py:93 wowtools/guildmanage.py:109 wowtools/pvp.py:34
 #: wowtools/scoreboard.py:51 wowtools/scoreboard.py:134
 #: wowtools/scoreboard.py:745 wowtools/token.py:37 wowtools/token.py:87
 #: wowtools/wowtools.py:151 wowtools/wowtools.py:168 wowtools/wowtools.py:185
 msgid "Command failed successfully. {e}"
 msgstr "Naredba uspješno neuspješna. {e}"
 
-#: wowtools/guildmanage.py:100
+#: wowtools/guildmanage.py:98
 #, docstring
 msgid "Set the realm of the guild."
 msgstr "Postavi realm guilda."
 
-#: wowtools/guildmanage.py:105
+#: wowtools/guildmanage.py:103
 msgid "Guild realm cleared."
 msgstr "Realm guilda izbrisan."
 
-#: wowtools/guildmanage.py:109
+#: wowtools/guildmanage.py:107
 msgid "Guild realm set."
 msgstr "Realm guilda postavljen."
 
@@ -162,8 +162,8 @@ msgid "Set the channel for guild logs.\n\n"
 "        "
 msgstr ""
 
-#: wowtools/guildmanage.py:151 wowtools/guildmanage.py:176
-#: wowtools/guildmanage.py:435 wowtools/pvp.py:38 wowtools/token.py:41
+#: wowtools/guildmanage.py:150 wowtools/guildmanage.py:176
+#: wowtools/guildmanage.py:455 wowtools/pvp.py:38 wowtools/token.py:41
 msgid "The Blizzard API is not properly set up.\n"
 "Create a client on https://develop.battle.net/ and then type in `{prefix}set api blizzard client_id,whoops client_secret,whoops` filling in `whoops` with your client's ID and secret."
 msgstr ""
@@ -175,45 +175,45 @@ msgstr "Kanal za guild logove je postavljen na {channel}"
 #: wowtools/guildmanage.py:167
 #, docstring
 msgid "Set the guild log welcome channel.\n\n"
-"        When a user joins this server, a message will be to the provided channel with their in-game name and rank if the bot is able to find them.\n"
+"        When a user joins this server, a message will be sent to the provided channel with their in-game name and rank if the bot is able to find them.\n"
 "        "
 msgstr ""
 
-#: wowtools/guildmanage.py:308
+#: wowtools/guildmanage.py:324
 msgid "**{member}** joined the guild as **{rank}**"
 msgstr "**{member}** se pridružio guildu kao **{rank}**"
 
-#: wowtools/guildmanage.py:322
+#: wowtools/guildmanage.py:338
 msgid "**{member}** was {changed} from **{old_rank}** to **{new_rank}**"
 msgstr "**{member}** je {changed} sa **{old_rank}** na **{new_rank}**"
 
-#: wowtools/guildmanage.py:326
+#: wowtools/guildmanage.py:342
 msgid "promoted"
 msgstr "promotean"
 
-#: wowtools/guildmanage.py:326
+#: wowtools/guildmanage.py:342
 msgid "demoted"
 msgstr "demotean"
 
-#: wowtools/guildmanage.py:339
+#: wowtools/guildmanage.py:355
 msgid "**{member} ({rank})** left the guild"
 msgstr "**{member} ({rank})** je napustio guild"
 
-#: wowtools/guildmanage.py:409
+#: wowtools/guildmanage.py:429
 #, docstring
 msgid "Guild management commands."
 msgstr "Naredbe upravljanja guildom."
 
-#: wowtools/guildmanage.py:415
+#: wowtools/guildmanage.py:435
 #, docstring
 msgid "Find a member in the guild."
 msgstr "Pronađite člana u guildu."
 
-#: wowtools/guildmanage.py:428
+#: wowtools/guildmanage.py:448
 msgid "Please use `{prefix}gmset` and set the name and realm of your guild."
 msgstr ""
 
-#: wowtools/guildmanage.py:460 wowtools/guildmanage.py:468
+#: wowtools/guildmanage.py:481 wowtools/guildmanage.py:489
 msgid "Nothing found."
 msgstr "Ništa nije pronađeno."
 
