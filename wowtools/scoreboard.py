@@ -92,7 +92,9 @@ class Scoreboard:
     async def sbset_channel(
         self, ctx: commands.Context, channel: discord.TextChannel | None = None
     ):
-        """Set the channel to send the scoreboard to."""
+        """Set the channel to send the Mythic+ leaderboard to."""
+        if ctx.interaction:
+            await ctx.defer(ephemeral=True)
         image_enabled = await self.config.guild(ctx.guild).sb_image()
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
         sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()

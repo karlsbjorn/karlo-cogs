@@ -7,7 +7,7 @@ on:
 jobs:
   auto-merge:
     if: |
-      github.actor == 'github-actions' &&
+      github.actor == 'github-actions[bot]' &&
       startsWith(github.event.pull_request.title, 'New Crowdin translations')
     runs-on: ubuntu-latest
     permissions:
@@ -15,5 +15,5 @@ jobs:
       pull-requests: write
     steps:
     - name: Auto-merge PR
-      if: github.actor == 'github-actions'
+      if: github.actor == 'github-actions[bot]'
       uses: KeisukeYamashita/auto-pull-request-merge@v1
