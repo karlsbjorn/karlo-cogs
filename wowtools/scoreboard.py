@@ -48,7 +48,7 @@ class Scoreboard:
             else:
                 embed = await self._generate_dungeon_scoreboard(ctx)
         except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
             return
         if embed:
             if image_enabled and ctx.channel.permissions_for(ctx.guild.me).attach_files:
@@ -79,11 +79,11 @@ class Scoreboard:
     #         # TODO: In dpy2, make this a list of embeds to send in a single message
     #         await ctx.send(embed=embed)
 
-    @commands.group()
+    @commands.hybrid_group()
     @commands.admin()
     @commands.guild_only()
     async def sbset(self, ctx):
-        """Change scoreboard settings"""
+        """Change Mythic+ leaderboard settings"""
         pass
 
     @sbset.command(name="channel")
@@ -131,7 +131,7 @@ class Scoreboard:
             else:
                 embed = await self._generate_dungeon_scoreboard(ctx)
         except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
             return
         if image_enabled and channel.permissions_for(ctx.guild.me).attach_files:
             sb_msg = await channel.send(file=img_file, embed=embed)
@@ -209,7 +209,7 @@ class Scoreboard:
         sb_channel_id: int = await self.config.guild(ctx.guild).scoreboard_channel()
         sb_msg_id: int = await self.config.guild(ctx.guild).scoreboard_message()
         if not (sb_channel_id and sb_msg_id):
-            await ctx.send(_("No scoreboard is set."))
+            await ctx.send(_("No scoreboard is set."), ephemeral=True)
             return
 
         sb_channel = ctx.guild.get_channel(sb_channel_id)
@@ -222,7 +222,7 @@ class Scoreboard:
             )
             return
         if not sb_msg:
-            await ctx.send(_("Scoreboard message not found"))
+            await ctx.send(_("Scoreboard message not found"), ephemeral=True)
             return
 
         max_chars = 20
@@ -236,7 +236,7 @@ class Scoreboard:
         image: bool = await self.config.guild(ctx.guild).sb_image()
 
         embed = discord.Embed(
-            title=_("1st War Within Season Scoreboard"),
+            title=_("2nd War Within Season Scoreboard"),
             color=await self.bot.get_embed_color(sb_msg),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)

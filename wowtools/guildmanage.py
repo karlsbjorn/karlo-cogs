@@ -9,6 +9,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 from tabulate import tabulate
+
 from .exceptions import InvalidBlizzardAPI
 
 _ = Translator("WoWTools", __file__)

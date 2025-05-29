@@ -131,58 +131,64 @@ class WoWTools(
         """Change WoWTools settings."""
         pass
 
-    @wowset.command(name="region")
+    @commands.hybrid_group()
+    async def serverset(self, ctx):
+        """Change WoW guild-related settings"""
+        pass
+
+    @serverset.command(name="region")
     @commands.guild_only()
     @commands.admin()
-    async def wowset_region(self, ctx: commands.Context, region: str):
+    async def serverset_region(self, ctx: commands.GuildContext, region: str):
         """Set the region where characters and guilds will be searched for."""
         regions = ("us", "eu", "kr")
         try:
             async with ctx.typing():
                 if region not in regions:
-                    raise ValueError(
+                    await ctx.send(
                         _("That region does not exist.\nValid regions are: {regions}.").format(
-                            regions=humanize_list(regions)
-                        )
+                            regions=humanize_list(regions),
+                        ),
+                        ephemeral=True,
                     )
                 await self.config.guild(ctx.guild).region.set(region)
-            await ctx.send(_("Region set succesfully."))
+            await ctx.send(_("Region set succesfully."), ephemeral=True)
         except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
 
-    @wowset.command(name="realm")
+    @serverset.command(name="realm")
     @commands.guild_only()
     @commands.admin()
-    async def wowset_realm(self, ctx: commands.Context, realm: str = None):
+    async def serverset_realm(self, ctx: commands.GuildContext, realm: str | None = None):
         """Set the realm of your guild."""
         try:
             async with ctx.typing():
-                if realm is None:
+                if not realm:
                     await self.config.guild(ctx.guild).realm.clear()
-                    await ctx.send(_("Realm cleared."))
+                    await ctx.send(_("Realm cleared."), ephemeral=True)
                     return
                 realm = realm.lower()
                 await self.config.guild(ctx.guild).realm.set(realm)
-            await ctx.send(_("Realm set."))
+            await ctx.send(_("Realm set."), ephemeral=True)
         except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
 
-    @wowset.command(name="guild")
+    @serverset.command(name="guild")
     @commands.guild_only()
     @commands.admin()
-    async def wowset_guild(self, ctx: commands.Context, guild_name: str | None = None):
-        """(CASE SENSITIVE) Set the name of your guild."""
+    async def serverset_guild(self, ctx: commands.GuildContext, guild_name: str | None = None):
+        """Set the name of your guild."""
         try:
             async with ctx.typing():
                 if guild_name is None:
                     await self.config.guild(ctx.guild).real_guild_name.clear()
-                    await ctx.send(_("Guild name cleared."))
+                    await ctx.send(_("Guild name cleared."), ephemeral=True)
                     return
                 guild_name = guild_name.replace("-", " ").title()
                 await self.config.guild(ctx.guild).real_guild_name.set(guild_name)
-            await ctx.send(_("Guild name set."))
+            await ctx.send(_("Guild name set."), ephemeral=True)
         except Exception as e:
-            await ctx.send(_("Command failed successfully. {e}").format(e=e))
+            await ctx.send(_("Command failed successfully. {e}").format(e=e), ephemeral=True)
 
     @wowset.command(name="blizzard")
     @commands.is_owner()
@@ -215,18 +221,18 @@ class WoWTools(
             await self.config.emotes.set_raw(currency, value=None)
             await ctx.send(_("{currency} emote removed.").format(currency=currency.title()))
 
-    @wowset.command(name="images")
+    @serverset.command(name="images")
     @commands.admin()
     @commands.guild_only()
-    async def wowset_images(self, ctx: commands.Context):
+    async def serverset_images(self, ctx: commands.Context):
         """Toggle scoreboard images on or off."""
         enabled = await self.config.guild(ctx.guild).sb_image()
         if enabled:
             await self.config.guild(ctx.guild).sb_image.set(False)
-            await ctx.send(_("Images disabled."))
+            await ctx.send(_("Images disabled."), ephemeral=True)
         else:
             await self.config.guild(ctx.guild).sb_image.set(True)
-            await ctx.send(_("Images enabled."))
+            await ctx.send(_("Images enabled."), ephemeral=True)
 
     @wowset.group(name="character")
     async def wowset_character(self, ctx):
@@ -259,11 +265,13 @@ class WoWTools(
         await self.config.user(ctx.author).wow_character_region.set(region)
         await ctx.send(_("Character region set."))
 
-    @wowset.command(name="onmessage")
+    @serverset.command(name="onmessage")
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True)
-    async def wowset_on_message(self, ctx: commands.Context):
-        """Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned."""
+    async def serverset_on_message(self, ctx: commands.Context):
+        """Toggle the bot's ability to respond to messages when a supported spell/item name is mentioned.
+
+        Example: `I think [[Ebon Might]] is cool.`"""
         enabled = await self.config.guild(ctx.guild).on_message()
         if enabled:
             await self.config.guild(ctx.guild).on_message.set(False)
@@ -284,10 +292,10 @@ class WoWTools(
             await self.config.assistant_cog_integration.set(True)
             await ctx.send(_("Assistant cog integration enabled."))
 
-    @wowset.command(name="patchcountdown")
+    @serverset.command(name="patchcountdown")
     @commands.guild_only()
     @checks.mod_or_permissions(manage_guild=True, manage_channels=True)
-    async def wowset_patchcountdown(self, ctx: commands.Context):
+    async def serverset_patchcountdown(self, ctx: commands.Context):
         "Add or remove a locked channel to the channel list that will display the time until the next patch releases."
         cd_channel_id = await self.config.guild(ctx.guild).countdown_channel()
         if cd_channel_id:
@@ -438,7 +446,7 @@ class WoWTools(
             return
         await self.create_bnet_objs()
 
-    def cog_unload(self):
+    async def cog_unload(self):
         self.bot.loop.create_task(self.session.close())
         self.update_dungeon_scoreboard.cancel()
         self.guild_log.cancel()
