@@ -19,6 +19,9 @@ class RPC:
         return await current_track.to_dict()
 
     async def play_track(self, guild_id: int, query: str):
+        if not query:
+            return {"status": 400, "message": "No query provided."}
+        
         guild = self.bot.get_guild(guild_id)
         if not guild:
             return {"status": 404, "message": "Guild not found."}
@@ -33,10 +36,15 @@ class RPC:
             return {"status": 400, "message": "Error getting track"}
 
         await player.play(query=query, track=response.data, requester=guild.me)
+        if player.current:
+            return {
+                "status": 200,
+                "message": "Track playing successfully",
+                "track": await player.current.to_dict(),
+            }
         return {
-            "status": 200,
-            "message": "Track playing successfully",
-            "track": await player.current.to_dict(),
+            "status": 400,
+            "message": "Error playing track."
         }
 
     async def play_next(self, guild_id: int):
