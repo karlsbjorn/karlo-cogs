@@ -1,4 +1,5 @@
 from aiolimiter import AsyncLimiter
+import discord
 from pylav.events.player import PlayerDisconnectedEvent, PlayerStoppedEvent
 from pylav.events.track import TrackEndEvent, TrackResumedEvent, TrackStartEvent
 from pylav.logging import getLogger
@@ -45,10 +46,14 @@ class PyLavChannelStatus(commands.Cog):
         if player.current:
             return
         await self.limiter.acquire()
-        await channel._edit(
-            options={"status": None},
-            reason=_("[PyLavChannelStatus] Removing channel status"),
-        )
+        try:
+            await channel._edit(
+                options={"status": None},
+                reason=_("[PyLavChannelStatus] Removing channel status"),
+            )
+        except discord.Forbidden:
+            return
+            
 
     @commands.Cog.listener()
     async def on_pylav_track_start_event(self, event: TrackStartEvent):
