@@ -102,14 +102,23 @@ class WoWTools(
         log.info("Bot status updater started.")
 
         self.current_raid = "liberation-of-undermine"
+
         # For countdown channels
-        self.early_access_time = (
-            datetime.datetime(  # Expansion "early access", or patch release without raid/m+
-                year=2025, month=8, day=5, hour=4, tzinfo=datetime.UTC
-            )
+        self.early_access_time: dict[str, datetime.datetime] = {}
+        self.release_time: dict[str, datetime.datetime] = {}
+        # Expansion "early access", or patch release without raid/m+
+        self.early_access_time["us"] = datetime.datetime(
+            year=2025, month=8, day=15, hour=15, tzinfo=datetime.UTC
         )
-        self.release_time = (  # Full expansion release, or season release with raid/m+
-            datetime.datetime(year=2025, month=8, day=12, hour=4, tzinfo=datetime.UTC)
+        self.early_access_time["eu"] = datetime.datetime(
+            year=2025, month=8, day=6, hour=4, tzinfo=datetime.UTC
+        )
+        # Full expansion release, or season release with raid/m+
+        self.release_time["us"] = datetime.datetime(
+            year=2025, month=8, day=12, hour=15, tzinfo=datetime.UTC
+        )
+        self.release_time["eu"] = datetime.datetime(
+            year=2025, month=8, day=13, hour=4, tzinfo=datetime.UTC
         )
 
     async def cog_load(self) -> None:
@@ -302,6 +311,7 @@ class WoWTools(
     async def serverset_patchcountdown(self, ctx: commands.Context):
         "Add or remove a locked channel that will display the time until the next patch releases."
         cd_channel_id = await self.config.guild(ctx.guild).countdown_channel()
+        region = await self.config.guild(ctx.guild).region()  # type: ignore
         if cd_channel_id:
             cd_channel = ctx.guild.get_channel(cd_channel_id)
             if cd_channel:
@@ -315,11 +325,16 @@ class WoWTools(
             return
 
         now = datetime.datetime.now(datetime.UTC)
+        early_access_time = self.early_access_time.get(region)
+        release_time = self.release_time.get(region)
+        if not early_access_time or not release_time:
+            await ctx.send(_("Not available for the {region} region.").format(region=region))
+            return
 
-        diff = self.early_access_time - now
+        diff = early_access_time - now
         early_access = True
         if diff.total_seconds() < 0:
-            diff = self.release_time - now
+            diff = release_time - now
             early_access = False
         if diff.total_seconds() < 0:
             await ctx.send(_("New season has already released."))
@@ -353,6 +368,7 @@ class WoWTools(
         for guild in self.bot.guilds:
             if await self.bot.cog_disabled_in_guild(self, guild):
                 continue
+            region = await self.config.guild(guild).region()
             countdown_channel_id: int = await self.config.guild(guild).countdown_channel()
             if countdown_channel_id is None:
                 continue
@@ -363,11 +379,16 @@ class WoWTools(
                 continue
 
             now = datetime.datetime.now(datetime.UTC)
+            early_access_time = self.early_access_time.get(region)
+            release_time = self.release_time.get(region)
+            if not early_access_time or not release_time:
+                log.debug("Early access or release time not set for region {}".format(region))
+                continue
 
-            diff = self.early_access_time - now
+            diff = early_access_time - now
             early_access = True
             if diff.total_seconds() < 0:
-                diff = self.release_time - now
+                diff = release_time - now
                 early_access = False
             if diff.total_seconds() < 0:
                 await countdown_channel.delete()
