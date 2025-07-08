@@ -91,6 +91,7 @@ class WoWTools(
         self.raiderio_api = RaiderIO()
         self.blizzard: dict[str, WowApi] = {}
         self.cvar_cache: list[CVar] = []
+        self.roster_cache: dict[int, dict] = {}
         self.update_dungeon_scoreboard.start()
         log.info("Dungeon scoreboard updater started.")
         self.guild_log.start()
@@ -104,11 +105,11 @@ class WoWTools(
         # For countdown channels
         self.early_access_time = (
             datetime.datetime(  # Expansion "early access", or patch release without raid/m+
-                2025, 2, 26, 5, tzinfo=datetime.UTC
+                year=2025, month=8, day=5, hour=4, tzinfo=datetime.UTC
             )
         )
         self.release_time = (  # Full expansion release, or season release with raid/m+
-            datetime.datetime(2025, 3, 5, 5, tzinfo=datetime.UTC)
+            datetime.datetime(year=2025, month=8, day=12, hour=4, tzinfo=datetime.UTC)
         )
 
     async def cog_load(self) -> None:

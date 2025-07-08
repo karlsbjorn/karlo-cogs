@@ -53,7 +53,6 @@ class PyLavChannelStatus(commands.Cog):
             )
         except discord.Forbidden:
             return
-            
 
     @commands.Cog.listener()
     async def on_pylav_track_start_event(self, event: TrackStartEvent):

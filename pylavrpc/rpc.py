@@ -25,8 +25,8 @@ class RPC:
     async def play_track(self, guild_id: int, query: str) -> dict[str, Any]:
         if not query:
             return {"status": 400, "message": "No query provided."}
-        
-        guild: discord.Guild = self.bot.get_guild(guild_id) # type: ignore
+
+        guild: discord.Guild = self.bot.get_guild(guild_id)  # type: ignore
         if not guild:
             return {"status": 404, "message": "Guild not found."}
 
@@ -48,10 +48,7 @@ class RPC:
                 "message": "Track playing successfully",
                 "track": await player.current.to_dict(),
             }
-        return {
-            "status": 400,
-            "message": "Error playing track."
-        }
+        return {"status": 400, "message": "Error playing track."}
 
     async def play_next(self, guild_id: int) -> dict[str, Any]:
         guild = self.bot.get_guild(guild_id)
