@@ -179,6 +179,8 @@ class UserInstallableRaiderio:
     async def raiderio_profile_character_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> List[app_commands.Choice[str]]:
+        if not interaction.guild:
+            return []
         roster = await self.config.guild(interaction.guild).guild_roster()
         matched_characters = []
         for character in roster.keys():
