@@ -39,7 +39,7 @@ class UserInstallableRaiderio:
         )
         region = region.lower()
         await interaction.response.defer()
-        profile_data = await self.raiderio_api.get_character_profile(
+        profile_data = await self.raiderio_api.get_character_profile( # type: ignore
             region,
             realm,
             character,
@@ -65,7 +65,7 @@ class UserInstallableRaiderio:
         char_image = profile_data["thumbnail_url"]
         char_score = profile_data["mythic_plus_scores_by_season"][0]["segments"]["all"]
         char_score_color = int("0x" + char_score["color"][1:], 0)
-        char_raid = profile_data["raid_progression"][self.current_raid]["summary"]
+        char_raid = profile_data["raid_progression"][self.current_raid]["summary"] # type: ignore
         char_last_updated = Raiderio.parse_date(profile_data["last_crawled_at"])
         char_gear = profile_data["gear"]
         char_ilvl = char_gear["item_level_equipped"]
@@ -174,3 +174,14 @@ class UserInstallableRaiderio:
     ) -> List[app_commands.Choice[str]]:
         realms = await get_realms(current)
         return realms[:25]
+    
+    @user_install_raiderio_profile.autocomplete("character")
+    async def raiderio_profile_character_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> List[app_commands.Choice[str]]:
+        roster = await self.config.guild(interaction.guild).guild_roster()
+        matched_characters = []
+        for character in roster.keys():
+            if current.lower() in character.lower():
+                matched_characters.append(character)
+        return [app_commands.Choice(name=char, value=char.lower()) for char in matched_characters[:25]]
