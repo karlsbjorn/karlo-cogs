@@ -7,3 +7,4 @@ venv
 
 .run/
 .vscode/
+wowtools/config.py
