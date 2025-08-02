@@ -15,6 +15,7 @@ from redbot.core.utils.chat_formatting import box, humanize_list, humanize_numbe
 from tabulate import tabulate
 
 from wowtools.exceptions import InvalidBlizzardAPI
+from wowtools.models import Character
 
 log = logging.getLogger("red.karlo-cogs.wowtools")
 _ = Translator("WoWTools", __file__)
@@ -599,7 +600,15 @@ class Scoreboard:
                 image = image.resize((65, 65))
                 img.paste(image, (x - 79, y - 15))
 
-            draw.text((x, y), char_name, class_color, font=font)
+            # names
+            if (discord_name := await self.fetch_discord_name(char_name)) and dev_guild:
+                draw.text((x, y + 10), char_name, class_color, font=font)
+                discord_name_font = ImageFont.truetype(str(bundled_data_path(self) / "Roboto-Bold.ttf"), 24)  # type: ignore
+                draw.text((x, y - 10), discord_name, class_color, font=discord_name_font)
+            else:
+                draw.text((x, y), char_name, class_color, font=font)
+
+            # ilvl + score
             if int(ilvl) >= 446:  # This is whatever the color for the highest ilvl is
                 glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
                 ImageDraw.Draw(glow).text((x + 225, y), ilvl, ilvl_color, font=font)
@@ -611,6 +620,7 @@ class Scoreboard:
             else:
                 draw.text((x + 225, y), ilvl, ilvl_color, font=font)
             draw.text((x + 300, y), score, score_color, font=font)
+            
             y += 75
 
         img_obj = io.BytesIO()
@@ -618,6 +628,17 @@ class Scoreboard:
         img_obj.seek(0)
 
         return discord.File(fp=img_obj, filename="scoreboard.png")
+
+    async def fetch_discord_name(self, char_name: str) -> str:
+        character: Character | None = (
+            await Character.objects().where(Character.character_name == char_name).first()
+        )
+        if not character:
+            return ""
+        user: discord.User | None = self.bot.get_user(character.guild_member)  # type: ignore
+        if user:
+            return user.name
+        return ""
 
     @staticmethod
     def _get_ilvl_color(ilvl: int) -> str:
