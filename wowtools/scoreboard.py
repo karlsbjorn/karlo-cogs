@@ -606,7 +606,7 @@ class Scoreboard:
                 blurred_glow = glow.filter(ImageFilter.GaussianBlur(5))
                 ImageDraw.Draw(blurred_glow).text((x + 225, y), ilvl, ilvl_color, font=font)
                 img = Image.alpha_composite(img, blurred_glow)
-                # have to reassing draw
+                # have to reassign draw
                 draw = ImageDraw.Draw(img)
             else:
                 draw.text((x + 225, y), ilvl, ilvl_color, font=font)
