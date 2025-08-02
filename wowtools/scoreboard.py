@@ -600,7 +600,7 @@ class Scoreboard:
                 img.paste(image, (x - 79, y - 15))
 
             draw.text((x, y), char_name, class_color, font=font)
-            if int(ilvl) >= 446:  # This is whatever the color for the highest ilvl is
+            if int(ilvl) >= 679:  # This is whatever the color for the highest ilvl is
                 glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
                 ImageDraw.Draw(glow).text((x + 225, y), ilvl, ilvl_color, font=font)
                 blurred_glow = glow.filter(ImageFilter.GaussianBlur(5))
@@ -621,17 +621,17 @@ class Scoreboard:
 
     @staticmethod
     def _get_ilvl_color(ilvl: int) -> str:
-        if ilvl >= 485:
+        if ilvl >= 679:
             return "#f16960"
-        elif ilvl >= 482:
+        elif ilvl >= 676:
             return "#FF69B4"
-        elif ilvl >= 479:
+        elif ilvl >= 673:
             return "#FFA500"
-        elif ilvl >= 474:
+        elif ilvl >= 669:
             return "#b040c2"
-        elif ilvl >= 469:
+        elif ilvl >= 664:
             return "#445bc2"
-        elif ilvl >= 464:
+        elif ilvl >= 659:
             return "#00ff1a"
         else:
             return "#FFFFFF"
