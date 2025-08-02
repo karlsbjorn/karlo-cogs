@@ -604,7 +604,7 @@ class Scoreboard:
             if (discord_name := await self.fetch_discord_name(char_name)) and dev_guild:
                 draw.text((x, y - 5), char_name, class_color, font=font)
                 discord_name_font = ImageFont.truetype(str(bundled_data_path(self) / "Roboto-Bold.ttf"), 16)  # type: ignore
-                draw.text((x, y + 15), f"@{discord_name}", class_color, font=discord_name_font)
+                draw.text((x, y + 22), f"@{discord_name}", class_color, font=discord_name_font)
             else:
                 draw.text((x, y), char_name, class_color, font=font)
 
