@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2025-05-05 16:35+0000\n"
-"PO-Revision-Date: 2025-05-14 01:42\n"
+"POT-Creation-Date: 2025-06-02 07:32+0000\n"
+"PO-Revision-Date: 2025-06-02 07:32\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Crowdin-File-ID: 66\n"
 "Language: sr_SP\n"
 
-#: pylavchannelstatus/pylav_channel_status.py:35
+#: pylavchannelstatus/pylav_channel_status.py:36
 msgid "[PyLavChannelStatus] Setting channel status to new track"
 msgstr ""
 
-#: pylavchannelstatus/pylav_channel_status.py:50
+#: pylavchannelstatus/pylav_channel_status.py:52
 msgid "[PyLavChannelStatus] Removing channel status"
 msgstr ""
 
