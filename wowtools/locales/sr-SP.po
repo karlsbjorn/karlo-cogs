@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2025-05-29 06:28+0000\n"
-"PO-Revision-Date: 2025-05-29 06:29\n"
+"POT-Creation-Date: 2025-08-05 19:55+0000\n"
+"PO-Revision-Date: 2025-08-05 19:55\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -471,7 +471,7 @@ msgid "2nd War Within Season Scoreboard"
 msgstr ""
 
 #: wowtools/scoreboard.py:259
-msgid "Season 1 of War Within is over.\n"
+msgid "Season 2 of War Within is over.\n"
 msgstr ""
 
 #: wowtools/scoreboard.py:262
