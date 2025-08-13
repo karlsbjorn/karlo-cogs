@@ -169,7 +169,7 @@ class WarcraftLogsRetail(commands.Cog):
             # IF it's not, we're moving on with the other encounters.
             sorted_by_time = sorted(
                 char_data["encounterRankings"]["ranks"],
-                key=lambda k: k["report"]["startTime"],
+                key=lambda k: k["report"]["startTime"] if k["report"]["startTime"] is not None else 0,
                 reverse=True,
             )
             gear = sorted_by_time[0]["gear"]
@@ -180,7 +180,7 @@ class WarcraftLogsRetail(commands.Cog):
                 if len(char_data["encounterRankings"]["ranks"]) != 0:
                     sorted_by_time = sorted(
                         char_data["encounterRankings"]["ranks"],
-                        key=lambda k: k["report"]["startTime"],
+                        key=lambda k: k["report"]["startTime"] if k["report"]["startTime"] is not None else 0,
                         reverse=True,
                     )
                     gear = sorted_by_time[0]["gear"]
