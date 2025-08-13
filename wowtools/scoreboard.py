@@ -434,7 +434,7 @@ class Scoreboard:
             log.error(f"Error adding scoreboard to Assistant: {e}", exc_info=True)
 
     async def get_season_title_cutoff(self, region: str) -> float:
-        current_season = "season-tww-2"  # TODO: Needs to be manually updated every season
+        current_season = "season-tww-3"  # TODO: Needs to be manually updated every season
         cutoffs = (
             await self.raiderio_api.get_mythic_plus_season_cutoffs(region, current_season)
         ).get("cutoffs")
