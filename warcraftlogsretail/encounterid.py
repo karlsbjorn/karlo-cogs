@@ -17,19 +17,30 @@ ENCOUNTER_ID = {
     3014: "One-Armed Bandit",
     3015: "Mug'Zee, Heads of Security",
     3016: "Chrome King Gallywix",
+    # Manaforge Omega
+    3129: "Plexus Sentinel",
+    3131: "Loom'ithar",
+    3130: "Soulbinder Naazindhri",
+    3132: "Forgeweaver Araz",
+    3122: "The Soul Hunters",
+    3133: "Fractillus",
+    3134: "Nexus-King Salhadaar",
+    3135: "Dimensius, the All-Devouring",
 }
 
 ENCOUNTER_ZONES = {
     "Nerub-ar Palace": [2902, 2917, 2898, 2918, 2919, 2920, 2921, 2922],
     "Libration of Undermine": [3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016],
+    "Manaforge Omega": [3129, 3131, 3130, 3132, 3122, 3133, 3134, 3135],
 }
 
-ZONES_BY_ID = {
-    38: "Nerub-ar Palace",
-    42: "Liberation of Undermine",
-}
+ZONES_BY_ID = {38: "Nerub-ar Palace", 42: "Liberation of Undermine", 44: "Manaforge Omega"}
 
-ZONES_BY_SHORT_NAME = {"NP": ["Nerub-ar Palace", 38], "LoU": ["Liberation of Undermine", 42]}
+ZONES_BY_SHORT_NAME = {
+    "NP": ["Nerub-ar Palace", 38],
+    "LoU": ["Liberation of Undermine", 42],
+    "MO": ["Manaforge Omega", 44],
+}
 
 DIFFICULTIES = {
     5: "MYTHIC",
