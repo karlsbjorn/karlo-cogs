@@ -97,14 +97,18 @@ class WarcraftLogsRetail(commands.Cog):
         pass
 
     @commands.bot_has_permissions(embed_links=True)
+    @app_commands.describe(
+        name="Character name",
+        realm="Name of the realm",
+    )
     @warcraftlogs.command()
-    async def gear(self, ctx, name: str = None, *, realm: str = None):
+    async def gear(self, ctx, name: str, *, realm: str):
         """
         Fetch a character's gear.
 
         Examples:
-        [p]getgear Username Draenor EU
-        [p]getgear Username Alterac-Mountains US
+        [p]getgear Username Draenor:EU
+        [p]getgear Username Alterac-Mountains:US
 
         This is provided from the last log entry for a user that includes gear data.
         Not every log has gear data.
@@ -320,8 +324,8 @@ class WarcraftLogsRetail(commands.Cog):
     async def rank(
         self,
         ctx,
-        name: str = None,
-        realm: str = None,
+        name: str,
+        realm: str,
         zone: str = None,
         difficulty: str = None,
     ):
@@ -331,12 +335,12 @@ class WarcraftLogsRetail(commands.Cog):
         If the realm name is two words, use a hyphen to connect the words.
 
         Examples:
-        [p]getrank Username Draenor EU
-        [p]getrank Username Alterac-Mountains US
+        [p]getrank Username Draenor:EU
+        [p]getrank Username Alterac-Mountains:US
 
         Specific Zones:
-        [p]getrank Username Draenor EU CN Heroic
-        [p]getrank Username Alterac-Mountains US SoD Mythic
+        [p]getrank Username Draenor:EU CN Heroic
+        [p]getrank Username Alterac-Mountains:US SoD Mythic
 
         Zone name must be formatted like:
         CN, SoD, SotFO
