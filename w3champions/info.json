@@ -7,7 +7,7 @@
     "requirements": [
         "tabulate",
         "emoji-country-flag",
-        "pydantic"
+        "pydantic>=2.11,<2.12"
     ],
     "min_bot_version": "3.5.3.dev0",
     "max_bot_version": "3.6.0.dev0",
