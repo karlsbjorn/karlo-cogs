@@ -108,17 +108,17 @@ class WoWTools(
         self.release_time: dict[str, datetime.datetime] = {}
         # Expansion "early access", or patch release without raid/m+
         self.early_access_time["us"] = datetime.datetime(
-            year=2025, month=8, day=15, hour=15, tzinfo=datetime.UTC
+            year=2026, month=2, day=27, hour=23, tzinfo=datetime.UTC
         )
         self.early_access_time["eu"] = datetime.datetime(
-            year=2025, month=8, day=6, hour=4, tzinfo=datetime.UTC
+            year=2026, month=2, day=27, hour=23, tzinfo=datetime.UTC
         )
         # Full expansion release, or season release with raid/m+
         self.release_time["us"] = datetime.datetime(
-            year=2025, month=8, day=12, hour=15, tzinfo=datetime.UTC
+            year=2026, month=3, day=1, hour=23, tzinfo=datetime.UTC
         )
         self.release_time["eu"] = datetime.datetime(
-            year=2025, month=8, day=13, hour=4, tzinfo=datetime.UTC
+            year=2026, month=3, day=1, hour=23, tzinfo=datetime.UTC
         )
 
     async def cog_load(self) -> None:
@@ -349,9 +349,9 @@ class WoWTools(
             time_str = f"{hours}h {minutes}m"
 
         channel_name = (
-            _("🔴Patch in {countdown}").format(countdown=time_str)
+            _("🔴Midnight EA in {countdown}").format(countdown=time_str)
             if early_access
-            else _("🟡Season in {countdown}").format(countdown=time_str)
+            else _("🟡Midnight in {countdown}").format(countdown=time_str)
         )
         perms = {
             ctx.guild.default_role: discord.PermissionOverwrite(connect=False),
