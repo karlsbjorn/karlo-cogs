@@ -404,9 +404,9 @@ class WoWTools(
                 time_str = f"{hours}h {minutes}m"
 
             channel_name = (
-                _("🔴Patch in {countdown}").format(countdown=time_str)
+                _("🔴Midnight EA in {countdown}").format(countdown=time_str)
                 if early_access
-                else _("🟡Season in {countdown}").format(countdown=time_str)
+                else _("🟡Midnight in {countdown}").format(countdown=time_str)
             )
             try:
                 await countdown_channel.edit(name=channel_name)
