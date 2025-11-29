@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2025-08-05 19:55+0000\n"
-"PO-Revision-Date: 2025-08-05 19:55\n"
+"POT-Creation-Date: 2025-11-29 14:44+0000\n"
+"PO-Revision-Date: 2025-11-29 14:44\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -723,11 +723,19 @@ msgstr ""
 msgid "New season has already released."
 msgstr ""
 
-#: wowtools/wowtools.py:352 wowtools/wowtools.py:407
+#: wowtools/wowtools.py:352
+msgid "🔴Midnight EA in {countdown}"
+msgstr ""
+
+#: wowtools/wowtools.py:354
+msgid "🟡Midnight in {countdown}"
+msgstr ""
+
+#: wowtools/wowtools.py:407
 msgid "🔴Patch in {countdown}"
 msgstr ""
 
-#: wowtools/wowtools.py:354 wowtools/wowtools.py:409
+#: wowtools/wowtools.py:409
 msgid "🟡Season in {countdown}"
 msgstr ""
 
