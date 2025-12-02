@@ -343,10 +343,9 @@ class WoWTools(
         days = diff.days
         hours, remainder = divmod(diff.seconds, 3600)
         minutes, __ = divmod(remainder, 60)
-        if diff.days > 0:
-            time_str = f"{days}d{hours}h{minutes}m"
-        else:
-            time_str = f"{hours}h {minutes}m"
+        time_str = f"{str(days) + 'd' if days else ''} \
+                            {str(hours) + 'h' if hours else ''} \
+                            {str(minutes) + 'm' if minutes else ''}"
 
         channel_name = (
             _("🔴Midnight EA in {countdown}").format(countdown=time_str)
@@ -398,10 +397,9 @@ class WoWTools(
             days = diff.days
             hours, remainder = divmod(diff.seconds, 3600)
             minutes, __ = divmod(remainder, 60)
-            if diff.days > 0:
-                time_str = f"{days}d{hours}h{minutes}m"
-            else:
-                time_str = f"{hours}h {minutes}m"
+            time_str = f"{str(days) + 'd' if days else ''} \
+                              {str(hours) + 'h' if hours else ''} \
+                              {str(minutes) + 'm' if minutes else ''}"
 
             channel_name = (
                 _("🔴Midnight EA in {countdown}").format(countdown=time_str)
