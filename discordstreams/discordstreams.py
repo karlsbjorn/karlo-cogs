@@ -319,8 +319,9 @@ class DiscordStreams(commands.Cog):
 
         await set_contextual_locales_from_guild(self.bot, member_guild)
 
-        stream = await DiscordStream(self.bot, after.channel, member).make_container()
+        stream = DiscordStream(self.bot, after.channel, member)
         # embed = await stream.make_embed()
+        container_stream = await stream.make_container()
 
         active_messages = await self.config.guild(member_guild).active_messages()
         for channel_id in channels_to_send_to:
@@ -330,7 +331,7 @@ class DiscordStreams(commands.Cog):
                 await self.config.guild(member_guild).alert_channels.set(channels_to_send_to)
                 continue
 
-            view = stream
+            view = container_stream
 
             mention_ids: list[int] = await self.config.guild(member_guild).mentions()
             role_or_member: list[discord.Role | discord.Member] = []
