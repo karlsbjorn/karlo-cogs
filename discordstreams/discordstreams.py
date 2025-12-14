@@ -379,6 +379,7 @@ class DiscordStream(discord.ui.LayoutView):
         :param voice_channel: Voice channel where the stream is taking place
         :param member: The member who started the stream
         """
+        super().__init__()
         self.bot = bot
         self.voice_channel = voice_channel
         self.member = member
