@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from io import BytesIO
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Self, Union
 
 import colorgram
 import discord
@@ -319,8 +319,8 @@ class DiscordStreams(commands.Cog):
 
         await set_contextual_locales_from_guild(self.bot, member_guild)
 
-        stream = DiscordStream(self.bot, after.channel, member)
-        embed = await stream.make_embed()
+        stream = await DiscordStream(self.bot, after.channel, member).make_container()
+        # embed = await stream.make_embed()
 
         active_messages = await self.config.guild(member_guild).active_messages()
         for channel_id in channels_to_send_to:
@@ -330,14 +330,7 @@ class DiscordStreams(commands.Cog):
                 await self.config.guild(member_guild).alert_channels.set(channels_to_send_to)
                 continue
 
-            view = discord.ui.View()
-            view.add_item(
-                discord.ui.Button(
-                    label=_("Watch the stream"),
-                    style=discord.ButtonStyle.link,
-                    url=after.channel.jump_url,
-                )
-            )
+            view = stream
 
             mention_ids: list[int] = await self.config.guild(member_guild).mentions()
             role_or_member: list[discord.Role | discord.Member] = []
@@ -357,7 +350,6 @@ class DiscordStreams(commands.Cog):
                 content = _("{member} is live!").format(member=member.display_name)
             message = await channel.send(
                 content=content,
-                embed=embed,
                 view=view,
             )
 
@@ -378,7 +370,7 @@ class DiscordStreams(commands.Cog):
         self.update_stream_messages.stop()
 
 
-class DiscordStream:
+class DiscordStream(discord.ui.LayoutView):
     def __init__(self, bot: Red, voice_channel: discord.VoiceChannel, member: discord.Member):
         """
         A class to represent a Discord "Go Live" stream.
@@ -422,6 +414,7 @@ class DiscordStream:
             inline=False,
         )
 
+        details_msg = ""
         try:
             if start := activity.timestamps.get("start"):
                 start = datetime.fromtimestamp(start / 1000)
@@ -446,7 +439,7 @@ class DiscordStream:
                     )
                 ).rstrip()
         except AttributeError:
-            details_msg = ""
+            pass
         if details_msg:
             embed.add_field(
                 name=zws,
@@ -460,6 +453,42 @@ class DiscordStream:
             embed.set_footer(text=_("Playing: {activity}").format(activity=activity.name))
 
         return embed
+
+    async def make_container(self, start_time: Optional[datetime] = None) -> Self:
+        member = self.member
+        voice_channel = self.voice_channel
+        self.banner: Optional[discord.Asset] = (await self.bot.fetch_user(member.id)).banner
+        activity = self.get_activity()
+
+        stream_started: str = _("Stream started {relative_timestamp}").format(
+            relative_timestamp=(
+                discord.utils.format_dt(start_time, style="R")
+                if start_time
+                else discord.utils.format_dt(discord.utils.utcnow(), style="R")
+            )
+        )
+
+        container = discord.ui.Container(
+            discord.ui.Section(
+                discord.ui.TextDisplay(
+                    content=f"## {member.display_name}\n\n{voice_channel.mention}\n{stream_started}"
+                ),
+                accessory=discord.ui.Thumbnail(media=self.get_member_avatar().url),
+            ),
+            discord.ui.Section(
+                discord.ui.TextDisplay(
+                    content=_("Playing: {activity}").format(activity=activity.name)
+                ),
+                accessory=discord.ui.Button(
+                    label=_("Watch the stream"),
+                    style=discord.ButtonStyle.link,
+                    url=voice_channel.jump_url,
+                ),
+            ),
+            accent_color=await self.get_embed_color(),
+        )
+        self.add_item(container)
+        return self
 
     def get_activity(self) -> discord.Activity:
         """
