@@ -113,7 +113,7 @@ class DiscordStreams(commands.Cog):
                 )
             )
 
-    @discordstreamset.command(name="mention")
+    @discordstreamset.command(name="mention", hidden=True)
     @commands.guild_only()
     async def discordstreamset_mention(
         self, ctx: commands.Context, role_or_member: Union[discord.Role, discord.Member]
@@ -342,15 +342,15 @@ class DiscordStreams(commands.Cog):
                 if role_or_member_obj:
                     role_or_member.append(role_or_member_obj)
 
-            if role_or_member:
-                mentions = [role_or_member.mention for role_or_member in role_or_member]
-                content = _("{mentions}\n{member} is live!").format(
-                    mentions=" ".join(mentions), member=member.display_name
-                )
-            else:
-                content = _("{member} is live!").format(member=member.display_name)
+            # if role_or_member:
+            #     mentions = [role_or_member.mention for role_or_member in role_or_member]
+            #     content = _("{mentions}\n{member} is live!").format(
+            #         mentions=" ".join(mentions), member=member.display_name
+            #     )
+            # else:
+            #     content = _("{member} is live!").format(member=member.display_name)
             message = await channel.send(
-                content=content,
+                # content=content,
                 view=view,
             )
 
