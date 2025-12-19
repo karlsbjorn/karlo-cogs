@@ -204,25 +204,12 @@ class DiscordStreams(commands.Cog):
                 continue
             if member.voice is None:
                 continue
-            if not ch_message.embeds:
-                continue
-
-            current_embed = ch_message.embeds[0]
-            current_embed_dict = current_embed.to_dict()
 
             stream = DiscordStream(self.bot, member.voice.channel, member)
-
-            new_embed = await stream.make_embed(start_time=ch_message.created_at)
-            new_embed_dict = new_embed.to_dict()
-
-            same_fields: bool = current_embed_dict.get("fields") == new_embed_dict.get("fields")
-            same_footer: bool = current_embed_dict.get("footer") == new_embed_dict.get("footer")
-            if same_fields and same_footer:
-                # Don't edit if there's no change
-                continue
+            container_stream = await stream.make_container()
 
             try:
-                await ch_message.edit(embed=new_embed)
+                await ch_message.edit(view=container_stream)
             except discord.NotFound:
                 log.warning(f"Message {message_id} not found in channel {channel_id}, skipping.")
 
