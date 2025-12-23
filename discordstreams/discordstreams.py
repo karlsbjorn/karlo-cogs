@@ -206,7 +206,7 @@ class DiscordStreams(commands.Cog):
                 continue
 
             stream = DiscordStream(self.bot, member.voice.channel, member)
-            container_stream = await stream.make_container()
+            container_stream = await stream.make_container(start_time=ch_message.created_at)
 
             try:
                 await ch_message.edit(view=container_stream)
