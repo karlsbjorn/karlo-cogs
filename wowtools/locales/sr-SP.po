@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: karlo-cogs\n"
-"POT-Creation-Date: 2025-11-29 14:44+0000\n"
-"PO-Revision-Date: 2025-11-29 14:44\n"
+"POT-Creation-Date: 2026-01-21 09:52+0000\n"
+"PO-Revision-Date: 2026-01-21 09:52\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Cyrillic)\n"
 "MIME-Version: 1.0\n"
@@ -467,11 +467,11 @@ msgid "Score"
 msgstr "Резултат"
 
 #: wowtools/scoreboard.py:241
-msgid "2nd War Within Season Scoreboard"
+msgid "3rd War Within Season Scoreboard"
 msgstr ""
 
 #: wowtools/scoreboard.py:259
-msgid "Season 2 of War Within is over.\n"
+msgid "Season 3 of War Within is over.\n"
 msgstr ""
 
 #: wowtools/scoreboard.py:262
@@ -719,27 +719,19 @@ msgstr ""
 msgid "New season has already released."
 msgstr ""
 
-#: wowtools/wowtools.py:352
+#: wowtools/wowtools.py:351 wowtools/wowtools.py:405
 msgid "🔴Midnight EA in {countdown}"
 msgstr ""
 
-#: wowtools/wowtools.py:354
+#: wowtools/wowtools.py:353 wowtools/wowtools.py:407
 msgid "🟡Midnight in {countdown}"
 msgstr ""
 
-#: wowtools/wowtools.py:407
-msgid "🔴Patch in {countdown}"
-msgstr ""
-
-#: wowtools/wowtools.py:409
-msgid "🟡Season in {countdown}"
-msgstr ""
-
-#: wowtools/wowtools.py:412
+#: wowtools/wowtools.py:432
 msgid "Status guild set."
 msgstr ""
 
-#: wowtools/wowtools.py:414
+#: wowtools/wowtools.py:434
 msgid "Setting guild bot status failed."
 msgstr ""
 
