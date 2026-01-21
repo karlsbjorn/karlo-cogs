@@ -239,7 +239,7 @@ class Scoreboard:
         image: bool = await self.config.guild(ctx.guild).sb_image()
 
         embed = discord.Embed(
-            title=_("2nd War Within Season Scoreboard"),
+            title=_("3rd War Within Season Scoreboard"),
             color=await self.bot.get_embed_color(sb_msg),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
@@ -257,7 +257,7 @@ class Scoreboard:
             return
 
         # TODO: When dpy2 is out, use discord.utils.format_dt()
-        desc = _("Season 2 of War Within is over.\n").format(
+        desc = _("Season 3 of War Within is over.\n").format(
             timestamp=int(datetime.now(timezone.utc).timestamp())
         )
         desc += _("Score cutoff for the season title was: `{cutoff}`\n").format(
