@@ -108,10 +108,10 @@ class WoWTools(
         self.release_time: dict[str, datetime.datetime] = {}
         # Expansion "early access", or patch release without raid/m+
         self.early_access_time["us"] = datetime.datetime(
-            year=2026, month=2, day=27, hour=23, tzinfo=datetime.UTC
+            year=2026, month=2, day=26, hour=23, tzinfo=datetime.UTC
         )
         self.early_access_time["eu"] = datetime.datetime(
-            year=2026, month=2, day=27, hour=23, tzinfo=datetime.UTC
+            year=2026, month=2, day=26, hour=23, tzinfo=datetime.UTC
         )
         # Full expansion release, or season release with raid/m+
         self.release_time["us"] = datetime.datetime(
