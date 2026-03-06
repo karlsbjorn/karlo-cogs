@@ -50,11 +50,18 @@ class AutoPlay(commands.Cog):
 
         if member is None:
             await self.config.guild(ctx.guild).tracked_member.set(None)
+            await self.pylav.construct_embed(
+                description=_("Autoplay has been toggled off."), messagable=ctx
+            )
             return
         else:
             await self.config.guild(ctx.guild).tracked_member.set(member.id)
         msg = await self._prepare_autoplay(ctx.guild, ctx.author)
-        await ctx.send(embed=await self.pylav.construct_embed(description=msg, messageable=ctx))
+        await ctx.send(
+            embed=await self.pylav.construct_embed(
+                description=msg.format(member=member.mention), messageable=ctx
+            )
+        )
 
     async def _context_user_autoplay(
         self, interaction: DISCORD_INTERACTION_TYPE, member: discord.Member
@@ -90,7 +97,7 @@ class AutoPlay(commands.Cog):
             return _(
                 "I am not in a voice channel. Please connect to a voice channel and then use this command."
             )
-        elif player and player.channel.id != author.voice.channel.id:
+        elif player and author.voice and player.channel.id != author.voice.channel.id:
             await player.move_to(author, author.voice.channel)
 
         if player.is_playing or player.paused:
