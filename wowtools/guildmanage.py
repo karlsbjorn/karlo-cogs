@@ -9,6 +9,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 from tabulate import tabulate
+from json import JSONDecodeError
 
 from .exceptions import InvalidBlizzardAPI
 
@@ -212,8 +213,8 @@ class GuildManage:
                     "filling in `whoops` with your client's ID and secret."
                 )
                 return
-            except RuntimeError:
-                # idk, try again later
+            except (RuntimeError, JSONDecodeError):
+                # blizzard bullshit at the moment, try again later
                 return
             previous_roster: dict[str, int] = await self.config.guild(guild).guild_roster()
 
