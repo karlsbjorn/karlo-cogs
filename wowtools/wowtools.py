@@ -101,7 +101,7 @@ class WoWTools(
         self.update_bot_status.start()
         log.info("Bot status updater started.")
 
-        self.current_raid = "manaforge-omega"
+        self.current_raid = "tier-mn-1"
 
         # For countdown channels
         self.early_access_time: dict[str, datetime.datetime] = {}
