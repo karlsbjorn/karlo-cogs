@@ -5,7 +5,6 @@ from typing import Literal, Mapping, Optional
 import aiohttp
 import discord
 from aiolimiter import AsyncLimiter
-from aiowowapi import WowApi
 from discord.ext import tasks
 from raiderio_async import RaiderIO
 from redbot.core import Config, checks, commands
@@ -13,6 +12,7 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n, set_contextual_locales_from_guild
 from redbot.core.utils.chat_formatting import humanize_list
 
+from aiowowapi import WowApi
 from wowtools.user_installable.cvardocs import CVar, CVarDocs
 
 from .auctionhouse import AuctionHouse
@@ -77,6 +77,7 @@ class WoWTools(
             "sb_image": False,
             "on_message": False,
             "countdown_channel": None,
+            "scoreboard_chart_score_cache": {},  # {'charname': {timestamp: score}}
         }
         default_user = {
             "wow_character_name": None,
