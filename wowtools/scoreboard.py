@@ -927,6 +927,7 @@ class ClassColor(Enum):
 
 class ScoreboardView(discord.ui.LayoutView):
     def __init__(self, score_cutoff: float, scoreboard_image_link: str, accent_color):
+        super().__init__()
         self.title = _("Mythic+ Guild Scoreboard")
         self.score_cutoff = score_cutoff
         self.scoreboard_image_link = scoreboard_image_link
