@@ -245,12 +245,7 @@ class Scoreboard:
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
         try:
             tabulate_list = await self._get_dungeon_scores(
-                guild_name,
-                max_chars,
-                realm,
-                region,
-                sb_blacklist,
-                image=image,
+                guild_name, max_chars, realm, region, sb_blacklist, image=image, guild=ctx.guild
             )
         except ValueError as e:
             log.error(f"Error getting dungeon scores for {ctx.guild.id}, skipping. Response: {e}")
@@ -344,12 +339,7 @@ class Scoreboard:
 
             try:
                 tabulate_list = await self._get_dungeon_scores(
-                    guild_name,
-                    max_chars,
-                    realm,
-                    region,
-                    sb_blacklist,
-                    image=image,
+                    guild_name, max_chars, realm, region, sb_blacklist, image=image, guild=guild
                 )
             except ValueError as e:
                 log.error(f"Error getting dungeon scores for {guild.id}, skipping. Response: {e}")
@@ -452,35 +442,42 @@ class Scoreboard:
         region: str,
         sb_blacklist: List[str],
         image: bool,
+        guild: discord.Guild,
     ):
         roster = await self.raiderio_api.get_guild_roster(region, realm, guild_name)
         if "error" in roster.keys():
             raise ValueError(f"{roster['message']}.")
 
         lb = {}
-        # TODO: Surely there's a better way to do literally everything below
-        for char in roster["guildRoster"]["roster"]:
-            char_name: str = char["character"]["name"]
-            if any(char.isdigit() for char in char_name):
-                continue
+        async with self.config.guild(guild).scoreboard_chart_score_cache() as score_cache:
+            # TODO: Surely there's a better way to do literally everything below
+            for char in roster["guildRoster"]["roster"]:
+                char_name: str = char["character"]["name"]
+                if any(char.isdigit() for char in char_name):
+                    continue
+                score = char["keystoneScores"]["allScore"]
 
-            score = char["keystoneScores"]["allScore"]
+                # unique? cache only top 10%?
+                if score not in score_cache.get(char_name, {}).values():
+                    score_cache.setdefault(char_name, {})[
+                        int(datetime.now(timezone.utc).timestamp())
+                    ] = score
 
-            if score > 250 and char_name.lower() not in sb_blacklist:
-                if image:
-                    class_color: str = ClassColor.get_class_color(
-                        char["character"]["class"]["name"]
-                    )
-                    char_img: str = (
-                        "https://render.worldofwarcraft.com/{region}/character/{}".format(
-                            char["character"]["thumbnail"], region=region
+                if score > 250 and char_name.lower() not in sb_blacklist:
+                    if image:
+                        class_color: str = ClassColor.get_class_color(
+                            char["character"]["class"]["name"]
                         )
-                    )
-                    ilvl = str(char["character"]["items"]["item_level_equipped"])
-                    score_color: str = char["keystoneScores"]["allScoreColor"]
-                    lb[char_name] = (score, score_color, char_img, class_color, ilvl)
-                else:
-                    lb[char_name] = score
+                        char_img: str = (
+                            "https://render.worldofwarcraft.com/{region}/character/{}".format(
+                                char["character"]["thumbnail"], region=region
+                            )
+                        )
+                        ilvl = str(char["character"]["items"]["item_level_equipped"])
+                        score_color: str = char["keystoneScores"]["allScoreColor"]
+                        lb[char_name] = (score, score_color, char_img, class_color, ilvl)
+                    else:
+                        lb[char_name] = score
 
         lb = dict(sorted(lb.items(), key=lambda i: i[1], reverse=True))
 
@@ -549,16 +546,15 @@ class Scoreboard:
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
 
         tabulate_list = await self._get_dungeon_scores(
-            guild_name, max_chars, realm, region, sb_blacklist, image
+            guild_name, max_chars, realm, region, sb_blacklist, image, guild=ctx.guild
         )
 
         if image:
-            ...
-            # img_file = await self._generate_scoreboard_image(
-            #     tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
-            # )
-            # embed.set_image(url=f"attachment://{img_file.filename}")
-            # return embed, img_file
+            img_file = await self._generate_scoreboard_image(
+                tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
+            )
+            embed.set_image(url=f"attachment://{img_file.filename}")
+            return embed, img_file
         else:
             embed.description = box(
                 tabulate(
