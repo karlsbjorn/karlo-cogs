@@ -342,11 +342,6 @@ class Scoreboard:
                 continue
             image: bool = await self.config.guild(guild).sb_image()
 
-            embed = discord.Embed(
-                title=_("Mythic+ Guild Scoreboard"),
-                color=await self.bot.get_embed_color(sb_msg),
-            )
-            embed.set_author(name=guild.name, icon_url=guild.icon.url)
             try:
                 tabulate_list = await self._get_dungeon_scores(
                     guild_name,
@@ -367,12 +362,20 @@ class Scoreboard:
             if cutoff := await self.get_season_title_cutoff(region):
                 desc += _("Score cutoff for season title: `{cutoff}`\n").format(cutoff=cutoff)
 
+            embed = discord.Embed(
+                title=_("Mythic+ Guild Scoreboard"),
+                color=await self.bot.get_embed_color(sb_msg),
+            )
+            embed.set_author(name=guild.name, icon_url=guild.icon.url)
             if image:
                 img_file = await self._generate_scoreboard_image(
                     tabulate_list, dev_guild=guild.id in DEV_GUILDS
                 )
-                embed.set_image(url=f"attachment://{img_file.filename}")
-                embed.set_footer(text=_("Updates every 5 minutes"))
+                view = await ScoreboardView(
+                    score_cutoff=cutoff,
+                    scoreboard_image_link=f"attachment://{img_file.filename}",
+                    accent_color=await self.bot.get_embed_color(sb_msg),
+                ).make_container()
             else:
                 formatted_rankings = box(
                     tabulate(
@@ -392,16 +395,11 @@ class Scoreboard:
                     continue
                 embed.set_footer(text=_("Updates only when there is a ranking change"))
 
-            ass_integration = await self.config.assistant_cog_integration()
-            if (assistant := self.bot.get_cog("Assistant")) and ass_integration:
-                await self.add_assistant_embedding(assistant, guild, image, tabulate_list)
-
-            embed.description = desc
-
             try:
                 if image:
-                    await sb_msg.edit(embed=embed, attachments=[img_file])
+                    await sb_msg.edit(embed=None, attachments=[img_file], view=view)
                 else:
+                    embed.description = desc
                     await sb_msg.edit(embed=embed, attachments=[])
             except discord.Forbidden:
                 log.error(
@@ -555,11 +553,12 @@ class Scoreboard:
         )
 
         if image:
-            img_file = await self._generate_scoreboard_image(
-                tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
-            )
-            embed.set_image(url=f"attachment://{img_file.filename}")
-            return embed, img_file
+            ...
+            # img_file = await self._generate_scoreboard_image(
+            #     tabulate_list, dev_guild=ctx.guild.id in DEV_GUILDS
+            # )
+            # embed.set_image(url=f"attachment://{img_file.filename}")
+            # return embed, img_file
         else:
             embed.description = box(
                 tabulate(
@@ -924,3 +923,33 @@ class ClassColor(Enum):
             return ClassColor[player_class.upper().replace(" ", "_")].value
         except KeyError:
             return "#FFFFFF"
+
+
+class ScoreboardView(discord.ui.LayoutView):
+    def __init__(self, score_cutoff: float, scoreboard_image_link: str, accent_color):
+        self.title = _("Mythic+ Guild Scoreboard")
+        self.score_cutoff = score_cutoff
+        self.scoreboard_image_link = scoreboard_image_link
+        self.accent_color = accent_color
+
+    async def make_container(self):
+        container = discord.ui.Container(
+            discord.ui.TextDisplay(content=self.title),
+            discord.ui.TextDisplay(
+                content=_("Score cutoff for season title: `{cutoff}`\n").format(
+                    cutoff=self.score_cutoff
+                )
+            ),
+            discord.ui.MediaGallery(
+                discord.MediaGalleryItem(media=self.scoreboard_image_link),
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.TextDisplay(
+                content=_(
+                    "-# Last updated <t:{timestamp}:R>.\n-# Updates every 5 minutes."
+                ).format(timestamp=int(datetime.now(timezone.utc).timestamp()))
+            ),
+            accent_color=self.accent_color,
+        )
+        self.add_item(container)
+        return self
