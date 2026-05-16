@@ -457,13 +457,12 @@ class Scoreboard:
                     continue
                 score = char["keystoneScores"]["allScore"]
 
-                # unique? cache only top 10%?
-                if score not in score_cache.get(char_name, {}).values():
-                    score_cache.setdefault(char_name, {})[
-                        int(datetime.now(timezone.utc).timestamp())
-                    ] = score
-
                 if score > 250 and char_name.lower() not in sb_blacklist:
+                    # unique? cache only top 10%?
+                    if score not in score_cache.get(char_name, {}).values():
+                        score_cache.setdefault(char_name, {})[
+                            int(datetime.now(timezone.utc).timestamp())
+                        ] = score
                     if image:
                         class_color: str = ClassColor.get_class_color(
                             char["character"]["class"]["name"]
