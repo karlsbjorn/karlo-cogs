@@ -362,9 +362,13 @@ class Scoreboard:
                 img_file = await self._generate_scoreboard_image(
                     tabulate_list, dev_guild=guild.id in DEV_GUILDS
                 )
+                chart_file = await self._generate_scoreboard_chart(
+                    await self.config.guild(guild).scoreboard_chart_score_cache()
+                )
                 view = await ScoreboardView(
                     score_cutoff=cutoff,
                     scoreboard_image_link=f"attachment://{img_file.filename}",
+                    scoreboard_chart_link=f"attachment://{chart_file.filename}",
                     accent_color=await self.bot.get_embed_color(sb_msg),
                 ).make_container()
             else:
@@ -388,7 +392,7 @@ class Scoreboard:
 
             try:
                 if image:
-                    await sb_msg.edit(embed=None, attachments=[img_file], view=view)
+                    await sb_msg.edit(embed=None, attachments=[img_file, chart_file], view=view)
                 else:
                     embed.description = desc
                     await sb_msg.edit(embed=embed, attachments=[])
@@ -953,11 +957,18 @@ class ClassColor(Enum):
 
 
 class ScoreboardView(discord.ui.LayoutView):
-    def __init__(self, score_cutoff: float, scoreboard_image_link: str, accent_color):
+    def __init__(
+        self,
+        score_cutoff: float,
+        scoreboard_image_link: str,
+        scoreboard_chart_link: str,
+        accent_color,
+    ):
         super().__init__()
         self.title = _("# Mythic+ Guild Scoreboard")
         self.score_cutoff = score_cutoff
         self.scoreboard_image_link = scoreboard_image_link
+        self.scoreboard_chart_link = scoreboard_chart_link
         self.accent_color = accent_color
 
     async def make_container(self):
@@ -971,6 +982,10 @@ class ScoreboardView(discord.ui.LayoutView):
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
             discord.ui.MediaGallery(
                 discord.MediaGalleryItem(media=self.scoreboard_image_link),
+            ),
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
+            discord.ui.MediaGallery(
+                discord.MediaGalleryItem(media=self.scoreboard_chart_link),
             ),
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.small),
             discord.ui.TextDisplay(
