@@ -5,6 +5,8 @@ from enum import Enum
 from typing import List, Optional
 
 import discord
+import plotly.graph_objects as go
+import plotly.io as pio
 from aiohttp import ClientResponseError
 from discord.ext import tasks
 from PIL import Image, ImageColor, ImageDraw, ImageFilter, ImageFont
@@ -622,6 +624,57 @@ class Scoreboard:
         img_obj.seek(0)
 
         return discord.File(fp=img_obj, filename="scoreboard.png")
+
+    async def _generate_scoreboard_chart(self, score_cache: dict) -> discord.File:
+        latest_scores = {
+            char: cache[max(cache.keys())] for char, cache in score_cache.items() if cache
+        }
+        top = sorted(latest_scores, key=lambda c: latest_scores[c], reverse=True)[:20]
+
+        fig = go.Figure()
+
+        for char_name in top:
+            history = score_cache[char_name]
+
+            sorted_history = sorted(history.items(), key=lambda item: int(item[0]))
+            timestamps = [
+                datetime.fromtimestamp(int(ts), tz=timezone.utc) for ts, _ in sorted_history
+            ]
+            scores = [score for _, score in sorted_history]
+
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=scores,
+                    mode="lines+text" if len(scores) > 1 else "markers+text",
+                    name=char_name,
+                    text=[""] * (len(scores) - 1) + [char_name],  # label on last
+                    textposition="middle right",
+                    textfont=dict(size=18),
+                    line=dict(width=4),
+                    cliponaxis=False,
+                )
+            )
+
+        fig.update_layout(
+            paper_bgcolor="#0d0d0d",
+            plot_bgcolor="#0d0d0d",
+            font=dict(color="white"),
+            showlegend=False,
+            xaxis=dict(
+                gridcolor="#333",
+                showgrid=True,
+                title=_("Time"),
+            ),
+            yaxis=dict(
+                gridcolor="#333",
+                showgrid=True,
+                title=_("Mythic+ Score"),
+            ),
+        )
+
+        img_bytes = pio.to_image(fig, format="png", width=900, height=1150, scale=2)
+        return discord.File(io.BytesIO(img_bytes), filename="scoreboard_chart.png")
 
     async def fetch_discord_name(self, char_name: str) -> str:
         character: Character | None = (
