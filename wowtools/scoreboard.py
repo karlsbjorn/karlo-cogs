@@ -659,6 +659,48 @@ class Scoreboard:
                     cliponaxis=False,
                 )
             )
+        TEAM_MEMBERS = ["Epulis", "Zudu", "Alestrox", "Yasko", "Ilianna"]
+        TEAM_NAME = "Elitisti"
+        team_histories = {
+            m: score_cache[m] for m in TEAM_MEMBERS if m in score_cache and score_cache[m]
+        }
+
+        if team_histories:
+            all_ts = sorted({int(ts) for h in team_histories.values() for ts in h})
+
+            team_points = []
+            for ts in all_ts:
+                member_scores = []
+                for history in team_histories.values():
+                    known = [int(t) for t in history if int(t) <= ts]
+                    if known:
+                        member_scores.append(history[str(max(known))])
+                if member_scores:
+                    team_points.append((ts, sum(member_scores) / len(member_scores)))
+
+            if team_points:
+                team_latest = team_points[-1][1]
+                cutoff = latest_scores[top[-1]] if len(top) >= 20 else 0
+
+                if team_latest >= cutoff:
+                    t_times = [
+                        datetime.fromtimestamp(ts, tz=timezone.utc) for ts, _ in team_points
+                    ]
+                    t_scores = [s for _, s in team_points]
+
+                    fig.add_trace(
+                        go.Scatter(
+                            x=t_times,
+                            y=t_scores,
+                            mode="lines+text" if len(t_scores) > 1 else "markers+text",
+                            name=TEAM_NAME,
+                            text=[""] * (len(t_scores) - 1) + [TEAM_NAME],
+                            textposition="middle right",
+                            textfont=dict(size=18, color="gold"),
+                            line=dict(width=5, color="gold", dash="dash"),
+                            cliponaxis=False,
+                        )
+                    )
 
         fig.update_layout(
             paper_bgcolor="#0d0d0d",
