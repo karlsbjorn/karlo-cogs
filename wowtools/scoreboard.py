@@ -635,7 +635,7 @@ class Scoreboard:
         latest_scores = {
             char: cache[max(cache.keys())] for char, cache in score_cache.items() if cache
         }
-        top = sorted(latest_scores, key=lambda c: latest_scores[c], reverse=True)[:20]
+        top = sorted(latest_scores, key=lambda c: latest_scores[c], reverse=True)[:15]
 
         fig = go.Figure()
 
@@ -656,7 +656,7 @@ class Scoreboard:
                     name=char_name,
                     text=[""] * (len(scores) - 1) + [char_name],  # label on last
                     textposition="middle right",
-                    textfont=dict(size=18),
+                    textfont=dict(size=24),
                     line=dict(width=4),
                     cliponaxis=False,
                 )
