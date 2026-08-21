@@ -102,7 +102,7 @@ class WoWTools(
         self.update_bot_status.start()
         log.info("Bot status updater started.")
 
-        self.current_raid = "tier-mn-2"
+        self.current_raid = "the-venomous-abyss"
 
         # For countdown channels
         self.early_access_time: dict[str, datetime.datetime] = {}
