@@ -7,6 +7,7 @@ from typing import List, Optional
 import discord
 import plotly.graph_objects as go
 import plotly.io as pio
+import plotly.express as px
 from aiohttp import ClientResponseError
 from discord.ext import tasks
 from PIL import Image, ImageColor, ImageDraw, ImageFilter, ImageFont
@@ -721,6 +722,7 @@ class Scoreboard:
             plot_bgcolor="#0d0d0d",
             font=dict(color="white"),
             showlegend=False,
+            colorway=px.colors.qualitative.Light24,
             xaxis=dict(
                 gridcolor="#333",
                 showgrid=True,
