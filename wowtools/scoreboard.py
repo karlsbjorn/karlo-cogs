@@ -414,7 +414,7 @@ class Scoreboard:
 
     @staticmethod
     def prune_not_current_season(score_cache: dict) -> dict:
-        cutoff = 1787112000  # mn season 2
+        cutoff = int(datetime.now(tz=timezone.utc).timestamp()) - 48 * 3600  # 48h
 
         filtered = {
             char: {ts: v for ts, v in cache.items() if int(ts) >= cutoff}
