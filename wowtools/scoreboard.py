@@ -363,7 +363,9 @@ class Scoreboard:
                     tabulate_list, dev_guild=guild.id in DEV_GUILDS
                 )
                 chart_file = await self._generate_scoreboard_chart(
-                    await self.config.guild(guild).scoreboard_chart_score_cache()
+                    self.prune_not_current_season(
+                        await self.config.guild(guild).scoreboard_chart_score_cache()
+                    )
                 )
                 view = await ScoreboardView(
                     score_cutoff=cutoff,
@@ -407,6 +409,16 @@ class Scoreboard:
                     f"Failed to edit scoreboard message in guild {guild.id} ({guild.name}).",
                     exc_info=True,
                 )
+
+    @staticmethod
+    def prune_not_current_season(score_cache: dict) -> dict:
+        cutoff = 1787112000  # mn season 2
+
+        filtered = {
+            char: {ts: v for ts, v in cache.items() if int(ts) >= cutoff}
+            for char, cache in score_cache.items()
+        }
+        return {char: cache for char, cache in filtered.items() if cache}
 
     @staticmethod
     async def add_assistant_embedding(assistant, guild, image, tabulate_list):
