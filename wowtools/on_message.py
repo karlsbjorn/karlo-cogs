@@ -35,10 +35,28 @@ class OnMessage:
                 "`{prefix}set api blizzard client_id,whoops client_secret,whoops` "
                 "filling in `whoops` with your client's ID and secret."
             )
+            return
         if not embeds:
             return
 
-        await message.channel.send(embeds=embeds)
+        try:
+            await message.channel.send(embeds=embeds)
+        except discord.Forbidden:  # most likely a linked channel
+            if not message.guild:
+                return
+            webhooks = await message.channel.webhooks()  # pyright: ignore[reportAttributeAccessIssue]
+
+            webhook = None
+            for wh in webhooks:
+                if wh.name == "WoWTools":
+                    webhook = wh
+            if not webhook:
+                webhook = await message.channel.create_webhook(name="WoWTools")  # pyright: ignore[reportAttributeAccessIssue]
+            await webhook.send(
+                embeds=embeds,
+                username=message.guild.me.display_name,
+                avatar_url=message.guild.me.display_avatar.url,
+            )
 
     async def is_valid(self, message: discord.Message) -> bool:
         # check whether the message was sent in a guild
