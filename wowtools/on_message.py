@@ -82,7 +82,11 @@ class OnMessage:
 
     @staticmethod
     def extract_search_string(string: str) -> List[str]:
-        pattern = r"\[(.*?)\]"
+        # rem whitespace
+        string = re.sub(r'\[\s+', '[', string)
+        string = re.sub(r'\s+\]', ']', string)
+
+        pattern = r"\[(.*?)\]" # "[item name]"
         return re.findall(pattern, string)
 
     async def get_embeds(self, search_strings: List[str]) -> List[discord.Embed]:
